@@ -33,7 +33,7 @@ export default function ApiTest() {
 
   return (
     <div className="mt-10 p-6 border rounded-lg shadow-md bg-white w-full max-w-2xl">
-      <h2 className="text-lg font-semibold mb-2">Test de Conexión Backend (Local)</h2>
+      <h2 className="text-lg font-bold mb-2 text-secondary-500">Test de Conexión Backend (Local)</h2>
       <pre className="text-sm text-gray-700 bg-gray-50 p-3 rounded">
         {data}
       </pre>
