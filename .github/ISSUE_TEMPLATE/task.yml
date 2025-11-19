@@ -1,7 +1,7 @@
 name: Task
 description: Abstract task description
 title: 'TASK:'
-projects: ['kevirui/6']
+projects: 'FooTalentGroup/5'
 body:
     - type: textarea
       id: what-feature
