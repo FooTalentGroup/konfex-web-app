@@ -7,9 +7,8 @@ export default function Home() {
       <h1 className="text-4xl font-bold text-blue-600">
         Hola Mundo - EOS Frontend
       </h1>
-      <p className="mt-4 text-xl">Entorno local configurado correctamente.</p>
+      <p className="mt-4 text-xl text-primary-500">Entorno local configurado correctamente.</p>
       
-
       <ApiTest />
     </main>
   );
