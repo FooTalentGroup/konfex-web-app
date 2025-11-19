@@ -11,8 +11,7 @@
     "start:prod": "npm run build && node dist/index.js",
     "prisma:migrate": "prisma migrate dev",
     "lint": "eslint . --ext .ts",
-    "test": "jest --config jest.config.ts --runInBand",
-    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky install; fi"
+    "test": "jest --config jest.config.ts --runInBand"
   },
   "repository": {
     "type": "git",
@@ -24,6 +23,7 @@
     "url": "https://github.com/FooTalentGroup/konfex-web-app/issues"
   },
   "homepage": "https://github.com/FooTalentGroup/konfex-web-app#readme",
+
   "dependencies": {
     "@prisma/client": "^6.19.0",
     "bcrypt": "^6.0.0",
@@ -34,16 +34,20 @@
     "prisma": "^6.19.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
-    "zod": "^4.1.12"
-  },
-  "devDependencies": {
+    "zod": "^4.1.12",
+
     "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.5",
-    "@types/jest": "^30.0.0",
     "@types/node": "^24.10.1",
-    "@types/supertest": "^6.0.3",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
+    "tsc-alias": "^1.8.16",
+    "typescript": "^5.9.3"
+  },
+
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/supertest": "^6.0.3",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
@@ -53,8 +57,6 @@
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.5",
     "ts-node-dev": "^2.0.0",
-    "tsc-alias": "^1.8.16",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.9.3"
+    "tsconfig-paths": "^4.2.0"
   }
 }
