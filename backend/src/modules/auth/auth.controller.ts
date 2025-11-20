@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { controllerHandler } from "../../common/handlers";
-import { UserSignUpRequestDto } from "./auth.schema";
+import { UserSignInRequestDto, UserSignUpRequestDto } from "./auth.schema";
 import { AuthService } from "./auth.service";
 import { toUserResponseDto } from "../user/user.mapper";
 
@@ -14,3 +14,8 @@ export const signUpController = controllerHandler(
   "Usuario creado exitosamente",
   201
 );
+
+export const signInController = controllerHandler(async (req: Request) => {
+  const { email, password }: UserSignInRequestDto = req.body;
+  return await AuthService.signin(email, password);
+}, "Login exitoso");

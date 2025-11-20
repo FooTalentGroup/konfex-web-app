@@ -1,5 +1,9 @@
 import { UserSignUpRequestDto } from "./auth.schema";
 import { UserService } from "../user";
+import bcrypt from "bcrypt";
+import { AppError } from "@/common/errors";
+import { UserRole } from "../user/users.types";
+import { AuthTokens, PasswordHasher } from "@/utils/jwt";
 
 export const AuthService = {
     signUp: async ({ email, name, role, password }: UserSignUpRequestDto) => {
@@ -9,5 +13,26 @@ export const AuthService = {
 
         // Configurar DTO
         return (user);
-    }
+    },
+
+    signin: async(email: string, password: string) => {
+    const user = await UserService.getByEmail(email)
+    const isValid = await PasswordHasher.compare(password, user.password);
+        if (!isValid) throw new AppError("Credenciales inválidas", 401);
+
+    const tokens = AuthTokens.build({
+      id: user.id,
+      role: user.role,
+    });
+
+    return {
+      ...tokens,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      },
+    };
+  },
 }
