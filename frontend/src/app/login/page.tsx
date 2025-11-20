@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { authService } from '@/services/auth.service';
 import { useToast } from '@/contexts/ToastContext';
+import Input from '@/components/common/Input';
+import Button from '@/components/common/Button';
 
 interface LoginFormData {
   usuario: string;
@@ -13,7 +15,6 @@ interface LoginFormData {
 }
 
 const LoginPage: React.FC = () => {
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -108,138 +109,36 @@ const LoginPage: React.FC = () => {
           </h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-[390px] space-y-6">
-          <div className="w-full">
-            <label
-              htmlFor="usuario"
-              className="block mb-2 w-full"
-              style={{
-                minHeight: '24px',
-                fontFamily: 'var(--font-lato), sans-serif',
-                fontWeight: 400,
-                fontSize: 'clamp(16px, 4vw, 18px)',
-                lineHeight: '131%',
-                letterSpacing: '0%',
-                color: '#1A151E',
-              }}
-            >
-              Usuario
-            </label>
-            <input
+            <Input
               id="usuario"
+              label="Usuario"
               type="text"
-              {...register('usuario', {
+              placeholder="luciana@gmail.com"
+              register={register('usuario', {
                 required: 'El usuario es requerido',
                 pattern: {
                   value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                   message: 'Debe ser un email válido',
                 },
               })}
-              className="focus:outline-none w-full"
-              style={{
-                height: '48px',
-                borderRadius: '6px',
-                borderWidth: errors.usuario ? '2px' : '1px',
-                borderStyle: 'solid',
-                borderColor: errors.usuario ? '#D9537A' : '#6A5379',
-                padding: '12px',
-                backgroundColor: '#FEFCFF',
-                color: '#1A151E',
-                fontFamily: 'var(--font-lato), sans-serif',
-              }}
-              placeholder="luciana@gmail.com"
+              error={errors.usuario?.message}
             />
-            {errors.usuario && (
-              <p className="mt-1 text-sm text-[#D9537A]">{errors.usuario.message}</p>
-            )}
-          </div>
 
-          <div className="w-full">
-            <label
-              htmlFor="contraseña"
-              className="block mb-2 w-full"
-              style={{
-                minHeight: '24px',
-                fontFamily: 'var(--font-lato), sans-serif',
-                fontWeight: 400,
-                fontSize: 'clamp(16px, 4vw, 18px)',
-                lineHeight: '131%',
-                letterSpacing: '0%',
-                color: errors.contraseña ? '#D9537A' : '#1A151E',
-              }}
-            >
-              Contraseña
-            </label>
-            <div className="relative w-full">
-              <input
-                id="contraseña"
-                type={showPassword ? 'text' : 'password'}
-                {...register('contraseña', {
-                  required: 'La contraseña es requerida',
-                  minLength: {
-                    value: 8,
-                    message: 'La contraseña debe tener al menos 8 caracteres',
-                  },
-                })}
-                className="focus:outline-none w-full"
-                style={{
-                  height: '48px',
-                  borderRadius: '6px',
-                  borderWidth: errors.contraseña ? '2px' : '1px',
-                  borderStyle: 'solid',
-                  borderColor: errors.contraseña ? '#D9537A' : '#6A5379',
-                  padding: '12px',
-                  paddingRight: '48px',
-                  backgroundColor: '#FEFCFF',
-                  color: '#1A151E',
-                  fontFamily: 'var(--font-lato), sans-serif',
-                }}
-                placeholder="Luciana2025*"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className={`absolute right-3 top-1/2 transform -translate-y-1/2 hover:opacity-80 focus:outline-none flex items-center justify-center ${
-                  errors.contraseña ? 'text-[#D9537A]' : 'text-gray-400'
-                }`}
-                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  {showPassword ? (
-                    <>
-                      <path
-                        d="M1 1L23 23M9 9C8.5 9.5 8 10.2 8 11C8 12.1 8.9 13 10 13C10.8 13 11.5 12.5 12 12M21 12C21 12 17 18 12 18C11.5 18 11 17.9 10.5 17.7M3 3C2.4 3.6 1.9 4.2 1.5 5M6.5 6.5C5.8 7.2 5.3 8.1 5 9"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <path
-                        d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        fill="none"
-                      />
-                      <circle cx="12" cy="12" r="3" fill="currentColor" />
-                    </>
-                  )}
-                </svg>
-              </button>
-            </div>
-            {errors.contraseña && (
-              <p className="mt-1 text-sm text-[#D9537A]">{errors.contraseña.message}</p>
-            )}
-          </div>
+            <Input
+              id="contraseña"
+              label="Contraseña"
+              type="password"
+              placeholder="Luciana2025*"
+              showPasswordToggle
+              register={register('contraseña', {
+                required: 'La contraseña es requerida',
+                minLength: {
+                  value: 8,
+                  message: 'La contraseña debe tener al menos 8 caracteres',
+                },
+              })}
+              error={errors.contraseña?.message}
+            />
 
           <div className="flex justify-end w-full">
             <a
@@ -269,28 +168,14 @@ const LoginPage: React.FC = () => {
             </div>
           )}
 
-          <button
+          <Button
             type="submit"
-            disabled={isLoading}
-            className="hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#8B709D] focus:ring-offset-2 transition-opacity w-full max-w-[390px] mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{
-              height: '42px',
-              backgroundColor: '#8B709D',
-              borderRadius: '8px',
-              padding: '10px 16px',
-              fontFamily: 'var(--font-lato), sans-serif',
-              fontWeight: 400,
-              fontSize: 'clamp(14px, 3.5vw, 16px)',
-              lineHeight: '131%',
-              letterSpacing: '0%',
-              color: '#FEFCFF',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+            isLoading={isLoading}
+            loadingText="Iniciando sesión..."
+            className="max-w-[390px] mt-4"
           >
-            {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
-          </button>
+            Iniciar Sesión
+          </Button>
         </form>
         </div>
       </div>
