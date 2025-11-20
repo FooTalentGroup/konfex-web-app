@@ -1,8 +1,6 @@
 import { UserSignUpRequestDto } from "./auth.schema";
 import { UserService } from "../user";
-import bcrypt from "bcrypt";
 import { AppError } from "@/common/errors";
-import { UserRole } from "../user/users.types";
 import { AuthTokens, PasswordHasher } from "@/utils/jwt";
 
 export const AuthService = {
@@ -24,15 +22,12 @@ export const AuthService = {
       id: user.id,
       role: user.role,
     });
+    console.log("tokens", tokens)
 
     return {
-      ...tokens,
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-      },
+      token: tokens.token,
+      refreshToken: tokens.refreshToken,
+      user,
     };
   },
 }
