@@ -45,7 +45,16 @@ const LoginPage: React.FC = () => {
       if (typeof window !== 'undefined') {
         localStorage.setItem('token', response.token);
         localStorage.setItem('refreshToken', response.refreshToken);
-        localStorage.setItem('user', JSON.stringify(response.user));
+        
+        const mockUser = {
+          id: 1,
+          email: data.usuario,
+          name: data.usuario.split('@')[0] || 'Usuario',
+          role: 'USER'
+        };
+        
+        localStorage.setItem('user', JSON.stringify(mockUser));
+        window.dispatchEvent(new Event('userUpdated'));
       }
 
       showSuccess('¡Sesión iniciada correctamente!');
