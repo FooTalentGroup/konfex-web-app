@@ -22,7 +22,6 @@ export default function ApiTest() {
         return res.json();
       })
       .then((json) => {
-
         setData(JSON.stringify(json, null, 2));
       })
       .catch((err) => {
