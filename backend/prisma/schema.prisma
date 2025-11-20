@@ -1,3 +1,178 @@
+// -------------------------------------------------------
+// ENUMS
+// -------------------------------------------------------
+enum RolUsuario {
+  ADMIN
+  VENDEDOR
+  PRODUCCION
+}
+
+enum EstadoPresupuesto {
+  BORRADOR
+  ENVIADO
+  ACEPTADO
+  RECHAZADO
+  VENCIDO
+}
+
+enum EstadoPedido {
+  PENDIENTE
+  EN_PRODUCCION
+  LISTO
+  ENTREGADO
+  CANCELADO
+}
+
+// -------------------------------------------------------
+// MODELOS
+// -------------------------------------------------------
+model Usuario {
+  id           Int       @id @default(autoincrement())
+  nombre       String
+  email        String    @unique
+  passwordHash String
+  rol          RolUsuario
+  activo       Boolean   @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Cliente {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  telefono      String?
+  email         String?
+  origen        String?
+  instagramUser String?
+  notas         String?
+
+  presupuestos  Presupuesto[]
+  pedidos       Pedido[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Producto {
+  id          Int                  @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+  activo      Boolean              @default(true)
+
+  materiales  MaterialPorProducto[]
+  presupuestos PresupuestoDetalle[]
+  pedidos      PedidoDetalle[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Material {
+  id           Int                  @id @default(autoincrement())
+  nombre       String
+  costoUnitario Float
+  unidadMedida String
+  stock        Float
+  tipo         String?
+
+  productos    MaterialPorProducto[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MaterialPorProducto {
+  id          Int     @id @default(autoincrement())
+  productoId  Int
+  materialId  Int
+  cantidad    Float   // cantidad necesaria para fabricar el producto
+
+  producto    Producto @relation(fields: [productoId], references: [id], onDelete: Cascade)
+  material    Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  @@unique([productoId, materialId]) // Evita duplicados
+}
+
+model Presupuesto {
+  id                        Int                  @id @default(autoincrement())
+  clienteId                 Int
+  fechaCreacion             DateTime             @default(now())
+  fechaVencimiento          DateTime?
+  estado                    EstadoPresupuesto
+  margenGananciaPorcentaje  Float
+  gastosIndirectosPorcentaje Float
+  totalCosto                Float
+  totalVenta                Float
+  notas                     String?
+
+  cliente        Cliente             @relation(fields: [clienteId], references: [id], onDelete: Restrict)
+  detalles       PresupuestoDetalle[]
+  pedido         Pedido?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PresupuestoDetalle {
+  id                      Int     @id @default(autoincrement())
+  presupuestoId           Int     @unique
+  productoId              Int
+  cantidad                Int
+  talle                   String?
+  color                   String?
+  costoUnitarioCalculado  Float
+  precioUnitario          Float
+  subtotal                Float
+
+  presupuesto Presupuesto @relation(fields: [presupuestoId], references: [id], onDelete: Cascade)
+  producto    Producto    @relation(fields: [productoId], references: [id], onDelete: Restrict)
+}
+
+model Pedido {
+  id                Int            @id @default(autoincrement())
+  presupuestoId     Int            @unique
+  clienteId         Int
+  fechaCreacion     DateTime       @default(now())
+  estado            EstadoPedido
+  pagado            Boolean        @default(false)
+  fechaEntregaEstimada DateTime?
+  fechaEntregaReal     DateTime?
+
+  cliente       Cliente @relation(fields: [clienteId], references: [id], onDelete: Restrict)
+  presupuesto   Presupuesto @relation(fields: [presupuestoId], references: [id], onDelete: Restrict)
+  detalles      PedidoDetalle[]
+  etapas        ProduccionEtapa[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PedidoDetalle {
+  id             Int     @id @default(autoincrement())
+  pedidoId       Int
+  productoId     Int
+  cantidad       Int
+  talle          String?
+  color          String?
+  costoUnitario  Float
+  precioUnitario Float
+  subtotal       Float
+
+  pedido   Pedido   @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  producto Producto @relation(fields: [productoId], references: [id], onDelete: Restrict)
+}
+
+model ProduccionEtapa {
+  id          Int      @id @default(autoincrement())
+  pedidoId    Int
+  etapa       String
+  fechaInicio DateTime  @default(now())
+  fechaFin    DateTime?
+  responsable String?
+
+  pedido Pedido @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+}
 generator client {
   provider = "prisma-client-js"
 }
