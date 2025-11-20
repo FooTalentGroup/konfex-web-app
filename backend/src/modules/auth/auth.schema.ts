@@ -38,5 +38,14 @@ export const signUpUserSchema = z.object({
   }),
 });
 
-// DTO generado automáticamente
+
 export type UserSignUpRequestDto = z.infer<typeof signUpUserSchema>["body"];
+
+export const signInUserSchema = z.object({
+  body: z.object({
+    email: z.string().email("Email inválido"),
+    password: z.string().min(1, "La contraseña es obligatoria"),
+  }),
+});
+
+export type UserSignInRequestDto = z.infer<typeof signInUserSchema>["body"];
