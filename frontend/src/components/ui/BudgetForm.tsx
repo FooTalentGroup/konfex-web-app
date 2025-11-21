@@ -125,11 +125,7 @@ function BudgetForm() {
   };
 
   return (
-    <div className="p-4 md:p-8 bg-gray-50 min-h-screen font-sans">
-      <div className="max-w-xl mx-auto space-y-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Formulario Inicial de Presupuesto (F1)</h1>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-bg-gray-500 rounded-t-lg">
           {/* ---------------------------------------------------- */}
           {/* TARJETA 1: INFORMACIÓN DEL PRESUPUESTO         */}
           {/* ---------------------------------------------------- */}
@@ -430,9 +426,6 @@ function BudgetForm() {
             {isSubmitting ? "Calculando..." : "Calcular"}
           </button>
         </form>
-      </div>
-
-    </div>
   )
 }
 
