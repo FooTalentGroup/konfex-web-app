@@ -1,83 +1,18 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { authService } from '@/services/auth.service';
-import { useToast } from '@/contexts/ToastContext';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
-
-interface LoginFormData {
-  usuario: string;
-  contraseña: string;
-}
+import { useLogin } from '@/hooks/useLogin';
 
 const LoginPage: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
-  const router = useRouter();
-  const { showSuccess, showError } = useToast();
-  
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setError: setFormError,
-  } = useForm<LoginFormData>();
+  const { register, handleSubmit, errors, isLoading, error, onSubmit } = useLogin();
 
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await authService.signIn({
-        email: data.usuario,
-        password: data.contraseña,
-      });
-
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('refreshToken', response.refreshToken);
-        
-        const mockUser = {
-          id: 1,
-          email: data.usuario,
-          name: data.usuario.split('@')[0] || 'Usuario',
-          role: 'USER'
-        };
-        
-        localStorage.setItem('user', JSON.stringify(mockUser));
-        window.dispatchEvent(new Event('userUpdated'));
-      }
-
-      showSuccess('¡Sesión iniciada correctamente!');
-
-      setTimeout(() => {
-        router.push('/');
-      }, 500);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Error al iniciar sesión';
-      setError(errorMessage);
-      
-      showError(errorMessage);
-      
-      if (errorMessage.includes('email') || errorMessage.includes('Email')) {
-        setFormError('usuario', { type: 'manual', message: errorMessage });
-      }
-      if (errorMessage.includes('contraseña') || errorMessage.includes('password') || errorMessage.includes('Credenciales')) {
-        setFormError('contraseña', { type: 'manual', message: errorMessage });
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   if (!mounted) {
     return null;
@@ -193,4 +128,3 @@ const LoginPage: React.FC = () => {
 };
 
 export default LoginPage;
-

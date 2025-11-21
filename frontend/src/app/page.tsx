@@ -1,62 +1,33 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React from 'react';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
+import Sidebar from '@/components/common/Sidebar';
 import ApiTest from '@/components/common/ApiTest';
-
-interface User {
-  email?: string;
-  name?: string;
-}
+import { useAuth } from '@/hooks/useAuth';
+import { useSidebar } from '@/hooks/useSidebar';
 
 export default function Home() {
-  const [user, setUser] = useState<User | null>(null);
-  const [mounted, setMounted] = useState(false);
-  const router = useRouter();
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const userStr = localStorage.getItem('user');
-      const id = setTimeout(() => {
-        if (userStr) {
-          try {
-            const userData = JSON.parse(userStr);
-            setUser(userData);
-          } catch (error) {
-            console.error('Error parsing user data:', error);
-          }
-        }
-        setMounted(true);
-      }, 0);
-
-      return () => clearTimeout(id);
-    }
-  }, []);
-
-  const handleMenuClick = () => {
-    console.log('Menu clicked');
-  };
-
-  const handleUserClick = () => {
-    console.log('User clicked');
-  };
+  const { user, mounted } = useAuth();
+  const { isOpen: isSidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar();
 
   if (!mounted) {
     return null;
   }
 
   if (!user) {
-    router.push('/login');
     return null;
   }
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <Header
-        onMenuClick={handleMenuClick}
-        onUserClick={handleUserClick}
+        onMenuClick={openSidebar}
+      />
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={closeSidebar}
       />
       <main className="flex-1 flex flex-col items-center justify-center p-24">
         <h1 className="text-4xl font-bold text-blue-600">

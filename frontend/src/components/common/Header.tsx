@@ -1,14 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Image from 'next/image';
-
-interface User {
-  id?: number;
-  email?: string;
-  name?: string | null;
-  role?: string;
-}
+import { useAuth } from '@/hooks/useAuth';
 
 export interface HeaderProps {
   onMenuClick?: () => void;
@@ -19,63 +13,15 @@ const Header: React.FC<HeaderProps> = ({
   onMenuClick,
   onUserClick,
 }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-
-  const loadUser = () => {
-    if (typeof window !== 'undefined') {
-      const userStr = localStorage.getItem('user');
-      if (userStr) {
-        try {
-          const userData = JSON.parse(userStr);
-          setUser(userData);
-        } catch (error) {
-          console.error('Error parsing user data:', error);
-          setUser(null);
-        }
-      } else {
-        setUser(null);
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const id = setTimeout(() => loadUser(), 0);
-
-      const handleStorageChange = (e: StorageEvent) => {
-        if (e.key === 'user') {
-          loadUser();
-        }
-      };
-
-      const handleUserUpdate = () => {
-        setTimeout(() => {
-          loadUser();
-        }, 100);
-      };
-
-      window.addEventListener('storage', handleStorageChange);
-      window.addEventListener('userUpdated', handleUserUpdate);
-
-      return () => {
-        clearTimeout(id);
-        window.removeEventListener('storage', handleStorageChange);
-        window.removeEventListener('userUpdated', handleUserUpdate);
-      };
-    }
-  }, []);
+  const { userName } = useAuth();
 
   const handleMenuClick = () => {
-    setIsMenuOpen(!isMenuOpen);
     onMenuClick?.();
   };
 
   const handleUserClick = () => {
     onUserClick?.();
   };
-
-  const userName = user?.name || user?.email || '';
 
   return (
     <header
@@ -89,7 +35,6 @@ const Header: React.FC<HeaderProps> = ({
         onClick={handleMenuClick}
         className="flex items-center justify-center p-2 hover:opacity-80 transition-opacity focus:outline-none"
         aria-label="Abrir menú"
-        aria-expanded={isMenuOpen}
       >
         <svg
           width="24"
