@@ -6,12 +6,15 @@ import logger from './utils/logger';
 import { errorHandler } from './middleware';
 import { sendError } from './common/responses';
 import routes from "./routes";
+import { corsMiddleware } from './config/cors';
 
 dotenv.config();
 
 const app: Express = express();
 
+app.use(corsMiddleware());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(pinoHttp({ logger }));
 
 setupSwagger(app, "/api/v1/docs");
