@@ -1,4 +1,6 @@
 "use client";
+import NavigationTabs from "./NavigationTabs";
+
 interface PriceSummaryProps {
   total: number;
   indirectCosts: number;
@@ -10,11 +12,18 @@ export default function PriceSummaryCard({
   indirectCosts,
   profit,
 }: PriceSummaryProps) {
-  const format = (n: number) =>
-    n.toLocaleString("es-CO", { style: "currency", currency: "COP" });
+  
 
   return (
-    <div className="text-center text-white bg-primary-500 px-4 py-6 rounded-xl shadow-md w-full">
+    <div className="text-center text-white bg-primary-500 px-4 py-6 shadow-md w-full">
+      <NavigationTabs
+        tabs={[
+          { label: "Inbox", href: "/inbox" },
+          { label: "Calculadora", href: "/calculator" },
+          { label: "Pedidos", href: "/orders" },
+        ]}
+        className="mb-4" 
+      />
       <h3 className="text-lg tracking-wide">Precio total</h3>
 
       <p className="text-3xl font-bold mt-1">{total}</p>

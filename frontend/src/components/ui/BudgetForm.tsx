@@ -125,7 +125,7 @@ function BudgetForm() {
   };
 
   return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-bg-gray-500 rounded-t-lg">
           {/* ---------------------------------------------------- */}
           {/* TARJETA 1: INFORMACIÓN DEL PRESUPUESTO         */}
           {/* ---------------------------------------------------- */}
