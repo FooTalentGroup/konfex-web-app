@@ -32,12 +32,10 @@ describe("Auth Module - signUpController", () => {
       success: true,
       message: "Usuario creado exitosamente",
       data: {
-        user: {
-          id: 1,
+        id: 1,
           email: "test@example.com",
           name: "Miguel",
           role: "USER"
-        }
       },
     }));
   });
