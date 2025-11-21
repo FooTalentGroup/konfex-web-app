@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { lato } from "./fonts";
 import "./styles/globals.css";
+import ToastProvider from "@/components/providers/ToastProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,8 +17,11 @@ export default function RootLayout({
     <html lang="es">
       <body
         className={`${lato.variable} ${lato.className} antialiased`}
+        suppressHydrationWarning
       >
-        {children}
+        <ToastProvider>
+          {children}
+        </ToastProvider>
       </body>
     </html>
   );

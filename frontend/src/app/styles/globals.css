@@ -11,6 +11,11 @@
   --terciary-color-500: #F2BB5C;
   --bg-gray-color-500: #F3F0F5;
   --font-lato: 'Lato', sans-serif;
+  /* Colores específicos del login */
+  --purple-dark: #6A4E7A;
+  --purple-light: #9B7BBF;
+  --background-light: #F5F5F5;
+  --pink-password: #D9537A;
 }
 
 @theme inline {
@@ -26,6 +31,10 @@
   --color-secondary-50: var(--secondary-color-50);
   --color-terciary-500: var(--terciary-color-500);
   --color-bg-gray-500: var(--bg-gray-color-500);
+  --color-purple-dark: var(--purple-dark);
+  --color-purple-light: var(--purple-light);
+  --color-background-light: var(--background-light);
+  --color-pink-password: var(--pink-password);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -39,4 +48,26 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-lato), sans-serif;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
 }
