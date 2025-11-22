@@ -5,8 +5,12 @@ export { default as Header } from './Header';
 export { default as Footer } from './Footer';
 export { default as Sidebar } from './Sidebar';
 export { default as SearchBar } from './SearchBar';
+export { default as SearchBarWhite } from './SearchBarWhite';
 export { default as CategoryButton } from './CategoryButton';
 export { default as UploadButton } from './UploadButton';
+export { default as BackNavigationBar } from './BackNavigationBar';
+export { default as MaterialCard } from './MaterialCard';
+export { default as AddFloatingButton } from './AddFloatingButton';
 
 export type { InputProps } from './Input';
 export type { ButtonProps } from './Button';

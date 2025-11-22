@@ -7,6 +7,10 @@ export interface Material {
   quantity: number;
   unit: string;
   color?: string;
+  colors?: string[];
+  measure?: string;
+  price?: string;
+  imageUrl?: string;
 }
 
 const mockMaterials: Material[] = [
@@ -18,6 +22,64 @@ const mockMaterials: Material[] = [
   { id: '6', name: 'Hilo de Algodón', category: 'hilos', quantity: 20, unit: 'carretes', color: 'Negro' },
   { id: '7', name: 'Hilo de Poliéster', category: 'hilos', quantity: 15, unit: 'carretes', color: 'Blanco' },
   { id: '8', name: 'Cremallera Metálica', category: 'otros', quantity: 10, unit: 'unidades', color: 'Plateado' },
+];
+
+export const mockFabricMaterials: Material[] = [
+  {
+    id: 'f1',
+    name: 'Jersey de Algodón',
+    category: 'tela',
+    quantity: 1.7,
+    unit: 'metros',
+    colors: ['azul', 'rosa', 'amarillo'],
+    measure: '1.7mt',
+    price: '0000000',
+    imageUrl: '/telass.png',
+  },
+  {
+    id: 'f2',
+    name: 'Jersey de Algodón',
+    category: 'tela',
+    quantity: 1.7,
+    unit: 'metros',
+    colors: ['azul', 'rosa', 'amarillo'],
+    measure: '1.7mt',
+    price: '0000000',
+    imageUrl: '/telass.png',
+  },
+  {
+    id: 'f3',
+    name: 'Jersey de Algodón',
+    category: 'tela',
+    quantity: 1.7,
+    unit: 'metros',
+    colors: ['azul', 'rosa', 'amarillo'],
+    measure: '1.7mt',
+    price: '0000000',
+    imageUrl: '/telass.png',
+  },
+  {
+    id: 'f4',
+    name: 'Jersey de Algodón',
+    category: 'tela',
+    quantity: 1.7,
+    unit: 'metros',
+    colors: ['azul', 'rosa', 'amarillo'],
+    measure: '1.7mt',
+    price: '0000000',
+    imageUrl: '/telass.png',
+  },
+  {
+    id: 'f5',
+    name: 'Jersey de Algodón',
+    category: 'tela',
+    quantity: 1.7,
+    unit: 'metros',
+    colors: ['azul', 'rosa', 'amarillo'],
+    measure: '1.7mt',
+    price: '0000000',
+    imageUrl: '/telass.png',
+  },
 ];
 
 export const useMaterials = () => {
@@ -62,15 +124,43 @@ export const useMaterials = () => {
     console.log('Subir PDF');
   };
 
+  const [fabricSearchQuery, setFabricSearchQuery] = useState('');
+
+  const filteredFabricMaterials = useMemo(() => {
+    if (!fabricSearchQuery.trim()) {
+      return mockFabricMaterials;
+    }
+    const searchTerm = fabricSearchQuery.toLowerCase();
+    return mockFabricMaterials.filter(
+      (material) =>
+        material.name.toLowerCase().includes(searchTerm) ||
+        material.colors?.some((color) => color.toLowerCase().includes(searchTerm)) ||
+        material.price?.toLowerCase().includes(searchTerm)
+    );
+  }, [fabricSearchQuery]);
+
+  const handleFabricSearch = (value: string) => {
+    setFabricSearchQuery(value);
+  };
+
+  const handleMaterialClick = (materialId: string) => {
+    console.log('Material clicked:', materialId);
+  };
+
   return {
     materials: filteredMaterials,
+    fabricMaterials: mockFabricMaterials,
+    filteredFabricMaterials,
     searchQuery,
+    fabricSearchQuery,
     selectedCategory,
     handleSearch,
+    handleFabricSearch,
     handleCategorySelect,
     handleCategoryToggle,
     handleAddMaterial,
     handleUploadPDF,
+    handleMaterialClick,
   };
 };
 
