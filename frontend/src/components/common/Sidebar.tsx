@@ -44,6 +44,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       id: 'calculadora',
       label: 'Calculadora',
       iconPath: '/calculadora.png',
+      path: '/calculator',
     },
     {
       id: 'presupuestos',
@@ -59,6 +60,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       id: 'materia-prima',
       label: 'Materia Prima',
       iconPath: '/materiaPrima.png',
+      path: '/materia-prima',
     },
     {
       id: 'pedidos',

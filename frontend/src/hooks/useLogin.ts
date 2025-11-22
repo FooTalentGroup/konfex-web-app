@@ -42,7 +42,7 @@ export const useLogin = () => {
       showSuccess('¡Sesión iniciada correctamente!');
 
       setTimeout(() => {
-        router.push('/');
+        router.push('/calculator');
       }, 500);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Error al iniciar sesión';
