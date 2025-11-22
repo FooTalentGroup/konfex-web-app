@@ -1,54 +1,36 @@
 import { z } from "zod";
 
-// Helper que mantiene el tipo number | undefined
-const numericField = z
-  .union([z.string(), z.number(), z.undefined(), z.null()])
-  .transform((val) => {
-    if (val === "" || val === null || val === undefined) return undefined;
-    const num = typeof val === 'number' ? val : Number(val);
-    return isNaN(num) ? undefined : num;
-  })
-  .pipe(z.number().optional());
-
 export const BudgetSchema = z.object({
   // General Information
-  title: z.string(),
-  clientName: z.string().optional(),
+  title: z.string().min(2, "El título es obligatorio"),
+  clientName: z.string().min(1, "El nombre del cliente es requerido"),
   clientId: z.string().optional(),
-  startDate: z.string(),
-  finishDate: z.string().optional(),
+  startDate: z.string().optional(), 
+  finishDate: z.string().min(1, "La fecha de finalización es requerida"),
   profitabilityPercentage: z
-    .union([z.string(), z.number()])
-    .transform((val) => {
-      const num = typeof val === 'number' ? val : Number(val);
-      return isNaN(num) ? 0 : num;
+    .number({ error: "Debe ser un número",
     })
-    .pipe(z.number().min(0).max(100, "La rentabilidad debe ser entre 0% y 100%")),
+    .min(0, "Debe ser mayor o igual a 0")
+    .max(100, "No puede pasar del 100"),
+
   saveInfo: z.boolean().optional(),
 
   // Labor
-  laborOrder: z.string().optional(),
-  laborRate: numericField,
-  laborHours: numericField,
-  laborTotal: numericField,
+  laborOrder: z.string().min(1, "La orden de producción es requerida"),
+  laborRate: z
+    .number({ error: "Debe ser un número" })
+    .min(0, "Debe ser mayor o igual a 0")
+    .optional(),
+  laborHours: z.number().min(0, "Debe ser mayor o igual a 0").max(24, "Máximo 24 horas").optional(),
 
   // Materials
-  materialName: z.string().optional(),
-  materialSize: z.string().optional(),
-  materialQuantity: numericField,
-  materialPrice: numericField,
-  materialsCost: numericField,
+  materialName: z.string().min(2, "Nombre requerido"),
+  materialSize: z.string().min(1, "La talla es requerida"),
+  materialQuantity: z.number().min(0, "Debe ser mayor o igual a 0").optional(),
+  materialPrice: z.number({ error: "Debe ser un número" }).min(0, "Debe ser mayor o igual a 0").optional(),
   additionalCost: z.string().optional(),
+  materialsCost: z.number({ error: "Debe ser un número" }).min(0, "Debe ser mayor o igual a 0").optional(),
   
-  // Indirect Materials
-  indirectMaterialName: z.string().optional(),
-  indirectMaterialCost: numericField,
-
-  // Miscellaneous indirect costs
-  electricityCost: numericField,
-  waterCost: numericField,
-  shippingCost: numericField,
-  otherIndirectCosts: numericField,
 });
 
 export type BudgetFormData = z.infer<typeof BudgetSchema>;

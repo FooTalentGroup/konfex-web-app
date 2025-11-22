@@ -1,50 +1,49 @@
 "use client";
-import React from "react";
-import { FieldValues, Path, PathValue, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { UseFormRegisterReturn } from "react-hook-form";
 
-interface CounterInputProps<T extends FieldValues> {
-    name: Path<T>;
-    watch: UseFormWatch<T>;
-    setValue: UseFormSetValue<T>;
+interface CounterInputProps {
+    id: string;
+    label?: string;
     min?: number;
     max?: number;
     step?: number;
-    label?: string;
+    value: number;
+    setValue: (value: number) => void;
+    register?: UseFormRegisterReturn;
     className?: string;
+    error?: string;
 }
 
-function CounterInput<T extends FieldValues>({
-    name,
-    watch,
+function CounterInput({
+    id,
+    label = "",
+    value,
     setValue,
+    register,
     min = 0,
     max = 9999,
     step = 1,
-    label = "",
     className = "",
-}: CounterInputProps<T>) {
-    const watched = watch(name) as PathValue<T, Path<T>> | undefined;
-    const value = typeof watched === "number" ? watched : Number(watched ?? 0);
+    error
+}: CounterInputProps) {
+
 
     const increase = () => {
-        const next = value + step;
-        if (next <= max) {
-            setValue(name, (next as unknown) as PathValue<T, Path<T>>);
-        }
+        const newValue = Number(value) + step
+        if (newValue <= max) setValue(value + step);
     };
 
     const decrease = () => {
-        const next = value - step;
-        if (next >= min) {
-            setValue(name, (next as unknown) as PathValue<T, Path<T>>);
-        }
+        const newValue = Number(value) - step
+        if (newValue >= min) setValue(value - step);
     };
 
     return (
         <div className={`flex flex-col space-y-1 ${className}`}>
-            {label && (
-                <label className="text-sm font-medium text-gray-500">{label}</label>
-            )}
+
+            <label htmlFor={id} className="text-sm font-medium text-gray-500">{label}</label>
+
+            <input type="number" id={id} {...register} value={value} readOnly className="hidden" />
 
             <div className="flex items-center gap-4">
                 <button
@@ -65,6 +64,8 @@ function CounterInput<T extends FieldValues>({
                     –
                 </button>
             </div>
+
+            {error && <p className="text-sm text-red-500">{error}</p>}
         </div>
     );
 }

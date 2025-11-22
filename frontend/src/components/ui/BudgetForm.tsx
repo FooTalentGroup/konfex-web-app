@@ -1,431 +1,301 @@
 "use client"
 import React from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, UseFormReturn } from 'react-hook-form';
+import { BudgetFormData } from '@/types/IBudget';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { BudgetFormData, BudgetSchema } from '@/types/IBudget';
+import { BudgetSchema } from '@/types/IBudget';
 import CustomInput from './CustomInput';
 import CostSectionCard from './CostSectionCard';
 import CustomSelect from './CustomSelect';
 import CounterInput from './CounterInput';
+import { useBudgetCalculator } from '@/hooks/useBudgetCalculator';
 
-function BudgetForm() {
-  const { register, handleSubmit, formState: { errors, isSubmitting }, watch, setValue } = useForm<BudgetFormData>({
-    resolver: zodResolver(BudgetSchema),
-    mode: "onChange", 
-    defaultValues: {
-      title: '',
-      clientName: '',
-      clientId: '',
-      startDate: new Date().toISOString().split("T")[0],
-      finishDate: "",
-      profitabilityPercentage: 30,
-      saveInfo: false,
-      
-      // Labor
-      laborOrder: '',
-      laborRate: undefined,
-      laborHours: undefined,
-      laborTotal: undefined,
-      
-      // Materials
-      materialName: '',
-      materialSize: '',
-      materialQuantity: undefined,
-      materialPrice: undefined,
-      materialsCost: undefined,
-      additionalCost: '',
-      
-      // Indirect Materials
-      indirectMaterialName: '',
-      indirectMaterialCost: undefined,
-      
-      // Indirect Costs
-      electricityCost: undefined,
-      waterCost: undefined,
-      shippingCost: undefined,
-      otherIndirectCosts: undefined,
-    }
-  });
+interface BudgetFormProps {
+  form: UseFormReturn<BudgetFormData>;
+  metadata: { id: string; date: string }
+}
 
-  const watchedTotals = watch(['materialsCost', 'laborTotal']);
-  const materialsCost = watchedTotals[0] || 0;
-  const laborTotal = watchedTotals[1] || 0;
+function BudgetForm({ form, metadata }: BudgetFormProps) {
+  const { register, handleSubmit, formState: { errors, isSubmitting }, watch, setValue } = form;
+  const { laborTotal, materialsTotal } = useBudgetCalculator(watch);
 
-  const onSubmit: SubmitHandler<BudgetFormData> = (data) => {
+
+  const onSubmit: SubmitHandler<BudgetFormData> = (data: BudgetFormData) => {
     console.log("=== DATOS DEL FORMULARIO F1 ===");
     console.log(data);
-
-    const backendPayload = {
-      budget: {
-        id: "000025", 
-        title: data.title,
-        client: {
-          name: data.clientName || null,
-          id: data.clientId || null,
-        },
-        dates: {
-          start: data.startDate,
-          finish: data.finishDate || null,
-        },
-        profitabilityPercentage: data.profitabilityPercentage,
-      },
-      costs: {
-        directLabor: {
-          order: data.laborOrder || null,
-          rate: data.laborRate || 0,
-          hours: data.laborHours || 0,
-          total: (data.laborRate || 0) * (data.laborHours || 0),
-        },
-        directMaterials: {
-          name: data.materialName || null,
-          size: data.materialSize || null,
-          quantity: data.materialQuantity || 0,
-          unitPrice: data.materialPrice || 0,
-          additionalCost: data.additionalCost || null,
-          total: data.materialsCost || 0,
-        },
-        indirectMaterials: {
-          name: data.indirectMaterialName || null,
-          cost: data.indirectMaterialCost || 0,
-        },
-        indirectCosts: {
-          electricity: data.electricityCost || 0,
-          water: data.waterCost || 0,
-          shipping: data.shippingCost || 0,
-          others: data.otherIndirectCosts || 0,
-          total: (data.electricityCost || 0) + (data.waterCost || 0) + 
-                 (data.shippingCost || 0) + (data.otherIndirectCosts || 0),
-        },
-      },
-      totals: {
-        directLabor: (data.laborRate || 0) * (data.laborHours || 0),
-        directMaterials: data.materialsCost || 0,
-        indirectMaterials: data.indirectMaterialCost || 0,
-        indirectCosts: (data.electricityCost || 0) + (data.waterCost || 0) + 
-                       (data.shippingCost || 0) + (data.otherIndirectCosts || 0),
-        subtotal: 0, 
-        profitability: 0, 
-        grandTotal: 0, 
-      }
-    };
-
-    const subtotal = backendPayload.totals.directLabor + 
-                     backendPayload.totals.directMaterials +
-                     backendPayload.totals.indirectMaterials +
-                     backendPayload.totals.indirectCosts;
-    
-    backendPayload.totals.subtotal = subtotal;
-    backendPayload.totals.profitability = subtotal * (data.profitabilityPercentage / 100);
-    backendPayload.totals.grandTotal = subtotal + backendPayload.totals.profitability;
-
-    console.log("=== PAYLOAD PARA BACKEND ===");
-    console.log(JSON.stringify(backendPayload, null, 2));
-
   };
 
   return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-bg-gray-500 rounded-t-lg">
-          {/* ---------------------------------------------------- */}
-          {/* TARJETA 1: INFORMACIÓN DEL PRESUPUESTO         */}
-          {/* ---------------------------------------------------- */}
-          <CostSectionCard
-            title="Información del Presupuesto"
-            totalAmount={0}
-            hideTotal={true}
-          >
-            <div className="flex justify-between mb-4">
-              <p className="text-gray-900">
-                <span className="font-semibold">ID: 000025</span>
-              </p>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-bg-gray-500 rounded-t-lg">
+      {/* ---------------------------------------------------- */}
+      {/* TARJETA 1: INFORMACIÓN DEL PRESUPUESTO         */}
+      {/* ---------------------------------------------------- */}
+      <CostSectionCard
+        title="Información del Presupuesto"
+        totalAmount={0}
+        hideTotal={true}
+      >
+        <div className="flex justify-between mb-4">
+          <p className="text-gray-900">
+            <span className="font-semibold">ID: {metadata.id}</span>
+          </p>
 
-              <p className="text-gray-900">
-                <span className="font-semibold">Fecha:</span> {new Date().toLocaleDateString()}
-              </p>
-            </div>
+          <p className="text-gray-900">
+            <span className="font-semibold">Fecha:</span> {metadata.date}
+          </p>
+        </div>
 
-            <div className="space-y-4">
-              <CustomInput
-                label="Título presupuesto"
-                name="title"
-                register={register}
-                error={errors.title?.message}
-                type="text"
-                placeholder="Escribe el título"
-                classname='bg-white'
-              />
+        <div className="space-y-4">
+          <CustomInput
+            id="title"
+            label="Título presupuesto"
+            register={register('title', {
+              required: 'El título es requerido',
+            })}
+            error={errors.title?.message}
+            type="text"
+            placeholder="Escribe el título"
+            classname='bg-white'
+          />
 
-              <CustomSelect
-                label='Nombre cliente'
-                options={[
-                  { label: 'Cliente 1', value: 'Cliente 1' },
-                  { label: 'Cliente 2', value: 'Cliente 2' },
-                ]}
-                name='clientName'
-                register={register}
-                placeholder='Seleccionar cliente'
-                classname='bg-white'
-              />
+          <CustomSelect
+            id='clientName'
+            label='Nombre cliente'
+            options={[
+              { label: 'Cliente 1', value: 'Cliente 1' },
+              { label: 'Cliente 2', value: 'Cliente 2' },
+            ]}
+            register={register('clientName', {
+              required: 'El nombre del cliente es requerido',
+            })}
+            placeholder='Seleccionar cliente'
+            classname='bg-white'
+            error={errors.clientName?.message}
+          />
 
-              <CustomSelect
+          {/* <CustomSelect
                 label='ID cliente'
                 options={[
                   { label: 'C001', value: 'C001' },
                   { label: 'C002', value: 'C002' },
                 ]}
                 name='clientId'
-                register={register}
+                register={register('clientId', {
+                  required: 'El ID del cliente es requerido',
+                })}
                 placeholder='Seleccionar'
                 classname='bg-white'
+              /> */}
+
+          <div className="grid grid-cols-2 gap-4">
+            <CustomInput
+              id='endDate'
+              label="Fecha finalización"
+              register={register("finishDate", {
+                required: "La fecha finalización es requerida",
+              })}
+              error={errors.finishDate?.message}
+              type="date"
+              classname='bg-white'
+            />
+
+            <div className="relative">
+              <CustomInput
+                id="profitabilityPercentage"
+                label="Rentabilidad %"
+                register={register("profitabilityPercentage", {
+                  required: "La rentabilidad es requerida",
+                  min: {
+                    value: 0,
+                    message: "La rentabilidad debe ser mayor o igual a 0",
+                  },
+                  valueAsNumber: true
+                })}
+                error={errors.profitabilityPercentage?.message}
+                type="number"
+                unit="%"
+                classname='bg-white'
               />
+            </div>
+          </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <CustomInput
-                  label="Fecha finalización"
-                  name="finishDate"
-                  register={register}
-                  error={errors.finishDate?.message}
-                  type="date"
-                  classname='bg-white'
-                />
-
-                <div className="relative">
-                  <CustomInput
-                    label="Rentabilidad %"
-                    name="profitabilityPercentage"
-                    register={register}
-                    error={errors.profitabilityPercentage?.message}
-                    type="number"
-                    unit="%"
-                    classname='bg-white'
-                  />
-                </div>
-              </div>
-
-              <label className="flex items-center space-x-2 mt-2">
+          {/* <label className="flex items-center space-x-2 mt-2">
                 <input type="checkbox" {...register("saveInfo")} className="h-4 w-4" />
                 <span className="text-gray-600 text-sm">Guardar información</span>
-              </label>
-            </div>
-          </CostSectionCard>
+              </label> */}
+        </div>
+      </CostSectionCard>
 
-          {/* ---------------------------------------------------- */}
-          {/* TARJETA 2: MANO DE OBRA DIRECTA         */}
-          {/* ---------------------------------------------------- */}
-          <CostSectionCard
-            title="Mano de Obra Directa"
-            totalAmount={120000}
-          >
-            <div className='space-y-4'>
-              <CustomInput
-                label='Orden de Producción'
-                name='laborOrder'
-                register={register}
-                error={errors.laborOrder?.message}
-                type="text"
-                classname='bg-white'
-                placeholder='Ej: Blusa manga larga'
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              <CustomInput
-                label="Tarifa salarial ($/hora)"
-                name="laborRate"
-                register={register}
-                error={errors.laborRate?.message}
-                type="number"
-                unit='$'
-                classname='bg-white'
-              />
-              <CounterInput
-                name="laborHours"
-                label="Horas trabajadas"
-                watch={watch}
-                setValue={setValue}
-                min={0}
-                max={24}
-                step={1}
-              />
-            </div>
-            <label className="flex items-center space-x-2 mt-2">
+      {/* ---------------------------------------------------- */}
+      {/* TARJETA 2: MANO DE OBRA DIRECTA         */}
+      {/* ---------------------------------------------------- */}
+      <CostSectionCard
+        title="Mano de Obra Directa"
+        totalAmount={laborTotal}
+      >
+        <div className='space-y-4'>
+          <CustomInput
+            id='laborOrder'
+            label='Orden de Producción'
+            register={register('laborOrder', {
+              required: 'La orden de producción es requerida',
+            })}
+            error={errors.laborOrder?.message}
+            type="text"
+            classname='bg-white'
+            placeholder='Ej: Blusa manga larga'
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          <CustomInput
+            id="laborRate"
+            label="Tarifa salarial ($/hora)"
+            register={register("laborRate", {
+              required: "La tarifa salarial es requerida",
+              min: {
+                value: 0,
+                message: "La tarifa salarial debe ser mayor o igual a 0",
+              },
+              valueAsNumber: true
+            })}
+            error={errors.laborRate?.message}
+            type="number"
+            unit='$'
+            classname='bg-white'
+          />
+          <CounterInput
+            id="laborHours"
+            label="Horas trabajadas"
+            value={watch("laborHours") ?? 0}
+            setValue={(v) => setValue("laborHours", v)}
+            register={register('laborHours', {
+              required: "Las horas son obligatorias",
+              min: { value: 0, message: "Debe ser mayor o igual a 0" },
+              max: { value: 24, message: "Máximo 24 horas" },
+              valueAsNumber: true
+            })}
+            min={0}
+            max={24}
+            step={1}
+            error={errors.laborHours?.message}
+          />
+        </div>
+        {/* <label className="flex items-center space-x-2 mt-2">
               <input type="checkbox" {...register("saveInfo")} className="h-4 w-4" />
               <span className="text-gray-600 text-sm">Guardar información</span>
-            </label>
-          </CostSectionCard>
+            </label> */}
+      </CostSectionCard>
 
-          {/* ---------------------------------------------------- */}
-          {/* TARJETA 3: MATERIALES DIRECTOS         */}
-          <CostSectionCard
-            title="Materiales Directos"
-            totalAmount={120000}
-          >
-            <CustomInput
-              label="Nombre prenda"
-              name="materialName"
-              register={register}
-              error={errors.materialsCost?.message}
-              type="text"
-              classname='bg-white'
-              placeholder='Ej: Blusa manga larga'
-            />
+      {/* ---------------------------------------------------- */}
+      {/* TARJETA 3: MATERIALES DIRECTOS         */}
+      <CostSectionCard
+        title="Materiales Directos"
+        totalAmount={materialsTotal}
+      >
+        <CustomInput
+          id="materialName"
+          label="Nombre prenda"
+          register={register("materialName", {
+            required: "El costo de materiales es requerido",
+          })}
+          error={errors.materialName?.message}
+          type="text"
+          classname='bg-white'
+          placeholder='Ej: Blusa manga larga'
+        />
 
-            <div className='grid grid-cols-2 gap-4 mt-4'>
-              <CustomSelect
-                label='Talla'
-                options={[
-                  { label: 'S', value: 'S' },
-                  { label: 'M', value: 'M' },
-                  { label: 'L', value: 'L' },
-                  { label: 'XL', value: 'XL' },
-                ]}
-                name='materialSize'
-                register={register}
-                placeholder='Seleccionar'
-                classname='bg-white'
-              />
-              <CounterInput
-                name="materialQuantity"
-                label="Cantidad"
-                watch={watch}
-                setValue={setValue}
-                min={0}
-                max={9999}
-                step={1}
-              />
-            </div>
-            <div className='space-y-4 mt-2'>
-              <CustomInput
-                label="Precio unitario"
-                name="materialPrice"
-                register={register}
-                error={errors.materialPrice?.message}
-                type="number"
-                unit="$"
-                classname='bg-white'
-                placeholder='35000'
-              />
-            </div>
+        <div className='grid grid-cols-2 gap-4 mt-4'>
+          <CustomSelect
+            id='materialSize'
+            label='Talla'
+            options={[
+              { label: 'S', value: 'S' },
+              { label: 'M', value: 'M' },
+              { label: 'L', value: 'L' },
+              { label: 'XL', value: 'XL' },
+            ]}
+            register={register('materialSize', {
+              required: 'La talla es requerida',
+            })}
+            placeholder='Seleccionar'
+            classname='bg-white'
+            error={errors.clientName?.message}
+          />
+          <CounterInput
+            id="materialQuantity"
+            label="Cantidad"
+            value={watch("materialQuantity") ?? 0}
+            setValue={(newValue) =>
+              setValue("materialQuantity", newValue, { shouldValidate: true })
+            }
+            register={register('materialQuantity', {
+              required: "La cantidad es obligatoria",
+              min: { value: 0, message: "Debe ser mayor o igual a 0" },
+              valueAsNumber: true
+            })}
+            min={0}
+            max={9999}
+            step={1}
+            error={errors.materialQuantity?.message}
+          />
+        </div>
+        <div className='space-y-4 mt-2'>
+          <CustomInput
+            id="materialPrice"
+            label="Precio unitario"
+            register={register('materialPrice', {
+              required: 'El precio unitario es requerido',
+              min: {
+                value: 0,
+                message: 'El precio unitario debe ser mayor o igual a 0',
+              },
+              valueAsNumber: true
+            })}
+            error={errors.materialPrice?.message}
+            type="number"
+            unit="$"
+            classname='bg-white'
+            placeholder='35000'
+          />
+          <button type='button' className='bg-primary-500 text-white py-1 rounded-2xl w-full'>Añadir talla</button>
+        </div>
 
-            <div className='border border-gray-300 mx-0.5 mt-2'></div>
+        <div className='border border-gray-300 mx-0.5 mt-2'></div>
 
-            <div className='grid grid-cols-2 gap-4 mt-2'>
-              <CustomInput
-                label='Costo adicional'
-                name='additionalCost'
-                register={register}
-                error={errors.additionalCost?.message}
-                type="text"
-                classname='bg-white'
-                placeholder='Ej.: Estampado, botones adicionales'
-              />
-              <CustomInput
-                label='Costo'
-                name='materialsCost'
-                register={register}
-                error={errors.materialsCost?.message}
-                type="number"
-                unit="$"
-                classname='bg-white'
-                placeholder='35000'
-              />
-              <button type='button' className='bg-primary-500 text-white py-1 rounded-2xl'>Añadir costo</button>
-              <label className="flex items-center space-x-2 mt-2">
-                <input type="checkbox" {...register("saveInfo")} className="h-4 w-4" />
-                <span className="text-gray-600 text-sm">Guardar información</span>
-              </label>
-            </div>
-          </CostSectionCard>
+        <div className='grid grid-cols-2 gap-4 mt-2'>
+          <CustomInput
+            id="additionalCost"
+            label='Costo adicional'
+            register={register('additionalCost', {
+              required: 'El costo adicional es requerido',
+            })}
+            error={errors.additionalCost?.message}
+            type="text"
+            classname='bg-white'
+            placeholder='Ej.: Estampado, botones adicionales'
+          />
+          <CustomInput
+            id="materialsCost"
+            label='Costo'
+            register={register('materialsCost', {
+              required: 'El costo de materiales es requerido',
+              valueAsNumber: true
+            })}
+            error={errors.materialsCost?.message}
+            type="number"
+            unit="$"
+            classname='bg-white'
+            placeholder='35000'
+          />
+          <button type='button' className='bg-primary-500 text-white py-1 rounded-2xl'>Añadir costo</button>
+          {/* <label className="flex items-center space-x-2 mt-2">
+            <input type="checkbox" {...register("saveInfo")} className="h-4 w-4" />
+            <span className="text-gray-600 text-sm">Guardar información</span>
+          </label> */}
+        </div>
+      </CostSectionCard>
 
-          {/* ---------------------------------------------------- */}
-          {/* TARJETA 4: MATERIALES INDIRECTOS         */}
-          {/* ---------------------------------------------------- */}
-          <CostSectionCard
-            title="Materiales Indirectos"
-            totalAmount={0}
-          >
-            <CustomInput
-              label="Nombre"
-              name="indirectMaterialName"
-              register={register}
-              error={errors.indirectMaterialName?.message}
-              type="text"
-              classname='bg-white'
-              placeholder='Ej.: Estampado, botones adicionales'
-            />
-
-            <CustomInput
-              label="Costo unitario/unidades"
-              name="indirectMaterialCost"
-              register={register}
-              error={errors.indirectMaterialCost?.message}
-              type="number"
-              unit="$"
-              classname='bg-white'
-              placeholder='35000'
-            />
-
-          </CostSectionCard>
-
-          {/* ---------------------------------------------------- */}
-          {/* TARJETA 5: COSTOS INDIRECTOS         */}
-          {/* ---------------------------------------------------- */}
-          <CostSectionCard
-            title="Costos Indirectos varios"
-            totalAmount={0}
-          >
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <CustomInput
-                label="Electricidad"
-                name="electricityCost"
-                register={register}
-                error={errors.electricityCost?.message}
-                type="number"
-                unit="$"
-                classname='bg-white'
-              />
-              <CustomInput
-                label="Agua"
-                name="waterCost"
-                register={register}
-                error={errors.waterCost?.message}
-                type="number"
-                unit="$"
-                classname='bg-white'
-              />
-              <CustomInput
-                label="Envíos"
-                name="shippingCost"
-                register={register}
-                error={errors.shippingCost?.message}
-                type="number"
-                unit="$"
-                classname='bg-white'
-              />
-              <CustomInput
-                label="Otros (Texto libre)"
-                name="otherIndirectCosts"
-                register={register}
-                error={errors.otherIndirectCosts?.message}
-                type="number"
-                unit="$"
-                classname='bg-white'
-              />
-            </div>
-            <label className="flex items-center space-x-2 mt-2">
-              <input type="checkbox" {...register("saveInfo")} className="h-4 w-4" />
-              <span className="text-gray-600 text-sm">Guardar información</span>
-            </label>
-          </CostSectionCard>
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-primary-500 text-white py-2 px-4 rounded-2xl w-full mt-4"
-          >
-            {isSubmitting ? "Calculando..." : "Calcular"}
-          </button>
-        </form>
+    </form>
   )
 }
 
