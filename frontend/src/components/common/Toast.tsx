@@ -11,7 +11,7 @@ export interface Toast {
   duration?: number;
 }
 
-interface ToastProps {
+export interface ToastProps {
   toast: Toast;
   onClose: (id: string) => void;
 }
