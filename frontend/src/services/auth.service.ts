@@ -1,8 +1,9 @@
 import { SignInRequest, SignInResponse, ApiResponse } from '@/types/auth.types';
+import { API_CONFIG } from '@/config/api.config';
 
 export const authService = {
   signIn: async (credentials: SignInRequest): Promise<SignInResponse> => {
-    const url = '/api/v1/auth/sign-in';
+    const url = API_CONFIG.getApiUrl('/api/v1/auth/sign-in');
     
     try {
       const response = await fetch(url, {
@@ -41,7 +42,8 @@ export const authService = {
     } catch (error) {
       if (error instanceof Error) {
         if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-          throw new Error(`No se pudo conectar con el servidor. Verifica que el backend esté corriendo.`);
+          const apiUrl = API_CONFIG.getBaseUrl();
+          throw new Error(`No se pudo conectar con el servidor en ${apiUrl}. Verifica que el backend esté corriendo y que la variable NEXT_PUBLIC_API_URL esté configurada correctamente.`);
         }
         throw error;
       }

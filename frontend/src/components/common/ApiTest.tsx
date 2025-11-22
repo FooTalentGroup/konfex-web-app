@@ -1,6 +1,7 @@
 'use client'; 
 
 import { useEffect, useState } from 'react';
+import { API_CONFIG } from '@/config/api.config';
 
 export default function ApiTest() {
   const [data, setData] = useState<string>('Probando conexión al backend...');
@@ -9,7 +10,8 @@ export default function ApiTest() {
   useEffect(() => {
     const testConnection = async () => {
       try {
-        const response = await fetch('/api/v1/health', {
+        const url = API_CONFIG.getApiUrl('/api/v1/health');
+        const response = await fetch(url, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

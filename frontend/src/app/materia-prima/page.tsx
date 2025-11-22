@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import Sidebar from '@/components/common/Sidebar';
@@ -14,6 +15,7 @@ import { useMaterials } from '@/hooks/useMaterials';
 export default function MateriaPrimaPage() {
   const { user, mounted } = useAuth();
   const { isOpen: isSidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar();
+  const router = useRouter();
   const {
     searchQuery,
     selectedCategory,
@@ -22,6 +24,10 @@ export default function MateriaPrimaPage() {
     handleAddMaterial,
     handleUploadPDF,
   } = useMaterials();
+
+  const handleTelaClick = () => {
+    router.push('/materia-prima/tela');
+  };
 
   if (!mounted) {
     return null;
@@ -59,8 +65,8 @@ export default function MateriaPrimaPage() {
               <div className="grid grid-cols-2 gap-x-3 sm:gap-x-4 md:gap-x-5 gap-y-4 sm:gap-y-5 md:gap-y-6 mb-6 sm:mb-8">
                 <CategoryButton
                   label="Tela"
-                  iconPath="/telas.png"
-                  onClick={() => handleCategoryToggle('tela')}
+                  iconPath="/imageTela.png"
+                  onClick={handleTelaClick}
                 />
                 <CategoryButton
                   label="Botones"
