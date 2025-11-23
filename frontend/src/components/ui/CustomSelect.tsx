@@ -6,12 +6,12 @@ interface CustomSelectProps {
     options: Array<{ label: string, value: string }>
     label: string;
     register: UseFormRegisterReturn;
-    classname?: string
+    className?: string
     placeholder?: string
     error?: string;
 }
 
-export default function CustomSelect({ id, options, label, register, placeholder = '', error, classname }: CustomSelectProps) {
+export default function CustomSelect({ id, options, label, register, placeholder = '', error, className }: CustomSelectProps) {
     return (
         <div className="flex flex-col space-y-1">
             <label htmlFor={id} className="text-sm font-medium text-gray-600">{label}</label>
@@ -19,7 +19,7 @@ export default function CustomSelect({ id, options, label, register, placeholder
                 id={id}
                 {...register}
                 defaultValue=''
-                className={`${classname} border p-3 rounded-lg text-black border-primary-300 focus:border-purple-300 focus:ring-1 focus-visible:ring-purple-300 outline-none`}
+                className={`${className} border p-3 rounded-lg text-black border-primary-300 focus:border-purple-300 focus:ring-1 focus-visible:ring-purple-300 outline-none`}
             >
                 {placeholder && (
                     <option value="" disabled hidden>

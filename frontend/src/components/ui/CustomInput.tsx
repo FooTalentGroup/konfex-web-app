@@ -2,6 +2,7 @@
 import React from 'react'
 import { UseFormRegisterReturn } from "react-hook-form";
 
+
 interface CustomInputProps {
   id: string;
   label: string;
@@ -10,10 +11,10 @@ interface CustomInputProps {
   error?: string;
   unit?: string;
   placeholder?: string
-  classname?: string
+  className?: string
 }
 
-const CustomInput: React.FC<CustomInputProps> = ({ id, label, register, error, type = 'text', unit = '', placeholder = '', classname }) => {
+const CustomInput: React.FC<CustomInputProps> = ({ id, label, register, error, type = 'text', unit = '', placeholder = '', className }) => {
   return (
     <div className="flex flex-col space-y-1">
       <label htmlFor={id} className="text-sm font-medium text-black">{label}</label>
@@ -22,7 +23,7 @@ const CustomInput: React.FC<CustomInputProps> = ({ id, label, register, error, t
           id={id}
           type={type}
           {...register}
-          className={`${classname} w-full p-3 ${unit ? 'pr-10' : 'pr-3'} text-black border rounded-lg transition duration-150 ease-in-out ${error ? 'border-red-500 focus:ring-red-500' : 'border-primary-300 focus:ring-purple-300 focus-visible:border-purple-300'
+          className={`${className} w-full p-3 ${unit ? 'pr-10' : 'pr-3'} text-black border rounded-lg transition duration-150 ease-in-out ${error ? 'border-red-500 focus:ring-red-500' : 'border-primary-300 focus:ring-purple-300 focus-visible:border-purple-300'
             } focus:border-purple-300 focus:ring-1 focus-visible:ring-purple-300 outline-none`}
 
           placeholder={placeholder}

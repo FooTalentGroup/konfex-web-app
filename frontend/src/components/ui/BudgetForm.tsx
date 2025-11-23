@@ -55,7 +55,7 @@ function BudgetForm({ form, metadata }: BudgetFormProps) {
             error={errors.title?.message}
             type="text"
             placeholder="Escribe el título"
-            classname='bg-white'
+            className='bg-white'
           />
 
           <CustomSelect
@@ -69,7 +69,7 @@ function BudgetForm({ form, metadata }: BudgetFormProps) {
               required: 'El nombre del cliente es requerido',
             })}
             placeholder='Seleccionar cliente'
-            classname='bg-white'
+            className='bg-white'
             error={errors.clientName?.message}
           />
 
@@ -96,7 +96,7 @@ function BudgetForm({ form, metadata }: BudgetFormProps) {
               })}
               error={errors.finishDate?.message}
               type="date"
-              classname='bg-white'
+              className='bg-white'
             />
 
             <div className="relative">
@@ -114,7 +114,7 @@ function BudgetForm({ form, metadata }: BudgetFormProps) {
                 error={errors.profitabilityPercentage?.message}
                 type="number"
                 unit="%"
-                classname='bg-white'
+                className='bg-white'
               />
             </div>
           </div>
@@ -142,7 +142,7 @@ function BudgetForm({ form, metadata }: BudgetFormProps) {
             })}
             error={errors.laborOrder?.message}
             type="text"
-            classname='bg-white'
+            className='bg-white'
             placeholder='Ej: Blusa manga larga'
           />
         </div>
@@ -161,7 +161,7 @@ function BudgetForm({ form, metadata }: BudgetFormProps) {
             error={errors.laborRate?.message}
             type="number"
             unit='$'
-            classname='bg-white'
+            className='bg-white'
           />
           <CounterInput
             id="laborHours"
@@ -200,7 +200,7 @@ function BudgetForm({ form, metadata }: BudgetFormProps) {
           })}
           error={errors.materialName?.message}
           type="text"
-          classname='bg-white'
+          className='bg-white'
           placeholder='Ej: Blusa manga larga'
         />
 
@@ -218,7 +218,7 @@ function BudgetForm({ form, metadata }: BudgetFormProps) {
               required: 'La talla es requerida',
             })}
             placeholder='Seleccionar'
-            classname='bg-white'
+            className='bg-white'
             error={errors.clientName?.message}
           />
           <CounterInput
@@ -254,7 +254,7 @@ function BudgetForm({ form, metadata }: BudgetFormProps) {
             error={errors.materialPrice?.message}
             type="number"
             unit="$"
-            classname='bg-white'
+            className='bg-white'
             placeholder='35000'
           />
           <button type='button' className='bg-primary-500 text-white py-1 rounded-2xl w-full'>Añadir talla</button>
@@ -271,7 +271,7 @@ function BudgetForm({ form, metadata }: BudgetFormProps) {
             })}
             error={errors.additionalCost?.message}
             type="text"
-            classname='bg-white'
+            className='bg-white'
             placeholder='Ej.: Estampado, botones adicionales'
           />
           <CustomInput
@@ -284,7 +284,7 @@ function BudgetForm({ form, metadata }: BudgetFormProps) {
             error={errors.materialsCost?.message}
             type="number"
             unit="$"
-            classname='bg-white'
+            className='bg-white'
             placeholder='35000'
           />
           <button type='button' className='bg-primary-500 text-white py-1 rounded-2xl'>Añadir costo</button>
