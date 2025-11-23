@@ -4,10 +4,9 @@ import React from 'react';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import Sidebar from '@/components/common/Sidebar';
-import BudgetForm from '@/components/ui/BudgetForm';
-import PriceSummaryCard from '@/components/ui/PriceSummaryCard';
 import { useAuth } from '@/hooks/useAuth';
 import { useSidebar } from '@/hooks/useSidebar';
+import CalculatorTemplate from "@/components/common/CalculatorTemplate"
 
 export default function CalculatorPage() {
   const { user, mounted } = useAuth();
@@ -27,14 +26,7 @@ export default function CalculatorPage() {
       <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
       
       <main className="flex-1 p-4 sm:p-6">
-        <div className="max-w-xl mx-auto bg-primary-500">
-          <PriceSummaryCard
-            total={250000}
-            indirectCosts={2000}
-            profit={50000}
-          />
-          <BudgetForm />
-        </div>
+          <CalculatorTemplate />
       </main>
 
       <Footer />
