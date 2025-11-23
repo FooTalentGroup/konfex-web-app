@@ -3,6 +3,7 @@ import authRoutes from "@modules/auth/auth.routes";
 import presupuestoRoutes from "@modules/presupuesto/presupuesto.routes";
 import { sendSuccess } from "@/common/responses";
 import { clienteRoutes } from "@/modules/cliente";
+import { materialRoutes } from "@/modules/material/material.routes";
 
 const router: Router = Router();
 
@@ -24,5 +25,8 @@ router.use("/presupuestos", presupuestoRoutes);
 
 // clientes
 router.use("/clientes", clienteRoutes);
+
+// material
+router.use("/materiales", materialRoutes);
 
 export default router;
