@@ -60,23 +60,23 @@ model Producto {
   descripcion String?
   activo      Boolean              @default(true)
 
-  materiales  MaterialPorProducto[]
-  presupuestos PresupuestoDetalle[]
-  pedidos      PedidoDetalle[]
+  materiales  MaterialPorProducto[]   // relación con materiales
+  pedidos     PedidoDetalle[]
+  presupuestoDetalles PresupuestoDetalle[] // relación con detalles de presupuesto
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Material {
-  id           Int                  @id @default(autoincrement())
-  nombre       String
+  id          Int      @id @default(autoincrement())
+  nombre      String
   costoUnitario Float
   unidadMedida String
-  stock        Float
-  tipo         String?
+  stock       Float
+  tipo        String?
 
-  productos    MaterialPorProducto[]
+  productos   MaterialPorProducto[]   // relación inversa
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -86,47 +86,47 @@ model MaterialPorProducto {
   id          Int     @id @default(autoincrement())
   productoId  Int
   materialId  Int
-  cantidad    Float   // cantidad necesaria para fabricar el producto
+  cantidad    Float   // cantidad necesaria por unidad de producto
 
   producto    Producto @relation(fields: [productoId], references: [id], onDelete: Cascade)
   material    Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
 
-  @@unique([productoId, materialId]) // Evita duplicados
+  @@unique([productoId, materialId])
 }
 
 model Presupuesto {
-  id                        Int                  @id @default(autoincrement())
-  clienteId                 Int
-  fechaCreacion             DateTime             @default(now())
-  fechaVencimiento          DateTime?
-  estado                    EstadoPresupuesto
+  id            Int                  @id @default(autoincrement())
+  numeroPresupuesto Int              @unique
+  clienteId     Int?
+  fechaCreacion DateTime             @default(now())
+  fechaVencimiento DateTime?
+  estado        EstadoPresupuesto
   margenGananciaPorcentaje  Float
   gastosIndirectosPorcentaje Float
-  totalCosto                Float
-  totalVenta                Float
-  notas                     String?
+  totalCosto    Float
+  totalVenta    Float
+  notas         String?
 
-  cliente        Cliente             @relation(fields: [clienteId], references: [id], onDelete: Restrict)
-  detalles       PresupuestoDetalle[]
-  pedido         Pedido?
+  cliente       Cliente?             @relation(fields: [clienteId], references: [id], onDelete: Restrict)
+  detalles      PresupuestoDetalle[]
+  pedido        Pedido?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model PresupuestoDetalle {
-  id                      Int     @id @default(autoincrement())
-  presupuestoId           Int     @unique
-  productoId              Int
-  cantidad                Int
-  talle                   String?
-  color                   String?
-  costoUnitarioCalculado  Float
-  precioUnitario          Float
-  subtotal                Float
+  id            Int       @id @default(autoincrement())
+  presupuestoId Int
+  productoId    Int
+  descripcion   String?
+  cantidad      Int       // cantidad de unidades de ese producto
+  costoUnitario Float
 
   presupuesto Presupuesto @relation(fields: [presupuestoId], references: [id], onDelete: Cascade)
   producto    Producto    @relation(fields: [productoId], references: [id], onDelete: Restrict)
+
+  @@index([presupuestoId])
 }
 
 model Pedido {
