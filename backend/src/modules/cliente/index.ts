@@ -1,0 +1,1 @@
+export { clienteRoutes } from "./cliente.routes";

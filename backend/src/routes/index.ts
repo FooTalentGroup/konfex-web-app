@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import authRoutes from "@modules/auth/auth.routes";
 import presupuestoRoutes from "@modules/presupuesto/presupuesto.routes";
 import { sendSuccess } from "@/common/responses";
+import { clienteRoutes } from "@/modules/cliente";
 
 const router: Router = Router();
 
@@ -20,5 +21,8 @@ router.use("/auth", authRoutes);
 
 // Presupuesto routes
 router.use("/presupuestos", presupuestoRoutes);
+
+// clientes
+router.use("/clientes", clienteRoutes);
 
 export default router;
