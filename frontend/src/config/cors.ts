@@ -11,11 +11,9 @@ const defaultOrigins = [
     "https://konfex-web-app-gilt.vercel.app",
 
     // Backend producción (Render)
-    // (Importante: Render también puede hacer requests internas)
     "https://eos-konfex.onrender.com",
 ];
 
-// Permitir agregar más orígenes desde variables de entorno
 const envOrigins = process.env.CORS_ORIGINS;
 
 const allowedOrigins = envOrigins
