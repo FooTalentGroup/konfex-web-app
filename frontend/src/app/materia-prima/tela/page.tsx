@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import Sidebar from '@/components/common/Sidebar';
@@ -13,15 +14,19 @@ import { useSidebar } from '@/hooks/useSidebar';
 import { useMaterials } from '@/hooks/useMaterials';
 
 export default function TelaPage() {
+  const router = useRouter();
   const { user, mounted } = useAuth();
   const { isOpen: isSidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar();
   const {
     filteredFabricMaterials,
     fabricSearchQuery,
     handleFabricSearch,
-    handleAddMaterial,
     handleMaterialClick,
   } = useMaterials();
+
+  const handleAddFabric = () => {
+    router.push('/create-fabric');
+  };
 
   if (!mounted) {
     return null;
@@ -68,7 +73,7 @@ export default function TelaPage() {
             </div>
             
             <div className="pt-4 sm:pt-5 md:pt-6 pb-6 sm:pb-8 md:pb-10">
-              <AddFloatingButton onClick={handleAddMaterial} isStatic={true} />
+              <AddFloatingButton onClick={handleAddFabric} isStatic={true} />
             </div>
           </div>
         </div>
