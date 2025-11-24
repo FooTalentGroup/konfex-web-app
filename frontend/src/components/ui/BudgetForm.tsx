@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import { useForm, SubmitHandler, UseFormReturn } from 'react-hook-form';
+import { useForm, SubmitHandler, UseFormReturn, Controller } from 'react-hook-form';
 import { BudgetFormData } from '@/types/IBudget';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { BudgetSchema } from '@/types/IBudget';
@@ -62,15 +62,22 @@ function BudgetForm({ form, metadata }: BudgetFormProps) {
             className='bg-white'
           />
 
-          <AutocompleteSelect
-            label="Nombre cliente"
-            value={watch("clientName")}
-            onChange={(v) => setValue("clientName", v, { shouldValidate: true })}
-            options={clients.map(c => ({ label: c.nombre, value: c.nombre }))}
-            placeholder="Seleccionar cliente"
-            error={errors.clientName?.message}
-            type='cliente'
-          />
+<Controller
+  control={form.control}
+  name="clientName"
+  render={({ field, fieldState }) => (
+    <AutocompleteSelect
+      label="Nombre cliente"
+      value={field.value || ""}
+      onChange={field.onChange} // RHF se sincroniza correctamente
+      options={clients.map(c => ({ label: c.nombre, value: c.nombre }))}
+      placeholder="Seleccionar cliente"
+      type="cliente"
+      error={fieldState.error?.message}
+    />
+  )}
+/>
+
 
           {/* <CustomSelect
                 label='ID cliente'

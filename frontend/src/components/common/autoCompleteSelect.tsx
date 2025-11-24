@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import CustomInput from "@/components/ui/CustomInput"; // ajusta la ruta
+import { UseFormRegisterReturn } from "react-hook-form";
 
 interface Option {
   label: string;
@@ -9,12 +10,13 @@ interface Option {
 
 interface Props {
   label: string;
-  value: string | undefined;
+  value: string;
   onChange: (v: string) => void;
   options: Option[];
   placeholder?: string;
   error?: string;
-  type?: string
+  type?: string;
+  register?: UseFormRegisterReturn; // <-- opcional para react-hook-form
 }
 
 export default function AutocompleteSelect({
@@ -24,13 +26,14 @@ export default function AutocompleteSelect({
   options,
   placeholder,
   error,
-  type
+  type,
+  register
 }: Props) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(value || "");
   const [open, setOpen] = useState(false);
 
-  // Agregamos la opción "Prospecto" al inicio
-  const optionsWithProspecto: Option[] = type === "cliente" ? [{ label: "Nuevo", value: "nuevo" }, ...options] : options;
+  const optionsWithProspecto: Option[] =
+    type === "cliente" ? [{ label: "Nuevo", value: "nuevo" }, ...options] : options;
 
   const filtered = optionsWithProspecto.filter(o =>
     o.label.toLowerCase().includes(query.toLowerCase())
@@ -45,18 +48,17 @@ export default function AutocompleteSelect({
         className="bg-white pr-8 text-gray-900"
         type="text"
         register={{
+          ...register,
+          value: query,
           onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
             setQuery(e.target.value);
             onChange(e.target.value);
             setOpen(true);
-          },
-          name: label,
-          value: query || value || ""
+          }
         } as any}
         error={error}
       />
 
-      {/* Flechita del dropdown */}
       <span
         className="absolute right-3 top-[38px] cursor-pointer select-none"
         onClick={() => setOpen(!open)}
@@ -64,7 +66,6 @@ export default function AutocompleteSelect({
         ▼
       </span>
 
-      {/* Lista de opciones */}
       {open && filtered.length > 0 && (
         <div className="absolute z-10 w-full bg-white border rounded-md shadow mt-1 max-h-48 overflow-y-auto">
           {filtered.map((opt) => (
