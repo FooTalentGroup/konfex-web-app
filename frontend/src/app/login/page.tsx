@@ -49,7 +49,7 @@ const LoginPage: React.FC = () => {
               justifyContent: 'center',
             }}
           >
-            Iniciá tu sesión
+            Inicia tu sesión
           </h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-[390px] space-y-6">
