@@ -9,6 +9,8 @@ import CostSectionCard from './CostSectionCard';
 import CustomSelect from './CustomSelect';
 import CounterInput from './CounterInput';
 import { useBudgetCalculator } from '@/hooks/useBudgetCalculator';
+import { useClients } from '@/hooks/useClients';
+import AutocompleteSelect from '../common/autoCompleteSelect';
 
 interface BudgetFormProps {
   form: UseFormReturn<BudgetFormData>;
@@ -18,6 +20,9 @@ interface BudgetFormProps {
 function BudgetForm({ form, metadata }: BudgetFormProps) {
   const { register, handleSubmit, formState: { errors, isSubmitting }, watch, setValue } = form;
   const { laborTotal, materialsTotal } = useBudgetCalculator(watch);
+
+  const { clients } = useClients();
+  console.log("cliebtes", clients)
 
 
   const onSubmit: SubmitHandler<BudgetFormData> = (data: BudgetFormData) => {
@@ -58,19 +63,14 @@ function BudgetForm({ form, metadata }: BudgetFormProps) {
             className='bg-white'
           />
 
-          <CustomSelect
-            id='clientName'
-            label='Nombre cliente'
-            options={[
-              { label: 'Cliente 1', value: 'Cliente 1' },
-              { label: 'Cliente 2', value: 'Cliente 2' },
-            ]}
-            register={register('clientName', {
-              required: 'El nombre del cliente es requerido',
-            })}
-            placeholder='Seleccionar cliente'
-            className='bg-white'
+          <AutocompleteSelect
+            label="Nombre cliente"
+            value={watch("clientName")}
+            onChange={(v) => setValue("clientName", v, { shouldValidate: true })}
+            options={clients.map(c => ({ label: c.nombre, value: c.nombre }))}
+            placeholder="Seleccionar cliente"
             error={errors.clientName?.message}
+            type='cliente'
           />
 
           {/* <CustomSelect
