@@ -46,15 +46,9 @@ function CounterInput({
             <input type="number" id={id} {...register} value={value} readOnly className="hidden" />
 
             <div className="flex items-center gap-4">
-                <button
-                    type="button"
-                    onClick={increase}
-                    className="w-10 h-10 bg-white text-black rounded-xl flex items-center justify-center text-xl font-bold shadow hover:bg-gray-100"
-                >
-                    +
-                </button>
 
-                <span className="text-lg font-semibold w-10 text-center text-black">{value}</span>
+
+
 
                 <button
                     type="button"
@@ -62,6 +56,16 @@ function CounterInput({
                     className="w-10 h-10 bg-white text-black rounded-xl flex items-center justify-center text-xl font-bold shadow hover:bg-gray-100"
                 >
                     –
+                </button>
+
+                <span className="text-lg font-semibold w-10 text-center text-black">{value}</span>
+
+                <button
+                    type="button"
+                    onClick={increase}
+                    className="w-10 h-10 bg-white text-black rounded-xl flex items-center justify-center text-xl font-bold shadow hover:bg-gray-100"
+                >
+                    +
                 </button>
             </div>
 
