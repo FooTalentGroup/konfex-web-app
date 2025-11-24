@@ -15,6 +15,7 @@ export const authService = {
           email: credentials.email,
           password: credentials.password,
         }),
+        credentials: 'include',
       });
 
       const contentType = response.headers.get('content-type');

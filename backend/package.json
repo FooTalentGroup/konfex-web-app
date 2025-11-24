@@ -30,6 +30,7 @@
   "dependencies": {
     "@prisma/client": "^6.19.0",
     "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/swagger-jsdoc": "^6.0.4",
@@ -49,7 +50,6 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.19",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.10.1",
     "@types/supertest": "^6.0.3",
