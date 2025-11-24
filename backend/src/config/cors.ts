@@ -1,10 +1,17 @@
 import cors, { CorsOptions } from "cors";
 
 const defaultOrigins = [
+  // Local
   "http://localhost:3000",
   "http://localhost:3001",
   "http://127.0.0.1:3000",
-  "http://127.0.0.1:3001"
+  "http://127.0.0.1:3001",
+
+  // Frontend producción (Vercel)
+  "https://konfex-web-app-gilt.vercel.app",
+
+  // Backend producción (Render)
+  "https://eos-konfex.onrender.com",
 ];
 
 const originIsAllowed = (origin: string): boolean => {
