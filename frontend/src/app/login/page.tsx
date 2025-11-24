@@ -33,7 +33,7 @@ const LoginPage: React.FC = () => {
         </div>
 
         <div className="flex-1 flex flex-col items-center justify-start px-4 sm:px-[40px] pt-6 sm:pt-8 pb-4 bg-[#F3F0F5]">
-          <h2 
+          <h2
             className="mb-6 sm:mb-8 mt-4 w-full max-w-[390px]"
             style={{
               minHeight: '42px',
@@ -84,43 +84,43 @@ const LoginPage: React.FC = () => {
               error={errors.contraseña?.message}
             />
 
-          <div className="flex justify-end w-full">
-            <a
-              href="#"
-              className="hover:opacity-80 underline w-full max-w-[390px]"
-              style={{
-                minHeight: '21px',
-                fontFamily: 'var(--font-lato), sans-serif',
-                fontWeight: 400,
-                fontSize: 'clamp(14px, 3.5vw, 16px)',
-                lineHeight: '131%',
-                letterSpacing: '0%',
-                color: errors.contraseña ? '#D9537A' : '#1A151E',
-                textAlign: 'right',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-              }}
-            >
-              Recuperar contraseña
-            </a>
-          </div>
-
-          {error && (
-            <div className="w-full max-w-[390px] mt-2 p-3 rounded-lg bg-red-50 border border-red-200">
-              <p className="text-sm text-[#D9537A] text-center">{error}</p>
+            <div className="flex justify-end w-full">
+              <a
+                href="#"
+                className="hover:opacity-80 underline w-full max-w-[390px]"
+                style={{
+                  minHeight: '21px',
+                  fontFamily: 'var(--font-lato), sans-serif',
+                  fontWeight: 400,
+                  fontSize: 'clamp(14px, 3.5vw, 16px)',
+                  lineHeight: '131%',
+                  letterSpacing: '0%',
+                  color: errors.contraseña ? '#D9537A' : '#1A151E',
+                  textAlign: 'right',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                }}
+              >
+                Recuperar contraseña
+              </a>
             </div>
-          )}
 
-          <Button
-            type="submit"
-            isLoading={isLoading}
-            loadingText="Iniciando sesión..."
-            className="max-w-[390px] mt-4"
-          >
-            Iniciar Sesión
-          </Button>
-        </form>
+            {error && (
+              <div className="w-full max-w-[390px] mt-2 p-3 rounded-lg bg-red-50 border border-red-200">
+                <p className="text-sm text-[#D9537A] text-center">{error}</p>
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              isLoading={isLoading}
+              loadingText="Iniciando sesión..."
+              className="max-w-[390px] mt-4"
+            >
+              Iniciar Sesión
+            </Button>
+          </form>
         </div>
       </div>
     </div>
