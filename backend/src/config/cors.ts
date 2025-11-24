@@ -6,9 +6,9 @@ const defaultOrigins = [
   "http://127.0.0.1:3000",
   "http://127.0.0.1:3001",
   "https://konfex-web-app-gilt.vercel.app",
-  "https://konfex-web-app.vercel.app/",
+  "https://konfex-web-app.vercel.app",
   "https://eos-konfex.onrender.com",
-  "https://konfex-web-app-omega.vercel.app/"
+  "https://konfex-web-app-omega.vercel.app"
 ];
 
 const originIsAllowed = (origin: string): boolean => {
