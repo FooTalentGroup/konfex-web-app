@@ -13,7 +13,7 @@ dotenv.config();
 const app: Express = express();
 
 app.use(corsMiddleware());
-app.options("*", corsMiddleware());
+app.options("*/", corsMiddleware());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(pinoHttp({ logger }));
