@@ -17,7 +17,6 @@ export function useBudgetMetadata() {
         const presupuesto = async () => {
             try {
                 const { data } = await apiClient<NextNumberResponse>("/presupuestos/next-number");
-                console.log(data.numeroPresupuesto)
                 const formattedId = data.numeroPresupuesto.toString().padStart(5, "0");
                 const date = new Date().toLocaleDateString();
                 setMetadata({ id: formattedId, date });

@@ -22,7 +22,6 @@ function BudgetForm({ form, metadata }: BudgetFormProps) {
   const { laborTotal, materialsTotal } = useBudgetCalculator(watch);
 
   const { clients } = useClients();
-  console.log("cliebtes", clients)
 
 
   const onSubmit: SubmitHandler<BudgetFormData> = (data: BudgetFormData) => {
