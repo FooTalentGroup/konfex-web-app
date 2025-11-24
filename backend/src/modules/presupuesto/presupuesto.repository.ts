@@ -40,7 +40,7 @@ interface UpdatePresupuestoData {
 export const PresupuestoRepository = {
   create: async ({ data }: CreatePresupuestoData) => {
     const { detalles, clienteId, ...presupuestoData } = data;
-
+    console.log("vamos aqui")
     return prisma.presupuesto.create({
       data: {
         ...presupuestoData,
@@ -48,7 +48,7 @@ export const PresupuestoRepository = {
         detalles: detalles
           ? {
               create: detalles.map((detalle) => ({
-                materialId: detalle.productoId,
+                productoId: detalle.productoId,
                 descripcion: detalle.descripcion,
                 cantidad: detalle.cantidad,
                 costoUnitario: detalle.costoUnitario,
@@ -118,7 +118,7 @@ export const PresupuestoRepository = {
           ? detalles.length > 0
             ? {
                 create: detalles.map((detalle) => ({
-                  materialId: detalle.productoId,
+                  productoId: detalle.productoId,
                   descripcion: detalle.descripcion,
                   cantidad: detalle.cantidad,
                   costoUnitario: detalle.costoUnitario,

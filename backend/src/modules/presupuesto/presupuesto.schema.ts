@@ -1,11 +1,11 @@
 import { z } from "zod";
 
 export const estadoPresupuestoValues = [
-  "PENDIENTE",
-  "EN_PRODUCCION",
-  "LISTO",
-  "ENTREGADO",
-  "CANCELADO"
+  "BORRADOR",
+  "ENVIADO",
+  "ACEPTADO",
+  "RECHAZADO",
+  "VENCIDO"
 ] as const;
 
 export type EstadoPresupuesto = (typeof estadoPresupuestoValues)[number];
@@ -13,7 +13,7 @@ export type EstadoPresupuesto = (typeof estadoPresupuestoValues)[number];
 export const presupuestoDetalleSchema = z.object({
   productoId: z
     .number()
-    .min(1, { message: "materialId debe ser mayor a 0" }),
+    .min(1, { message: "productoId debe ser mayor a 0" }),
 
   descripcion: z.string().optional(),
 

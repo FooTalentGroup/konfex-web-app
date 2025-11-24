@@ -4,6 +4,7 @@ import presupuestoRoutes from "@modules/presupuesto/presupuesto.routes";
 import { sendSuccess } from "@/common/responses";
 import { clienteRoutes } from "@/modules/cliente";
 import { materialRoutes } from "@/modules/material/material.routes";
+import { productoRoutes } from "@/modules/producto/producto.routes";
 
 const router: Router = Router();
 
@@ -28,5 +29,8 @@ router.use("/clientes", clienteRoutes);
 
 // material
 router.use("/materiales", materialRoutes);
+
+// material
+router.use("/productos", productoRoutes);
 
 export default router;
