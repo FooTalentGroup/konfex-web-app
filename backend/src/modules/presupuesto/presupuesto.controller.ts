@@ -43,7 +43,6 @@ export const getPresupuestoByIdController = controllerHandler(
 // crea un presupuesto
 export const createPresupuestoController = controllerHandler(
   async (req: Request) => {
-    console.log("body loco")
     const body: CreatePresupuestoRequestDto = req.body;
     const presupuesto = await PresupuestoService.create(body);
     return toPresupuestoResponseDto(presupuesto);
