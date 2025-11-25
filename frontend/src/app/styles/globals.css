@@ -8,6 +8,7 @@
   --secondary-color-300: #C071F4;
   --secondary-color-500: #B65CF2;
   --secondary-color-50: #F4E7FD;
+  --secondary-color-600: #770FBD;
   --terciary-color-500: #F2BB5C;
   --bg-gray-color-500: #F3F0F5;
   --font-lato: 'Lato', sans-serif;
@@ -28,6 +29,7 @@
   --color-primary-300: var(--primary-color-300);
   --color-secondary-300: var(--secondary-color-300);
   --color-secondary-500: var(--secondary-color-500);
+  --color-secondary-600: var(--secondary-color-600);
   --color-secondary-50: var(--secondary-color-50);
   --color-terciary-500: var(--terciary-color-500);
   --color-bg-gray-500: var(--bg-gray-color-500);
