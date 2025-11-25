@@ -1,18 +1,19 @@
-import express, { Express, Request, Response } from 'express';
-import dotenv from 'dotenv';
-import { setupSwagger } from './config/swagger';
-import pinoHttp from 'pino-http';
-import logger from './utils/logger';
-import { errorHandler } from './middleware';
-import { sendError } from './common/responses';
+import express, { Express, Request, Response } from "express";
+import dotenv from "dotenv";
+import { setupSwagger } from "./config/swagger";
+import pinoHttp from "pino-http";
+import logger from "./utils/logger";
+import { errorHandler } from "./middleware";
+import { sendError } from "./common/responses";
 import routes from "./routes";
-import { corsMiddleware } from './config/cors';
+import { corsMiddleware, corsPreflightMiddleware } from "./config/cors";
 
 dotenv.config();
 
 const app: Express = express();
 
 app.use(corsMiddleware());
+app.options("*", corsPreflightMiddleware());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(pinoHttp({ logger }));
@@ -37,6 +38,5 @@ app.get("/", (_req: Request, res: Response) => {
   });
 });
 
+export { app };
 
-
-export { app }

@@ -9,13 +9,23 @@ const defaultOrigins = [
 
   // Frontend producción (Vercel)
   "https://konfex-web-app-gilt.vercel.app",
+  "https://konfex.vercel.app",
 
   // Backend producción (Render)
   "https://eos-konfex.onrender.com",
 ];
 
+const envOrigins = process.env.CORS_ORIGINS;
+
+const allowerdOrigins = envOrigins
+  ? envOrigins
+      .split(",")
+      .map((origin) => origin.trim())
+      .filter(Boolean)
+  : defaultOrigins;
+
 const originIsAllowed = (origin: string): boolean => {
-  return defaultOrigins.some((allowedOrigin) => {
+  return allowerdOrigins.some((allowedOrigin) => {
     if (allowedOrigin === "*") {
       return true;
     }
@@ -44,3 +54,4 @@ export const corsOptions: CorsOptions = {
 };
 
 export const corsMiddleware = () => cors(corsOptions);
+export const corsPreflightMiddleware = cors(corsOptions);
