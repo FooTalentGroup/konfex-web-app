@@ -3,7 +3,7 @@ import { API_CONFIG } from '@/config/api.config';
 
 export const authService = {
   signIn: async (credentials: SignInRequest): Promise<SignInResponse> => {
-    const url = API_CONFIG.getApiUrl('/api/v1/auth/sign-in');
+    const url = API_CONFIG.getApiUrl('/auth/sign-in');
     
     try {
       const response = await fetch(url, {
@@ -15,6 +15,7 @@ export const authService = {
           email: credentials.email,
           password: credentials.password,
         }),
+        credentials: 'include',
       });
 
       const contentType = response.headers.get('content-type');

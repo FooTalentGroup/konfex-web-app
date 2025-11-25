@@ -7,7 +7,6 @@ import { useBudgetCalculator } from "@/hooks/useBudgetCalculator";
 import { useBudgetExport } from "@/hooks/useBudgetExport";
 import { BudgetFormData, BudgetSchema } from "@/types/IBudget";
 import { useBudgetMetadata } from "@/hooks/useBudgetMetadata";
-import { useEffect } from "react";
 
 
 function CalculatorTemplate() {
@@ -25,11 +24,6 @@ function CalculatorTemplate() {
 
     const metadata = useBudgetMetadata();
     const calculations = useBudgetCalculator(watch);
-    
-    useEffect(() => {
-        
-    }, [])
-    
 
     const {
         laborTotal,
