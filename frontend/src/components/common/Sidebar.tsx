@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 
 interface MenuItem {
@@ -21,6 +21,7 @@ export interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const router = useRouter();
+  const pathname = usePathname();
   const { logout } = useAuth();
 
   const menuItems: MenuItem[] = [
@@ -50,6 +51,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       id: 'presupuestos',
       label: 'Presupuestos',
       iconPath: '/presupuesto.png',
+      path: '/presupuestos',
     },
     {
       id: 'colecciones',
@@ -138,71 +140,81 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </div>
 
           <nav className="flex-1 overflow-y-auto py-4">
-            {menuItems.map((item, index) => (
-              <React.Fragment key={item.id}>
-                <button
-                  onClick={() => handleMenuItemClick(item)}
-                  className="w-full flex items-center gap-3 px-4 py-3 transition-colors"
-                  style={{
-                    color: '#FFFFFF',
-                    fontFamily: 'var(--font-lato), sans-serif',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#D5A1F7';
-                    e.currentTarget.style.color = '#000000';
-                    const icon = e.currentTarget.querySelector('svg');
-                    if (icon) {
-                      icon.style.stroke = '#000000';
-                      icon.style.fill = '#000000';
-                    }
-                    const img = e.currentTarget.querySelector('img');
-                    if (img) {
-                      img.style.filter = 'brightness(0) invert(0) contrast(1)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.color = '#FFFFFF';
-                    const icon = e.currentTarget.querySelector('svg');
-                    if (icon) {
-                      icon.style.stroke = '#FFFFFF';
-                      icon.style.fill = 'none';
-                    }
-                    const img = e.currentTarget.querySelector('img');
-                    if (img) {
-                      img.style.filter = 'brightness(0) invert(1) contrast(2)';
-                    }
-                  }}
-                >
-                  <span className="flex-shrink-0">
-                    {item.iconPath ? (
-                      <Image
-                        src={item.iconPath}
-                        alt={item.label}
-                        width={20}
-                        height={20}
-                        className="object-contain brightness-0 invert"
-                        style={{
-                          filter: 'brightness(0) invert(1) contrast(2)',
-                        }}
-                      />
-                    ) : (
-                      item.icon
-                    )}
-                  </span>
-                  <span className="text-sm">{item.label}</span>
-                </button>
-                {index < menuItems.length - 1 && (
-                  <div
-                    className="mx-4 my-1"
+            {menuItems.map((item, index) => {
+              const isActive = item.path && pathname === item.path;
+              return (
+                <React.Fragment key={item.id}>
+                  <button
+                    onClick={() => handleMenuItemClick(item)}
+                    className="w-full flex items-center gap-3 px-4 py-3 transition-colors"
                     style={{
-                      height: '1px',
-                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      backgroundColor: isActive ? '#D5A1F7' : 'transparent',
+                      color: isActive ? '#000000' : '#FFFFFF',
+                      fontFamily: 'var(--font-lato), sans-serif',
                     }}
-                  />
-                )}
-              </React.Fragment>
-            ))}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.backgroundColor = '#D5A1F7';
+                        e.currentTarget.style.color = '#000000';
+                        const icon = e.currentTarget.querySelector('svg');
+                        if (icon) {
+                          icon.style.stroke = '#000000';
+                          icon.style.fill = '#000000';
+                        }
+                        const img = e.currentTarget.querySelector('img');
+                        if (img) {
+                          img.style.filter = 'brightness(0) invert(0) contrast(1)';
+                        }
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        e.currentTarget.style.color = '#FFFFFF';
+                        const icon = e.currentTarget.querySelector('svg');
+                        if (icon) {
+                          icon.style.stroke = '#FFFFFF';
+                          icon.style.fill = 'none';
+                        }
+                        const img = e.currentTarget.querySelector('img');
+                        if (img) {
+                          img.style.filter = 'brightness(0) invert(1) contrast(2)';
+                        }
+                      }
+                    }}
+                  >
+                    <span className="flex-shrink-0">
+                      {item.iconPath ? (
+                        <Image
+                          src={item.iconPath}
+                          alt={item.label}
+                          width={20}
+                          height={20}
+                          className="object-contain brightness-0 invert"
+                          style={{
+                            filter: isActive 
+                              ? 'brightness(0) invert(0) contrast(1)' 
+                              : 'brightness(0) invert(1) contrast(2)',
+                          }}
+                        />
+                      ) : (
+                        item.icon
+                      )}
+                    </span>
+                    <span className="text-sm">{item.label}</span>
+                  </button>
+                  {index < menuItems.length - 1 && (
+                    <div
+                      className="mx-4 my-1"
+                      style={{
+                        height: '1px',
+                        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      }}
+                    />
+                  )}
+                </React.Fragment>
+              );
+            })}
           </nav>
 
           <div>
