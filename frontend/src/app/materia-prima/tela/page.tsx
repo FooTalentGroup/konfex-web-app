@@ -25,7 +25,7 @@ export default function TelaPage() {
   } = useMaterials();
 
   const handleAddFabric = () => {
-    router.push('/create-fabric');
+    router.push('/materia-prima/tela/create-fabric');
   };
 
   if (!mounted) {
@@ -44,7 +44,7 @@ export default function TelaPage() {
       <div className="flex-1 flex flex-col">
         <BackNavigationBar 
           title="Tela" 
-          breadcrumb={{ label: 'Tus materiales' }}
+          breadcrumbs={[{ label: 'Tus materiales' }]}
         />
         
         <div className="bg-[#E6E1EA] rounded-t-2xl py-3 sm:py-4 md:py-5 flex-1">

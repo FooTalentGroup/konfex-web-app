@@ -75,7 +75,7 @@ export default function FabricForm() {
                 type='text'
                 register={register('category')}
                 error={errors.category?.message}
-                placeholder="Tela"
+                placeholder="Ej. Tela"
             />
 
             <div className="space-y-4">
@@ -87,26 +87,26 @@ export default function FabricForm() {
                     type='text'
                     register={register('material')}
                     error={errors.material?.message}
-                    placeholder="Escribe el material"
+                    placeholder="Ej. Algodón"
                     className="bg-white"
                 />
 
                 <CustomInput
                     id="size"
-                    label="Tamaño"
+                    label="Tamaño (Metros)"
                     type='text'
                     register={register('size', { valueAsNumber: true })}
                     error={errors.size?.message}
-                    placeholder="Escribe el tamaño"
+                    placeholder="Ej. 1.70"
                     className="bg-white"
                 />
 
                 <CustomInput
                     id="weight"
-                    label="Peso"
+                    label="Peso (Kg)"
                     register={register('weight', { valueAsNumber: true })}
                     error={errors.weight?.message}
-                    placeholder="Escribe el peso"
+                    placeholder="Ej. 14"
                     className="bg-white"
                 />
 
@@ -115,7 +115,7 @@ export default function FabricForm() {
                     label="Colores"
                     register={register('colors')}
                     error={errors.colors?.message}
-                    placeholder="Empieza a escribir"
+                    placeholder="Ej. Rojo, Azul, Negro..."
                     className="bg-white"
                 />
 
@@ -124,7 +124,7 @@ export default function FabricForm() {
                     label="Proveedor"
                     register={register('supplier')}
                     error={errors.supplier?.message}
-                    placeholder="Empieza a escribir"
+                    placeholder="Ej: TexSports"
                     className="bg-white"
                 />
 
