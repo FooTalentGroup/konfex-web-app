@@ -11,6 +11,8 @@ import UploadButton from '@/components/common/UploadButton';
 import { useAuth } from '@/hooks/useAuth';
 import { useSidebar } from '@/hooks/useSidebar';
 import { useMaterials } from '@/hooks/useMaterials';
+import { usePDFUpload } from '@/hooks/usePDFUpload';
+import UploadPDFModal from '@/components/common/UploadPDFModal';
 
 export default function MateriaPrimaPage() {
   const { user, mounted } = useAuth();
@@ -22,8 +24,8 @@ export default function MateriaPrimaPage() {
     handleSearch,
     handleCategoryToggle,
     handleAddMaterial,
-    handleUploadPDF,
   } = useMaterials();
+  const { fileInputRef, handleFileSelect, isModalOpen, handleCloseModal, handleRetry, handleUploadPDF, uploadInfo, uploadState } = usePDFUpload();
 
   const handleTelaClick = () => {
     router.push('/materia-prima/tela');
@@ -41,6 +43,14 @@ export default function MateriaPrimaPage() {
     <div className="min-h-screen flex flex-col bg-[#9D86AC]">
       <Header onMenuClick={openSidebar} />
       <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="application/pdf"
+        onChange={handleFileSelect}
+        className="hidden"
+      />
       
       <div className="flex-1 flex flex-col">
         <div className="w-full px-3 sm:px-4 md:px-6 py-3 sm:py-4 bg-[#9D86AC]">
@@ -90,11 +100,23 @@ export default function MateriaPrimaPage() {
                   <UploadButton onClick={handleUploadPDF} className="w-full" />
                 </div>
               </div>
+
+              
             </div>
           </div>
         </main>
       </div>
 
+      <UploadPDFModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        state={uploadState === 'idle' ? 'uploading' : uploadState}
+        fileName={uploadInfo.fileName}
+        fileSize={uploadInfo.fileSize}
+        progress={uploadInfo.progress}
+        uploadSpeed={uploadInfo.uploadSpeed}
+        onRetry={handleRetry}
+      />
       <Footer />
     </div>
   );

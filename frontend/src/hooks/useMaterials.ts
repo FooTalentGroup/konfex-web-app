@@ -120,10 +120,6 @@ export const useMaterials = () => {
     console.log('Agregar material');
   };
 
-  const handleUploadPDF = () => {
-    console.log('Subir PDF');
-  };
-
   const [fabricSearchQuery, setFabricSearchQuery] = useState('');
 
   const filteredFabricMaterials = useMemo(() => {
@@ -159,7 +155,6 @@ export const useMaterials = () => {
     handleCategorySelect,
     handleCategoryToggle,
     handleAddMaterial,
-    handleUploadPDF,
     handleMaterialClick,
   };
 };
