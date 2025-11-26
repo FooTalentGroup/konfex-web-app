@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { uploadImageToCloudinary, validateImageFile } from '@/services/cloudinary.service'
+import { uploadImageToCloudinary, validateImageFile } from '@/services/cloudinaryImg.service'
 
 interface UseImageUploadProps {
     onUploadSuccess?: (url: string) => void
