@@ -35,6 +35,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       id: 'inbox',
       label: 'Inbox',
       iconPath: '/inbox.png',
+      path: '/inbox',
     },
     {
       id: 'clientes',
@@ -68,6 +69,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       id: 'pedidos',
       label: 'Pedidos',
       iconPath: '/pedidos.png',
+    },
+    {
+      id: 'gastos-negocio',
+      label: 'Gastos del negocio',
+      iconPath: '/negocio.png',
     },
   ];
 
