@@ -3,71 +3,37 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-interface Tab {
-    label: string;
-    href: string;
-}
+
+const TABS = [
+    { label: "Inbox", href: "/inbox" },       // Izquierda
+    { label: "Calculadora", href: "/calculator" }, // Centro
+    { label: "Pedidos", href: "/pedidos" },   // Derecha
+];
 
 interface Props {
-    tabs: Tab[];
+    
+    tabs?: { label: string; href: string }[];
     className?: string;
 }
 
-export default function NavigationTabs({ tabs, className = ""}: Props) {
+export default function NavigationTabs({ className = "" }: Props) {
     const pathname = usePathname();
 
     return (
-        <nav className={`${className} flex justify-center items-center`}>
-            <div 
-                className="rounded-lg flex overflow-hidden max-w-xs sm:max-w-sm mx-auto w-full"
-                style={{
-                    backgroundColor: '#9D86AC',
-                    border: '1px solid #FFFFFF',
-                    padding: '0',
-                    gap: '0',
-                }}
-            >
-                {tabs.map((tab, index) => {
-                    const isActive = pathname === tab.href;
-                    const isFirst = index === 0;
-                    const isLast = index === tabs.length - 1;
+        <nav className={`${className} flex justify-center items-center p-2 bg-transparent`}>
+            <div className="rounded-lg py-[5px] px-2.5 border border-white/20 flex gap-1">
+                {TABS.map((tab) => {
+                    
+                    const isActive = pathname === tab.href || pathname.startsWith(`${tab.href}/`);
                     
                     return (
                         <Link
                             key={tab.href}
                             href={tab.href}
-                            className="transition-all flex-1"
-                            style={{
-                                fontFamily: 'var(--font-lato), sans-serif',
-                                fontSize: '0.875rem',
-                                fontWeight: 400,
-                                lineHeight: '131%',
-                                letterSpacing: '0%',
-                                padding: '12px 16px',
-                                borderRadius: isFirst ? '8px 0 0 8px' : isLast ? '0 8px 8px 0' : '0',
-                                backgroundColor: isActive ? '#FFFFFF' : '#9D86AC',
-                                color: isActive ? '#5A0B8E' : '#FFFFFF',
-                                textDecoration: 'none',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                opacity: isActive ? 1 : 0.7,
-                                borderRight: !isLast ? '1px solid rgba(255, 255, 255, 0.3)' : 'none',
-                            }}
-                            onMouseEnter={(e) => {
-                                if (!isActive) {
-                                    e.currentTarget.style.backgroundColor = '#FFFFFF';
-                                    e.currentTarget.style.color = '#5A0B8E';
-                                    e.currentTarget.style.opacity = '1';
-                                }
-                            }}
-                            onMouseLeave={(e) => {
-                                if (!isActive) {
-                                    e.currentTarget.style.backgroundColor = '#9D86AC';
-                                    e.currentTarget.style.color = '#FFFFFF';
-                                    e.currentTarget.style.opacity = '0.7';
-                                }
-                            }}
+                            className={`px-4 py-2 transition-all rounded-md text-sm ${isActive
+                                    ? "bg-white text-primary-500 font-bold shadow-sm"
+                                    : "text-white/70 hover:text-white hover:bg-white/10"
+                                }`}
                         >
                             {tab.label}
                         </Link>
