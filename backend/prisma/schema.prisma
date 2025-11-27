@@ -55,15 +55,43 @@ model Cliente {
 }
 
 model Producto {
-  id          Int                  @id @default(autoincrement())
-  nombre      String
+  id          Int     @id @default(autoincrement())
+  nombre      String  @unique
   descripcion String?
-  activo      Boolean              @default(true)
+  activo      Boolean @default(true)
 
-  materiales  MaterialPorProducto[]   // relación con materiales
-  pedidos     PedidoDetalle[]
-  presupuestoDetalles PresupuestoDetalle[] // relación con detalles de presupuesto
+  tallas       String[]
+  colores      String[]
+  materiales   MaterialPorProducto[]
+  manoDeObra   ManoDeObraPorProducto[]
+  pedidos      PedidoDetalle[]
+  presupuestoDetalles PresupuestoDetalle[]
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ManoDeObraPorProducto {
+  id               Int        @id @default(autoincrement())
+  productoId       Int
+  manoDeObraId     Int
+  cantidadHoras    Float      // cuántas horas requiere este producto
+  costoHora        Float      // opcional: si quieres guardar el costo/hora
+
+  producto         Producto   @relation(fields: [productoId], references: [id], onDelete: Cascade)
+  manoDeObra       ManoDeObra @relation(fields: [manoDeObraId], references: [id], onDelete: Cascade)
+
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+}
+
+model ManoDeObra {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  costoHora Float?
+
+  productos ManoDeObraPorProducto[]
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
