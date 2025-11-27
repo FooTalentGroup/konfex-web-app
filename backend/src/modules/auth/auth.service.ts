@@ -22,7 +22,6 @@ export const AuthService = {
       id: user.id,
       role: user.role,
     });
-    console.log("tokens", tokens)
 
     return {
       token: tokens.token,

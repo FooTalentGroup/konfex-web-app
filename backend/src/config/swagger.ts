@@ -2,6 +2,7 @@ import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import { Express } from "express";
 import { productoDocs } from "../modules/producto/producto.docs";
+import { authDocs } from "../modules/auth/auth.docs";
 
 const options = {
   definition: {
@@ -14,15 +15,18 @@ const options = {
 
     components: {
       schemas: {
-        ...productoDocs.components.schemas
+        ...productoDocs.components.schemas,
+        ...authDocs.components.schemas
       },
       parameters: {
-        ...productoDocs.components.parameters
+        ...productoDocs.components.parameters,
+        ...authDocs.components.parameters
       }
     },
 
     paths: {
-      ...productoDocs.paths
+      ...productoDocs.paths,
+      ...authDocs.paths
     }
   },
 
@@ -32,6 +36,6 @@ const options = {
 
 const spec = swaggerJsdoc(options);
 
-export function setupSwagger(app: Express, path = "/docs") {
-  app.use(path, swaggerUi.serve, swaggerUi.setup(spec));
+export function setupSwagger(app: Express) {
+  app.use("/api/v1/docs", swaggerUi.serve, swaggerUi.setup(spec));
 }
