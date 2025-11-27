@@ -6,7 +6,7 @@ import OrderCard from '@/components/orders/OrderCard';
 // --- COMPONENTES REUTILIZABLES ---
 import Header from '@/components/common/Header';
 import Sidebar from '@/components/common/Sidebar';
-import SearchBarWhite from '@/components/common/SearchBarWhite';
+import SearchBar from '@/components/common/SearchBar'; 
 import NavigationTabs from '@/components/ui/NavigationTabs';
 
 // --- HOOKS ---
@@ -54,13 +54,6 @@ const MOCK_API_RESPONSE: Order[] = [
   }
 ];
 
-
-const TABS_CONFIG = [
-  { label: 'CRM', href: '/crm' }, 
-  { label: 'Calculadora', href: '/calculadora' },
-  { label: 'Pedidos', href: '/pedidos', active: true }, 
-];
-
 export default function PedidosPage() {
   const { isOpen, open, close } = useSidebar();
   const [searchTerm, setSearchTerm] = useState('');
@@ -68,7 +61,6 @@ export default function PedidosPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulamos carga de datos
     const timer = setTimeout(() => {
       setOrders(MOCK_API_RESPONSE);
       setIsLoading(false);
@@ -87,35 +79,39 @@ export default function PedidosPage() {
       
       <Sidebar isOpen={isOpen} onClose={close} />
 
-    
-      <div className="bg-[#8B709D] pb-10 rounded-b-[30px] shadow-md relative z-10">
-        <div className="max-w-4xl mx-auto w-full">
-            <div className="pt-2">
-                <Header onMenuClick={open} />
-            </div>
 
+      <div className="bg-[#8B709D] pb-8 rounded-b-[30px] shadow-md relative z-0">
+        
+        {/* Header Full Width */}
+        <div className="pt-2 w-full">
+            <Header onMenuClick={open} />
+        </div>
+
+      
+        <div className="max-w-4xl mx-auto w-full">
             <div className="px-5 mt-2 mb-4">
-              <NavigationTabs tabs={TABS_CONFIG} />
+              <NavigationTabs />
             </div>
 
             <div className="px-5">
-              <SearchBarWhite 
+              <SearchBar 
                 placeholder="Buscar pedido por nombre"
                 value={searchTerm}
                 onChange={(e: any) => setSearchTerm(e?.target?.value ?? e)}
+             
+                className="w-full bg-white rounded-full border-none shadow-sm"
               />
             </div>
         </div>
       </div>
 
-      {/* Main Content - Grid Responsivo */}
-      <main className="px-5 -mt-6 relative z-0 pb-20 max-w-4xl mx-auto w-full">
+     
+      <main className="px-5 pt-6 pb-20 max-w-4xl mx-auto w-full">
         {isLoading ? (
           <div className="text-center py-10 text-gray-500 bg-white/50 rounded-xl backdrop-blur-sm mx-auto max-w-sm mt-10 shadow-sm">
             Cargando pedidos...
           </div>
         ) : filteredOrders.length > 0 ? (
-          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredOrders.map((order) => (
               <div key={order.id} className="h-full">
