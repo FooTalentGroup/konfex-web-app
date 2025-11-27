@@ -23,7 +23,7 @@ const BudgetCard: React.FC<BudgetCardProps> = ({
   onClick,
   className = '',
 }) => {
-  const isVencido = estado === 'VENCIDO';
+  const isVencido = estado === 'VENCIDO' || (fechaVencimiento && new Date(fechaVencimiento) < new Date());
   
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('es-AR', {

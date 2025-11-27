@@ -5,6 +5,8 @@ export const createProductoSchema = z.object({
     nombre: z.string(),
     descripcion: z.string().optional().nullable(),
     activo: z.boolean().optional(), // por defecto true
+    tallas: z.array(z.string()).optional(),
+    colores: z.array(z.string()).optional(),
   }),
 });
 

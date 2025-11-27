@@ -73,6 +73,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       iconPath: '/pedidos.png',
       path: '/pedidos', 
     },
+    {
+      id: 'gastos-negocio',
+      label: 'Gastos del negocio',
+      iconPath: '/negocio.png',
+    },
   ];
 
   const handleMenuItemClick = (item: MenuItem) => {
