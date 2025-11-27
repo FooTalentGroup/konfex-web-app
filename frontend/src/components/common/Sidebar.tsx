@@ -35,11 +35,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       id: 'inbox',
       label: 'Inbox',
       iconPath: '/inbox.png',
+      path: '/inbox', 
     },
     {
       id: 'clientes',
       label: 'Clientes',
       iconPath: '/clientes.png',
+      path: '/clientes', 
     },
     {
       id: 'calculadora',
@@ -57,6 +59,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       id: 'colecciones',
       label: 'Colecciones',
       iconPath: '/colecciones.png',
+      path: '/colecciones', 
     },
     {
       id: 'materia-prima',
@@ -68,6 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       id: 'pedidos',
       label: 'Pedidos',
       iconPath: '/pedidos.png',
+      path: '/pedidos', 
     },
   ];
 
@@ -276,4 +280,3 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 };
 
 export default Sidebar;
-
