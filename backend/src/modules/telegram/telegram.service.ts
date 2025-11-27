@@ -4,6 +4,7 @@ export const handleIncomingUpdate = async (update: any) => {
   if (update.message && update.message.text) {
     const chatId = update.message.chat.id;
     const text = update.message.text;
+    console.log(chatId, text)
 
     // Aquí guardas en DB o envías al frontend
     // await saveMessageToDB({ chatId, text, source: "telegram" });
