@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(pinoHttp({ logger }));
 
-setupSwagger(app, "/api/v1/docs");
+setupSwagger(app);
 
 app.use("/api/v1", routes);
 app.use((_req: Request, res: Response) => {

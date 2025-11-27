@@ -1,0 +1,1 @@
+export { productoDocs } from "./producto.docs";
