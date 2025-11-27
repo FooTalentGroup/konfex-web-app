@@ -48,13 +48,13 @@ async function main() {
       email: "mia@mail.com",
       name: "testQA",
       password: "030914Km$",
-      role: Role.ADMIN, // 🔥 usar enum, no string
+      role: Role.ADMIN,
     },
     {
       email: "testqa1@example.com",
       name: "testQA",
       password: "testQA1!",
-      role: Role.ADMIN, // 🔥 usar enum, no string
+      role: Role.ADMIN,
     }
   ];
 
