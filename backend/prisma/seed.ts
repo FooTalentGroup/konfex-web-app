@@ -23,14 +23,20 @@ async function main() {
 
   // Productos
   const productos = [
-    { nombre: "Tela de algodón", descripcion: "Tela 100% algodón, ideal para camisetas", activo: true },
-    { nombre: "Hilo poliéster", descripcion: "Hilo resistente, varias combinaciones de colores", activo: true },
-    { nombre: "Botones de plástico", descripcion: "Botones de 1.5cm, varios colores", activo: true },
-    { nombre: "Cremalleras metálicas", descripcion: "Cremalleras de 20cm, colores surtidos", activo: true },
-    { nombre: "Elástico para cintura", descripcion: "Elástico de 2cm, varias longitudes", activo: true },
-    { nombre: "Telas de lino", descripcion: "Tela ligera de lino para blusas y vestidos", activo: true },
-    { nombre: "Cintas decorativas", descripcion: "Cintas de colores y texturas variadas", activo: true },
-    { nombre: "Botones metálicos", descripcion: "Botones de 2cm, resistentes y duraderos", activo: true },
+    {
+      nombre: "Pantalón Casual",
+      descripcion: "Pantalón cómodo de algodón",
+      activo: true,
+      tallas: ["S", "M", "L", "XL"],
+      colores: ["Azul", "Negro", "Beige"],
+    },
+    {
+      nombre: "Camiseta Deportiva",
+      descripcion: "Camiseta ligera para entrenamiento",
+      activo: true,
+      tallas: ["XS", "S", "M", "L"],
+      colores: ["Rojo", "Negro", "Blanco"],
+    },
   ];
 
   for (const producto of productos) {
@@ -42,6 +48,12 @@ async function main() {
       email: "mia@mail.com",
       name: "testQA",
       password: "030914Km$",
+      role: Role.ADMIN, // 🔥 usar enum, no string
+    },
+    {
+      email: "testqa1@example.com",
+      name: "testQA",
+      password: "testQA1!",
       role: Role.ADMIN, // 🔥 usar enum, no string
     }
   ];
@@ -63,5 +75,9 @@ async function main() {
 }
 
 main()
-  .catch(console.error)
-  .finally(() => prisma.$disconnect());
+  .then(() => prisma.$disconnect())
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
