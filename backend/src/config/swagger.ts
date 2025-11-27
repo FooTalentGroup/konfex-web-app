@@ -1,8 +1,8 @@
 import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import { Express } from "express";
-import { productoDocs } from "../modules/producto/producto.docs";
-import { authDocs } from "../modules/auth/auth.docs";
+import { productoDocs } from "../modules/producto";
+import { authDocs } from "../modules/auth";
 
 const options = {
   definition: {

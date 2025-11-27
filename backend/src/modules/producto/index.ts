@@ -1,1 +1,1 @@
-import { productoDocs } from "./producto.docs";
+export { productoDocs } from "./producto.docs";
