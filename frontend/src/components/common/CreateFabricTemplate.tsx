@@ -6,7 +6,7 @@ import BackNavigationBar from './BackNavigationBar'
 function CreateFabricTemplate() {
 
     return (
-        <div className="max-w-full bg-[#E6E1EA] rounded-lg shadow-sm">
+        <div className="max-w-2xl mx-auto bg-[#E6E1EA] rounded-lg shadow-sm">
             <BackNavigationBar
                 title="Agregar"
                 breadcrumbs={[

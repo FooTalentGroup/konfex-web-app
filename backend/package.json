@@ -43,6 +43,8 @@
     "pino": "^10.1.0",
     "pino-http": "^11.0.0",
     "prisma": "^6.19.0",
+    "socket": "^1.1.38",
+    "socket.io": "^4.8.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "tsc-alias": "^1.8.16",

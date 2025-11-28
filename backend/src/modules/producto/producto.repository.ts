@@ -4,6 +4,8 @@ export interface CreateProductoDto {
   nombre: string;
   descripcion?: string | null;
   activo?: boolean;
+  tallas?: string[];
+  colores?: string[];
 }
 
 export const productoRepository = {
