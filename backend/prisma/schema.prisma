@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,9 +7,177 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// -------------------------------------------------------
-// ENUMS
-// -------------------------------------------------------
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  active    Boolean  @default(true)
+  telegramMessages TelegramMessage[]
+}
+
+model Cliente {
+  id            Int           @id @default(autoincrement())
+  nombre        String
+  telefono      String?
+  email         String?
+  origen        String?
+  instagramUser String?
+  notas         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  pedidos       Pedido[]
+  presupuestos  Presupuesto[]
+}
+
+model Producto {
+  id                  Int                     @id @default(autoincrement())
+  nombre              String                  @unique
+  descripcion         String?
+  activo              Boolean                 @default(true)
+  tallas              String[]
+  colores             String[]
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
+  manoDeObra          ManoDeObraPorProducto[]
+  materiales          MaterialPorProducto[]
+  pedidos             PedidoDetalle[]
+  presupuestoDetalles PresupuestoDetalle[]
+}
+
+model Material {
+  id            Int                   @id @default(autoincrement())
+  nombre        String
+  costoUnitario Float
+  unidadMedida  String
+  stock         Float
+  tipo          String?
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  productos     MaterialPorProducto[]
+}
+
+model ManoDeObra {
+  id        Int                     @id @default(autoincrement())
+  nombre    String
+  costoHora Float?
+  createdAt DateTime                @default(now())
+  updatedAt DateTime                @updatedAt
+  productos ManoDeObraPorProducto[]
+}
+
+model MaterialPorProducto {
+  id         Int      @id @default(autoincrement())
+  productoId Int
+  materialId Int
+  cantidad   Float
+  material   Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  producto   Producto @relation(fields: [productoId], references: [id], onDelete: Cascade)
+
+  @@unique([productoId, materialId])
+}
+
+model ManoDeObraPorProducto {
+  id            Int        @id @default(autoincrement())
+  productoId    Int
+  manoDeObraId  Int
+  cantidadHoras Float
+  costoHora     Float?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  manoDeObra    ManoDeObra @relation(fields: [manoDeObraId], references: [id], onDelete: Cascade)
+  producto      Producto   @relation(fields: [productoId], references: [id], onDelete: Cascade)
+}
+
+model Presupuesto {
+  id                         Int                  @id @default(autoincrement())
+  numeroPresupuesto          Int                  @unique
+  clienteId                  Int?
+  fechaCreacion              DateTime             @default(now())
+  fechaVencimiento           DateTime?
+  estado                     EstadoPresupuesto
+  margenGananciaPorcentaje   Float
+  gastosIndirectosPorcentaje Float
+  totalCosto                 Float
+  totalVenta                 Float
+  notas                      String?
+  createdAt                  DateTime             @default(now())
+  updatedAt                  DateTime             @updatedAt
+  pedido                     Pedido?
+  cliente                    Cliente?             @relation(fields: [clienteId], references: [id], onDelete: Restrict)
+  detalles                   PresupuestoDetalle[]
+}
+
+model PresupuestoDetalle {
+  id            Int         @id @default(autoincrement())
+  presupuestoId Int
+  productoId    Int
+  descripcion   String?
+  cantidad      Int
+  costoUnitario Float
+  presupuesto   Presupuesto @relation(fields: [presupuestoId], references: [id], onDelete: Cascade)
+  producto      Producto    @relation(fields: [productoId], references: [id])
+
+  @@index([presupuestoId])
+}
+
+model Pedido {
+  id                   Int               @id @default(autoincrement())
+  presupuestoId        Int               @unique
+  clienteId            Int
+  fechaCreacion        DateTime          @default(now())
+  estado               EstadoPedido
+  pagado               Boolean           @default(false)
+  fechaEntregaEstimada DateTime?
+  fechaEntregaReal     DateTime?
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  cliente              Cliente           @relation(fields: [clienteId], references: [id])
+  presupuesto          Presupuesto       @relation(fields: [presupuestoId], references: [id])
+  detalles             PedidoDetalle[]
+  etapas               ProduccionEtapa[]
+}
+
+model PedidoDetalle {
+  id             Int      @id @default(autoincrement())
+  pedidoId       Int
+  productoId     Int
+  cantidad       Int
+  talle          String?
+  color          String?
+  costoUnitario  Float
+  precioUnitario Float
+  subtotal       Float
+  pedido         Pedido   @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  producto       Producto @relation(fields: [productoId], references: [id])
+}
+
+model ProduccionEtapa {
+  id          Int       @id @default(autoincrement())
+  pedidoId    Int
+  etapa       String
+  fechaInicio DateTime  @default(now())
+  fechaFin    DateTime?
+  responsable String?
+  pedido      Pedido    @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+}
+
+model TelegramMessage {
+  id        Int      @id @default(autoincrement())
+  chatId    String
+  userId    Int?     // Relación con tu tabla de usuarios si ya está registrado
+  firstName String?  // Nombre del usuario en Telegram
+  lastName  String?  // Apellido del usuario en Telegram
+  username  String?  // Username de Telegram
+  text      String
+  source    String   @default("telegram") // opcional, puede ser 'telegram' u otra fuente
+  timestamp DateTime @default(now())
+
+  user      User?    @relation(fields: [userId], references: [id])
+}
 
 enum EstadoPresupuesto {
   BORRADOR
@@ -31,199 +198,4 @@ enum EstadoPedido {
 enum Role {
   USER
   ADMIN
-}
-
-// -------------------------------------------------------
-// MODELOS: USUARIOS
-// -------------------------------------------------------
-
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  password  String
-  role      Role     @default(USER)
-  active     Boolean @default(true)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-// -------------------------------------------------------
-// MODELOS: CLIENTES
-// -------------------------------------------------------
-model Cliente {
-  id            Int      @id @default(autoincrement())
-  nombre        String
-  telefono      String?
-  email         String?
-  origen        String?
-  instagramUser String?
-  notas         String?
-
-  presupuestos  Presupuesto[]
-  pedidos       Pedido[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-// -------------------------------------------------------
-// MODELOS: PRODUCTOS Y RECURSOS
-// -------------------------------------------------------
-model Producto {
-  id          Int     @id @default(autoincrement())
-  nombre      String  @unique
-  descripcion String?
-  activo      Boolean @default(true)
-
-  tallas               String[]
-  colores              String[]
-  materiales           MaterialPorProducto[]
-  manoDeObra           ManoDeObraPorProducto[]
-  pedidos              PedidoDetalle[]
-  presupuestoDetalles  PresupuestoDetalle[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Material {
-  id            Int      @id @default(autoincrement())
-  nombre        String
-  costoUnitario Float
-  unidadMedida  String
-  stock         Float
-  tipo          String?
-
-  productos MaterialPorProducto[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model ManoDeObra {
-  id        Int      @id @default(autoincrement())
-  nombre    String
-  costoHora Float?
-
-  productos ManoDeObraPorProducto[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-// -------------------------------------------------------
-// MODELOS: TABLAS INTERMEDIAS
-// -------------------------------------------------------
-model MaterialPorProducto {
-  id          Int     @id @default(autoincrement())
-  productoId  Int
-  materialId  Int
-  cantidad    Float
-
-  producto Producto @relation(fields: [productoId], references: [id], onDelete: Cascade)
-  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
-
-  @@unique([productoId, materialId])
-}
-
-model ManoDeObraPorProducto {
-  id               Int        @id @default(autoincrement())
-  productoId       Int
-  manoDeObraId     Int
-  cantidadHoras    Float
-  costoHora        Float?
-
-  producto   Producto   @relation(fields: [productoId], references: [id], onDelete: Cascade)
-  manoDeObra ManoDeObra @relation(fields: [manoDeObraId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-// -------------------------------------------------------
-// MODELOS: PRESUPUESTOS
-// -------------------------------------------------------
-model Presupuesto {
-  id                          Int                  @id @default(autoincrement())
-  numeroPresupuesto           Int                  @unique
-  clienteId                   Int?
-  fechaCreacion               DateTime             @default(now())
-  fechaVencimiento            DateTime?
-  estado                      EstadoPresupuesto
-  margenGananciaPorcentaje    Float
-  gastosIndirectosPorcentaje  Float
-  totalCosto                  Float
-  totalVenta                  Float
-  notas                       String?
-
-  cliente     Cliente?             @relation(fields: [clienteId], references: [id], onDelete: Restrict)
-  detalles    PresupuestoDetalle[]
-  pedido      Pedido?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model PresupuestoDetalle {
-  id            Int       @id @default(autoincrement())
-  presupuestoId Int
-  productoId    Int
-  descripcion   String?
-  cantidad      Int
-  costoUnitario Float
-
-  presupuesto Presupuesto @relation(fields: [presupuestoId], references: [id], onDelete: Cascade)
-  producto    Producto    @relation(fields: [productoId], references: [id], onDelete: Restrict)
-
-  @@index([presupuestoId])
-}
-
-// -------------------------------------------------------
-// MODELOS: PEDIDOS & PRODUCCIÓN
-// -------------------------------------------------------
-model Pedido {
-  id                    Int            @id @default(autoincrement())
-  presupuestoId         Int            @unique
-  clienteId             Int
-  fechaCreacion         DateTime       @default(now())
-  estado                EstadoPedido
-  pagado                Boolean        @default(false)
-  fechaEntregaEstimada  DateTime?
-  fechaEntregaReal      DateTime?
-
-  cliente     Cliente     @relation(fields: [clienteId], references: [id], onDelete: Restrict)
-  presupuesto Presupuesto @relation(fields: [presupuestoId], references: [id], onDelete: Restrict)
-  detalles    PedidoDetalle[]
-  etapas      ProduccionEtapa[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model PedidoDetalle {
-  id             Int     @id @default(autoincrement())
-  pedidoId       Int
-  productoId     Int
-  cantidad       Int
-  talle          String?
-  color          String?
-  costoUnitario  Float
-  precioUnitario Float
-  subtotal       Float
-
-  pedido   Pedido   @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
-  producto Producto @relation(fields: [productoId], references: [id], onDelete: Restrict)
-}
-
-model ProduccionEtapa {
-  id          Int      @id @default(autoincrement())
-  pedidoId    Int
-  etapa       String
-  fechaInicio DateTime  @default(now())
-  fechaFin    DateTime?
-  responsable String?
-
-  pedido Pedido @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
 }
