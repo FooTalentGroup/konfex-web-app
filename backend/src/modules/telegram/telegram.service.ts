@@ -1,17 +1,32 @@
+import { io } from "@/config/socket";
+import { telegramMessageRepository } from "./telegram.repository";
+
 const TELEGRAM_API = (token: string) => `https://api.telegram.org/bot${token}`;
 
 export const handleIncomingUpdate = async (update: any) => {
   if (update.message && update.message.text) {
     const chatId = update.message.chat.id;
     const text = update.message.text;
+    const firstName = update.message.from?.first_name || "Nuevo";
+    const lastName = update.message.from?.last_name || "Cliente";
+    const username = update.message.from?.username || null;
     console.log(chatId, text)
 
-    // Aquí guardas en DB o envías al frontend
-    // await saveMessageToDB({ chatId, text, source: "telegram" });
-    // notifyFrontend(chatId, text);
+    const msgData = { 
+      chatId, 
+      text,
+      source: "telegram",
+      firstName,
+      lastName,
+      username,
+      timestamp: new Date().toISOString(),
+    };
+  
+    console.log("📩 Mensaje recibido del bot:", msgData);
+    
+    await telegramMessageRepository.save(msgData);
 
-    // Ejemplo: auto respuesta
-    // await sendTextMessage(chatId, `Recibí: ${text}`);
+    io.emit("telegram_message", msgData);
   }
 };
 
@@ -37,3 +52,7 @@ export const sendTextMessage = async (chatId: number | string, text: string) => 
 
   return response.json();
 };
+
+export const associateUser = async (chatId: string | number, userId: number) => {
+  return telegramMessageRepository.associateUserToChat(chatId, userId);
+}
