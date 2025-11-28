@@ -13,11 +13,14 @@ export function getPlataformaConfig(plataforma: 'telegram'): PlataformaConfig {
   return {
     bg: '#E3F2FD',
     borderColor: '#BBDEFB',
-    iconType: 'telegram',
+    iconType: plataforma,
   };
 }
 
 export function useChatList(initialChats: ChatItemProps[] = []) {
+
+    // TODO: Get chats from socket
+
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterType>('todos');
 

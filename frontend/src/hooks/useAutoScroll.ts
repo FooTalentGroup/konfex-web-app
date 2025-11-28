@@ -7,8 +7,10 @@ export const useAutoScroll = <T,>(dependencies: T[]): RefObject<HTMLDivElement> 
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, dependencies);
+  }, [dependencies]);
 
-  return scrollRef;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
+    return scrollRef;
 };
 

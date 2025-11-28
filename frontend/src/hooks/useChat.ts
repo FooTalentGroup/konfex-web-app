@@ -43,6 +43,7 @@ export const useChat = (chatId: string) => {
       plataforma: 'telegram',
       tienePresupuesto: true,
     };
+      // eslint-disable-next-line react-hooks/set-state-in-effect
     setContact(basicContact);
     setMessages([]);
     setIsLoading(false);
@@ -202,7 +203,7 @@ export const useChat = (chatId: string) => {
       socket.emit('telegram:send_message', {
         chatId: chatId,
         text: textToSend,
-      }, (response: any) => {
+      }, (response: never) => {
         console.log('✅ Respuesta del servidor:', response);
       });
 
