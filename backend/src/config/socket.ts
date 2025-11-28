@@ -1,5 +1,5 @@
+import { Server as HttpServer } from "http";
 import { Server } from "socket.io";
-import type { Server as HttpServer } from "http";
 
 export interface TelegramMessage {
   chatId: number;
@@ -18,11 +18,15 @@ export let io: Server<ClientToServerEvents, ServerToClientEvents>;
 export const initSocket = (server: HttpServer) => {
   io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
     cors: {
-      origin: "*",
+      origin: [
+        "http://localhost:3000", // frontend local
+        "https://konfex-web-app.vercel.app" // frontend producción
+      ],
+      methods: ["GET", "POST"]
     },
   });
 
-  io.on("connection", () => {
+  io.on("connection", (socket) => {
     console.log("🔌 Frontend conectado via WebSocket");
   });
 };
