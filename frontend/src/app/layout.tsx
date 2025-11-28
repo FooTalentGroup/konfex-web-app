@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { lato } from "./fonts";
+import { lato, poppins } from "./fonts";
 import "./styles/globals.css";
 import ToastProvider from "@/components/providers/ToastProvider";
 
@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${lato.variable} ${lato.className} antialiased`}
+        className={`${lato.variable} ${poppins.variable} ${lato.className} antialiased`}
         suppressHydrationWarning
       >
         <ToastProvider>

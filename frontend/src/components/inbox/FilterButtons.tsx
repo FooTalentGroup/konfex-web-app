@@ -20,42 +20,18 @@ const FilterButtons: React.FC<FilterButtonsProps> = ({
   ];
 
   return (
-    <div className="flex mb-6" style={{ gap: '8px' }}>
+    <div className="flex mb-6 gap-2">
       {filters.map((filter) => {
         const isActive = activeFilter === filter.id;
         return (
           <button
             key={filter.id}
             onClick={() => onFilterChange(filter.id)}
-            className="transition-colors"
-            style={{
-              fontFamily: 'var(--font-lato), sans-serif',
-              fontSize: '14px',
-              fontWeight: 400,
-              lineHeight: '131%',
-              letterSpacing: '0%',
-              borderRadius: '12px',
-              border: '1px solid',
-              paddingTop: '4px',
-              paddingRight: '12px',
-              paddingBottom: '4px',
-              paddingLeft: '12px',
-              backgroundColor: isActive ? '#D5A1F7' : 'transparent',
-              borderColor: '#D5A1F7',
-              color: isActive ? '#1E042F' : '#8B709D',
-            }}
-            onMouseEnter={(e) => {
-              if (!isActive) {
-                e.currentTarget.style.backgroundColor = '#D5A1F7';
-                e.currentTarget.style.color = '#1E042F';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isActive) {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.color = '#8B709D';
-              }
-            }}
+            className={`font-lato text-sm font-normal leading-[131%] tracking-[0%] rounded-xl border border-[#D5A1F7] py-1 px-3 transition-colors ${
+              isActive
+                ? 'bg-[#D5A1F7] text-[#1E042F]'
+                : 'bg-transparent text-[#8B709D] hover:bg-[#D5A1F7] hover:text-[#1E042F]'
+            }`}
           >
             {filter.label}
           </button>

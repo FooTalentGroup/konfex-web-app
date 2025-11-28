@@ -1,19 +1,24 @@
 const getApiBaseUrl = (): string => {
-  if (typeof window === 'undefined') {
-    return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+  // Prioridad 1: Variable de entorno
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
   }
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  
-  if (apiUrl) {
-    return apiUrl;
+  // Si estamos en el navegador
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    
+    // Si estamos en localhost, usar localhost:3000
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://localhost:3000';
+    }
+    
+    // Si estamos en producción, usar el backend de Render
+    return 'https://konfex-web-app-2.onrender.com/api/v1';
   }
 
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://localhost:3000';
-  }
-
-  return window.location.origin;
+  // Fallback para SSR: usar producción
+  return 'https://konfex-web-app-2.onrender.com/api/v1';
 };
 
 export const API_CONFIG = {

@@ -14,17 +14,11 @@ const InboxHeader: React.FC<InboxHeaderProps> = ({
   onSearchChange 
 }) => {
   return (
-    <div 
-      className="w-full px-4 sm:px-6 py-4"
-      style={{
-        backgroundColor: '#9D86AC',
-      }}
-    >
+    <div className="w-full px-4 sm:px-6 py-4 bg-[#9D86AC]">
       <NavigationTabs
         tabs={[
           { label: 'Inbox', href: '/inbox' },
           { label: 'Calculadora', href: '/calculator' },
-          { label: 'Pedidos', href: '/orders' },
         ]}
         className="mb-4"
       />
