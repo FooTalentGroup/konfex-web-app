@@ -25,7 +25,7 @@ export default function TelaPage() {
   } = useMaterials();
 
   const handleAddFabric = () => {
-    router.push('/materia-prima/tela/create-fabric');
+    router.push('/materia-prima/tela/crear-tela');
   };
 
   if (!mounted) {
