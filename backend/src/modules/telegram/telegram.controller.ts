@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { handleIncomingUpdate } from "./telegram.service";
+import { handleIncomingUpdate, getChatsList } from "./telegram.service";
+import { controllerHandler } from "@/common/handlers";
 
 export const telegramWebhookController = async (req: Request, res: Response) => {
   try {
@@ -21,3 +22,11 @@ export const telegramWebhookController = async (req: Request, res: Response) => 
     return res.status(500).json({ ok: false });
   }
 };
+
+export const getChatsController = controllerHandler(
+  async () => {
+    return await getChatsList();
+  },
+  "Lista de chats obtenida exitosamente",
+  200
+);

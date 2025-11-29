@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { telegramWebhookController } from "./telegram.controller";
+import { telegramWebhookController, getChatsController } from "./telegram.controller";
 import { sendTextMessage } from "./telegram.service";
 
 const telegramRoutes = Router();
 
 telegramRoutes.post("/webhook", telegramWebhookController);
 
+telegramRoutes.get("/chats", getChatsController);
 
 telegramRoutes.post("/send", async (req, res) => {
   try {

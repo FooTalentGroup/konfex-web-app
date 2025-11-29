@@ -56,3 +56,49 @@ export const sendTextMessage = async (chatId: number | string, text: string) => 
 export const associateUser = async (chatId: string | number, userId: number) => {
   return telegramMessageRepository.associateUserToChat(chatId, userId);
 }
+
+export const getChatsList = async () => {
+  // Obtener todos los mensajes ordenados por timestamp descendente
+  const allMessages = await telegramMessageRepository.findAll();
+  
+  // Agrupar por chatId, tomando el primer mensaje (más reciente) de cada chat
+  const chatsMap = new Map<string, {
+    chatId: string;
+    firstName?: string | null;
+    lastName?: string | null;
+    username?: string | null;
+    lastMessage: string;
+    lastTimestamp: Date;
+  }>();
+
+  for (const message of allMessages) {
+    if (!chatsMap.has(message.chatId)) {
+      chatsMap.set(message.chatId, {
+        chatId: message.chatId,
+        firstName: message.firstName,
+        lastName: message.lastName,
+        username: message.username,
+        lastMessage: message.text,
+        lastTimestamp: message.timestamp,
+      });
+    }
+  }
+
+  // Convertir el Map a array y ordenar por timestamp descendente
+  const chats = Array.from(chatsMap.values()).sort((a, b) => {
+    return b.lastTimestamp.getTime() - a.lastTimestamp.getTime();
+  });
+  
+  // Verificar si cada chat tiene presupuestos asociados
+  // Por ahora, retornamos hasBudget como false, pero se puede mejorar
+  // consultando si el chatId está relacionado con algún cliente que tenga presupuestos
+  return chats.map((chat) => ({
+    chatId: chat.chatId,
+    firstName: chat.firstName,
+    lastName: chat.lastName,
+    username: chat.username,
+    lastMessage: chat.lastMessage,
+    timestamp: chat.lastTimestamp,
+    hasBudget: false, // TODO: Implementar lógica para verificar presupuestos
+  }));
+}

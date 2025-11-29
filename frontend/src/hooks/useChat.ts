@@ -199,7 +199,10 @@ export const useChat = (chatId: string) => {
     setMessages([...messages, newMessage]);
     setMessageText('');
 
+      console.log('➕ Mensaje agregado localmente con ID temporal:', tempId);
+
     if (socket && socket.connected) {
+        console.log('🔌 Socket.IO conectado, enviando mensaje al backend...');
       socket.emit('telegram:send_message', {
         chatId: chatId,
         text: textToSend,

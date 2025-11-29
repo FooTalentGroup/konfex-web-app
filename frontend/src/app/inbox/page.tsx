@@ -11,55 +11,6 @@ import ChatList from '@/components/inbox/ChatList';
 import { useAuth } from '@/hooks/useAuth';
 import { useSidebar } from '@/hooks/useSidebar';
 import { useChatList } from '@/hooks/useChatList';
-import { ChatItemProps } from '@/components/inbox/ChatItem';
-
-const mockChats: ChatItemProps[] = [
-  {
-    id: 1,
-    avatar: '/perfil.png',
-    nombre: 'Nombre',
-    mensaje: 'Text',
-    hora: '11:30',
-    plataforma: 'telegram',
-    tienePresupuesto: true,
-  },
-  {
-    id: 2,
-    avatar: '/perfil.png',
-    nombre: 'Nombre',
-    mensaje: 'Text',
-    hora: '11:30',
-    plataforma: 'telegram',
-    tienePresupuesto: true,
-  },
-  {
-    id: 3,
-    avatar: '/perfil.png',
-    nombre: 'Nombre',
-    mensaje: 'Text',
-    hora: '11:30',
-    plataforma: 'telegram',
-    tienePresupuesto: true,
-  },
-  {
-    id: 4,
-    avatar: '/perfil.png',
-    nombre: 'Nombre',
-    mensaje: 'Text',
-    hora: '11:30',
-    plataforma: 'telegram',
-    tienePresupuesto: true,
-  },
-  {
-    id: 5,
-    avatar: '/perfil.png',
-    nombre: 'Nombre',
-    mensaje: 'Text',
-    hora: '11:30',
-    plataforma: 'telegram',
-    tienePresupuesto: true,
-  },
-];
 
 export default function InboxPage() {
   const router = useRouter();
@@ -67,11 +18,12 @@ export default function InboxPage() {
   const { isOpen: isSidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar();
   const {
     filteredChats,
+    isLoading,
     searchQuery,
     setSearchQuery,
     activeFilter,
     setActiveFilter,
-  } = useChatList(mockChats);
+  } = useChatList();
 
   const handleChatClick = (chatId: number) => {
     router.push(`/inbox/chat/${chatId}`);
@@ -83,6 +35,19 @@ export default function InboxPage() {
 
   if (!user) {
     return null;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-[#9D86AC]">
+        <Header onMenuClick={openSidebar} />
+        <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
+        <main className="flex-1 flex items-center justify-center">
+          <p className="font-lato text-sm text-white">Cargando chats...</p>
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
   return (

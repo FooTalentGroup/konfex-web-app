@@ -27,6 +27,6 @@ export const initSocket = (server: HttpServer) => {
   });
 
   io.on("connection", (socket) => {
-    console.log("🔌 Frontend conectado via WebSocket", socket);
+    console.log("🔌 Frontend conectado via WebSocket", socket.id);
   });
 };
