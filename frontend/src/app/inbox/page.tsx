@@ -11,55 +11,6 @@ import ChatList from '@/components/inbox/ChatList';
 import { useAuth } from '@/hooks/useAuth';
 import { useSidebar } from '@/hooks/useSidebar';
 import { useChatList } from '@/hooks/useChatList';
-import { ChatItemProps } from '@/components/inbox/ChatItem';
-
-const mockChats: ChatItemProps[] = [
-  {
-    id: 1,
-    avatar: '/imagenChat.png',
-    nombre: 'Nombre',
-    mensaje: 'Text',
-    hora: '11:30',
-    plataforma: 'telegram',
-    tienePresupuesto: true,
-  },
-  {
-    id: 2,
-    avatar: '/imagenChat.png',
-    nombre: 'Nombre',
-    mensaje: 'Text',
-    hora: '11:30',
-    plataforma: 'telegram',
-    tienePresupuesto: true,
-  },
-  {
-    id: 3,
-    avatar: '/imagenChat.png',
-    nombre: 'Nombre',
-    mensaje: 'Text',
-    hora: '11:30',
-    plataforma: 'telegram',
-    tienePresupuesto: true,
-  },
-  {
-    id: 4,
-    avatar: '/imagenChat.png',
-    nombre: 'Nombre',
-    mensaje: 'Text',
-    hora: '11:30',
-    plataforma: 'telegram',
-    tienePresupuesto: true,
-  },
-  {
-    id: 5,
-    avatar: '/imagenChat.png',
-    nombre: 'Nombre',
-    mensaje: 'Text',
-    hora: '11:30',
-    plataforma: 'telegram',
-    tienePresupuesto: true,
-  },
-];
 
 export default function InboxPage() {
   const router = useRouter();
@@ -67,11 +18,12 @@ export default function InboxPage() {
   const { isOpen: isSidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar();
   const {
     filteredChats,
+    isLoading,
     searchQuery,
     setSearchQuery,
     activeFilter,
     setActiveFilter,
-  } = useChatList(mockChats);
+  } = useChatList();
 
   const handleChatClick = (chatId: number) => {
     router.push(`/inbox/chat/${chatId}`);
@@ -102,10 +54,16 @@ export default function InboxPage() {
             onFilterChange={setActiveFilter}
           />
 
-          <ChatList
-            chats={filteredChats}
-            onChatClick={handleChatClick}
-          />
+          {isLoading ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500 font-lato text-sm">Cargando chats...</p>
+            </div>
+          ) : (
+            <ChatList
+              chats={filteredChats}
+              onChatClick={handleChatClick}
+            />
+          )}
         </div>
       </main>
 
