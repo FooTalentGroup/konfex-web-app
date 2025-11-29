@@ -20,7 +20,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages }) => {
     const grouped: Array<ChatMessageType | { type: 'separator'; date: string }> = [];
     let currentDate = '';
 
-    messages.forEach((message, index) => {
+    messages.forEach((message) => {
       const messageDate = message.date || '';
       
       // Si cambió el día, agregar separador

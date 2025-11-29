@@ -149,7 +149,7 @@ export function useChatList() {
     socketRef.current = getSocket();
     const socket = socketRef.current;
 
-    const handleTelegramMessage = (messageData: any) => {
+    const handleTelegramMessage = (messageData: TelegramMessageData) => {
       if (messageData && messageData.chatId) {
         console.log('📩 Nuevo mensaje recibido via Socket.IO para lista de chats:', messageData);
         updateChatFromMessage(messageData);
@@ -208,7 +208,7 @@ export function useChatList() {
         socket.off('message:telegram', handleTelegramMessage);
       }
     };
-  }, []);
+  }, [updateChatFromMessage]);
 
   const filteredChats = useMemo(() => {
     let filtered = chats;

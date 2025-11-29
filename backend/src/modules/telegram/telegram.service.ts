@@ -1,5 +1,5 @@
-import { io } from "@/config/socket";
-import { telegramMessageRepository } from "./telegram.repository";
+import {io} from "@/config/socket";
+import {telegramMessageRepository} from "./telegram.repository";
 
 const TELEGRAM_API = (token: string) => `https://api.telegram.org/bot${token}`;
 
@@ -132,31 +132,32 @@ export const getChatsList = async () => {
   
   // Para cada chat, obtener el nombre del usuario con source "telegram"
   // Si no existe, usar el último mensaje con source "telegram" para obtener el nombre
-  const chatsWithNames = await Promise.all(chats.map(async (chat) => {
-    // Buscar el último mensaje con source "telegram" para obtener el nombre del usuario
-    const telegramMessage = allMessages.find(
-      (msg: { chatId: string; source: string }) =>
-        msg.chatId === chat.chatId && msg.source === "telegram",
-    );
-    
-    // Usar el nombre del mensaje de telegram si existe, sino usar el del último mensaje
-    const firstName = telegramMessage?.firstName || chat.firstName;
-    const lastName = telegramMessage?.lastName || chat.lastName;
-    
-    // Concatenar firstName y lastName
-    const name = firstName && lastName 
-      ? `${firstName} ${lastName}`.trim()
-      : firstName || lastName || `Chat ${chat.chatId}`;
-    
-    return {
-      chatId: chat.chatId,
-      name,
-      lastMessage: chat.lastMessage,
-      lastMessageSource: chat.lastMessageSource,
-      timestamp: chat.lastTimestamp,
-      hasBudget: false, // TODO: Implementar lógica para verificar presupuestos
-    };
-  }));
-  
-  return chatsWithNames;
+  return await Promise.all(
+    chats.map(async (chat) => {
+      // Buscar el último mensaje con source "telegram" para obtener el nombre del usuario
+      const telegramMessage = allMessages.find(
+        (msg: { chatId: string; source: string }) =>
+          msg.chatId === chat.chatId && msg.source === "telegram",
+      );
+
+      // Usar el nombre del mensaje de telegram si existe, sino usar el del último mensaje
+      const firstName = telegramMessage?.firstName || chat.firstName;
+      const lastName = telegramMessage?.lastName || chat.lastName;
+
+      // Concatenar firstName y lastName
+      const name =
+        firstName && lastName
+          ? `${firstName} ${lastName}`.trim()
+          : firstName || lastName || `Chat ${chat.chatId}`;
+
+      return {
+        chatId: chat.chatId,
+        name,
+        lastMessage: chat.lastMessage,
+        lastMessageSource: chat.lastMessageSource,
+        timestamp: chat.lastTimestamp,
+        hasBudget: false,
+      };
+    }),
+  );
 }
