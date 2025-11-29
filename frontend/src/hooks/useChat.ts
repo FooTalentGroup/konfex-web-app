@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { Socket } from 'socket.io-client';
 import { getSocket } from '@/services/socket.service';
+import { apiClient } from '@/config/apiClient';
 
 export interface ChatMessage {
   id: number;
   text: string;
   time: string;
+  date?: string; // Fecha completa para separadores de día
   isSent: boolean;
   senderAvatar?: string;
 }
@@ -35,18 +37,88 @@ export const useChat = (chatId: string) => {
   const [messageText, setMessageText] = useState('');
   const socketRef = useRef<Socket | null>(null);
 
+  // Obtener mensajes históricos y datos del contacto
   useEffect(() => {
-    const basicContact: ChatContact = {
-      id: parseInt(chatId) || 0,
-      nombre: `Chat ${chatId}`,
-      avatar: '/perfil.png',
-      plataforma: 'telegram',
-      tienePresupuesto: true,
+    const fetchChatData = async () => {
+      setIsLoading(true);
+      try {
+        // Obtener mensajes del chat
+        const response = await apiClient<{
+          success: boolean;
+          statusCode: number;
+          message: string;
+          data: Array<{
+            id: number;
+            chatId: string;
+            text: string;
+            source: string;
+            firstName?: string | null;
+            lastName?: string | null;
+            username?: string | null;
+            timestamp: string;
+          }>;
+        }>(`/telegram/chats/${chatId}/messages`);
+
+        const messagesData = response.data || [];
+        
+        // Obtener el nombre del contacto desde el primer mensaje con source "telegram"
+        const telegramMessage = messagesData.find(msg => msg.source === 'telegram');
+          console.log('telegramMessage', telegramMessage);
+        const contactName = telegramMessage
+          ? `${telegramMessage.firstName || ''} ${telegramMessage.lastName || ''}`.trim() || `Chat ${chatId}`
+          : `Chat ${chatId}`;
+
+        const basicContact: ChatContact = {
+          id: parseInt(chatId) || 0,
+          nombre: contactName,
+          avatar: '/perfil.png',
+          plataforma: 'telegram',
+          tienePresupuesto: true,
+        };
+        
+        setContact(basicContact);
+
+        // Convertir mensajes del backend a formato ChatMessage
+        const formattedMessages: ChatMessage[] = messagesData.map((msg) => {
+          const messageDate = new Date(msg.timestamp);
+          const isSent = msg.source === 'konfex';
+          
+          return {
+            id: msg.id,
+            text: msg.text,
+            time: messageDate.toLocaleTimeString('es-ES', {
+              hour: '2-digit',
+              minute: '2-digit',
+            }),
+            date: messageDate.toLocaleDateString('es-ES', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            }),
+            isSent,
+            senderAvatar: '/perfil.png',
+          };
+        });
+
+        setMessages(formattedMessages);
+      } catch (error) {
+        console.error('Error al obtener mensajes del chat:', error);
+        // En caso de error, usar valores por defecto
+        const basicContact: ChatContact = {
+          id: parseInt(chatId) || 0,
+          nombre: `Chat ${chatId}`,
+          avatar: '/perfil.png',
+          plataforma: 'telegram',
+          tienePresupuesto: true,
+        };
+        setContact(basicContact);
+        setMessages([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-    setContact(basicContact);
-    setMessages([]);
-    setIsLoading(false);
+
+    fetchChatData();
   }, [chatId]);
 
   useEffect(() => {
@@ -86,6 +158,11 @@ export const useChat = (chatId: string) => {
         time: messageDate.toLocaleTimeString('es-ES', {
           hour: '2-digit',
           minute: '2-digit',
+        }),
+        date: messageDate.toLocaleDateString('es-ES', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
         }),
         isSent: false,
         senderAvatar: '/perfil.png',
@@ -182,10 +259,16 @@ export const useChat = (chatId: string) => {
     console.log('📤 Enviando mensaje:', { chatId, text: textToSend });
 
     const tempId = Date.now();
+    const now = new Date();
     const newMessage: ChatMessage = {
       id: tempId,
       text: textToSend,
-      time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+      time: now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+      date: now.toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }),
       isSent: true,
     };
 

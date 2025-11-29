@@ -37,7 +37,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onKeyPress={onKeyPress}
-          placeholder="Placeholder"
+          placeholder="Escribe un mensaje..."
           className="w-full h-12 px-3 rounded-md border border-[#B65CF2] focus:outline-none text-xs sm:text-sm md:text-base font-lato font-normal leading-[131%] tracking-normal text-black bg-[#FEFCFF] shadow-[0px_3px_5.99px_-3px_rgba(0,0,0,0.08),0px_0px_8.99px_0px_rgba(0,0,0,0.10)]"
         />
         <button

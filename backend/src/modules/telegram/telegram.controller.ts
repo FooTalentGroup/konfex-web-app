@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { handleIncomingUpdate, getChatsList } from "./telegram.service";
+import { handleIncomingUpdate, getChatsList, getChatMessages } from "./telegram.service";
 import { controllerHandler } from "@/common/handlers";
 
 export const telegramWebhookController = async (req: Request, res: Response) => {
@@ -28,5 +28,17 @@ export const getChatsController = controllerHandler(
     return await getChatsList();
   },
   "Lista de chats obtenida exitosamente",
+  200
+);
+
+export const getChatMessagesController = controllerHandler(
+  async (req: Request) => {
+    const { chatId } = req.params;
+    if (!chatId) {
+      throw new Error("chatId es requerido");
+    }
+    return await getChatMessages(chatId);
+  },
+  "Mensajes del chat obtenidos exitosamente",
   200
 );

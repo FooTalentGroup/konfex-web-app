@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import ChatMessage from './ChatMessage';
 import { ChatMessage as ChatMessageType } from '@/hooks/useChat';
 import { useAutoScroll } from '@/hooks/useAutoScroll';
@@ -12,6 +12,31 @@ interface ChatMessagesProps {
 const ChatMessages: React.FC<ChatMessagesProps> = ({ messages }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useAutoScroll(messages);
+
+  // Agrupar mensajes por día y agregar separadores
+  const messagesWithSeparators = useMemo(() => {
+    if (messages.length === 0) return [];
+
+    const grouped: Array<ChatMessageType | { type: 'separator'; date: string }> = [];
+    let currentDate = '';
+
+    messages.forEach((message, index) => {
+      const messageDate = message.date || '';
+      
+      // Si cambió el día, agregar separador
+      if (messageDate && messageDate !== currentDate) {
+        currentDate = messageDate;
+        grouped.push({
+          type: 'separator',
+          date: messageDate,
+        } as { type: 'separator'; date: string });
+      }
+      
+      grouped.push(message);
+    });
+
+    return grouped;
+  }, [messages]);
 
   return (
     <div 
@@ -26,9 +51,27 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages }) => {
         </div>
       ) : (
         <div>
-          {messages.map((message) => (
-            <ChatMessage key={message.id} message={message} />
-          ))}
+          {messagesWithSeparators.map((item, index) => {
+            if ('type' in item && item.type === 'separator') {
+              return (
+                <div
+                  key={`separator-${item.date}-${index}`}
+                  className="flex items-center justify-center my-4 sm:my-6"
+                >
+                  <div className="flex items-center w-full">
+                    <div className="flex-1 h-px bg-[#D5A1F7]"></div>
+                    <span className="px-3 sm:px-4 text-xs sm:text-sm font-lato font-medium text-[#8B709D] whitespace-nowrap">
+                      {item.date}
+                    </span>
+                    <div className="flex-1 h-px bg-[#D5A1F7]"></div>
+                  </div>
+                </div>
+              );
+            }
+            return (
+              <ChatMessage key={(item as ChatMessageType).id} message={item as ChatMessageType} />
+            );
+          })}
           {/* Elemento invisible al final para hacer scroll */}
           <div ref={messagesEndRef} />
         </div>

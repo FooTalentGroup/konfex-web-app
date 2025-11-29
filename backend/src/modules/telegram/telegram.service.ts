@@ -70,6 +70,32 @@ export const associateUser = async (chatId: string | number, userId: number) => 
   return telegramMessageRepository.associateUserToChat(chatId, userId);
 }
 
+export const getChatMessages = async (chatId: string | number) => {
+  const messages = await telegramMessageRepository.findByChatId(chatId);
+  
+  return messages.map(
+    (message: {
+      id: any;
+      chatId: any;
+      text: string;
+      source: any;
+      firstName: string;
+      lastName: string;
+      username: any;
+      timestamp: any;
+    }) => ({
+      id: message.id,
+      chatId: message.chatId,
+      text: message.text.trim(),
+      source: message.source,
+      firstName: message.firstName.trim(),
+      lastName: message.lastName.trim(),
+      username: message.username,
+      timestamp: message.timestamp,
+    }),
+  );
+}
+
 export const getChatsList = async () => {
   // Obtener todos los mensajes ordenados por timestamp descendente
   const allMessages = await telegramMessageRepository.findAll();
