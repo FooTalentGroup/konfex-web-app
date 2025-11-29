@@ -11,6 +11,7 @@ export const telegramMessageRepository = {
     lastName?: string;
     username?: string;
   }) => {
+    // @ts-ignore
     return prisma.telegramMessage.create({
       data: {
         chatId: String(data.chatId),
@@ -26,16 +27,19 @@ export const telegramMessageRepository = {
   },
 
   findByChatId: async (chatId: string | number) => {
+    // @ts-ignore
     return prisma.telegramMessage.findMany({ where: { chatId: String(chatId) } });
   },
 
   findAll: async () => {
+    // @ts-ignore
     return prisma.telegramMessage.findMany({
       orderBy: { timestamp: "desc" },
     });
   },
 
   associateUserToChat: async (chatId: string | number, userId: number) => {
+    // @ts-ignore
     return prisma.telegramMessage.updateMany({
       where: { chatId: String(chatId) },
       data: { userId },
