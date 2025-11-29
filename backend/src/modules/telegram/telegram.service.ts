@@ -30,7 +30,7 @@ export const handleIncomingUpdate = async (update: any) => {
   }
 };
 
-export const sendTextMessage = async (chatId: number | string, text: string) => {
+export const sendTextMessage = async (chatId: number | string, text: string, firstName: string, lastName: string, username: string) => {
   const token = process.env.TELEGRAM_BOT_TOKEN!;
   const url = `${TELEGRAM_API(token)}/sendMessage`;
 
@@ -49,6 +49,19 @@ export const sendTextMessage = async (chatId: number | string, text: string) => 
     const error = await response.text();
     throw new Error(`Telegram API error: ${error}`);
   }
+
+    const msgData = {
+        chatId,
+        text,
+        source: "konfex",
+        firstName,
+        lastName,
+        username,
+        timestamp: new Date().toISOString(),
+    };
+
+    console.log("Mensaje enviado al bot:", msgData);
+    await telegramMessageRepository.save(msgData);
 
   return response.json();
 };

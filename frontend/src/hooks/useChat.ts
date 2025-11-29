@@ -149,11 +149,7 @@ export const useChat = (chatId: string) => {
       console.log('👂 Registrando listeners de socket...');
       
       socket.on('telegram_message', handleTelegramMessage);
-      socket.on('telegram:message', handleTelegramMessage);
-      socket.on('telegram:new_message', handleTelegramMessage);
-      socket.on('message:telegram', handleTelegramMessage);
-      
-      console.log('✅ Listeners registrados para eventos: telegram_message, telegram:message, telegram:new_message, message:telegram');
+      console.log('✅ Listeners registrados para eventos: telegram_message');
     };
 
     if (socket.connected) {
@@ -173,9 +169,6 @@ export const useChat = (chatId: string) => {
     return () => {
       console.log('🧹 Limpiando listeners de socket para chatId:', chatId);
       socket.off('telegram_message', handleTelegramMessage);
-      socket.off('telegram:message', handleTelegramMessage);
-      socket.off('telegram:new_message', handleTelegramMessage);
-      socket.off('message:telegram', handleTelegramMessage);
       socket.off('connect', setupListeners);
     };
   }, [chatId]);
@@ -203,9 +196,13 @@ export const useChat = (chatId: string) => {
 
     if (socket && socket.connected) {
         console.log('🔌 Socket.IO conectado, enviando mensaje al backend...');
-      socket.emit('telegram:send_message', {
+      socket.emit('konfex_send_message', {
         chatId: chatId,
         text: textToSend,
+        timestamp: new Date().toISOString(),
+          firstName: 'Konfex', // Datos de usuario estáticos por ahora colocar usuario de la sessión
+          lastName: 'User',
+          username: 'konfex_user',
       }, (response: never) => {
         console.log('✅ Respuesta del servidor:', response);
       });
