@@ -81,6 +81,7 @@ export const getChatsList = async () => {
     lastName?: string | null;
     username?: string | null;
     lastMessage: string;
+    lastMessageSource: string;
     lastTimestamp: Date;
   }>();
 
@@ -92,6 +93,7 @@ export const getChatsList = async () => {
         lastName: message.lastName,
         username: message.username,
         lastMessage: message.text,
+        lastMessageSource: message.source,
         lastTimestamp: message.timestamp,
       });
     }
@@ -102,16 +104,32 @@ export const getChatsList = async () => {
     return b.lastTimestamp.getTime() - a.lastTimestamp.getTime();
   });
   
-  // Verificar si cada chat tiene presupuestos asociados
-  // Por ahora, retornamos hasBudget como false, pero se puede mejorar
-  // consultando si el chatId está relacionado con algún cliente que tenga presupuestos
-  return chats.map((chat) => ({
-    chatId: chat.chatId,
-    firstName: chat.firstName,
-    lastName: chat.lastName,
-    username: chat.username,
-    lastMessage: chat.lastMessage,
-    timestamp: chat.lastTimestamp,
-    hasBudget: false, // TODO: Implementar lógica para verificar presupuestos
+  // Para cada chat, obtener el nombre del usuario con source "telegram"
+  // Si no existe, usar el último mensaje con source "telegram" para obtener el nombre
+  const chatsWithNames = await Promise.all(chats.map(async (chat) => {
+    // Buscar el último mensaje con source "telegram" para obtener el nombre del usuario
+    const telegramMessage = allMessages.find(
+      (msg) => msg.chatId === chat.chatId && msg.source === "telegram"
+    );
+    
+    // Usar el nombre del mensaje de telegram si existe, sino usar el del último mensaje
+    const firstName = telegramMessage?.firstName || chat.firstName;
+    const lastName = telegramMessage?.lastName || chat.lastName;
+    
+    // Concatenar firstName y lastName
+    const name = firstName && lastName 
+      ? `${firstName} ${lastName}`.trim()
+      : firstName || lastName || `Chat ${chat.chatId}`;
+    
+    return {
+      chatId: chat.chatId,
+      name,
+      lastMessage: chat.lastMessage,
+      lastMessageSource: chat.lastMessageSource,
+      timestamp: chat.lastTimestamp,
+      hasBudget: false, // TODO: Implementar lógica para verificar presupuestos
+    };
   }));
+  
+  return chatsWithNames;
 }

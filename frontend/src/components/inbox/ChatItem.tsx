@@ -1,30 +1,26 @@
 'use client';
 
-import React from 'react';
+import React, {FC} from 'react';
 import Image from 'next/image';
-import { getPlataformaConfig } from '@/hooks/useChatList';
 
 export interface ChatItemProps {
   id: number;
   avatar?: string;
-  nombre: string;
-  mensaje: string;
-  hora: string;
-  plataforma: 'telegram';
-  tienePresupuesto?: boolean;
+  name: string;
+  message: string;
+  time: string;
+  hasBudget?: boolean;
   onClick?: () => void;
 }
 
-const ChatItem: React.FC<ChatItemProps> = ({
+const ChatItem: FC<ChatItemProps> = ({
   avatar,
-  nombre,
-  mensaje,
-  hora,
-  plataforma,
-  tienePresupuesto = false,
+  name,
+  message,
+  time,
+  hasBudget = false,
   onClick,
 }) => {
-  const plataformaConfig = getPlataformaConfig(plataforma);
 
   const renderPlatformIcon = () => {
     return (
@@ -53,7 +49,7 @@ const ChatItem: React.FC<ChatItemProps> = ({
         {avatar ? (
           <Image
             src={avatar}
-            alt={nombre}
+            alt={name}
             width={48}
             height={48}
             className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
@@ -83,7 +79,7 @@ const ChatItem: React.FC<ChatItemProps> = ({
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1 gap-2">
           <span className="font-lato text-sm sm:text-base font-bold leading-[131%] tracking-normal text-black truncate">
-            {nombre}
+            {name}
           </span>
           <div className="flex items-center gap-1 flex-shrink-0">
             <Image
@@ -94,13 +90,13 @@ const ChatItem: React.FC<ChatItemProps> = ({
               className="w-3 h-3 sm:w-3.5 sm:h-3.5 object-contain"
             />
             <span className="font-lato text-xs sm:text-sm font-normal leading-[131%] tracking-normal text-black whitespace-nowrap">
-              {hora}
+              {time}
             </span>
           </div>
         </div>
 
         <p className="mb-2 truncate font-lato text-xs sm:text-sm font-normal leading-[131%] tracking-normal text-black">
-          {mensaje}
+          {message}
         </p>
 
         <div className="flex items-center justify-between gap-2 flex-wrap">
@@ -109,7 +105,7 @@ const ChatItem: React.FC<ChatItemProps> = ({
             Telegram
           </span>
 
-          {tienePresupuesto && (
+          {hasBudget && (
             <span className="flex items-center bg-[#F7D8A1] rounded-xl py-0.5 px-1.5 gap-1 sm:gap-1.5 font-lato text-xs sm:text-sm font-normal leading-[131%] tracking-normal text-black whitespace-nowrap">
               <Image
                 src="/presupuestos.png"

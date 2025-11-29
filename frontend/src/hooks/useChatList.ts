@@ -4,26 +4,11 @@ import { apiClient } from '@/config/apiClient';
 
 export type FilterType = 'todos' | 'no-leidos' | 'leidos';
 
-export interface PlataformaConfig {
-  bg: string;
-  borderColor?: string;
-  iconType: 'telegram';
-}
-
-export function getPlataformaConfig(plataforma: 'telegram'): PlataformaConfig {
-  return {
-    bg: '#E3F2FD',
-    borderColor: '#BBDEFB',
-    iconType: plataforma,
-  };
-}
-
 interface TelegramChatResponse {
   chatId: string;
-  firstName?: string | null;
-  lastName?: string | null;
-  username?: string | null;
+  name: string;
   lastMessage: string;
+  lastMessageSource: string;
   timestamp: Date | string;
   hasBudget: boolean;
 }
@@ -50,25 +35,30 @@ export function useChatList() {
         // El endpoint devuelve { success, statusCode, message, data }
         const chatsData = response.data || [];
         
-        const chatsList: ChatItemProps[] = chatsData.map((chat) => ({
-          id: Number(chat.chatId) || 0,
-          avatar: '/imagenChat.png',
-          nombre: chat.firstName 
-            ? `${chat.firstName}${chat.lastName ? ` ${chat.lastName}` : ''}`
-            : `Chat ${chat.chatId}`,
-          mensaje: chat.lastMessage || '',
-          hora: chat.timestamp
-            ? new Date(chat.timestamp).toLocaleTimeString('es-ES', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-              })
-            : new Date().toLocaleTimeString('es-ES', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-              }),
-          plataforma: 'telegram',
-          tienePresupuesto: chat.hasBudget || false,
-        }));
+        const chatsList: ChatItemProps[] = chatsData.map((chat) => {
+          // Agregar prefijo "( Tu: )" si el mensaje fue enviado desde konfex
+          const message = chat.lastMessageSource === 'konfex' 
+            ? `Tu:  ${chat.lastMessage || ''}`
+            : chat.lastMessage || '';
+          
+          return {
+            id: Number(chat.chatId) || 0,
+            avatar: '/imagenChat.png',
+            name: chat.name || `Chat ${chat.chatId}`,
+            message,
+            time: chat.timestamp
+              ? new Date(chat.timestamp).toLocaleTimeString('es-ES', { 
+                  hour: '2-digit', 
+                  minute: '2-digit' 
+                })
+              : new Date().toLocaleTimeString('es-ES', { 
+                  hour: '2-digit', 
+                  minute: '2-digit' 
+                }),
+            platform: 'telegram',
+            hasBudget: chat.hasBudget || false,
+          };
+        });
         
         setChats(chatsList);
       } catch (error) {
@@ -89,14 +79,14 @@ export function useChatList() {
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter((chat) =>
-        chat.nombre.toLowerCase().includes(query)
+        chat.name.toLowerCase().includes(query)
       );
     }
 
     if (activeFilter === 'no-leidos') {
-      filtered = filtered.filter((chat) => !chat.tienePresupuesto);
+      filtered = filtered.filter((chat) => !chat.hasBudget);
     } else if (activeFilter === 'leidos') {
-      filtered = filtered.filter((chat) => chat.tienePresupuesto);
+      filtered = filtered.filter((chat) => chat.hasBudget);
     }
 
     return filtered;

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, {FC} from 'react';
 import ChatItem, { ChatItemProps } from './ChatItem';
 
 interface ChatListProps {
@@ -8,7 +8,7 @@ interface ChatListProps {
   onChatClick?: (chatId: number) => void;
 }
 
-const ChatList: React.FC<ChatListProps> = ({ chats, onChatClick }) => {
+const ChatList: FC<ChatListProps> = ({ chats, onChatClick }) => {
   return (
     <div className="w-full">
       {chats.length === 0 ? (
