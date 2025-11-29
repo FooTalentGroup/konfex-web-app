@@ -1,6 +1,8 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { Socket } from 'socket.io-client';
 import { ChatItemProps } from '@/components/inbox/ChatItem';
 import { apiClient } from '@/config/apiClient';
+import { getSocket } from '@/services/socket.service';
 
 export type FilterType = 'todos' | 'no-leidos' | 'leidos';
 
@@ -20,11 +22,23 @@ interface ApiResponse {
   data: TelegramChatResponse[];
 }
 
+interface TelegramMessageData {
+  chatId: number | string;
+  firstName?: string;
+  lastName?: string;
+  username?: string;
+  text?: string;
+  source?: string;
+  timestamp?: string;
+}
+
 export function useChatList() {
   const [chats, setChats] = useState<ChatItemProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterType>('todos');
+  const socketRef = useRef<Socket | null>(null);
+  const chatsMapRef = useRef<Map<string, ChatItemProps>>(new Map());
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -36,12 +50,12 @@ export function useChatList() {
         const chatsData = response.data || [];
         
         const chatsList: ChatItemProps[] = chatsData.map((chat) => {
-          // Agregar prefijo "( Tu: )" si el mensaje fue enviado desde konfex
+          // Agregar prefijo "Tu: " si el mensaje fue enviado desde konfex
           const message = chat.lastMessageSource === 'konfex' 
             ? `Tu:  ${chat.lastMessage || ''}`
             : chat.lastMessage || '';
           
-          return {
+          const chatItem: ChatItemProps = {
             id: Number(chat.chatId) || 0,
             avatar: '/imagenChat.png',
             name: chat.name || `Chat ${chat.chatId}`,
@@ -55,9 +69,16 @@ export function useChatList() {
                   hour: '2-digit', 
                   minute: '2-digit' 
                 }),
-            platform: 'telegram',
             hasBudget: chat.hasBudget || false,
           };
+          
+          return chatItem;
+        });
+        
+        // Inicializar el mapa de chats
+        chatsMapRef.current.clear();
+        chatsList.forEach(chat => {
+          chatsMapRef.current.set(String(chat.id), chat);
         });
         
         setChats(chatsList);
@@ -71,6 +92,122 @@ export function useChatList() {
     };
 
     fetchChats();
+  }, []);
+
+  // Función para crear un ChatItem desde datos de mensaje
+  const createChatItemFromMessage = (messageData: TelegramMessageData, existingChat?: ChatItemProps): ChatItemProps => {
+    const chatId = String(messageData.chatId);
+    const name = messageData.firstName && messageData.lastName
+      ? `${messageData.firstName} ${messageData.lastName}`.trim()
+      : messageData.firstName || messageData.lastName || existingChat?.name || `Chat ${chatId}`;
+    
+    const message = messageData.source === 'konfex'
+      ? `Tu:  ${messageData.text || ''}`
+      : messageData.text || '';
+    
+    const time = messageData.timestamp
+      ? new Date(messageData.timestamp).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+      : new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+    return {
+      id: Number(chatId) || 0,
+      avatar: '/imagenChat.png',
+      name,
+      message,
+      time,
+      hasBudget: existingChat?.hasBudget || false,
+    };
+  };
+
+  // Función para actualizar o agregar un chat desde un mensaje
+  const updateChatFromMessage = (messageData: TelegramMessageData) => {
+    const chatId = String(messageData.chatId);
+    const existingChat = chatsMapRef.current.get(chatId);
+    const chatItem = createChatItemFromMessage(messageData, existingChat);
+
+    // Actualizar el mapa de chats
+    chatsMapRef.current.set(chatId, chatItem);
+    
+    // Convertir el mapa a array y ordenar por timestamp (más recientes primero)
+    const allChats = Array.from(chatsMapRef.current.values());
+    
+    // Mover el chat actualizado al principio
+    const updatedChatIndex = allChats.findIndex(chat => String(chat.id) === chatId);
+    if (updatedChatIndex > 0) {
+      const [updatedChat] = allChats.splice(updatedChatIndex, 1);
+      allChats.unshift(updatedChat);
+    } else if (updatedChatIndex === -1) {
+      // Si no existe, agregarlo al principio
+      allChats.unshift(chatItem);
+    }
+    
+    setChats(allChats);
+  };
+
+  // Configurar Socket.IO para actualizaciones en tiempo real
+  useEffect(() => {
+    socketRef.current = getSocket();
+    const socket = socketRef.current;
+
+    const handleTelegramMessage = (messageData: any) => {
+      if (messageData && messageData.chatId) {
+        console.log('📩 Nuevo mensaje recibido via Socket.IO para lista de chats:', messageData);
+        updateChatFromMessage(messageData);
+      }
+    };
+
+    const setupListeners = () => {
+      if (!socket.io.opts.autoConnect) {
+        console.warn('⚠️ Socket deshabilitado (no auto-connect). Socket.IO no disponible.');
+        return;
+      }
+
+      if (!socket.connected) {
+        console.log('⏳ Socket no conectado aún, esperando conexión...');
+        
+        const onConnect = () => {
+          console.log('✅ Socket conectado, configurando listeners de chats...');
+          setupListeners();
+        };
+        
+        socket.once('connect', onConnect);
+        return;
+      }
+
+      console.log('🔌 Socket conectado, escuchando mensajes de Telegram para lista de chats...');
+      
+      // Escuchar múltiples variantes del evento de mensaje
+      socket.on('telegram_message', handleTelegramMessage);
+      socket.on('telegram:message', handleTelegramMessage);
+      socket.on('telegram:new_message', handleTelegramMessage);
+      socket.on('message:telegram', handleTelegramMessage);
+      
+      console.log('✅ Listeners de Socket.IO registrados para actualizaciones de chats');
+    };
+
+    if (socket.connected) {
+      setupListeners();
+    } else {
+      socket.once('connect', setupListeners);
+      
+      try {
+        if (!socket.connected) {
+          socket.connect();
+        }
+      } catch (error) {
+        console.warn('⚠️ No se pudo conectar el socket:', error);
+      }
+    }
+
+    // Cleanup: remover listeners cuando el componente se desmonte
+    return () => {
+      if (socket) {
+        socket.off('telegram_message', handleTelegramMessage);
+        socket.off('telegram:message', handleTelegramMessage);
+        socket.off('telegram:new_message', handleTelegramMessage);
+        socket.off('message:telegram', handleTelegramMessage);
+      }
+    };
   }, []);
 
   const filteredChats = useMemo(() => {
