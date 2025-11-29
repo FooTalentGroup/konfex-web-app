@@ -53,8 +53,8 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
       <Header onMenuClick={openSidebar} />
       <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
       
-      <div className="flex-1 flex items-start md:items-start justify-center w-full px-0 h-[87vh]">
-        <div className="w-full  mx-auto flex flex-col h-full  md:rounded-2xl md:shadow-lg overflow-hidden bg-[#FAFAFA]">
+      <div className="flex-1 flex items-start md:items-start justify-center w-full px-0 h-[86vh] sm:px-4 pt-0 pb-0 md:pb-8 md:mt-2 md:pt-6">
+        <div className="w-full md:max-w-sm lg:max-w-md xl:max-w-lg  mx-auto flex flex-col h-full  md:rounded-2xl md:shadow-lg overflow-hidden bg-[#FAFAFA]">
           <div className="w-full flex-shrink-0">
             <ChatHeader contact={contact} />
           </div>
