@@ -120,6 +120,7 @@ export function useChatList() {
   };
 
   // Función para actualizar o agregar un chat desde un mensaje
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateChatFromMessage = (messageData: TelegramMessageData) => {
     const chatId = String(messageData.chatId);
     const existingChat = chatsMapRef.current.get(chatId);
