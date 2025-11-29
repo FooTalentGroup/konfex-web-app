@@ -29,11 +29,11 @@ const PageHeader: React.FC<PageHeaderProps> = ({
     >
       <div className="max-w-md mx-auto">
         <h1
-          className="mb-2"
+          className="mb-2 text-left"
           style={{
             fontFamily: 'var(--font-lato), sans-serif',
             fontWeight: 700,
-            fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+            fontSize: 'clamp(1.125rem, 3vw, 1.5rem)',
             lineHeight: '131%',
             letterSpacing: '0%',
             color: '#FFFFFF',
@@ -42,10 +42,12 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           {title}
         </h1>
         <p
-          className="mb-4 sm:mb-5 md:mb-6 text-left text-xs sm:text-sm md:text-base"
+          className="mb-4 sm:mb-5 md:mb-6 text-left text-xs sm:text-sm"
           style={{
             fontFamily: 'var(--font-lato), sans-serif',
             fontWeight: 400,
+            fontStyle: 'normal',
+            fontSize: '0.875rem', // Small size
             lineHeight: '131%',
             letterSpacing: '0%',
             color: '#FFFFFF',

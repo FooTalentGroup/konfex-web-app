@@ -25,7 +25,6 @@ export default function PriceSummaryCard({
         tabs={[
           { label: "Inbox", href: "/inbox" },
           { label: "Calculadora", href: "/calculator" },
-          { label: "Pedidos", href: "/orders" },
         ]}
         className="mb-4"
       />

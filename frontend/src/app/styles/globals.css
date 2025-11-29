@@ -12,6 +12,7 @@
   --terciary-color-500: #F2BB5C;
   --bg-gray-color-500: #F3F0F5;
   --font-lato: 'Lato', sans-serif;
+  --font-poppins: 'Poppins', sans-serif;
   /* Colores específicos del login */
   --purple-dark: #6A4E7A;
   --purple-light: #9B7BBF;
@@ -25,6 +26,7 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-lato: var(--font-lato);
+  --font-poppins: var(--font-poppins);
   --color-primary-500: var(--primary-color-500);
   --color-primary-300: var(--primary-color-300);
   --color-secondary-300: var(--secondary-color-300);

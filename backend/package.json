@@ -7,7 +7,7 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only --require tsconfig-paths/register src/index.ts",
+    "server": "ts-node-dev --respawn --transpile-only --require tsconfig-paths/register src/index.ts",
     "prisma:generate": "prisma generate",
     "build": "npm run prisma:generate && tsc && tsc-alias",
     "start": "node dist/index.js",

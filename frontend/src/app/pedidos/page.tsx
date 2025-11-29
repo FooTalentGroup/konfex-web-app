@@ -5,11 +5,12 @@ import OrderCard from '@/components/orders/OrderCard';
 
 // --- COMPONENTES REUTILIZABLES ---
 import Header from '@/components/common/Header';
+import Footer from '@/components/common/Footer';
 import Sidebar from '@/components/common/Sidebar';
-import SearchBar from '@/components/common/SearchBar'; 
-import NavigationTabs from '@/components/ui/NavigationTabs';
+import PageHeader from '@/components/common/PageHeader';
 
 // --- HOOKS ---
+import { useAuth } from '@/hooks/useAuth';
 import { useSidebar } from '@/hooks/useSidebar';
 
 // --- TIPOS ---
@@ -21,10 +22,21 @@ export interface Order {
   garmentType: string;
   price: number;
   status: 'pagado' | 'deposito';
+  telegramChatId?: string; // ChatId de Telegram para enviar mensajes
 }
 
 // --- DATOS MOCK ---
 const MOCK_API_RESPONSE: Order[] = [
+  {
+    id: '1254307',
+    name: 'Ana Julieta',
+    orderDate: '00/00/00',
+    deliveryDate: '00/00/00',
+    garmentType: 'Blusa manga larga',
+    price: 0,
+    status: 'pagado',
+    telegramChatId: '1585032016', // Ejemplo de chatId de Telegram
+  },
   {
     id: '1234569',
     name: 'Ana Julieta',
@@ -33,34 +45,19 @@ const MOCK_API_RESPONSE: Order[] = [
     garmentType: 'Blusa manga larga',
     price: 0,
     status: 'pagado',
-  },
-  {
-    id: '1234570',
-    name: 'Maria Elena',
-    orderDate: '12/11/24',
-    deliveryDate: '20/11/24',
-    garmentType: 'Vestido Fiesta',
-    price: 45000,
-    status: 'pagado',
-  },
-  {
-    id: '1234571',
-    name: 'Sofia Lozano',
-    orderDate: '15/11/24',
-    deliveryDate: '30/11/24',
-    garmentType: 'Pantalón Lino',
-    price: 28000,
-    status: 'deposito',
+    telegramChatId: '1585032016', // Ejemplo de chatId de Telegram
   }
 ];
 
 export default function PedidosPage() {
+  const { user, mounted } = useAuth();
   const { isOpen, open, close } = useSidebar();
   const [searchTerm, setSearchTerm] = useState('');
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Simulamos carga de datos
     const timer = setTimeout(() => {
       setOrders(MOCK_API_RESPONSE);
       setIsLoading(false);
@@ -74,59 +71,66 @@ export default function PedidosPage() {
     order.id.includes(searchTerm)
   );
 
+  if (!mounted) {
+    return null;
+  }
+
+  if (!user) {
+    return null;
+  }
+
   return (
-    <div className="min-h-screen bg-[#F3F0F5] font-lato">
-      
+    <div className="min-h-screen flex flex-col bg-[#9D86AC]">
+      <Header onMenuClick={open} />
       <Sidebar isOpen={isOpen} onClose={close} />
-
-
-      <div className="bg-[#8B709D] pb-8 rounded-b-[30px] shadow-md relative z-0">
-        
-        {/* Header Full Width */}
-        <div className="pt-2 w-full">
-            <Header onMenuClick={open} />
-        </div>
-
       
-        <div className="max-w-4xl mx-auto w-full">
-            <div className="px-5 mt-2 mb-4">
-              <NavigationTabs />
-            </div>
+      <div className="flex-1 flex flex-col">
+        <PageHeader
+          title="Pedidos"
+          description="Consulta y edita a todos tus pedidos desde aquí."
+          searchPlaceholder="Buscar pedido por nombre"
+          searchValue={searchTerm}
+          onSearchChange={setSearchTerm}
+          backgroundColor="#9D86AC"
+        />
 
-            <div className="px-5">
-              <SearchBar 
-                placeholder="Buscar pedido por nombre"
-                value={searchTerm}
-                onChange={(e: any) => setSearchTerm(e?.target?.value ?? e)}
-             
-                className="w-full bg-white rounded-full border-none shadow-sm"
-              />
-            </div>
-        </div>
+        <main className="flex-1 rounded-t-3xl px-4 sm:px-6 pb-4 sm:pb-6 md:pb-8 bg-white">
+          <div className="w-full max-w-lg mx-auto pt-4 sm:pt-6">
+            {isLoading && (
+              <div className="text-center py-12">
+                <p 
+                  className="text-gray-500 text-sm"
+                  style={{ fontFamily: 'var(--font-lato), sans-serif' }}
+                >
+                  Cargando pedidos...
+                </p>
+              </div>
+            )}
+            {!isLoading && (
+              <>
+                {filteredOrders.length > 0 ? (
+                  <div className="space-y-0">
+                    {filteredOrders.map((order, index) => (
+                      <OrderCard key={`${order.id}-${index}`} {...order} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <p 
+                      className="text-gray-500 text-sm"
+                      style={{ fontFamily: 'var(--font-lato), sans-serif' }}
+                    >
+                      No se encontraron pedidos con ese nombre.
+                    </p>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </main>
       </div>
 
-     
-      <main className="px-5 pt-6 pb-20 max-w-4xl mx-auto w-full">
-        {isLoading ? (
-          <div className="text-center py-10 text-gray-500 bg-white/50 rounded-xl backdrop-blur-sm mx-auto max-w-sm mt-10 shadow-sm">
-            Cargando pedidos...
-          </div>
-        ) : filteredOrders.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filteredOrders.map((order) => (
-              <div key={order.id} className="h-full">
-                 <OrderCard {...order} />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-10 text-gray-500 bg-white/50 rounded-xl backdrop-blur-sm mx-auto max-w-sm mt-10 shadow-sm">
-            No se encontraron pedidos con ese nombre.
-          </div>
-        )}
-        
-        <div className="h-10"></div>
-      </main>
+      <Footer />
     </div>
   );
 }
