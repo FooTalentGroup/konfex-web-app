@@ -3,6 +3,7 @@ import swaggerJsdoc from "swagger-jsdoc";
 import { Express } from "express";
 import { productoDocs } from "../modules/producto";
 import { authDocs } from "../modules/auth";
+import { materialDocs } from "../modules/material";
 
 const options = {
   definition: {
@@ -16,17 +17,20 @@ const options = {
     components: {
       schemas: {
         ...productoDocs.components.schemas,
-        ...authDocs.components.schemas
+        ...authDocs.components.schemas,
+        ...materialDocs.components.schemas
       },
       parameters: {
         ...productoDocs.components.parameters,
-        ...authDocs.components.parameters
+        ...authDocs.components.parameters,
+        ...materialDocs.components.parameters
       }
     },
 
     paths: {
       ...productoDocs.paths,
-      ...authDocs.paths
+      ...authDocs.paths,
+      ...materialDocs.paths
     }
   },
 
