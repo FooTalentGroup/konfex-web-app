@@ -1,7 +1,7 @@
 {
-  "name": "konfex",
+  "name": "Konfex Backend",
   "version": "1.0.0",
-  "description": "sistema de gestión de EOS Indumentaria.",
+  "description": "API del Sistema de Gestión de EOS Indumentaria.",
   "main": "index.js",
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
