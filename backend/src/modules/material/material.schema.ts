@@ -20,6 +20,17 @@ export const updateMaterialSchema = z.object({
   body: createMaterialSchema.shape.body.partial(),
 });
 
+// Schema combinado para actualizar (body + params)
+export const updateMaterialWithIdSchema = z.object({
+  body: createMaterialSchema.shape.body.partial(),
+  params: z.object({
+    id: z
+      .string()
+      .regex(/^\d+$/, "El ID debe ser un número entero")
+      .transform(Number),
+  }),
+});
+
 // Validar parámetros de ruta (ID)
 export const materialIdSchema = z.object({
   params: z.object({

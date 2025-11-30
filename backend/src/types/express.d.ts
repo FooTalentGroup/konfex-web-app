@@ -4,7 +4,7 @@ declare global {
   namespace Express {
     interface Request {
       validatedQuery?: ParsedQs;
-      validatedParams?: Record<string, string>;
+      validatedParams?: Record<string, string | number>;
     }
   }
 }

@@ -3,7 +3,7 @@ import {
   createMaterialSchema,
   materialQuerySchema,
   materialIdSchema,
-  updateMaterialSchema,
+  updateMaterialWithIdSchema,
 } from "./material.schema";
 import { validationSchema } from "@/middleware";
 import {
@@ -34,8 +34,7 @@ materialRoutes.post(
 );
 materialRoutes.put(
   "/:id",
-  validationSchema(updateMaterialSchema),
-  validationSchema(materialIdSchema as any),
+  validationSchema(updateMaterialWithIdSchema as any),
   updateMaterialController,
 );
 materialRoutes.delete(

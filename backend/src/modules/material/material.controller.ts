@@ -31,7 +31,8 @@ export const getMaterialByIdController = controllerHandler(
   async (req: Request) => {
     // Usar validatedParams si está disponible (datos validados y transformados)
     const params = req.validatedParams || req.params;
-    const id = Number(params.id);
+    // Si validatedParams está disponible, el id ya es un número
+    const id = typeof params.id === "number" ? params.id : Number(params.id);
     const material = await materialService.getById(id);
     return material;
   },
@@ -43,7 +44,8 @@ export const updateMaterialController = controllerHandler(
   async (req: Request) => {
     // Usar validatedParams si está disponible (datos validados y transformados)
     const params = req.validatedParams || req.params;
-    const id = Number(params.id);
+    // Si validatedParams está disponible, el id ya es un número
+    const id = typeof params.id === "number" ? params.id : Number(params.id);
     const data: UpdateMaterialDto = req.body;
     const material = await materialService.update(id, data);
     return material;
@@ -56,7 +58,8 @@ export const deleteMaterialController = controllerHandler(
   async (req: Request) => {
     // Usar validatedParams si está disponible (datos validados y transformados)
     const params = req.validatedParams || req.params;
-    const id = Number(params.id);
+    // Si validatedParams está disponible, el id ya es un número
+    const id = typeof params.id === "number" ? params.id : Number(params.id);
     await materialService.delete(id);
     return null; // el handler ignora el body con status 204
   },
