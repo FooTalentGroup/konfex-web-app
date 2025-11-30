@@ -11,16 +11,17 @@ export const createMaterialController = controllerHandler(
     return material;
   },
   "Material creado exitosamente",
-  201
+  201,
 );
 
 // Obtener todos los materiales
 export const getAllMaterialsController = controllerHandler(
-  async (_req: Request) => {
-    const materiales = await materialService.getAll();
+  async (req: Request) => {
+    const filters = req.query as any;
+    const materiales = await materialService.getAll(filters);
     return materiales;
   },
-  "Materiales obtenidos correctamente"
+  "Materiales obtenidos correctamente",
 );
 
 // Obtener material por ID
@@ -30,7 +31,7 @@ export const getMaterialByIdController = controllerHandler(
     const material = await materialService.getById(id);
     return material;
   },
-  "Material obtenido correctamente"
+  "Material obtenido correctamente",
 );
 
 // Actualizar material
@@ -41,7 +42,7 @@ export const updateMaterialController = controllerHandler(
     const material = await materialService.update(id, data);
     return material;
   },
-  "Material actualizado correctamente"
+  "Material actualizado correctamente",
 );
 
 // Eliminar material
@@ -52,5 +53,5 @@ export const deleteMaterialController = controllerHandler(
     return null; // el handler ignora el body con status 204
   },
   "Material eliminado correctamente",
-  204
+  204,
 );
