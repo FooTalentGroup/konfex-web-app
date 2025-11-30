@@ -20,13 +20,67 @@ export const updateMaterialSchema = z.object({
   body: createMaterialSchema.shape.body.partial(),
 });
 
-// Validar parámetros de ruta
+// Validar parámetros de ruta (ID)
 export const materialIdSchema = z.object({
   params: z.object({
     id: z
       .string()
       .regex(/^\d+$/, "El ID debe ser un número entero")
       .transform(Number),
+  }),
+});
+
+// Query params (filtros)
+export const materialQuerySchema = z.object({
+  query: z.object({
+    categoria: z.string().optional(),
+    color: z.string().optional(),
+    precioMin: z
+      .string()
+      .regex(/^\d+(\.\d+)?$/)
+      .optional()
+      .transform((val) => (val ? parseFloat(val) : undefined)),
+    precioMax: z
+      .string()
+      .regex(/^\d+(\.\d+)?$/)
+      .optional()
+      .transform((val) => (val ? parseFloat(val) : undefined)),
+    pesoMin: z
+      .string()
+      .regex(/^\d+(\.\d+)?$/)
+      .optional()
+      .transform((val) => (val ? parseFloat(val) : undefined)),
+    pesoMax: z
+      .string()
+      .regex(/^\d+(\.\d+)?$/)
+      .optional()
+      .transform((val) => (val ? parseFloat(val) : undefined)),
+    anchoMin: z
+      .string()
+      .regex(/^\d+(\.\d+)?$/)
+      .optional()
+      .transform((val) => (val ? parseFloat(val) : undefined)),
+    anchoMax: z
+      .string()
+      .regex(/^\d+(\.\d+)?$/)
+      .optional()
+      .transform((val) => (val ? parseFloat(val) : undefined)),
+    proveedor: z.string().optional(),
+    search: z.string().optional(), // Búsqueda por nombre
+    page: z
+      .string()
+      .regex(/^\d+$/)
+      .optional()
+      .transform((val) => (val ? parseInt(val) : 1)),
+    limit: z
+      .string()
+      .regex(/^\d+$/)
+      .optional()
+      .transform((val) => (val ? parseInt(val) : 10)),
+    sortBy: z
+      .enum(["nombre", "precio", "peso", "ancho", "categoria", "createdAt"])
+      .optional(),
+    sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
   }),
 });
 
