@@ -3,7 +3,8 @@ import { CreateMaterialDto } from "./material.schema";
 import { MaterialQueryDto } from "./material.schema";
 
 export const materialRepository = {
-  create: (data: CreateMaterialDto) => prisma.material.create({ data }),
+  create: (data: CreateMaterialDto) =>
+    prisma.material.create({ data: data as any }),
   update: (id: number, data: Partial<CreateMaterialDto>) =>
     prisma.material.update({ where: { id }, data }),
   findAll: (filters?: MaterialQueryDto) => {

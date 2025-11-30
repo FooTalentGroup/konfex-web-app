@@ -18,12 +18,12 @@ export const materialRoutes = Router();
 
 materialRoutes.get(
   "/",
-  validationSchema(materialQuerySchema),
+  validationSchema(materialQuerySchema as any),
   getAllMaterialsController,
 );
 materialRoutes.get(
   "/:id",
-  validationSchema(materialIdSchema),
+  validationSchema(materialIdSchema as any),
   getMaterialByIdController,
 );
 
@@ -35,11 +35,11 @@ materialRoutes.post(
 materialRoutes.put(
   "/:id",
   validationSchema(updateMaterialSchema),
-  validationSchema(materialIdSchema),
+  validationSchema(materialIdSchema as any),
   updateMaterialController,
 );
 materialRoutes.delete(
   "/:id",
-  validationSchema(materialIdSchema),
+  validationSchema(materialIdSchema as any),
   deleteMaterialController,
 );

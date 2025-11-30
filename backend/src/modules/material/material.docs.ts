@@ -5,7 +5,8 @@ export const materialDocs = {
       get: {
         tags: ["Materiales"],
         summary: "Obtener todos los materiales",
-        description: "Obtiene una lista paginada de materiales con opciones de filtrado, búsqueda y ordenamiento.",
+        description:
+          "Obtiene una lista paginada de materiales con opciones de filtrado, búsqueda y ordenamiento.",
         parameters: [
           {
             name: "categoria",
@@ -13,7 +14,7 @@ export const materialDocs = {
             description: "Filtrar por categoría",
             required: false,
             schema: { type: "string" },
-            example: "Tela"
+            example: "Tela",
           },
           {
             name: "color",
@@ -21,7 +22,7 @@ export const materialDocs = {
             description: "Filtrar por color disponible",
             required: false,
             schema: { type: "string" },
-            example: "Azul"
+            example: "Azul",
           },
           {
             name: "precioMin",
@@ -29,7 +30,7 @@ export const materialDocs = {
             description: "Precio mínimo",
             required: false,
             schema: { type: "number", format: "float" },
-            example: 100
+            example: 100,
           },
           {
             name: "precioMax",
@@ -37,7 +38,7 @@ export const materialDocs = {
             description: "Precio máximo",
             required: false,
             schema: { type: "number", format: "float" },
-            example: 500
+            example: 500,
           },
           {
             name: "pesoMin",
@@ -45,7 +46,7 @@ export const materialDocs = {
             description: "Peso mínimo (kg)",
             required: false,
             schema: { type: "number", format: "float" },
-            example: 0.5
+            example: 0.5,
           },
           {
             name: "pesoMax",
@@ -53,7 +54,7 @@ export const materialDocs = {
             description: "Peso máximo (kg)",
             required: false,
             schema: { type: "number", format: "float" },
-            example: 10
+            example: 10,
           },
           {
             name: "anchoMin",
@@ -61,7 +62,7 @@ export const materialDocs = {
             description: "Ancho mínimo (cm)",
             required: false,
             schema: { type: "number", format: "float" },
-            example: 100
+            example: 100,
           },
           {
             name: "anchoMax",
@@ -69,7 +70,7 @@ export const materialDocs = {
             description: "Ancho máximo (cm)",
             required: false,
             schema: { type: "number", format: "float" },
-            example: 200
+            example: 200,
           },
           {
             name: "proveedor",
@@ -77,7 +78,7 @@ export const materialDocs = {
             description: "Filtrar por proveedor",
             required: false,
             schema: { type: "string" },
-            example: "Textil S.A."
+            example: "Textil S.A.",
           },
           {
             name: "search",
@@ -85,7 +86,7 @@ export const materialDocs = {
             description: "Búsqueda por nombre",
             required: false,
             schema: { type: "string" },
-            example: "algodón"
+            example: "algodón",
           },
           {
             name: "page",
@@ -93,7 +94,7 @@ export const materialDocs = {
             description: "Número de página",
             required: false,
             schema: { type: "integer", default: 1 },
-            example: 1
+            example: 1,
           },
           {
             name: "limit",
@@ -101,7 +102,7 @@ export const materialDocs = {
             description: "Cantidad de resultados por página",
             required: false,
             schema: { type: "integer", default: 10 },
-            example: 10
+            example: 10,
           },
           {
             name: "sortBy",
@@ -110,9 +111,16 @@ export const materialDocs = {
             required: false,
             schema: {
               type: "string",
-              enum: ["nombre", "precio", "peso", "ancho", "categoria", "createdAt"]
+              enum: [
+                "nombre",
+                "precio",
+                "peso",
+                "ancho",
+                "categoria",
+                "createdAt",
+              ],
             },
-            example: "precio"
+            example: "precio",
           },
           {
             name: "sortOrder",
@@ -122,29 +130,31 @@ export const materialDocs = {
             schema: {
               type: "string",
               enum: ["asc", "desc"],
-              default: "desc"
+              default: "desc",
             },
-            example: "asc"
-          }
+            example: "asc",
+          },
         ],
         responses: {
           200: {
             description: "Materiales obtenidos correctamente",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/SuccessResponseMateriales" }
-              }
-            }
+                schema: {
+                  $ref: "#/components/schemas/SuccessResponseMateriales",
+                },
+              },
+            },
           },
           400: {
             description: "Error de validación",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
-        }
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
+          },
+        },
       },
 
       post: {
@@ -164,20 +174,22 @@ export const materialDocs = {
                 peso: 2.5,
                 colores: ["Blanco", "Negro", "Azul", "Rojo"],
                 proveedor: "Textil S.A.",
-                precio: 350.50,
-                stock: 100
-              }
-            }
-          }
+                precio: 350.5,
+                stock: 100,
+              },
+            },
+          },
         },
         responses: {
           201: {
             description: "Material creado exitosamente",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/SuccessResponseMaterial" }
-              }
-            }
+                schema: {
+                  $ref: "#/components/schemas/SuccessResponseMaterial",
+                },
+              },
+            },
           },
           400: {
             description: "Error de validación",
@@ -188,29 +200,35 @@ export const materialDocs = {
                   success: false,
                   statusCode: 400,
                   message: "Error de validación",
-                  errors: ["El nombre es obligatorio", "Debe tener al menos un color"]
-                }
-              }
-            }
-          }
-        }
-      }
+                  errors: [
+                    "El nombre es obligatorio",
+                    "Debe tener al menos un color",
+                  ],
+                },
+              },
+            },
+          },
+        },
+      },
     },
 
     "/api/v1/materiales/{id}": {
       get: {
         tags: ["Materiales"],
         summary: "Obtener material por ID",
-        description: "Obtiene los detalles de un material específico por su ID.",
+        description:
+          "Obtiene los detalles de un material específico por su ID.",
         parameters: [{ $ref: "#/components/parameters/MaterialId" }],
         responses: {
           200: {
             description: "Material obtenido correctamente",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/SuccessResponseMaterial" }
-              }
-            }
+                schema: {
+                  $ref: "#/components/schemas/SuccessResponseMaterial",
+                },
+              },
+            },
           },
           404: {
             description: "Material no encontrado",
@@ -220,148 +238,161 @@ export const materialDocs = {
                 example: {
                   success: false,
                   statusCode: 404,
-                  message: "Material no encontrado"
-                }
-              }
-            }
-          }
-        }
+                  message: "Material no encontrado",
+                },
+              },
+            },
+          },
+        },
       },
 
       put: {
         tags: ["Materiales"],
         summary: "Actualizar un material",
-        description: "Actualiza los datos de un material existente. Todos los campos son opcionales.",
+        description:
+          "Actualiza los datos de un material existente. Todos los campos son opcionales.",
         parameters: [{ $ref: "#/components/parameters/MaterialId" }],
         requestBody: {
           content: {
             "application/json": {
               schema: { $ref: "#/components/schemas/UpdateMaterialDto" },
               example: {
-                precio: 380.00,
+                precio: 380.0,
                 stock: 150,
-                colores: ["Blanco", "Negro", "Azul", "Rojo", "Verde"]
-              }
-            }
-          }
+                colores: ["Blanco", "Negro", "Azul", "Rojo", "Verde"],
+              },
+            },
+          },
         },
         responses: {
           200: {
             description: "Material actualizado correctamente",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/SuccessResponseMaterial" }
-              }
-            }
+                schema: {
+                  $ref: "#/components/schemas/SuccessResponseMaterial",
+                },
+              },
+            },
           },
           404: {
             description: "Material no encontrado",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/ErrorResponse" }
-              }
-            }
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
           },
           400: {
             description: "Error de validación",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
-        }
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
+          },
+        },
       },
 
       delete: {
         tags: ["Materiales"],
         summary: "Eliminar un material",
-        description: "Elimina un material del inventario. Esta acción no se puede deshacer.",
+        description:
+          "Elimina un material del inventario. Esta acción no se puede deshacer.",
         parameters: [{ $ref: "#/components/parameters/MaterialId" }],
         responses: {
           204: {
-            description: "Material eliminado correctamente"
+            description: "Material eliminado correctamente",
           },
           404: {
             description: "Material no encontrado",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
-        }
-      }
-    }
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
+          },
+        },
+      },
+    },
   },
 
   components: {
     schemas: {
       CreateMaterialDto: {
         type: "object",
-        required: ["nombre", "categoria", "ancho", "peso", "colores", "proveedor", "precio", "stock"],
+        required: [
+          "nombre",
+          "categoria",
+          "ancho",
+          "peso",
+          "colores",
+          "proveedor",
+          "precio",
+          "stock",
+        ],
         properties: {
           nombre: {
             type: "string",
             minLength: 1,
             maxLength: 255,
             description: "Nombre del material",
-            example: "Algodón Premium 240g"
+            example: "Algodón Premium 240g",
           },
           url_imagen: {
             type: "string",
             nullable: true,
             description: "URL de la imagen del material",
-            example: "https://example.com/images/algodon-premium.jpg"
+            example: "https://example.com/images/algodon-premium.jpg",
           },
           categoria: {
             type: "string",
             minLength: 1,
             description: "Categoría del material",
-            example: "Tela"
+            example: "Tela",
           },
           ancho: {
             type: "number",
             format: "float",
             minimum: 0,
             description: "Ancho del material en centímetros",
-            example: 150
+            example: 150,
           },
           peso: {
             type: "number",
             format: "float",
             minimum: 0,
             description: "Peso del material en kilogramos",
-            example: 2.5
+            example: 2.5,
           },
           colores: {
             type: "array",
             items: { type: "string" },
             minItems: 1,
             description: "Lista de colores disponibles",
-            example: ["Blanco", "Negro", "Azul"]
+            example: ["Blanco", "Negro", "Azul"],
           },
           proveedor: {
             type: "string",
             minLength: 1,
             description: "Nombre del proveedor",
-            example: "Textil S.A."
+            example: "Textil S.A.",
           },
           precio: {
             type: "number",
             format: "float",
             minimum: 0,
             description: "Precio unitario del material",
-            example: 350.50
+            example: 350.5,
           },
           stock: {
             type: "number",
             format: "float",
             minimum: 0,
             description: "Cantidad disponible en stock",
-            example: 100
-          }
-        }
+            example: 100,
+          },
+        },
       },
 
       UpdateMaterialDto: {
@@ -371,54 +402,54 @@ export const materialDocs = {
             type: "string",
             minLength: 1,
             maxLength: 255,
-            description: "Nombre del material"
+            description: "Nombre del material",
           },
           url_imagen: {
             type: "string",
             nullable: true,
-            description: "URL de la imagen del material"
+            description: "URL de la imagen del material",
           },
           categoria: {
             type: "string",
             minLength: 1,
-            description: "Categoría del material"
+            description: "Categoría del material",
           },
           ancho: {
             type: "number",
             format: "float",
             minimum: 0,
-            description: "Ancho del material en centímetros"
+            description: "Ancho del material en centímetros",
           },
           peso: {
             type: "number",
             format: "float",
             minimum: 0,
-            description: "Peso del material en kilogramos"
+            description: "Peso del material en kilogramos",
           },
           colores: {
             type: "array",
             items: { type: "string" },
             minItems: 1,
-            description: "Lista de colores disponibles"
+            description: "Lista de colores disponibles",
           },
           proveedor: {
             type: "string",
             minLength: 1,
-            description: "Nombre del proveedor"
+            description: "Nombre del proveedor",
           },
           precio: {
             type: "number",
             format: "float",
             minimum: 0,
-            description: "Precio unitario del material"
+            description: "Precio unitario del material",
           },
           stock: {
             type: "number",
             format: "float",
             minimum: 0,
-            description: "Cantidad disponible en stock"
-          }
-        }
+            description: "Cantidad disponible en stock",
+          },
+        },
       },
 
       Material: {
@@ -427,72 +458,72 @@ export const materialDocs = {
           id: {
             type: "number",
             description: "ID único del material",
-            example: 1
+            example: 1,
           },
           nombre: {
             type: "string",
             description: "Nombre del material",
-            example: "Algodón Premium 240g"
+            example: "Algodón Premium 240g",
           },
           url_imagen: {
             type: "string",
             nullable: true,
             description: "URL de la imagen del material",
-            example: "https://example.com/images/algodon-premium.jpg"
+            example: "https://example.com/images/algodon-premium.jpg",
           },
           categoria: {
             type: "string",
             description: "Categoría del material",
-            example: "Tela"
+            example: "Tela",
           },
           ancho: {
             type: "number",
             format: "float",
             description: "Ancho del material en centímetros",
-            example: 150
+            example: 150,
           },
           peso: {
             type: "number",
             format: "float",
             description: "Peso del material en kilogramos",
-            example: 2.5
+            example: 2.5,
           },
           colores: {
             type: "array",
             items: { type: "string" },
             description: "Lista de colores disponibles",
-            example: ["Blanco", "Negro", "Azul", "Rojo"]
+            example: ["Blanco", "Negro", "Azul", "Rojo"],
           },
           proveedor: {
             type: "string",
             description: "Nombre del proveedor",
-            example: "Textil S.A."
+            example: "Textil S.A.",
           },
           precio: {
             type: "number",
             format: "float",
             description: "Precio unitario del material",
-            example: 350.50
+            example: 350.5,
           },
           stock: {
             type: "number",
             format: "float",
             description: "Cantidad disponible en stock",
-            example: 100
+            example: 100,
           },
           createdAt: {
             type: "string",
             format: "date-time",
             description: "Fecha de creación",
-            example: "2024-01-15T10:30:00Z"
+            example: "2024-01-15T10:30:00Z",
           },
           updatedAt: {
             type: "string",
             format: "date-time",
             description: "Fecha de última actualización",
-            example: "2024-01-15T10:30:00Z"
-          }
-        }
+            example: "2024-01-15T10:30:00Z",
+          },
+        },
       },
 
       MaterialPagination: {
@@ -501,24 +532,24 @@ export const materialDocs = {
           page: {
             type: "number",
             description: "Página actual",
-            example: 1
+            example: 1,
           },
           limit: {
             type: "number",
             description: "Resultados por página",
-            example: 10
+            example: 10,
           },
           total: {
             type: "number",
             description: "Total de materiales",
-            example: 25
+            example: 25,
           },
           totalPages: {
             type: "number",
             description: "Total de páginas",
-            example: 3
-          }
-        }
+            example: 3,
+          },
+        },
       },
 
       SuccessResponseMaterial: {
@@ -526,20 +557,20 @@ export const materialDocs = {
         properties: {
           success: {
             type: "boolean",
-            example: true
+            example: true,
           },
           statusCode: {
             type: "number",
-            example: 200
+            example: 200,
           },
           message: {
             type: "string",
-            example: "Material obtenido correctamente"
+            example: "Material obtenido correctamente",
           },
           data: {
-            $ref: "#/components/schemas/Material"
-          }
-        }
+            $ref: "#/components/schemas/Material",
+          },
+        },
       },
 
       SuccessResponseMateriales: {
@@ -547,29 +578,29 @@ export const materialDocs = {
         properties: {
           success: {
             type: "boolean",
-            example: true
+            example: true,
           },
           statusCode: {
             type: "number",
-            example: 200
+            example: 200,
           },
           message: {
             type: "string",
-            example: "Materiales obtenidos correctamente"
+            example: "Materiales obtenidos correctamente",
           },
           data: {
             type: "object",
             properties: {
               data: {
                 type: "array",
-                items: { $ref: "#/components/schemas/Material" }
+                items: { $ref: "#/components/schemas/Material" },
               },
               pagination: {
-                $ref: "#/components/schemas/MaterialPagination"
-              }
-            }
-          }
-        }
+                $ref: "#/components/schemas/MaterialPagination",
+              },
+            },
+          },
+        },
       },
 
       ErrorResponse: {
@@ -578,26 +609,29 @@ export const materialDocs = {
           success: {
             type: "boolean",
             default: false,
-            example: false
+            example: false,
           },
           statusCode: {
             type: "number",
-            example: 400
+            example: 400,
           },
           message: {
             type: "string",
-            example: "Error de validación"
+            example: "Error de validación",
           },
           errors: {
             oneOf: [
               { type: "array", items: { type: "string" } },
               { type: "object" },
-              { type: "null" }
+              { type: "null" },
             ],
-            example: ["El nombre es obligatorio", "Debe tener al menos un color"]
-          }
-        }
-      }
+            example: [
+              "El nombre es obligatorio",
+              "Debe tener al menos un color",
+            ],
+          },
+        },
+      },
     },
 
     parameters: {
@@ -607,10 +641,10 @@ export const materialDocs = {
         required: true,
         description: "ID del material",
         schema: {
-          type: "number"
+          type: "number",
         },
-        example: 1
-      }
-    }
-  }
+        example: 1,
+      },
+    },
+  },
 };
