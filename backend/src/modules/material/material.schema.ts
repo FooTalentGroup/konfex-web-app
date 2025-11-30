@@ -87,3 +87,4 @@ export const materialQuerySchema = z.object({
 // DTOs
 export type CreateMaterialDto = z.infer<typeof createMaterialSchema>["body"];
 export type UpdateMaterialDto = z.infer<typeof updateMaterialSchema>["body"];
+export type MaterialQueryDto = z.infer<typeof materialQuerySchema>["query"];
