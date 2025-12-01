@@ -70,7 +70,7 @@ export default function ImageUploadField({
                             <div className="w-12 h-12 bg-purple-200 rounded-lg flex items-center justify-center mb-3">
                                 <ImagePlus className="w-6 h-6 text-primary-500" />
                             </div>
-                            <p className="text-sm text-black font-medium">Agregá una imagen</p>
+                            <p className="text-sm text-black font-medium">Agregar una imagen</p>
                         </>
                     )}
                 </div>

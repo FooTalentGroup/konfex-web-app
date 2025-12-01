@@ -1,4 +1,5 @@
 export * from './AddFloatingButton';
+export * from './AddGarmentTemplate';
 export * from './ApiTest';
 export * from './autoCompleteSelect';
 export * from './BackNavigationBar';
