@@ -8,7 +8,7 @@ import { useLogin } from '@/hooks/useLogin';
 
 const LoginPage: React.FC = () => {
   const [mounted, setMounted] = useState(false);
-  const { register, handleSubmit, errors, isLoading, error, onSubmit } = useLogin();
+  const { register, handleSubmit, errors, isLoading, error, isValid, onSubmit } = useLogin();
 
   useEffect(() => {
     setMounted(true);
@@ -49,13 +49,13 @@ const LoginPage: React.FC = () => {
               justifyContent: 'center',
             }}
           >
-            Inicia tu sesión
+            Iniciar sesión
           </h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-[390px] space-y-6">
             <Input
               id="usuario"
-              label="Usuario"
+              label="E-mail"
               type="text"
               placeholder="luciana@gmail.com"
               register={register('usuario', {
@@ -114,6 +114,7 @@ const LoginPage: React.FC = () => {
 
             <Button
               type="submit"
+              disabled={!isValid || isLoading}
               isLoading={isLoading}
               loadingText="Iniciando sesión..."
               className="max-w-[390px] mt-4"
