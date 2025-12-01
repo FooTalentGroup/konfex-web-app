@@ -9,7 +9,7 @@
   "scripts": {
     "server": "ts-node-dev --respawn --transpile-only --require tsconfig-paths/register src/index.ts",
     "prisma:generate": "prisma generate",
-    "build": "npm run prisma:generate && tsc && tsc-alias && terser dist/**/*.js -o dist/ --compress --mangle --comments false",
+    "build": "npm run prisma:generate && tsc && tsc-alias && node scripts/minify.js",
     "start": "node dist/index.js",
     "start:prod": "npm run build && node dist/index.js",
     "prisma:migrate": "prisma migrate dev",
@@ -47,7 +47,6 @@
     "socket.io": "^4.8.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
-    "terser": "^5.44.1",
     "tsc-alias": "^1.8.16",
     "typescript": "^5.9.3",
     "zod": "^4.1.12"
@@ -59,11 +58,13 @@
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
+    "glob": "^13.0.0",
     "husky": "^9.1.7",
     "jest": "^30.2.0",
     "pino-pretty": "^13.1.2",
     "prettier": "^3.6.2",
     "supertest": "^7.1.4",
+    "terser": "^5.44.1",
     "ts-jest": "^29.4.5",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0"
