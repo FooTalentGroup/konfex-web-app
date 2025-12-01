@@ -170,6 +170,7 @@ export const materialDocs = {
                 nombre: "Algodón Premium 240g",
                 url_imagen: "https://example.com/images/algodon-premium.jpg",
                 categoria: "Tela",
+                unidadMedida: "metros",
                 ancho: 150,
                 peso: 2.5,
                 colores: ["Blanco", "Negro", "Azul", "Rojo"],

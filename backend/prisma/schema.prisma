@@ -53,8 +53,9 @@ model Material {
   nombre        String
   url_imagen    String?
   categoria     String
-  ancho         Float
-  peso          Float
+  unidadMedida  String
+  ancho         Float?
+  peso          Float?
   colores       String[]
   proveedor     String
   precio        Float
