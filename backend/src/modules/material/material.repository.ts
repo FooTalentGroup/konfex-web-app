@@ -44,9 +44,71 @@ export const materialRepository = {
     if (filters?.proveedor)
       where.proveedor = { contains: filters.proveedor, mode: "insensitive" };
 
-    // Búsqueda por nombre
-    if (filters?.search)
-      where.nombre = { contains: filters.search, mode: "insensitive" };
+    // Superbuscador: búsqueda en múltiples campos
+    if (filters?.search) {
+      const consulta = filters.search.trim();
+      const orConditions: any[] = [];
+
+      // Búsqueda en campos de texto
+      orConditions.push(
+        { nombre: { contains: consulta, mode: "insensitive" } },
+        { categoria: { contains: consulta, mode: "insensitive" } },
+        { proveedor: { contains: consulta, mode: "insensitive" } },
+        { unidadMedida: { contains: consulta, mode: "insensitive" } },
+      );
+
+      // Búsqueda en array de colores
+      orConditions.push({ colores: { has: consulta } });
+
+      // Intentar parsear como número para buscar en precio, peso y ancho
+      // Solo si no hay filtros de rango específicos para esos campos
+      const numero = parseFloat(consulta.replace(/[^\d.]/g, ""));
+      if (!isNaN(numero)) {
+        // Buscar precio exacto o aproximado (con tolerancia del 1%)
+        // Solo si no hay filtros de rango de precio
+        const tolerancia = numero * 0.01;
+        if (!where.precio) {
+          orConditions.push({
+            precio: {
+              gte: numero - tolerancia,
+              lte: numero + tolerancia,
+            },
+          });
+        }
+        // Solo si no hay filtros de rango de peso
+        if (!where.peso) {
+          orConditions.push({
+            peso: {
+              gte: numero - tolerancia,
+              lte: numero + tolerancia,
+            },
+          });
+        }
+        // Solo si no hay filtros de rango de ancho
+        if (!where.ancho) {
+          orConditions.push({
+            ancho: {
+              gte: numero - tolerancia,
+              lte: numero + tolerancia,
+            },
+          });
+        }
+      }
+
+      // Si hay otros filtros, combinarlos con AND
+      if (Object.keys(where).length > 0) {
+        where.AND = [
+          ...Object.entries(where).map(([key, value]) => ({ [key]: value })),
+          { OR: orConditions },
+        ];
+        // Limpiar las propiedades individuales ya que están en AND
+        Object.keys(where).forEach((key) => {
+          if (key !== "AND") delete where[key];
+        });
+      } else {
+        where.OR = orConditions;
+      }
+    }
 
     // Ordenamiento
     const orderBy: any = {};
@@ -95,8 +157,71 @@ export const materialRepository = {
     if (filters?.proveedor) {
       where.proveedor = { contains: filters.proveedor, mode: "insensitive" };
     }
+
+    // Superbuscador: búsqueda en múltiples campos (misma lógica que findAll)
     if (filters?.search) {
-      where.nombre = { contains: filters.search, mode: "insensitive" };
+      const consulta = filters.search.trim();
+      const orConditions: any[] = [];
+
+      // Búsqueda en campos de texto
+      orConditions.push(
+        { nombre: { contains: consulta, mode: "insensitive" } },
+        { categoria: { contains: consulta, mode: "insensitive" } },
+        { proveedor: { contains: consulta, mode: "insensitive" } },
+        { unidadMedida: { contains: consulta, mode: "insensitive" } },
+      );
+
+      // Búsqueda en array de colores
+      orConditions.push({ colores: { has: consulta } });
+
+      // Intentar parsear como número para buscar en precio, peso y ancho
+      // Solo si no hay filtros de rango específicos para esos campos
+      const numero = parseFloat(consulta.replace(/[^\d.]/g, ""));
+      if (!isNaN(numero)) {
+        // Buscar precio exacto o aproximado (con tolerancia del 1%)
+        // Solo si no hay filtros de rango de precio
+        const tolerancia = numero * 0.01;
+        if (!where.precio) {
+          orConditions.push({
+            precio: {
+              gte: numero - tolerancia,
+              lte: numero + tolerancia,
+            },
+          });
+        }
+        // Solo si no hay filtros de rango de peso
+        if (!where.peso) {
+          orConditions.push({
+            peso: {
+              gte: numero - tolerancia,
+              lte: numero + tolerancia,
+            },
+          });
+        }
+        // Solo si no hay filtros de rango de ancho
+        if (!where.ancho) {
+          orConditions.push({
+            ancho: {
+              gte: numero - tolerancia,
+              lte: numero + tolerancia,
+            },
+          });
+        }
+      }
+
+      // Si hay otros filtros, combinarlos con AND
+      if (Object.keys(where).length > 0) {
+        where.AND = [
+          ...Object.entries(where).map(([key, value]) => ({ [key]: value })),
+          { OR: orConditions },
+        ];
+        // Limpiar las propiedades individuales ya que están en AND
+        Object.keys(where).forEach((key) => {
+          if (key !== "AND") delete where[key];
+        });
+      } else {
+        where.OR = orConditions;
+      }
     }
 
     return prisma.material.count({ where });
