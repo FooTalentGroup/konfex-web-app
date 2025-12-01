@@ -75,11 +75,7 @@ const LoginPage: React.FC = () => {
               placeholder="Luciana2025*"
               showPasswordToggle
               register={register('contraseña', {
-                required: 'La contraseña es requerida',
-                minLength: {
-                  value: 8,
-                  message: 'La contraseña debe tener al menos 8 caracteres',
-                },
+                required: 'La contraseña es requerida'
               })}
               error={errors.contraseña?.message}
             />
