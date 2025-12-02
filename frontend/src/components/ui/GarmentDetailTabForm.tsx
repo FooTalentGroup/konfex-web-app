@@ -29,20 +29,18 @@ const GarmentDetailTabForm: React.FC<GarmentDetailTabProps> = ({ form }) => {
 
     return (
         <section className='space-y-6'>
-            {/* Nombre comercial */}
             <div className='space-y-4'>
                 <CustomInput
                     id="commercialName"
                     label="Nombre comercial"
                     type='text'
-                    register={register('commercialName')}
+                    register={register('commercialName', { required: 'El nombre comercial es requerido' })}
                     error={errors.commercialName?.message}
                     placeholder='Ej: Camiseta "Lirios"'
                     className='bg-white'
                 />
             </div>
 
-            {/* Descripción breve */}
             <div>
                 <label className="block text-sm font-medium text-gray-700">Descripción breve</label>
                 <textarea
@@ -54,26 +52,24 @@ const GarmentDetailTabForm: React.FC<GarmentDetailTabProps> = ({ form }) => {
                 {errors.description && <p className="text-xs text-red-500">{errors.description.message}</p>}
             </div>
 
-            {/* Tallas disponibles */}
             <div className='space-y-4'>
                 <CustomSelect
                     id='sizes'
                     label='Tallas disponibles'
                     options={sizes}
-                    register={register('sizes')}
+                    register={register('sizes', { required: 'Las tallas son requeridas' })}
                     error={errors.sizes?.message}
                     placeholder='S, M, L'
                     className='bg-white'
                 />
             </div>
 
-            {/* Colores */}
             <div className='space-y-4'>
                 <CustomSelect
                     id='colors'
                     label='Colores'
                     options={colors}
-                    register={register('colors')}
+                    register={register('colors', { required: 'Los colores son requeridos' })}
                     error={errors.colors?.message}
                     placeholder='Ej: Rojo, Azul, Negro'
                     className='bg-white'

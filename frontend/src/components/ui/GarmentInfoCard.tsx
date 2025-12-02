@@ -26,7 +26,7 @@ const GarmentInfoCard: React.FC<GarmentInfoCardProps> = ({ id, season, price }) 
             <div className="w-auto">
                 <PriceDisplay
                     label="Precio prenda"
-                    amount={50000}
+                    amount={price}
                     className="text-right"
                 />
             </div>

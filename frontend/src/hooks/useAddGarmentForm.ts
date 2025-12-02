@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { GarmentSchema, GarmentFormData } from '@/types/IGarment';
@@ -19,48 +19,110 @@ const generateId = () => {
 };
 
 export const useAddGarmentForm = () => {
-    const [state, setState] = useState<AddGarmentFormState>({
-        activeTab: 0,
-        form: useForm<GarmentFormData>({
-            resolver: zodResolver(GarmentSchema),
-            defaultValues: {
-                id: generateId(),
-                season: 'Verano 2025',
-                price: 0,
-            }
-        }),
+    const form = useForm<GarmentFormData>({
+        resolver: zodResolver(GarmentSchema),
+        defaultValues: {
+            id: generateId(),
+            season: 'Verano 2025',
+            price: 0,
+            rawMaterials: [],
+            tempFabricUnit: 'm',
+            tempSupplyUnit: 'm',
+            laborRate: 0,
+            laborHours: 0,
+            wasteMaterial: 0,
+            wasteUnit: 'm',
+            wastePrice: 0,
+        },
+        mode: 'onChange',
     });
 
-    const setActiveTab = (index: number) => {
-        setState(prev => ({ ...prev, activeTab: index }));
-    };
+    const [activeTab, setActiveTab] = useState(0);
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const subscription = form.watch((value) => {
+            const rawMaterialsTotal = (value.rawMaterials || []).reduce(
+                (sum, material) => sum + (material?.price || 0),
+                0
+            );
+
+            const laborCost = (value.laborRate || 0) * (value.laborHours || 0);
+
+            const wasteCost = value.wastePrice || 0;
+
+            const totalPrice = rawMaterialsTotal + laborCost + wasteCost;
+
+            if (value.price !== totalPrice) {
+                form.setValue('price', totalPrice, { shouldValidate: false });
+            }
+        });
+
+        return () => subscription.unsubscribe();
+    }, [form]);
 
     const nextTab = () => {
-        setState(prev => ({
-            ...prev,
-            activeTab: prev.activeTab < tabs.length - 1 ? prev.activeTab + 1 : prev.activeTab,
-        }));
+        setActiveTab((prev) => (prev < tabs.length - 1 ? prev + 1 : prev));
     };
 
     const prevTab = () => {
-        setState(prev => ({
-            ...prev,
-            activeTab: prev.activeTab > 0 ? prev.activeTab - 1 : prev.activeTab,
-        }));
+        setActiveTab((prev) => (prev > 0 ? prev - 1 : prev));
+    };
+
+    const handleSubmit = async (data: GarmentFormData) => {
+        setIsSubmitting(true);
+        setSubmitError(null);
+
+        try {
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+
+            const cleanData = {
+                ...data,
+                tempFabricName: undefined,
+                tempFabricConsumption: undefined,
+                tempFabricUnit: undefined,
+                tempFabricPrice: undefined,
+                tempSupplyName: undefined,
+                tempSupplyConsumption: undefined,
+                tempSupplyUnit: undefined,
+                tempSupplyPrice: undefined,
+            };
+
+            console.log('✅ Prenda guardada exitosamente:', cleanData);
+
+            setActiveTab(0);
+            form.reset();
+            alert('Prenda guardada exitosamente');
+
+        } catch (error) {
+            setSubmitError(
+                error instanceof Error 
+                    ? error.message 
+                    : 'Ocurrió un error al guardar la prenda'
+            );
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return {
-        ...state,
+        form,
+        activeTab,
         tabs: [...tabs],
         setActiveTab,
         nextTab,
         prevTab,
-        setValue: state.form.setValue,
-        register: state.form.register,
-        errors: state.form.formState.errors,
-        submit: state.form.handleSubmit((data) => {
-            console.log('Formulario enviado:', data);
-        }),
+        setValue: form.setValue,
+        register: form.register,
+        errors: form.formState.errors,
+        // submit: form.handleSubmit((data) => {
+        //     console.log('Formulario enviado:', data);
+        // }),
+        isSubmitting,
+        submitError,
+        submit: form.handleSubmit(handleSubmit),
     
     };
 };

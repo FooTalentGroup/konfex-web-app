@@ -115,7 +115,7 @@ export const useCollections = () => {
   };
 
   const handleAddGarment = () => {
-    router.push('/verano/crear-prenda');
+    router.push('verano/crear-prenda');
   };
 
   const filteredCollections = useMemo(() => {

@@ -6,12 +6,12 @@ import RawMaterialTabForm from '../ui/RawMaterialTabForm';
 import ProductionTabForm from '../ui/ProductionTabForm';
 import { useAddGarmentForm, useImageUpload } from '@/hooks';
 import TabNavigation from '../ui/TabNavigation';
-import PriceDisplay from '../ui/PriceDisplay';
 import GarmentInfoCard from '../ui/GarmentInfoCard';
+import { AlertCircle, Loader2 } from 'lucide-react';
 
 export default function GarmentForm() {
 
-    const { activeTab, tabs, setActiveTab, form, setValue, errors, submit } = useAddGarmentForm();
+    const { activeTab, tabs, setActiveTab, form, setValue, errors, submit, isSubmitting, submitError } = useAddGarmentForm();
 
     const {
         imagePreview,
@@ -41,9 +41,9 @@ export default function GarmentForm() {
             case 0:
                 return <GarmentDetailTabForm form={form} />;
             case 1:
-                return <RawMaterialTabForm />;
+                return <RawMaterialTabForm form={form} />;
             case 2:
-                return <ProductionTabForm />;
+                return <ProductionTabForm form={form} />;
             default:
                 return null;
         }
@@ -51,9 +51,26 @@ export default function GarmentForm() {
 
     const { id, season, price } = form.watch();
 
+    const onSave = async () => {
+        const isValid = await form.trigger(); 
+        if (isValid) {
+            submit();
+        } else {
+            const hasDetailErrors = errors.image || errors.commercialName || errors.sizes || errors.colors;
+            const hasMaterialErrors = errors.rawMaterials;
+            
+            if (hasDetailErrors) {
+                setActiveTab(0); 
+                alert('Por favor completa todos los campos obligatorios en "Detalle prenda"');
+            } else if (hasMaterialErrors) {
+                setActiveTab(1); 
+                alert('Debes agregar al menos un material (tela o insumo)');
+            }
+        }
+    }
+
     return (
         <div className="space-y-6 p-4">
-            {/* Campo de imagen */}
             <div className="p-6 space-y-6">
                 <ImageUploadField
                     imagePreview={imagePreview}
@@ -68,7 +85,6 @@ export default function GarmentForm() {
             </div>
 
 
-            {/* Tarjeta de información */}
             <div className="space-y-6">
                 <GarmentInfoCard
                     id={id || 'Cargando...'}
@@ -80,7 +96,6 @@ export default function GarmentForm() {
 
 
             <div className='border-2 border-primary-300 rounded-lg'>
-                {/* Navegación de pestañas */}
                 <TabNavigation
                     tabs={tabs}
                     activeTab={activeTab}
@@ -88,7 +103,6 @@ export default function GarmentForm() {
                     className="px-6 pt-6"
                 />
 
-                {/* Contenido de las pestañas */}
                 <div className="p-6">
                     {renderTabContent()}
                 </div>
@@ -97,12 +111,32 @@ export default function GarmentForm() {
             <div className="p-6 border-t border-gray-200">
                 <button
                     type="button"
-                    onClick={submit}
-                    className="w-full bg-[#B65CF2] text-white py-2 px-4 rounded-md hover:bg-[#9a4bc4] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#B65CF2] transition-colors"
+                    onClick={onSave}
+                    disabled={isSubmitting}
+                    className={`w-full bg-[#B65CF2] text-white py-2 px-4 rounded-md hover:bg-[#9a4bc4] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#B65CF2] transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                    Guardar
+                    {isSubmitting ? (
+                        <div className="flex items-center justify-center gap-2">
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                            <span>Guardando...</span>
+                        </div>
+                    ) : (
+                        <span>Guardar</span>
+                    )}
                 </button>
             </div>
+
+            {submitError && (
+                <div className="bg-red-50 border border-red-200 rounded-md p-4 flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                        <h4 className="text-sm font-semibold text-red-800 mb-1">
+                            Error al guardar
+                        </h4>
+                        <p className="text-sm text-red-600">{submitError}</p>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
