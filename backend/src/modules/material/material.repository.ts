@@ -108,14 +108,18 @@ export const materialRepository = {
       }
 
       // Si hay otros filtros, combinarlos con AND
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       if (Object.keys(where).length > 0) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unnecessary-type-assertion
         where.AND = [
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           ...Object.entries(where).map(
             ([key, value]) => ({ [key]: value }) as Record<string, unknown>
           ),
           { OR: orConditions },
         ];
         // Limpiar las propiedades individuales ya que están en AND
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const keysToDelete = Object.keys(where).filter((key) => key !== "AND");
         keysToDelete.forEach((key) => {
           delete where[key];
@@ -237,14 +241,18 @@ export const materialRepository = {
       }
 
       // Si hay otros filtros, combinarlos con AND
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       if (Object.keys(where).length > 0) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unnecessary-type-assertion
         where.AND = [
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           ...Object.entries(where).map(
             ([key, value]) => ({ [key]: value }) as Record<string, unknown>
           ),
           { OR: orConditions },
         ];
         // Limpiar las propiedades individuales ya que están en AND
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const keysToDelete = Object.keys(where).filter((key) => key !== "AND");
         keysToDelete.forEach((key) => {
           delete where[key];

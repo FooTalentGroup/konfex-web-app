@@ -194,7 +194,7 @@ export const PresupuestoService = {
       if (Array.isArray(payload.detalles) && payload.detalles.length > 0) {
         totalCosto = calcTotalCostoFromDetalles(payload.detalles);
         const { totalVenta: ventaCalculada } = applyGastosYMargen(
-          totalCosto,
+          Number(totalCosto) || 0,
           Number(merged.gastosIndirectosPorcentaje) || 0,
           Number(merged.margenGananciaPorcentaje) || 0
         );

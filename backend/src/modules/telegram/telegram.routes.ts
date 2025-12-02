@@ -35,8 +35,8 @@ telegramRoutes.post("/send", async (req, res) => {
     const defaultUsername = username || "";
 
     const result = await sendTextMessage(
-      chatId as string | number,
-      text as string,
+      chatId,
+      text,
       defaultFirstName,
       defaultLastName,
       defaultUsername
