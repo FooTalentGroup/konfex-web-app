@@ -91,13 +91,23 @@ module.exports = defineConfig([
       "import/no-unresolved": "off",
       "import/no-default-export": "off",
 
-      "import/extensions": [
-        "error",
-        "ignorePackages",
-        {
-          ts: "never",
-        },
-      ],
+       "import/extensions": [
+         "error",
+         "ignorePackages",
+         {
+           ts: "never",
+           pattern: {
+             "^@/": "never",
+             "^@modules/": "never",
+             "^@utils/": "never",
+             "^@config/": "never",
+             "^@routes/": "never",
+             "^@middleware/": "never",
+             "^@tests/": "never",
+             "^@common/": "never",
+           },
+         },
+       ],
       "import/no-unresolved": [
         "error",
         {
