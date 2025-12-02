@@ -104,7 +104,6 @@ async function main() {
       colores: ["Blanco", "Negro", "Azul", "Rojo", "Beige"],
       proveedor: "Textil S.A.",
       precio: 350.5,
-      stock: 100,
     },
     {
       nombre: "Poliéster Deportivo",
@@ -116,7 +115,6 @@ async function main() {
       colores: ["Negro", "Blanco", "Gris", "Azul Marino"],
       proveedor: "Deportes Textiles",
       precio: 280.0,
-      stock: 75,
     },
     {
       nombre: "Lycra Elástica",
@@ -128,7 +126,6 @@ async function main() {
       colores: ["Negro", "Blanco", "Rosa", "Azul", "Verde"],
       proveedor: "Elásticos Premium",
       precio: 420.75,
-      stock: 50,
     },
     {
       nombre: "Hilo de Algodón 40/2",
@@ -140,7 +137,6 @@ async function main() {
       colores: ["Blanco", "Negro", "Azul", "Rojo", "Verde", "Amarillo"],
       proveedor: "Hilos y Más",
       precio: 45.0,
-      stock: 200,
     },
     {
       nombre: "Cierres Metálicos #5",
@@ -152,7 +148,6 @@ async function main() {
       colores: ["Negro", "Blanco", "Plata", "Dorado"],
       proveedor: "Accesorios Textiles",
       precio: 12.5,
-      stock: 500,
     },
     {
       nombre: "Botones de Madera 15mm",
@@ -164,7 +159,6 @@ async function main() {
       colores: ["Natural", "Negro", "Blanco", "Marrón"],
       proveedor: "Accesorios Textiles",
       precio: 8.0,
-      stock: 300,
     },
     {
       nombre: "Jean Denim 12oz",
@@ -176,7 +170,6 @@ async function main() {
       colores: ["Azul Claro", "Azul Oscuro", "Negro", "Blanco"],
       proveedor: "Denim Factory",
       precio: 480.0,
-      stock: 60,
     },
     {
       nombre: "Forro Polar 200g",
@@ -188,7 +181,6 @@ async function main() {
       colores: ["Negro", "Gris", "Azul", "Rojo", "Verde"],
       proveedor: "Textil S.A.",
       precio: 320.0,
-      stock: 80,
     },
   ];
 

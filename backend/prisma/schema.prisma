@@ -59,7 +59,6 @@ model Material {
   colores       String[]
   proveedor     String
   precio        Float
-  stock         Float
   createdAt     DateTime              @default(now())
   updatedAt     DateTime              @updatedAt
   productos     MaterialPorProducto[]

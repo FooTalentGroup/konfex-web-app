@@ -176,7 +176,6 @@ export const materialDocs = {
                 colores: ["Blanco", "Negro", "Azul", "Rojo"],
                 proveedor: "Textil S.A.",
                 precio: 350.5,
-                stock: 100,
               },
             },
           },
@@ -259,7 +258,6 @@ export const materialDocs = {
               schema: { $ref: "#/components/schemas/UpdateMaterialDto" },
               example: {
                 precio: 380.0,
-                stock: 150,
                 colores: ["Blanco", "Negro", "Azul", "Rojo", "Verde"],
               },
             },
@@ -329,7 +327,6 @@ export const materialDocs = {
           "colores",
           "proveedor",
           "precio",
-          "stock",
         ],
         properties: {
           nombre: {
@@ -354,7 +351,8 @@ export const materialDocs = {
           unidadMedida: {
             type: "string",
             minLength: 1,
-            description: "Unidad de medida del material (metros, unidades, paquetes, kg, etc.)",
+            description:
+              "Unidad de medida del material (metros, unidades, paquetes, kg, etc.)",
             example: "metros",
           },
           ancho: {
@@ -362,7 +360,8 @@ export const materialDocs = {
             format: "float",
             minimum: 0,
             nullable: true,
-            description: "Ancho del material en centímetros (opcional, solo para telas)",
+            description:
+              "Ancho del material en centímetros (opcional, solo para telas)",
             example: 150,
           },
           peso: {
@@ -393,13 +392,6 @@ export const materialDocs = {
             description: "Precio por unidad de medida",
             example: 350.5,
           },
-          stock: {
-            type: "number",
-            format: "float",
-            minimum: 0,
-            description: "Cantidad disponible en stock (en unidad de medida)",
-            example: 100,
-          },
         },
       },
 
@@ -425,14 +417,16 @@ export const materialDocs = {
           unidadMedida: {
             type: "string",
             minLength: 1,
-            description: "Unidad de medida del material (metros, unidades, paquetes, kg, etc.)",
+            description:
+              "Unidad de medida del material (metros, unidades, paquetes, kg, etc.)",
           },
           ancho: {
             type: "number",
             format: "float",
             minimum: 0,
             nullable: true,
-            description: "Ancho del material en centímetros (opcional, solo para telas)",
+            description:
+              "Ancho del material en centímetros (opcional, solo para telas)",
           },
           peso: {
             type: "number",
@@ -457,12 +451,6 @@ export const materialDocs = {
             format: "float",
             minimum: 0,
             description: "Precio unitario del material",
-          },
-          stock: {
-            type: "number",
-            format: "float",
-            minimum: 0,
-            description: "Cantidad disponible en stock",
           },
         },
       },
@@ -493,14 +481,16 @@ export const materialDocs = {
           },
           unidadMedida: {
             type: "string",
-            description: "Unidad de medida del material (metros, unidades, paquetes, kg, etc.)",
+            description:
+              "Unidad de medida del material (metros, unidades, paquetes, kg, etc.)",
             example: "metros",
           },
           ancho: {
             type: "number",
             format: "float",
             nullable: true,
-            description: "Ancho del material en centímetros (opcional, solo para telas)",
+            description:
+              "Ancho del material en centímetros (opcional, solo para telas)",
             example: 150,
           },
           peso: {
@@ -526,12 +516,6 @@ export const materialDocs = {
             format: "float",
             description: "Precio unitario del material",
             example: 350.5,
-          },
-          stock: {
-            type: "number",
-            format: "float",
-            description: "Cantidad disponible en stock",
-            example: 100,
           },
           createdAt: {
             type: "string",
