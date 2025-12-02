@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { authService } from '@/services/auth.service';
 import { useToast } from '@/contexts/ToastContext';
+import { isValid } from 'zod/v3';
 
 interface LoginFormData {
   usuario: string;
@@ -18,9 +19,11 @@ export const useLogin = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     setError: setFormError,
-  } = useForm<LoginFormData>();
+  } = useForm<LoginFormData>({
+    mode: 'onChange'
+  });;
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
@@ -47,9 +50,9 @@ export const useLogin = () => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Error al iniciar sesión';
       setError(errorMessage);
-      
+
       showError(errorMessage);
-      
+
       if (errorMessage.includes('email') || errorMessage.includes('Email')) {
         setFormError('usuario', { type: 'manual', message: errorMessage });
       }
@@ -65,6 +68,7 @@ export const useLogin = () => {
     register,
     handleSubmit,
     errors,
+    isValid,
     isLoading,
     error,
     onSubmit,
