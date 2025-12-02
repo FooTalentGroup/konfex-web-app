@@ -172,11 +172,13 @@ backend/
 │   ├── modules/           # Módulos de la aplicación
 │   │   ├── auth/          # Autenticación
 │   │   ├── cliente/       # Gestión de clientes
-│   │   ├── material/      # Gestión de materiales
+│   │   ├── material/      # Gestión de materiales (CRUD completo con filtros avanzados)
 │   │   ├── presupuesto/   # Gestión de presupuestos
 │   │   ├── producto/      # Gestión de productos
 │   │   ├── telegram/      # Integración Telegram
 │   │   └── user/          # Gestión de usuarios
+│   ├── types/             # Extensiones de tipos TypeScript
+│   │   └── express.d.ts   # Extensiones para Express Request
 │   ├── routes/            # Definición de rutas
 │   ├── utils/             # Utilidades
 │   │   ├── jwt.ts         # Utilidades JWT
@@ -214,7 +216,10 @@ backend/
 - `DELETE /api/v1/presupuestos/:id` - Eliminar presupuesto
 
 ### Materiales
-- `GET /api/v1/materiales` - Listar materiales
+- `GET /api/v1/materiales` - Listar materiales (con filtros, paginación y ordenamiento)
+  - Filtros disponibles: `categoria`, `color`, `precioMin`, `precioMax`, `pesoMin`, `pesoMax`, `anchoMin`, `anchoMax`, `proveedor`, `search`
+  - Paginación: `page`, `limit`
+  - Ordenamiento: `sortBy`, `sortOrder`
 - `GET /api/v1/materiales/:id` - Obtener material por ID
 - `POST /api/v1/materiales` - Crear material
 - `PUT /api/v1/materiales/:id` - Actualizar material
@@ -239,6 +244,18 @@ Una vez que el servidor esté corriendo, la documentación interactiva de Swagge
 
 Aquí podrás explorar todos los endpoints, sus parámetros, respuestas y probar la API directamente desde el navegador.
 
+### Módulos Documentados
+- ✅ **Autenticación** - Login, registro, refresh token
+- ✅ **Productos** - CRUD completo con documentación
+- ✅ **Materiales** - CRUD completo con filtros avanzados y documentación detallada
+
+### Características de la Documentación
+- Esquemas de request/response completos
+- Ejemplos de uso para cada endpoint
+- Parámetros de query documentados
+- Códigos de respuesta y manejo de errores
+- Interfaz interactiva para probar endpoints
+
 ## 🧪 Testing
 
 ### Ejecutar Tests
@@ -261,7 +278,7 @@ Los tests se encuentran en la carpeta `tests/` y están organizados por módulos
 
 | Script | Descripción |
 |--------|-------------|
-| `npm run dev` | Inicia el servidor en modo desarrollo con hot reload |
+| `npm run server` | Inicia el servidor en modo desarrollo con hot reload |
 | `npm run build` | Compila el proyecto TypeScript a JavaScript |
 | `npm start` | Inicia el servidor en modo producción |
 | `npm run start:prod` | Construye y ejecuta el servidor en producción |
@@ -278,6 +295,8 @@ Los tests se encuentran en la carpeta `tests/` y están organizados por módulos
 - CORS está configurado para permitir solo orígenes autorizados
 - Validación de datos de entrada con Zod
 - Manejo centralizado de errores
+- Validación de parámetros de ruta y query params
+- Type safety completo con TypeScript
 
 ## 📝 Modelos de Datos Principales
 
@@ -304,9 +323,15 @@ Los tests se encuentran en la carpeta `tests/` y están organizados por módulos
 - Relación con presupuestos
 
 ### Materiales
-- Control de stock
-- Costos unitarios
-- Unidades de medida
+- Control de stock y inventario
+- Costos unitarios y precios
+- Categorización (Tela, Hilo, Accesorio, etc.)
+- Gestión de colores disponibles
+- Información de proveedores
+- Filtrado avanzado por múltiples criterios
+- Búsqueda por nombre
+- Paginación y ordenamiento
+- Documentación completa en Swagger
 
 ## 🐛 Troubleshooting
 

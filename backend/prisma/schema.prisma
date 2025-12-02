@@ -51,13 +51,22 @@ model Producto {
 model Material {
   id            Int                   @id @default(autoincrement())
   nombre        String
-  costoUnitario Float
+  url_imagen    String?
+  categoria     String
   unidadMedida  String
+  ancho         Float?
+  peso          Float?
+  colores       String[]
+  proveedor     String
+  precio        Float
   stock         Float
-  tipo          String?
   createdAt     DateTime              @default(now())
   updatedAt     DateTime              @updatedAt
   productos     MaterialPorProducto[]
+
+  @@index([categoria])
+  @@index([precio])
+  @@index([proveedor])
 }
 
 model ManoDeObra {
@@ -74,10 +83,13 @@ model MaterialPorProducto {
   productoId Int
   materialId Int
   cantidad   Float
+
   material   Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
   producto   Producto @relation(fields: [productoId], references: [id], onDelete: Cascade)
 
   @@unique([productoId, materialId])
+  @@index([materialId])
+  @@index([productoId])
 }
 
 model ManoDeObraPorProducto {

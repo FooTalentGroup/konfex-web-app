@@ -1,13 +1,44 @@
 import { Router } from "express";
-import { createMaterialSchema, updateMaterialSchema } from "./material.schema";
+import {
+  createMaterialSchema,
+  materialQuerySchema,
+  materialIdSchema,
+  updateMaterialWithIdSchema,
+} from "./material.schema";
 import { validationSchema } from "@/middleware";
-import { createMaterialController, deleteMaterialController, getAllMaterialsController, getMaterialByIdController, updateMaterialController } from "./material.controller";
+import {
+  createMaterialController,
+  deleteMaterialController,
+  getAllMaterialsController,
+  getMaterialByIdController,
+  updateMaterialController,
+} from "./material.controller";
 
 export const materialRoutes = Router();
 
-materialRoutes.get("/", getAllMaterialsController);
-materialRoutes.get("/:id", getMaterialByIdController);
+materialRoutes.get(
+  "/",
+  validationSchema(materialQuerySchema as any),
+  getAllMaterialsController,
+);
+materialRoutes.get(
+  "/:id",
+  validationSchema(materialIdSchema as any),
+  getMaterialByIdController,
+);
 
-materialRoutes.post("/", validationSchema(createMaterialSchema), createMaterialController);
-materialRoutes.put("/:id", validationSchema(updateMaterialSchema), updateMaterialController);
-materialRoutes.delete("/:id", deleteMaterialController);
+materialRoutes.post(
+  "/",
+  validationSchema(createMaterialSchema),
+  createMaterialController,
+);
+materialRoutes.put(
+  "/:id",
+  validationSchema(updateMaterialWithIdSchema as any),
+  updateMaterialController,
+);
+materialRoutes.delete(
+  "/:id",
+  validationSchema(materialIdSchema as any),
+  deleteMaterialController,
+);
