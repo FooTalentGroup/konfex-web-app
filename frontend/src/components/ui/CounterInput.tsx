@@ -12,6 +12,7 @@ interface CounterInputProps {
     register?: UseFormRegisterReturn;
     className?: string;
     error?: string;
+    testId?: string;
 }
 
 function CounterInput({
@@ -24,7 +25,8 @@ function CounterInput({
     max = 9999,
     step = 1,
     className = "",
-    error
+    error,
+    testId
 }: CounterInputProps) {
 
 
@@ -37,6 +39,8 @@ function CounterInput({
         const newValue = Number(value) - step
         if (newValue >= min) setValue(value - step);
     };
+
+    console.log("CounterInput testId:", testId);
 
     return (
         <div className={`flex flex-col space-y-1 ${className}`}>
@@ -63,6 +67,7 @@ function CounterInput({
                 <button
                     type="button"
                     onClick={increase}
+                    data-testid={testId}
                     className="w-10 h-10 bg-white text-black rounded-xl flex items-center justify-center text-xl font-bold shadow hover:bg-gray-100"
                 >
                     +

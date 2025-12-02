@@ -62,21 +62,21 @@ function BudgetForm({ form, metadata }: BudgetFormProps) {
             className='bg-white'
           />
 
-<Controller
-  control={form.control}
-  name="clientName"
-  render={({ field, fieldState }) => (
-    <AutocompleteSelect
-      label="Nombre cliente"
-      value={field.value || ""}
-      onChange={field.onChange} // RHF se sincroniza correctamente
-      options={clients.map(c => ({ label: c.nombre, value: c.nombre }))}
-      placeholder="Seleccionar cliente"
-      type="cliente"
-      error={fieldState.error?.message}
-    />
-  )}
-/>
+          <Controller
+            control={form.control}
+            name="clientName"
+            render={({ field, fieldState }) => (
+              <AutocompleteSelect
+                label="Nombre cliente"
+                value={field.value || ""}
+                onChange={field.onChange} // RHF se sincroniza correctamente
+                options={clients.map(c => ({ label: c.nombre, value: c.nombre }))}
+                placeholder="Seleccionar cliente"
+                type="cliente"
+                error={fieldState.error?.message}
+              />
+            )}
+          />
 
 
           {/* <CustomSelect
@@ -171,6 +171,7 @@ function BudgetForm({ form, metadata }: BudgetFormProps) {
           />
           <CounterInput
             id="laborHours"
+            testId="add-hours"
             label="Horas trabajadas"
             value={watch("laborHours") ?? 0}
             setValue={(v) => setValue("laborHours", v)}
@@ -229,6 +230,7 @@ function BudgetForm({ form, metadata }: BudgetFormProps) {
           />
           <CounterInput
             id="materialQuantity"
+            testId="add-quantity"
             label="Cantidad"
             value={watch("materialQuantity") ?? 0}
             setValue={(newValue) =>
