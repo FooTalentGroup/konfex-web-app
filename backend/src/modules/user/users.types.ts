@@ -5,5 +5,5 @@ export type CreateUserPayload = {
   email: string;
   password: string;
   role: UserRole;
-  name?: string;
+  name?: string | null;
 };
