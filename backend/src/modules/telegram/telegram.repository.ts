@@ -11,7 +11,7 @@ export const telegramMessageRepository = {
     lastName?: string;
     username?: string;
   }) => {
-    // @ts-expect-error - Prisma model may not be fully typed
+    // @ts-ignore
     return prisma.telegramMessage.create({
       data: {
         chatId: String(data.chatId),
@@ -27,7 +27,7 @@ export const telegramMessageRepository = {
   },
 
   findByChatId: async (chatId: string | number) => {
-    // @ts-expect-error - Prisma model may not be fully typed
+    // @ts-ignore
     return prisma.telegramMessage.findMany({
       where: { chatId: String(chatId) },
       orderBy: { timestamp: "asc" },
@@ -35,14 +35,14 @@ export const telegramMessageRepository = {
   },
 
   findAll: async () => {
-    // @ts-expect-error - Prisma model may not be fully typed
+    // @ts-ignore
     return prisma.telegramMessage.findMany({
       orderBy: { timestamp: "desc" },
     });
   },
 
   associateUserToChat: async (chatId: string | number, userId: number) => {
-    // @ts-expect-error - Prisma model may not be fully typed
+    // @ts-ignore
     return prisma.telegramMessage.updateMany({
       where: { chatId: String(chatId) },
       data: { userId },
