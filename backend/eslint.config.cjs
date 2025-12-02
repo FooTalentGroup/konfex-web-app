@@ -91,8 +91,8 @@ module.exports = defineConfig([
       "import/no-unresolved": "off",
       "import/no-default-export": "off",
 
-       // Desactivado: TypeScript ya valida imports y no requiere extensiones en path aliases
-       "import/extensions": "off",
+      // Desactivado: TypeScript ya valida imports y no requiere extensiones en path aliases
+      "import/extensions": "off",
       "import/no-unresolved": [
         "error",
         {
