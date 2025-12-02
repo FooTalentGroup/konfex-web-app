@@ -1,6 +1,8 @@
-import { Router, Request, Response } from "express";
 import authRoutes from "@modules/auth/auth.routes";
 import presupuestoRoutes from "@modules/presupuesto/presupuesto.routes";
+import type { Request, Response } from "express";
+import { Router } from "express";
+
 import { sendSuccess } from "@/common/responses";
 import { clienteRoutes } from "@/modules/cliente";
 import { materialRoutes } from "@/modules/material/material.routes";

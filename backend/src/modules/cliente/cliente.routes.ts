@@ -1,7 +1,9 @@
 import { Router } from "express";
-import { createClienteSchema, updateClienteSchema } from "./cliente.schema";
+
 import { validationSchema } from "@/middleware";
+
 import { createClienteController, deleteClienteController, getAllClientesController, getClienteByIdController, updateClienteController } from "./cliente.controller";
+import { createClienteSchema, updateClienteSchema } from "./cliente.schema";
 
 export const clienteRoutes = Router();
 

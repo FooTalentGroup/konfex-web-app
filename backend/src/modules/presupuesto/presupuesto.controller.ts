@@ -1,16 +1,16 @@
-import { Request } from "express";
-import { PresupuestoService } from "./presupuesto.service";
+import type { Request } from "express";
+
 import { controllerHandler } from "../../common/handlers";
 import {
-  CreatePresupuestoRequestDto,
-  UpdatePresupuestoRequestDto,
-  PartialUpdatePresupuestoRequestDto,
-} from "./presupuesto.schema";
-
-import {
-  toPresupuestoResponseDto,
   toPresupuestoListResponseDto,
+  toPresupuestoResponseDto,
 } from "./presupuesto.mapper";
+import type {
+  CreatePresupuestoRequestDto,
+  PartialUpdatePresupuestoRequestDto,
+  UpdatePresupuestoRequestDto,
+} from "./presupuesto.schema";
+import { PresupuestoService } from "./presupuesto.service";
 
 // traer todos los presupuestos
 export const getPresupuestosController = controllerHandler(

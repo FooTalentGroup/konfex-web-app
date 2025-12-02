@@ -1,9 +1,10 @@
 import { AppError } from "@/common/errors";
+
 import { materialRepository } from "./material.repository";
-import {
+import type {
   CreateMaterialDto,
-  UpdateMaterialDto,
   MaterialQueryDto,
+  UpdateMaterialDto,
 } from "./material.schema";
 
 export const materialService = {
@@ -25,11 +26,11 @@ export const materialService = {
     };
   },
   getById: async (id: number) => {
-    if (!id || isNaN(id)) throw new AppError("ID inválido", 400);
+    if (!id || isNaN(id)) {throw new AppError("ID inválido", 400);}
 
     const material = await materialRepository.findById(id);
 
-    if (!material) throw new AppError("Material no encontrado", 404);
+    if (!material) {throw new AppError("Material no encontrado", 404);}
 
     return material;
   },

@@ -1,9 +1,10 @@
-import swaggerUi from "swagger-ui-express";
+import type { Express } from "express";
 import swaggerJsdoc from "swagger-jsdoc";
-import { Express } from "express";
-import { productoDocs } from "../modules/producto";
+import swaggerUi from "swagger-ui-express";
+
 import { authDocs } from "../modules/auth";
 import { materialDocs } from "../modules/material";
+import { productoDocs } from "../modules/producto";
 
 const options = {
   definition: {

@@ -1,12 +1,14 @@
-import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
-import { setupSwagger } from './config/swagger';
+import type { Express, Request, Response } from 'express';
+import express from 'express';
 import pinoHttp from 'pino-http';
-import logger from './utils/logger';
-import { errorHandler } from './middleware';
+
 import { sendError } from './common/responses';
-import routes from "./routes";
 import { corsMiddleware } from './config/cors';
+import { setupSwagger } from './config/swagger';
+import { errorHandler } from './middleware';
+import routes from "./routes";
+import logger from './utils/logger';
 
 dotenv.config();
 
@@ -36,7 +38,5 @@ app.get("/", (_req: Request, res: Response) => {
     health: "/api/v1/health",
   });
 });
-
-
 
 export { app }

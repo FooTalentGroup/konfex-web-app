@@ -1,6 +1,8 @@
-import { Request, Response } from "express";
-import { handleIncomingUpdate, getChatsList, getChatMessages } from "./telegram.service";
+import type { Request, Response } from "express";
+
 import { controllerHandler } from "@/common/handlers";
+
+import { getChatMessages,getChatsList, handleIncomingUpdate } from "./telegram.service";
 
 export const telegramWebhookController = async (req: Request, res: Response) => {
   try {

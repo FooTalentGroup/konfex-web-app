@@ -1,11 +1,7 @@
 import { Router } from "express";
-import {
-  createMaterialSchema,
-  materialQuerySchema,
-  materialIdSchema,
-  updateMaterialWithIdSchema,
-} from "./material.schema";
+
 import { validationSchema } from "@/middleware";
+
 import {
   createMaterialController,
   deleteMaterialController,
@@ -13,6 +9,12 @@ import {
   getMaterialByIdController,
   updateMaterialController,
 } from "./material.controller";
+import {
+  createMaterialSchema,
+  materialIdSchema,
+  materialQuerySchema,
+  updateMaterialWithIdSchema,
+} from "./material.schema";
 
 export const materialRoutes = Router();
 

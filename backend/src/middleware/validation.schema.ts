@@ -1,6 +1,7 @@
-import { ZodSchema } from "zod";
-import { Request, Response, NextFunction } from "express";
-import { ParsedQs } from "qs";
+import type { NextFunction,Request, Response } from "express";
+import type { ParsedQs } from "qs";
+import type { ZodSchema } from "zod";
+
 import { AppError } from "../common/errors";
 
 export const validationSchema = <

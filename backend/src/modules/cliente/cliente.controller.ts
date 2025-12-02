@@ -1,7 +1,8 @@
-import { Request } from "express";
+import type { Request } from "express";
+
 import { controllerHandler } from "../../common/handlers";
+import type { CreateClienteDto, UpdateClienteDto } from "./cliente.schema";
 import { clienteService } from "./cliente.service";
-import { CreateClienteDto, UpdateClienteDto } from "./cliente.schema";
 
 // Crear cliente
 export const createClienteController = controllerHandler(

@@ -1,6 +1,7 @@
-import { Request, Response, NextFunction } from "express";
-import logger from "../utils/logger"; // tu logger configurado
+import type { NextFunction,Request, Response } from "express";
+
 import { isAppError } from "../common/errors";
+import logger from "../utils/logger"; // tu logger configurado
 
 export function errorHandler(
   err: unknown,

@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { telegramWebhookController, getChatsController, getChatMessagesController } from "./telegram.controller";
+
+import { getChatMessagesController,getChatsController, telegramWebhookController } from "./telegram.controller";
 import { sendTextMessage } from "./telegram.service";
 
 const telegramRoutes = Router();
@@ -35,6 +36,5 @@ telegramRoutes.post("/send", async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 });
-
 
 export default telegramRoutes;

@@ -1,6 +1,5 @@
 import prisma from "../../config/prisma";
-import { CreateMaterialDto } from "./material.schema";
-import { MaterialQueryDto } from "./material.schema";
+import type { CreateMaterialDto , MaterialQueryDto } from "./material.schema";
 
 export const materialRepository = {
   create: (data: CreateMaterialDto) =>
@@ -12,37 +11,37 @@ export const materialRepository = {
 
     // Filtro por categoria
     if (filters?.categoria)
-      where.categoria = { equals: filters.categoria, mode: "insensitive" };
+      {where.categoria = { equals: filters.categoria, mode: "insensitive" };}
 
     // Filtro por color
-    if (filters?.color) where.colores = { has: filters.color };
+    if (filters?.color) {where.colores = { has: filters.color };}
 
     // Filtro por rango de precio
     if (filters?.precioMin !== undefined || filters?.precioMax !== undefined) {
       where.precio = {};
       if (filters?.precioMin !== undefined)
-        where.precio.gte = filters.precioMin;
+        {where.precio.gte = filters.precioMin;}
       if (filters?.precioMax !== undefined)
-        where.precio.lte = filters.precioMax;
+        {where.precio.lte = filters.precioMax;}
     }
 
     // Filtro por rango de peso
     if (filters?.pesoMin !== undefined || filters?.pesoMax !== undefined) {
       where.peso = {};
-      if (filters.pesoMin !== undefined) where.peso.gte = filters.pesoMin;
-      if (filters.pesoMax !== undefined) where.peso.lte = filters.pesoMax;
+      if (filters.pesoMin !== undefined) {where.peso.gte = filters.pesoMin;}
+      if (filters.pesoMax !== undefined) {where.peso.lte = filters.pesoMax;}
     }
 
     // Filtro por rango de ancho
     if (filters?.anchoMin !== undefined || filters?.anchoMax !== undefined) {
       where.ancho = {};
-      if (filters.anchoMin !== undefined) where.ancho.gte = filters.anchoMin;
-      if (filters.anchoMax !== undefined) where.ancho.lte = filters.anchoMax;
+      if (filters.anchoMin !== undefined) {where.ancho.gte = filters.anchoMin;}
+      if (filters.anchoMax !== undefined) {where.ancho.lte = filters.anchoMax;}
     }
 
     // Filtro por proveedor
     if (filters?.proveedor)
-      where.proveedor = { contains: filters.proveedor, mode: "insensitive" };
+      {where.proveedor = { contains: filters.proveedor, mode: "insensitive" };}
 
     // Superbuscador: búsqueda en múltiples campos
     if (filters?.search) {
@@ -103,7 +102,7 @@ export const materialRepository = {
         ];
         // Limpiar las propiedades individuales ya que están en AND
         Object.keys(where).forEach((key) => {
-          if (key !== "AND") delete where[key];
+          if (key !== "AND") {delete where[key];}
         });
       } else {
         where.OR = orConditions;
@@ -141,18 +140,18 @@ export const materialRepository = {
     }
     if (filters?.precioMin !== undefined || filters?.precioMax !== undefined) {
       where.precio = {};
-      if (filters.precioMin !== undefined) where.precio.gte = filters.precioMin;
-      if (filters.precioMax !== undefined) where.precio.lte = filters.precioMax;
+      if (filters.precioMin !== undefined) {where.precio.gte = filters.precioMin;}
+      if (filters.precioMax !== undefined) {where.precio.lte = filters.precioMax;}
     }
     if (filters?.pesoMin !== undefined || filters?.pesoMax !== undefined) {
       where.peso = {};
-      if (filters.pesoMin !== undefined) where.peso.gte = filters.pesoMin;
-      if (filters.pesoMax !== undefined) where.peso.lte = filters.pesoMax;
+      if (filters.pesoMin !== undefined) {where.peso.gte = filters.pesoMin;}
+      if (filters.pesoMax !== undefined) {where.peso.lte = filters.pesoMax;}
     }
     if (filters?.anchoMin !== undefined || filters?.anchoMax !== undefined) {
       where.ancho = {};
-      if (filters.anchoMin !== undefined) where.ancho.gte = filters.anchoMin;
-      if (filters.anchoMax !== undefined) where.ancho.lte = filters.anchoMax;
+      if (filters.anchoMin !== undefined) {where.ancho.gte = filters.anchoMin;}
+      if (filters.anchoMax !== undefined) {where.ancho.lte = filters.anchoMax;}
     }
     if (filters?.proveedor) {
       where.proveedor = { contains: filters.proveedor, mode: "insensitive" };
@@ -217,7 +216,7 @@ export const materialRepository = {
         ];
         // Limpiar las propiedades individuales ya que están en AND
         Object.keys(where).forEach((key) => {
-          if (key !== "AND") delete where[key];
+          if (key !== "AND") {delete where[key];}
         });
       } else {
         where.OR = orConditions;

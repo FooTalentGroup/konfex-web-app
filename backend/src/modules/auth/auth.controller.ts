@@ -1,8 +1,9 @@
-import { Request } from "express";
+import type { Request } from "express";
+
 import { controllerHandler } from "../../common/handlers";
-import { UserSignInRequestDto, UserSignUpRequestDto } from "./auth.schema";
-import { AuthService } from "./auth.service";
 import { toUserSignInResponseDto, toUserSignUpResponseDto } from "../user/user.mapper";
+import type { UserSignInRequestDto, UserSignUpRequestDto } from "./auth.schema";
+import { AuthService } from "./auth.service";
 
 // Crear usuario
 export const signUpController = controllerHandler(

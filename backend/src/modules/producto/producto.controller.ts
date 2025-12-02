@@ -1,7 +1,8 @@
-import { Request } from "express";
+import type { Request } from "express";
+
 import { controllerHandler } from "../../common/handlers";
+import type { CreateProductoDto, UpdateProductoDto } from "./producto.schema";
 import { productoService } from "./producto.service";
-import { CreateProductoDto, UpdateProductoDto } from "./producto.schema";
 
 export const createProductoController = controllerHandler(
   async (req: Request) => {

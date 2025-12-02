@@ -1,4 +1,6 @@
 import { Router } from "express";
+
+import { validationSchema } from "../../middleware";
 import {
   createProductoController,
   deleteProductoController,
@@ -6,12 +8,10 @@ import {
   getProductoByIdController,
   updateProductoController,
 } from "./producto.controller";
-
 import {
   createProductoSchema,
   updateProductoSchema,
 } from "./producto.schema";
-import { validationSchema } from "../../middleware";
 
 export const productoRoutes = Router();
 

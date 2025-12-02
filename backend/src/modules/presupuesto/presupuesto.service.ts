@@ -1,10 +1,11 @@
 // presupuesto.service.ts
 import { AppError } from "@/common/errors";
+
 import { PresupuestoRepository } from "./presupuesto.repository";
-import {
+import type {
   CreatePresupuestoRequestDto,
-  UpdatePresupuestoRequestDto,
   PartialUpdatePresupuestoRequestDto,
+  UpdatePresupuestoRequestDto,
 } from "./presupuesto.schema";
 import { applyGastosYMargen, calcTotalCostoFromDetalles } from "./utils";
 
@@ -38,7 +39,7 @@ export const PresupuestoService = {
   //trae un presupuesto por su id
   getById: async (id: number) => {
     const presupuesto = await PresupuestoRepository.findById(id, { include: { cliente: true, detalles: true, pedido: true } });
-    if (!presupuesto) throw new AppError("Presupuesto no encontrado", 404);
+    if (!presupuesto) {throw new AppError("Presupuesto no encontrado", 404);}
     return presupuesto;
   },
 
@@ -90,7 +91,6 @@ export const PresupuestoService = {
   
     return created;
   },
-  
 
   // Actualiza un presupuesto - todo el modelo
   update: async (id: number, payload: UpdatePresupuestoRequestDto) => {
@@ -98,11 +98,11 @@ export const PresupuestoService = {
     const existing = await PresupuestoRepository.findById(id, {
       include: { pedido: true }
     });
-    if (!existing) throw new AppError("Presupuesto no encontrado", 404);
+    if (!existing) {throw new AppError("Presupuesto no encontrado", 404);}
   
     // REGLA DE NEGOCIO: si tiene pedido asociado, NO se puede modificar
     if (existing.pedido)
-      throw new AppError("No se puede modificar un presupuesto que ya tiene un pedido asociado", 400);
+      {throw new AppError("No se puede modificar un presupuesto que ya tiene un pedido asociado", 400);}
   
     const {
       clienteId,
@@ -154,9 +154,9 @@ export const PresupuestoService = {
   // Actualiza parcialmente un presupuesto - solo la informacion que recibe
   partialUpdate: async (id: number, payload: PartialUpdatePresupuestoRequestDto) => {
     const existing = await PresupuestoRepository.findById(id, { include: { pedido: true } });
-    if (!existing) throw new AppError("Presupuesto no encontrado", 404);
+    if (!existing) {throw new AppError("Presupuesto no encontrado", 404);}
 
-    if (existing.pedido) throw new AppError("No se puede modificar un presupuesto que ya tiene un pedido asociado", 400);
+    if (existing.pedido) {throw new AppError("No se puede modificar un presupuesto que ya tiene un pedido asociado", 400);}
 
     // Merge valores actuales con payload para cálculos
     const merged = {
@@ -212,10 +212,10 @@ export const PresupuestoService = {
    */
   delete: async (id: number) => {
     const existing = await PresupuestoRepository.findById(id);
-    if (!existing) throw new AppError("Presupuesto no encontrado", 404);
+    if (!existing) {throw new AppError("Presupuesto no encontrado", 404);}
 
     // Si hay pedido asociado, podríamos evitar borrado (regla opcional)
-    if (existing.pedido) throw new AppError("No se puede eliminar un presupuesto que ya tiene un pedido asociado", 400);
+    if (existing.pedido) {throw new AppError("No se puede eliminar un presupuesto que ya tiene un pedido asociado", 400);}
 
     await PresupuestoRepository.delete(id);
     return true;

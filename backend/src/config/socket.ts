@@ -1,6 +1,6 @@
-import { Server as HttpServer } from "http";
-import { Server } from "socket.io";
 import {sendTextMessage} from "@modules/telegram/telegram.service";
+import type { Server as HttpServer } from "http";
+import { Server } from "socket.io";
 
 export interface TelegramMessage {
   chatId: number;

@@ -1,4 +1,5 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
+
 import { isAppError } from "../errors";
 import { sendError, sendSuccess } from "../responses";
 

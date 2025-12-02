@@ -1,7 +1,8 @@
-import { UserSignUpRequestDto } from "./auth.schema";
-import { UserService } from "../user";
 import { AppError } from "@/common/errors";
 import { AuthTokens, PasswordHasher } from "@/utils/jwt";
+
+import { UserService } from "../user";
+import type { UserSignUpRequestDto } from "./auth.schema";
 
 export const AuthService = {
     signUp: async ({ email, name, role, password }: UserSignUpRequestDto) => {
@@ -16,7 +17,7 @@ export const AuthService = {
     signin: async(email: string, password: string) => {
     const user = await UserService.getByEmail(email)
     const isValid = await PasswordHasher.compare(password, user.password);
-        if (!isValid) throw new AppError("Credenciales inválidas", 401);
+        if (!isValid) {throw new AppError("Credenciales inválidas", 401);}
 
     const tokens = AuthTokens.build({
       id: user.id,

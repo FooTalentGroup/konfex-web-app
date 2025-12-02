@@ -48,7 +48,6 @@ export const signUpUserSchema = z.object({
   }),
 });
 
-
 export type UserSignUpRequestDto = z.infer<typeof signUpUserSchema>["body"];
 
 export const signInUserSchema = z.object({
