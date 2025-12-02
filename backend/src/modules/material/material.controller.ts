@@ -1,7 +1,11 @@
 import type { Request } from "express";
 
 import { controllerHandler } from "../../common/handlers";
-import type { CreateMaterialDto, UpdateMaterialDto } from "./material.schema";
+import type {
+  CreateMaterialDto,
+  MaterialQueryDto,
+  UpdateMaterialDto,
+} from "./material.schema";
 import { materialService } from "./material.service";
 
 // Crear material
@@ -19,7 +23,7 @@ export const createMaterialController = controllerHandler(
 export const getAllMaterialsController = controllerHandler(async (req: Request) => {
   // Usar validatedQuery si está disponible (datos validados y transformados)
   // sino usar req.query directamente
-  const filters = (req.validatedQuery || req.query) as any;
+  const filters = (req.validatedQuery || req.query) as MaterialQueryDto | undefined;
   const materiales = await materialService.getAll(filters);
   return materiales;
 }, "Materiales obtenidos correctamente");
