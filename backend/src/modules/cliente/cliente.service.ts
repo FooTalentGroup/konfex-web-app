@@ -1,7 +1,11 @@
-import { clienteRepository } from "./cliente.repository";
+import {
+  clienteRepository,
+  type ClienteCreateInput,
+  type ClienteUpdateInput,
+} from "./cliente.repository";
 
 export const clienteService = {
-  create: async (data: any) => {
+  create: async (data: ClienteCreateInput) => {
     return clienteRepository.create(data);
   },
 
@@ -17,7 +21,7 @@ export const clienteService = {
     return cliente;
   },
 
-  update: async (id: number, data: any) => {
+  update: async (id: number, data: ClienteUpdateInput) => {
     const exists = await clienteRepository.findById(id);
     if (!exists) {
       throw new Error("Cliente no encontrado");

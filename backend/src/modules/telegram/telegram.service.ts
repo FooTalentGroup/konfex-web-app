@@ -132,7 +132,7 @@ export const getChatsList = async () => {
   // Para cada chat, obtener el nombre del usuario con source "telegram"
   // Si no existe, usar el último mensaje con source "telegram" para obtener el nombre
   return await Promise.all(
-    chats.map(async (chat) => {
+    chats.map((chat) => {
       // Buscar el último mensaje con source "telegram" para obtener el nombre del usuario
       const telegramMessage = allMessages.find(
         (msg: { chatId: string; source: string }) =>
