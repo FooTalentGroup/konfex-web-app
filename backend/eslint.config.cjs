@@ -119,14 +119,4 @@ module.exports = defineConfig([
       ],
     },
   },
-
-  // Configuración específica para tests
-  {
-    files: ["**/*.test.ts", "**/__tests__/**"],
-
-    rules: {
-      "@typescript-eslint/no-explicit-any": "off",
-      "no-console": "off",
-    },
-  },
 ]);
