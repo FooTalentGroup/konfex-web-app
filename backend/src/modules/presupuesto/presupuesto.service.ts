@@ -184,48 +184,44 @@ export const PresupuestoService = {
       detalles: payload.detalles ?? existing.detalles,
       totalCosto: payload.totalCosto ?? existing.totalCosto,
       totalVenta: payload.totalVenta ?? existing.totalVenta,
-    } as any;
-
-    let totalCosto = merged.totalCosto;
-    let totalVenta = merged.totalVenta;
+    } as UpdatePresupuestoRequestDto;
 
     // recalcular totales
     if (payload.detalles !== undefined) {
       if (Array.isArray(payload.detalles) && payload.detalles.length > 0) {
-        totalCosto = calcTotalCostoFromDetalles(payload.detalles);
+        const newTotalCosto = calcTotalCostoFromDetalles(payload.detalles);
         const { totalVenta: ventaCalculada } = applyGastosYMargen(
-          Number(totalCosto) || 0,
+          Number(newTotalCosto) || 0,
           Number(merged.gastosIndirectosPorcentaje) || 0,
           Number(merged.margenGananciaPorcentaje) || 0
         );
-        totalVenta = ventaCalculada;
-      } else {
-        // si el array esta vacío: totales en 0
-        totalCosto = 0;
-        totalVenta = 0;
+        const newTotalVenta = Number(ventaCalculada);
+        merged.totalCosto = newTotalCosto;
+        merged.totalVenta = newTotalVenta;
       }
     }
 
-    const updateData: any = {
-      ...payload,
-      totalCosto,
-      totalVenta,
+    const updateData: UpdatePresupuestoRequestDto = {
+      estado: merged.estado ?? "BORRADOR",
+      margenGananciaPorcentaje: merged.margenGananciaPorcentaje ?? 0,
+      gastosIndirectosPorcentaje: merged.gastosIndirectosPorcentaje ?? 0,
+      detalles: merged.detalles ?? [],
+      totalCosto: merged.totalCosto ?? 0,
+      totalVenta: merged.totalVenta ?? 0,
+      clienteId: merged.clienteId ?? undefined,
+      fechaVencimiento: merged.fechaVencimiento
+        ? new Date(merged.fechaVencimiento).toISOString()
+        : undefined,
+      notas: merged.notas ?? undefined,
     };
 
-    // Manejar clienteId: si viene undefined, no lo tocamos; si viene null, lo establecemos como null
-    if (payload.clienteId !== undefined) {
-      updateData.clienteId = payload.clienteId ?? null;
-    }
-
-    // Convertir fechaVencimiento si viene como string
-    if (payload.fechaVencimiento !== undefined) {
-      updateData.fechaVencimiento = payload.fechaVencimiento
-        ? new Date(payload.fechaVencimiento)
-        : null;
-    }
-
     const updated = await PresupuestoRepository.update(id, {
-      data: updateData,
+      data: {
+        ...updateData,
+        fechaVencimiento: updateData.fechaVencimiento
+          ? new Date(updateData.fechaVencimiento)
+          : undefined,
+      },
     });
 
     return updated;
