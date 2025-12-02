@@ -10,7 +10,7 @@ const defaultOrigins = [
   "https://konfex-web-app.vercel.app",
   "https://eos-konfex.onrender.com",
   "https://konfex-web-app-2.onrender.com",
-  "https://konfex-web-app-omega.vercel.app"
+  "https://konfex-web-app-omega.vercel.app",
 ];
 
 const originIsAllowed = (origin: string): boolean => {

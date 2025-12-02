@@ -1,1 +1,1 @@
-export { AppError,isAppError } from "./isAppError";
+export { AppError, isAppError } from "./isAppError";

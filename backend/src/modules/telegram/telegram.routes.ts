@@ -1,6 +1,10 @@
 import { Router } from "express";
 
-import { getChatMessagesController,getChatsController, telegramWebhookController } from "./telegram.controller";
+import {
+  getChatMessagesController,
+  getChatsController,
+  telegramWebhookController,
+} from "./telegram.controller";
 import { sendTextMessage } from "./telegram.service";
 
 const telegramRoutes = Router();
@@ -24,14 +28,19 @@ telegramRoutes.post("/send", async (req, res) => {
     const defaultLastName = lastName || "Usuario";
     const defaultUsername = username || null;
 
-    const result = await sendTextMessage(chatId, text, defaultFirstName, defaultLastName, defaultUsername);
+    const result = await sendTextMessage(
+      chatId,
+      text,
+      defaultFirstName,
+      defaultLastName,
+      defaultUsername
+    );
 
     return res.json({
       ok: true,
       message: "Mensaje enviado",
-      telegramResponse: result
+      telegramResponse: result,
     });
-
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }

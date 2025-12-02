@@ -12,31 +12,31 @@ const options = {
     info: {
       title: "API - EOS - KONFEX",
       version: "1.0.0",
-      description: "Documentación de la API"
+      description: "Documentación de la API",
     },
 
     components: {
       schemas: {
         ...productoDocs.components.schemas,
         ...authDocs.components.schemas,
-        ...materialDocs.components.schemas
+        ...materialDocs.components.schemas,
       },
       parameters: {
         ...productoDocs.components.parameters,
         ...authDocs.components.parameters,
-        ...materialDocs.components.parameters
-      }
+        ...materialDocs.components.parameters,
+      },
     },
 
     paths: {
       ...productoDocs.paths,
       ...authDocs.paths,
-      ...materialDocs.paths
-    }
+      ...materialDocs.paths,
+    },
   },
 
   // NO vas a usar decoradores ni comentarios → vacío
-  apis: []
+  apis: [],
 };
 
 const spec = swaggerJsdoc(options);

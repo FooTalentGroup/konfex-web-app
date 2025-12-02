@@ -1,4 +1,4 @@
-import {sendTextMessage} from "@modules/telegram/telegram.service";
+import { sendTextMessage } from "@modules/telegram/telegram.service";
 import type { Server as HttpServer } from "http";
 import { Server } from "socket.io";
 
@@ -9,12 +9,12 @@ export interface TelegramMessage {
 }
 
 export interface KonfexMessage {
-    chatId: number;
-    text: string;
-    timestamp: string;
-    firstName: string;
-    lastName: string;
-    username: string;
+  chatId: number;
+  text: string;
+  timestamp: string;
+  firstName: string;
+  lastName: string;
+  username: string;
 }
 
 export interface ServerToClientEvents {
@@ -22,7 +22,7 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-    konfex_send_message: (data: KonfexMessage) => void;
+  konfex_send_message: (data: KonfexMessage) => void;
 }
 
 export let io: Server<ClientToServerEvents, ServerToClientEvents>;
@@ -32,16 +32,16 @@ export const initSocket = (server: HttpServer) => {
     cors: {
       origin: [
         "http://localhost:3000", // frontend local
-        "https://konfex-web-app.vercel.app" // frontend producción
+        "https://konfex-web-app.vercel.app", // frontend producción
       ],
-      methods: ["GET", "POST"]
+      methods: ["GET", "POST"],
     },
   });
 
   io.on("connection", (socket) => {
     console.log("🔌 Frontend conectado via WebSocket", socket.id);
-      socket.on("konfex_send_message", async ({ chatId, text, firstName, lastName, username}) => {
-        await sendTextMessage(chatId, text, firstName, lastName, username);
-      });
+    socket.on("konfex_send_message", async ({ chatId, text, firstName, lastName, username }) => {
+      await sendTextMessage(chatId, text, firstName, lastName, username);
+    });
   });
 };

@@ -18,29 +18,13 @@ import {
 
 export const materialRoutes = Router();
 
-materialRoutes.get(
-  "/",
-  validationSchema(materialQuerySchema as any),
-  getAllMaterialsController,
-);
-materialRoutes.get(
-  "/:id",
-  validationSchema(materialIdSchema as any),
-  getMaterialByIdController,
-);
+materialRoutes.get("/", validationSchema(materialQuerySchema as any), getAllMaterialsController);
+materialRoutes.get("/:id", validationSchema(materialIdSchema as any), getMaterialByIdController);
 
-materialRoutes.post(
-  "/",
-  validationSchema(createMaterialSchema),
-  createMaterialController,
-);
+materialRoutes.post("/", validationSchema(createMaterialSchema), createMaterialController);
 materialRoutes.put(
   "/:id",
   validationSchema(updateMaterialWithIdSchema as any),
-  updateMaterialController,
+  updateMaterialController
 );
-materialRoutes.delete(
-  "/:id",
-  validationSchema(materialIdSchema as any),
-  deleteMaterialController,
-);
+materialRoutes.delete("/:id", validationSchema(materialIdSchema as any), deleteMaterialController);

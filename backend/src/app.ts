@@ -1,14 +1,14 @@
-import dotenv from 'dotenv';
-import type { Express, Request, Response } from 'express';
-import express from 'express';
-import pinoHttp from 'pino-http';
+import dotenv from "dotenv";
+import type { Express, Request, Response } from "express";
+import express from "express";
+import pinoHttp from "pino-http";
 
-import { sendError } from './common/responses';
-import { corsMiddleware } from './config/cors';
-import { setupSwagger } from './config/swagger';
-import { errorHandler } from './middleware';
+import { sendError } from "./common/responses";
+import { corsMiddleware } from "./config/cors";
+import { setupSwagger } from "./config/swagger";
+import { errorHandler } from "./middleware";
 import routes from "./routes";
-import logger from './utils/logger';
+import logger from "./utils/logger";
 
 dotenv.config();
 
@@ -39,4 +39,4 @@ app.get("/", (_req: Request, res: Response) => {
   });
 });
 
-export { app }
+export { app };

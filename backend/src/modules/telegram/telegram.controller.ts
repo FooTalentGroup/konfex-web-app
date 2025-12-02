@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 
 import { controllerHandler } from "@/common/handlers";
 
-import { getChatMessages,getChatsList, handleIncomingUpdate } from "./telegram.service";
+import { getChatMessages, getChatsList, handleIncomingUpdate } from "./telegram.service";
 
 export const telegramWebhookController = async (req: Request, res: Response) => {
   try {
@@ -12,7 +12,7 @@ export const telegramWebhookController = async (req: Request, res: Response) => 
 
     const update = req.body; // Telegram envía el update en JSON
     // log para debug
-    console.log("Telegram update received:", JSON.stringify(update).slice(0,2000));
+    console.log("Telegram update received:", JSON.stringify(update).slice(0, 2000));
 
     // Delegar procesamiento (guardar en DB, notificar frontend, etc.)
     await handleIncomingUpdate(update);

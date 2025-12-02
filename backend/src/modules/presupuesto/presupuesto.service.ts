@@ -38,8 +38,12 @@ export const PresupuestoService = {
 
   //trae un presupuesto por su id
   getById: async (id: number) => {
-    const presupuesto = await PresupuestoRepository.findById(id, { include: { cliente: true, detalles: true, pedido: true } });
-    if (!presupuesto) {throw new AppError("Presupuesto no encontrado", 404);}
+    const presupuesto = await PresupuestoRepository.findById(id, {
+      include: { cliente: true, detalles: true, pedido: true },
+    });
+    if (!presupuesto) {
+      throw new AppError("Presupuesto no encontrado", 404);
+    }
     return presupuesto;
   },
 
@@ -56,10 +60,10 @@ export const PresupuestoService = {
       notas,
       detalles,
     } = payload;
-  
+
     let totalCosto = typeof totalCostoFromClient === "number" ? totalCostoFromClient : 0;
     let totalVenta = typeof totalVentaFromClient === "number" ? totalVentaFromClient : 0;
-  
+
     // Si vienen detalles, calculamos totales desde los detalles
     if (Array.isArray(detalles) && detalles.length > 0) {
       totalCosto = calcTotalCostoFromDetalles(detalles);
@@ -70,10 +74,10 @@ export const PresupuestoService = {
       );
       totalVenta = ventaCalculada;
     }
-  
+
     // Generar número
     const numeroPresupuesto = await PresupuestoService.getNextNumero();
-  
+
     const created = await PresupuestoRepository.create({
       data: {
         numeroPresupuesto,
@@ -88,7 +92,7 @@ export const PresupuestoService = {
         detalles,
       },
     });
-  
+
     return created;
   },
 
@@ -96,14 +100,20 @@ export const PresupuestoService = {
   update: async (id: number, payload: UpdatePresupuestoRequestDto) => {
     // Buscar el presupuesto con el pedido asociado
     const existing = await PresupuestoRepository.findById(id, {
-      include: { pedido: true }
+      include: { pedido: true },
     });
-    if (!existing) {throw new AppError("Presupuesto no encontrado", 404);}
-  
+    if (!existing) {
+      throw new AppError("Presupuesto no encontrado", 404);
+    }
+
     // REGLA DE NEGOCIO: si tiene pedido asociado, NO se puede modificar
-    if (existing.pedido)
-      {throw new AppError("No se puede modificar un presupuesto que ya tiene un pedido asociado", 400);}
-  
+    if (existing.pedido) {
+      throw new AppError(
+        "No se puede modificar un presupuesto que ya tiene un pedido asociado",
+        400
+      );
+    }
+
     const {
       clienteId,
       fechaVencimiento,
@@ -115,24 +125,24 @@ export const PresupuestoService = {
       notas,
       detalles,
     } = payload;
-  
+
     // Totales se inicializan en base a lo enviado por el cliente
     let totalCosto = typeof totalCostoFromClient === "number" ? totalCostoFromClient : 0;
     let totalVenta = typeof totalVentaFromClient === "number" ? totalVentaFromClient : 0;
-  
+
     // Si vienen detalles, recalculamos todo (regla de negocio)
     if (Array.isArray(detalles) && detalles.length > 0) {
       totalCosto = calcTotalCostoFromDetalles(detalles);
-  
+
       const { totalVenta: ventaCalculada } = applyGastosYMargen(
         totalCosto,
         gastosIndirectosPorcentaje,
         margenGananciaPorcentaje
       );
-  
+
       totalVenta = ventaCalculada;
     }
-  
+
     // Actualizar en DB
     const updated = await PresupuestoRepository.update(id, {
       data: {
@@ -147,21 +157,30 @@ export const PresupuestoService = {
         detalles,
       },
     });
-  
+
     return updated;
-  },  
+  },
 
   // Actualiza parcialmente un presupuesto - solo la informacion que recibe
   partialUpdate: async (id: number, payload: PartialUpdatePresupuestoRequestDto) => {
     const existing = await PresupuestoRepository.findById(id, { include: { pedido: true } });
-    if (!existing) {throw new AppError("Presupuesto no encontrado", 404);}
+    if (!existing) {
+      throw new AppError("Presupuesto no encontrado", 404);
+    }
 
-    if (existing.pedido) {throw new AppError("No se puede modificar un presupuesto que ya tiene un pedido asociado", 400);}
+    if (existing.pedido) {
+      throw new AppError(
+        "No se puede modificar un presupuesto que ya tiene un pedido asociado",
+        400
+      );
+    }
 
     // Merge valores actuales con payload para cálculos
     const merged = {
-      margenGananciaPorcentaje: payload.margenGananciaPorcentaje ?? existing.margenGananciaPorcentaje,
-      gastosIndirectosPorcentaje: payload.gastosIndirectosPorcentaje ?? existing.gastosIndirectosPorcentaje,
+      margenGananciaPorcentaje:
+        payload.margenGananciaPorcentaje ?? existing.margenGananciaPorcentaje,
+      gastosIndirectosPorcentaje:
+        payload.gastosIndirectosPorcentaje ?? existing.gastosIndirectosPorcentaje,
       detalles: payload.detalles ?? existing.detalles,
       totalCosto: payload.totalCosto ?? existing.totalCosto,
       totalVenta: payload.totalVenta ?? existing.totalVenta,
@@ -174,7 +193,11 @@ export const PresupuestoService = {
     if (payload.detalles !== undefined) {
       if (Array.isArray(payload.detalles) && payload.detalles.length > 0) {
         totalCosto = calcTotalCostoFromDetalles(payload.detalles);
-        const { totalVenta: ventaCalculada } = applyGastosYMargen(totalCosto, merged.gastosIndirectosPorcentaje, merged.margenGananciaPorcentaje);
+        const { totalVenta: ventaCalculada } = applyGastosYMargen(
+          totalCosto,
+          merged.gastosIndirectosPorcentaje,
+          merged.margenGananciaPorcentaje
+        );
         totalVenta = ventaCalculada;
       } else {
         // si el array esta vacío: totales en 0
@@ -196,7 +219,9 @@ export const PresupuestoService = {
 
     // Convertir fechaVencimiento si viene como string
     if (payload.fechaVencimiento !== undefined) {
-      updateData.fechaVencimiento = payload.fechaVencimiento ? new Date(payload.fechaVencimiento) : null;
+      updateData.fechaVencimiento = payload.fechaVencimiento
+        ? new Date(payload.fechaVencimiento)
+        : null;
     }
 
     const updated = await PresupuestoRepository.update(id, {
@@ -212,10 +237,17 @@ export const PresupuestoService = {
    */
   delete: async (id: number) => {
     const existing = await PresupuestoRepository.findById(id);
-    if (!existing) {throw new AppError("Presupuesto no encontrado", 404);}
+    if (!existing) {
+      throw new AppError("Presupuesto no encontrado", 404);
+    }
 
     // Si hay pedido asociado, podríamos evitar borrado (regla opcional)
-    if (existing.pedido) {throw new AppError("No se puede eliminar un presupuesto que ya tiene un pedido asociado", 400);}
+    if (existing.pedido) {
+      throw new AppError(
+        "No se puede eliminar un presupuesto que ya tiene un pedido asociado",
+        400
+      );
+    }
 
     await PresupuestoRepository.delete(id);
     return true;
