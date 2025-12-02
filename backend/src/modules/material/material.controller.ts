@@ -1,11 +1,7 @@
 import type { Request } from "express";
 
 import { controllerHandler } from "../../common/handlers";
-import type {
-  CreateMaterialDto,
-  MaterialQueryDto,
-  UpdateMaterialDto,
-} from "./material.schema";
+import type { CreateMaterialDto, MaterialQueryDto, UpdateMaterialDto } from "./material.schema";
 import { materialService } from "./material.service";
 
 // Crear material
