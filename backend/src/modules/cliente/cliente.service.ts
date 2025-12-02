@@ -1,6 +1,6 @@
 import {
-  clienteRepository,
   type ClienteCreateInput,
+  clienteRepository,
   type ClienteUpdateInput,
 } from "./cliente.repository";
 

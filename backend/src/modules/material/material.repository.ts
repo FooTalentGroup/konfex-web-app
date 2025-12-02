@@ -110,14 +110,15 @@ export const materialRepository = {
       // Si hay otros filtros, combinarlos con AND
       if (Object.keys(where).length > 0) {
         where.AND = [
-          ...Object.entries(where).map(([key, value]) => ({ [key]: value })),
+          ...Object.entries(where).map(
+            ([key, value]) => ({ [key]: value }) as Record<string, unknown>
+          ),
           { OR: orConditions },
         ];
         // Limpiar las propiedades individuales ya que están en AND
-        Object.keys(where).forEach((key) => {
-          if (key !== "AND") {
-            delete where[key];
-          }
+        const keysToDelete = Object.keys(where).filter((key) => key !== "AND");
+        keysToDelete.forEach((key) => {
+          delete where[key];
         });
       } else {
         where.OR = orConditions;
@@ -238,14 +239,15 @@ export const materialRepository = {
       // Si hay otros filtros, combinarlos con AND
       if (Object.keys(where).length > 0) {
         where.AND = [
-          ...Object.entries(where).map(([key, value]) => ({ [key]: value })),
+          ...Object.entries(where).map(
+            ([key, value]) => ({ [key]: value }) as Record<string, unknown>
+          ),
           { OR: orConditions },
         ];
         // Limpiar las propiedades individuales ya que están en AND
-        Object.keys(where).forEach((key) => {
-          if (key !== "AND") {
-            delete where[key];
-          }
+        const keysToDelete = Object.keys(where).filter((key) => key !== "AND");
+        keysToDelete.forEach((key) => {
+          delete where[key];
         });
       } else {
         where.OR = orConditions;
