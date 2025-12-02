@@ -1,4 +1,5 @@
 import { Router } from "express";
+import type { ZodSchema } from "zod";
 
 import { validationSchema } from "@/middleware";
 
@@ -18,13 +19,25 @@ import {
 
 export const materialRoutes = Router();
 
-materialRoutes.get("/", validationSchema(materialQuerySchema as any), getAllMaterialsController);
-materialRoutes.get("/:id", validationSchema(materialIdSchema as any), getMaterialByIdController);
+materialRoutes.get(
+  "/",
+  validationSchema(materialQuerySchema as ZodSchema<{ body: object; query: object }>),
+  getAllMaterialsController
+);
+materialRoutes.get(
+  "/:id",
+  validationSchema(materialIdSchema as ZodSchema<{ body: object; params: object }>),
+  getMaterialByIdController
+);
 
 materialRoutes.post("/", validationSchema(createMaterialSchema), createMaterialController);
 materialRoutes.put(
   "/:id",
-  validationSchema(updateMaterialWithIdSchema as any),
+  validationSchema(updateMaterialWithIdSchema as ZodSchema<{ body: object; params: object }>),
   updateMaterialController
 );
-materialRoutes.delete("/:id", validationSchema(materialIdSchema as any), deleteMaterialController);
+materialRoutes.delete(
+  "/:id",
+  validationSchema(materialIdSchema as ZodSchema<{ body: object; params: object }>),
+  deleteMaterialController
+);
