@@ -4,10 +4,10 @@ export const authDocs = {
       schemas: {
         SignUpRequest: {
           type: "object",
-          required: ["email", "name", "password"],
+          required: ["email", "password"],
           properties: {
             email: { type: "string", format: "email", example: "test@example.com" },
-            name: { type: "string", example: "Miguel" },
+            name: { type: "string", nullable: true, description: "Opcional. Si se proporciona, debe tener al menos 1 carácter. Los strings vacíos se convierten a null.", example: "Miguel" },
             role: { type: "string", enum: ["USER", "ADMIN"], default: "USER", example: "USER" },
             password: { type: "string", minLength: 8, description: "Debe incluir letras y números", example: "test1234" },
           },

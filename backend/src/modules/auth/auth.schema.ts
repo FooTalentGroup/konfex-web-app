@@ -18,12 +18,22 @@ export const signUpUserSchema = z.object({
     .toLowerCase()
     .trim(),
 
-    name: z.string({
-      error: (issue) =>
-        issue.input === undefined
-          ? "El nombre es obligatorio"
-          : "El nombre es inválido",
-    }).min(1, { message: "El nombre no puede estar vacío" }),
+    name: z
+      .union([z.string(), z.null(), z.undefined()])
+      .transform((val) => {
+        if (typeof val === "string") {
+          const trimmed = val.trim();
+          return trimmed === "" ? null : trimmed;
+        }
+        return val ?? null;
+      })
+      .pipe(
+        z.union([
+          z.string().min(1, { message: "El nombre no puede estar vacío" }),
+          z.null(),
+        ])
+      )
+      .default(null),
 
     role: z.enum(userRoles).default("USER"),
 
