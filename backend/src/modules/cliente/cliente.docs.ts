@@ -9,7 +9,31 @@ export const clienteDocs = {
               description: "Clientes obtenidos correctamente",
               content: {
                 "application/json": {
-                  schema: { $ref: "#/components/schemas/SuccessResponseClientes" }
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: { type: "boolean" },
+                      statusCode: { type: "number" },
+                      message: { type: "string" },
+                      data: {
+                        type: "array",
+                        items: {
+                          type: "object",
+                          properties: {
+                            id: { type: "number" },
+                            nombre: { type: "string" },
+                            telefono: { type: "string", nullable: true },
+                            email: { type: "string", nullable: true },
+                            origen: { type: "string", nullable: true },
+                            instagramUser: { type: "string", nullable: true },
+                            notas: { type: "string", nullable: true },
+                            createdAt: { type: "string", format: "date-time" },
+                            updatedAt: { type: "string", format: "date-time" }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -40,7 +64,28 @@ export const clienteDocs = {
               description: "Cliente creado exitosamente",
               content: {
                 "application/json": {
-                  schema: { $ref: "#/components/schemas/SuccessResponseCliente" }
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: { type: "boolean" },
+                      statusCode: { type: "number" },
+                      message: { type: "string" },
+                      data: {
+                        type: "object",
+                        properties: {
+                          id: { type: "number" },
+                          nombre: { type: "string" },
+                          telefono: { type: "string", nullable: true },
+                          email: { type: "string", nullable: true },
+                          origen: { type: "string", nullable: true },
+                          instagramUser: { type: "string", nullable: true },
+                          notas: { type: "string", nullable: true },
+                          createdAt: { type: "string", format: "date-time" },
+                          updatedAt: { type: "string", format: "date-time" }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             },
@@ -79,7 +124,28 @@ export const clienteDocs = {
               description: "Cliente obtenido correctamente",
               content: {
                 "application/json": {
-                  schema: { $ref: "#/components/schemas/SuccessResponseCliente" }
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: { type: "boolean" },
+                      statusCode: { type: "number" },
+                      message: { type: "string" },
+                      data: {
+                        type: "object",
+                        properties: {
+                          id: { type: "number" },
+                          nombre: { type: "string" },
+                          telefono: { type: "string", nullable: true },
+                          email: { type: "string", nullable: true },
+                          origen: { type: "string", nullable: true },
+                          instagramUser: { type: "string", nullable: true },
+                          notas: { type: "string", nullable: true },
+                          createdAt: { type: "string", format: "date-time" },
+                          updatedAt: { type: "string", format: "date-time" }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             },
@@ -114,7 +180,28 @@ export const clienteDocs = {
               description: "Cliente actualizado correctamente",
               content: {
                 "application/json": {
-                  schema: { $ref: "#/components/schemas/SuccessResponseCliente" }
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: { type: "boolean" },
+                      statusCode: { type: "number" },
+                      message: { type: "string" },
+                      data: {
+                        type: "object",
+                        properties: {
+                          id: { type: "number" },
+                          nombre: { type: "string" },
+                          telefono: { type: "string", nullable: true },
+                          email: { type: "string", nullable: true },
+                          origen: { type: "string", nullable: true },
+                          instagramUser: { type: "string", nullable: true },
+                          notas: { type: "string", nullable: true },
+                          createdAt: { type: "string", format: "date-time" },
+                          updatedAt: { type: "string", format: "date-time" }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             },
@@ -174,44 +261,6 @@ export const clienteDocs = {
             origen: { type: "string", nullable: true },
             instagramUser: { type: "string", nullable: true },
             notas: { type: "string", nullable: true }
-          }
-        },
-  
-        Cliente: {
-          type: "object",
-          properties: {
-            id: { type: "number" },
-            nombre: { type: "string" },
-            telefono: { type: "string", nullable: true },
-            email: { type: "string", nullable: true },
-            origen: { type: "string", nullable: true },
-            instagramUser: { type: "string", nullable: true },
-            notas: { type: "string", nullable: true },
-            createdAt: { type: "string", format: "date-time" },
-            updatedAt: { type: "string", format: "date-time" }
-          }
-        },
-  
-        SuccessResponseCliente: {
-          type: "object",
-          properties: {
-            success: { type: "boolean" },
-            statusCode: { type: "number" },
-            message: { type: "string" },
-            data: { $ref: "#/components/schemas/Cliente" }
-          }
-        },
-  
-        SuccessResponseClientes: {
-          type: "object",
-          properties: {
-            success: { type: "boolean" },
-            statusCode: { type: "number" },
-            message: { type: "string" },
-            data: {
-              type: "array",
-              items: { $ref: "#/components/schemas/Cliente" }
-            }
           }
         },
   

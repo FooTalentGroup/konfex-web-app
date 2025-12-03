@@ -8,9 +8,21 @@ export interface PresupuestoDetalleResponseDto {
   costoUnitario: number;
 }
 
+export interface AdicionalResponseDto {
+  id: number;
+  nombre: string;
+  cantidad: number;
+  monto: number;
+  totalCosto: number;
+  observaciones?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface PresupuestoResponseDto {
   id: number;
   numeroPresupuesto: number;
+  nombre?: string | null;
   clienteId: number | null;
   fechaCreacion: string;
   fechaVencimiento: string | null;
@@ -18,9 +30,13 @@ export interface PresupuestoResponseDto {
   margenGananciaPorcentaje: number;
   gastosIndirectosPorcentaje: number;
   totalCosto: number;
-  totalVenta: number;
+  costosIndirectos: number;
+  ganancias: number;
+  iva: number;
+  totalFinal: number;
   notas: string | null;
   detalles: PresupuestoDetalleResponseDto[];
+  adicionales: AdicionalResponseDto[];
   cliente?: {
     id: number;
     nombre: string;

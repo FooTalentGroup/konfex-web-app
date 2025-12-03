@@ -4,6 +4,11 @@ import { Express } from "express";
 import { productoDocs } from "../modules/producto";
 import { authDocs } from "../modules/auth";
 import { materialDocs } from "../modules/material";
+import { clienteDocs } from "../modules/cliente";
+import { presupuestoDocs } from "../modules/presupuesto";
+import { telegramDocs } from "../modules/telegram";
+import { gastosNegocioDocs } from "../modules/gastos-negocio";
+import { impuestoGeneralDocs } from "../modules/impuesto-general";
 
 const options = {
   definition: {
@@ -11,31 +16,46 @@ const options = {
     info: {
       title: "API - EOS - KONFEX",
       version: "1.0.0",
-      description: "Documentación de la API"
+      description: "Documentación de la API",
     },
 
     components: {
       schemas: {
         ...productoDocs.components.schemas,
         ...authDocs.components.schemas,
-        ...materialDocs.components.schemas
+        ...materialDocs.components.schemas,
+        ...clienteDocs.components.schemas,
+        ...presupuestoDocs.components.schemas,
+        ...telegramDocs.components.schemas,
+        ...gastosNegocioDocs.components.schemas,
+        ...impuestoGeneralDocs.components.schemas,
       },
       parameters: {
         ...productoDocs.components.parameters,
         ...authDocs.components.parameters,
-        ...materialDocs.components.parameters
-      }
+        ...materialDocs.components.parameters,
+        ...clienteDocs.components.parameters,
+        ...presupuestoDocs.components.parameters,
+        ...telegramDocs.components.parameters,
+        ...gastosNegocioDocs.components.parameters,
+        ...impuestoGeneralDocs.components.parameters,
+      },
     },
 
     paths: {
       ...productoDocs.paths,
       ...authDocs.paths,
-      ...materialDocs.paths
-    }
+      ...materialDocs.paths,
+      ...clienteDocs.paths,
+      ...presupuestoDocs.paths,
+      ...telegramDocs.paths,
+      ...gastosNegocioDocs.paths,
+      ...impuestoGeneralDocs.paths,
+    },
   },
 
   // NO vas a usar decoradores ni comentarios → vacío
-  apis: []
+  apis: [],
 };
 
 const spec = swaggerJsdoc(options);

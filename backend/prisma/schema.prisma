@@ -1,10 +1,11 @@
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client"
+  output     = "../generated/prisma"
+  engineType = "client"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -50,19 +51,19 @@ model Producto {
 }
 
 model Material {
-  id            Int                   @id @default(autoincrement())
-  nombre        String
-  url_imagen    String?
-  categoria     String
-  unidadMedida  String
-  ancho         Float?
-  peso          Float?
-  colores       String[]
-  proveedor     String
-  precio        Float
-  createdAt     DateTime              @default(now())
-  updatedAt     DateTime              @updatedAt
-  productos     MaterialPorProducto[]
+  id           Int                   @id @default(autoincrement())
+  nombre       String
+  url_imagen   String?
+  categoria    String
+  unidadMedida String
+  ancho        Float?
+  peso         Float?
+  colores      String[]
+  proveedor    String
+  precio       Float
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  productos    MaterialPorProducto[]
 
   @@index([categoria])
   @@index([precio])
@@ -79,13 +80,13 @@ model ManoDeObra {
 }
 
 model MaterialPorProducto {
-  id         Int      @id @default(autoincrement())
+  id         Int   @id @default(autoincrement())
   productoId Int
   materialId Int
   cantidad   Float
 
-  material   Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
-  producto   Producto @relation(fields: [productoId], references: [id], onDelete: Cascade)
+  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  producto Producto @relation(fields: [productoId], references: [id], onDelete: Cascade)
 
   @@unique([productoId, materialId])
   @@index([materialId])
@@ -107,6 +108,7 @@ model ManoDeObraPorProducto {
 model Presupuesto {
   id                         Int                  @id @default(autoincrement())
   numeroPresupuesto          Int                  @unique
+  nombre                     String?
   clienteId                  Int?
   fechaCreacion              DateTime             @default(now())
   fechaVencimiento           DateTime?
@@ -114,13 +116,18 @@ model Presupuesto {
   margenGananciaPorcentaje   Float
   gastosIndirectosPorcentaje Float
   totalCosto                 Float
-  totalVenta                 Float
+  gastosNegocioId            Int?
+  ganancias                  Float
+  iva                        Float                @default(0)
+  totalFinal                 Float                @default(0)
   notas                      String?
   createdAt                  DateTime             @default(now())
   updatedAt                  DateTime             @updatedAt
   pedido                     Pedido?
   cliente                    Cliente?             @relation(fields: [clienteId], references: [id], onDelete: Restrict)
+  gastosNegocio              GastosNegocio?       @relation(fields: [gastosNegocioId], references: [id], onDelete: SetNull)
   detalles                   PresupuestoDetalle[]
+  adicionales                Adicional[]
 }
 
 model PresupuestoDetalle {
@@ -134,6 +141,40 @@ model PresupuestoDetalle {
   producto      Producto    @relation(fields: [productoId], references: [id])
 
   @@index([presupuestoId])
+}
+
+model Adicional {
+  id            Int         @id @default(autoincrement())
+  presupuestoId Int
+  nombre        String
+  cantidad      Int
+  monto         Float
+  totalCosto    Float
+  observaciones String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  presupuesto   Presupuesto @relation(fields: [presupuestoId], references: [id], onDelete: Cascade)
+
+  @@index([presupuestoId])
+}
+
+model GastosNegocio {
+  id          Int           @id @default(autoincrement())
+  nombre      String
+  porcentaje  Int
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  presupuestos Presupuesto[]
+
+  @@index([nombre])
+}
+
+model ImpuestoGeneral {
+  id          Int       @id @default(autoincrement())
+  nombre      String    @default("IVA")
+  porcentaje  Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Pedido {
@@ -225,3 +266,4 @@ enum Role {
   USER
   ADMIN
 }
+

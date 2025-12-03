@@ -9,7 +9,30 @@ export const productoDocs = {
               description: "Productos obtenidos correctamente",
               content: {
                 "application/json": {
-                  schema: { $ref: "#/components/schemas/SuccessResponseProductos" }
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: { type: "boolean" },
+                      statusCode: { type: "number" },
+                      message: { type: "string" },
+                      data: {
+                        type: "array",
+                        items: {
+                          type: "object",
+                          properties: {
+                            id: { type: "number" },
+                            nombre: { type: "string" },
+                            descripcion: { type: "string", nullable: true },
+                            activo: { type: "boolean" },
+                            tallas: { type: "array", items: { type: "string" } },
+                            colores: { type: "array", items: { type: "string" } },
+                            createdAt: { type: "string", format: "date-time" },
+                            updatedAt: { type: "string", format: "date-time" }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -39,7 +62,27 @@ export const productoDocs = {
               description: "Producto creado exitosamente",
               content: {
                 "application/json": {
-                  schema: { $ref: "#/components/schemas/SuccessResponseProducto" }
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: { type: "boolean" },
+                      statusCode: { type: "number" },
+                      message: { type: "string" },
+                      data: {
+                        type: "object",
+                        properties: {
+                          id: { type: "number" },
+                          nombre: { type: "string" },
+                          descripcion: { type: "string", nullable: true },
+                          activo: { type: "boolean" },
+                          tallas: { type: "array", items: { type: "string" } },
+                          colores: { type: "array", items: { type: "string" } },
+                          createdAt: { type: "string", format: "date-time" },
+                          updatedAt: { type: "string", format: "date-time" }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             },
@@ -71,7 +114,27 @@ export const productoDocs = {
               description: "Producto obtenido correctamente",
               content: {
                 "application/json": {
-                  schema: { $ref: "#/components/schemas/SuccessResponseProducto" }
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: { type: "boolean" },
+                      statusCode: { type: "number" },
+                      message: { type: "string" },
+                      data: {
+                        type: "object",
+                        properties: {
+                          id: { type: "number" },
+                          nombre: { type: "string" },
+                          descripcion: { type: "string", nullable: true },
+                          activo: { type: "boolean" },
+                          tallas: { type: "array", items: { type: "string" } },
+                          colores: { type: "array", items: { type: "string" } },
+                          createdAt: { type: "string", format: "date-time" },
+                          updatedAt: { type: "string", format: "date-time" }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             },
@@ -111,7 +174,27 @@ export const productoDocs = {
               description: "Producto actualizado correctamente",
               content: {
                 "application/json": {
-                  schema: { $ref: "#/components/schemas/SuccessResponseProducto" }
+                  schema: {
+                    type: "object",
+                    properties: {
+                      success: { type: "boolean" },
+                      statusCode: { type: "number" },
+                      message: { type: "string" },
+                      data: {
+                        type: "object",
+                        properties: {
+                          id: { type: "number" },
+                          nombre: { type: "string" },
+                          descripcion: { type: "string", nullable: true },
+                          activo: { type: "boolean" },
+                          tallas: { type: "array", items: { type: "string" } },
+                          colores: { type: "array", items: { type: "string" } },
+                          createdAt: { type: "string", format: "date-time" },
+                          updatedAt: { type: "string", format: "date-time" }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             },
@@ -167,43 +250,6 @@ export const productoDocs = {
             activo: { type: "boolean" },
             tallas: { type: "array", items: { type: "string" } },
             colores: { type: "array", items: { type: "string" } }
-          }
-        },
-  
-        Producto: {
-          type: "object",
-          properties: {
-            id: { type: "number" },
-            nombre: { type: "string" },
-            descripcion: { type: "string", nullable: true },
-            activo: { type: "boolean" },
-            tallas: { type: "array", items: { type: "string" } },
-            colores: { type: "array", items: { type: "string" } },
-            createdAt: { type: "string", format: "date-time" },
-            updatedAt: { type: "string", format: "date-time" }
-          }
-        },
-  
-        SuccessResponseProducto: {
-          type: "object",
-          properties: {
-            success: { type: "boolean" },
-            statusCode: { type: "number" },
-            message: { type: "string" },
-            data: { $ref: "#/components/schemas/Producto" }
-          }
-        },
-  
-        SuccessResponseProductos: {
-          type: "object",
-          properties: {
-            success: { type: "boolean" },
-            statusCode: { type: "number" },
-            message: { type: "string" },
-            data: {
-              type: "array",
-              items: { $ref: "#/components/schemas/Producto" }
-            }
           }
         },
   
