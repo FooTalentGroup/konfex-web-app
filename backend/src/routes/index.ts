@@ -6,6 +6,7 @@ import { clienteRoutes } from "@/modules/cliente";
 import { materialRoutes } from "@/modules/material/material.routes";
 import { productoRoutes } from "@/modules/producto/producto.routes";
 import telegramRoutes from "@/modules/telegram/telegram.routes";
+import { gastosNegocioRoutes } from "@/modules/gastos-negocio";
 
 const router: Router = Router();
 
@@ -33,6 +34,9 @@ router.use("/materiales", materialRoutes);
 
 // Productos
 router.use("/productos", productoRoutes);
+
+// Gastos de Negocio
+router.use("/gastos-negocio", gastosNegocioRoutes);
 
 // Telegram
 router.use("/telegram", telegramRoutes);
