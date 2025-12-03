@@ -159,12 +159,19 @@ model GastosNegocio {
   id          Int           @id @default(autoincrement())
   nombre      String
   porcentaje  Int
-  impuestos   Int
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   presupuestos Presupuesto[]
 
   @@index([nombre])
+}
+
+model ImpuestoGeneral {
+  id          Int       @id @default(autoincrement())
+  nombre      String    @default("IVA")
+  porcentaje  Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Pedido {

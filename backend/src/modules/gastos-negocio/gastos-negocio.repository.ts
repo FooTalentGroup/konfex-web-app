@@ -3,7 +3,6 @@ import prisma from "../../config/prisma";
 export interface CreateGastosNegocioDto {
   nombre: string;
   porcentaje: number;
-  impuestos: number;
 }
 
 export const gastosNegocioRepository = {

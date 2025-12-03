@@ -7,10 +7,6 @@ export const createGastosNegocioSchema = z.object({
       .number()
       .int()
       .min(0, "El porcentaje debe ser un número entero mayor o igual a 0"),
-    impuestos: z
-      .number()
-      .int()
-      .min(0, "Los impuestos deben ser un número entero mayor o igual a 0"),
   }),
 });
 
