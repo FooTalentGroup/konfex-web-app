@@ -6,6 +6,7 @@ import { clienteRoutes } from "@/modules/cliente";
 import { materialRoutes } from "@/modules/material/material.routes";
 import { productoRoutes } from "@/modules/producto/producto.routes";
 import telegramRoutes from "@/modules/telegram/telegram.routes";
+import { calculadoraRoutes } from "@/modules/calculadora";
 
 const router: Router = Router();
 
@@ -19,21 +20,25 @@ router.get("/health", (_req: Request, res: Response) => {
   });
 });
 
-// Auth routes
+// Auth
 router.use("/auth", authRoutes);
 
-// Presupuesto routes
+// Presupuesto
 router.use("/presupuestos", presupuestoRoutes);
 
-// clientes
+// Clientes
 router.use("/clientes", clienteRoutes);
 
-// material
+// Materiales
 router.use("/materiales", materialRoutes);
 
-// material
+// Productos
 router.use("/productos", productoRoutes);
 
+// Telegram
 router.use("/telegram", telegramRoutes);
+
+// Calculadora
+router.use("/calculadoras", calculadoraRoutes);
 
 export default router;
