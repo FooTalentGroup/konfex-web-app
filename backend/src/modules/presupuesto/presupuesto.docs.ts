@@ -27,13 +27,15 @@ export const presupuestoDocs = {
             "application/json": {
               schema: { $ref: "#/components/schemas/CreatePresupuestoDto" },
               example: {
+                nombre: "Presupuesto Colección Verano 2024",
                 clienteId: 1,
                 fechaVencimiento: "2024-12-31T00:00:00.000Z",
                 estado: "BORRADOR",
                 margenGananciaPorcentaje: 30.0,
                 gastosIndirectosPorcentaje: 15.0,
                 totalCosto: 25000.0,
-                totalVenta: 37375.0,
+                costosIndirectos: 3750.0,
+                ganancias: 8625.0,
                 notas: "Presupuesto para colección de verano",
                 detalles: [
                   {
@@ -41,6 +43,15 @@ export const presupuestoDocs = {
                     descripcion: "Pantalón Casual - Talla M",
                     cantidad: 5,
                     costoUnitario: 5000.0
+                  }
+                ],
+                adicionales: [
+                  {
+                    nombre: "Embalaje especial",
+                    cantidad: 1,
+                    monto: 5000.0,
+                    totalCosto: 5000.0,
+                    observaciones: "Embalaje reforzado para envío"
                   }
                 ]
               }
@@ -143,13 +154,15 @@ export const presupuestoDocs = {
             "application/json": {
               schema: { $ref: "#/components/schemas/UpdatePresupuestoDto" },
               example: {
+                nombre: "Presupuesto Actualizado",
                 clienteId: 1,
                 fechaVencimiento: "2024-12-31T00:00:00.000Z",
                 estado: "ENVIADO",
                 margenGananciaPorcentaje: 35.0,
                 gastosIndirectosPorcentaje: 18.0,
                 totalCosto: 28000.0,
-                totalVenta: 42840.0,
+                costosIndirectos: 5040.0,
+                ganancias: 11564.0,
                 notas: "Presupuesto actualizado",
                 detalles: [
                   {
@@ -158,7 +171,8 @@ export const presupuestoDocs = {
                     cantidad: 6,
                     costoUnitario: 5500.0
                   }
-                ]
+                ],
+                adicionales: []
               }
             }
           }
@@ -287,10 +301,46 @@ export const presupuestoDocs = {
         }
       },
 
+      AdicionalDto: {
+        type: "object",
+        required: ["nombre", "cantidad", "monto", "totalCosto"],
+        properties: {
+          nombre: {
+            type: "string",
+            description: "Nombre del producto o material adicional"
+          },
+          cantidad: {
+            type: "number",
+            minimum: 1,
+            description: "Cantidad"
+          },
+          monto: {
+            type: "number",
+            minimum: 0,
+            description: "Monto unitario"
+          },
+          totalCosto: {
+            type: "number",
+            minimum: 0,
+            description: "Costo total del adicional"
+          },
+          observaciones: {
+            type: "string",
+            nullable: true,
+            description: "Observaciones adicionales"
+          }
+        }
+      },
+
       CreatePresupuestoDto: {
         type: "object",
-        required: ["estado", "margenGananciaPorcentaje", "gastosIndirectosPorcentaje", "totalCosto", "totalVenta"],
+        required: ["estado", "margenGananciaPorcentaje", "gastosIndirectosPorcentaje", "totalCosto", "costosIndirectos", "ganancias"],
         properties: {
+          nombre: {
+            type: "string",
+            nullable: true,
+            description: "Nombre del presupuesto"
+          },
           clienteId: {
             type: "number",
             nullable: true,
@@ -325,10 +375,15 @@ export const presupuestoDocs = {
             minimum: 0,
             description: "Costo total del presupuesto"
           },
-          totalVenta: {
+          costosIndirectos: {
             type: "number",
             minimum: 0,
-            description: "Precio de venta total"
+            description: "Costos indirectos calculados"
+          },
+          ganancias: {
+            type: "number",
+            minimum: 0,
+            description: "Ganancias calculadas"
           },
           notas: {
             type: "string",
@@ -339,6 +394,11 @@ export const presupuestoDocs = {
             type: "array",
             items: { $ref: "#/components/schemas/PresupuestoDetalleDto" },
             description: "Lista de detalles del presupuesto (opcional)"
+          },
+          adicionales: {
+            type: "array",
+            items: { $ref: "#/components/schemas/AdicionalDto" },
+            description: "Lista de costos adicionales (opcional)"
           }
         }
       },
@@ -346,6 +406,10 @@ export const presupuestoDocs = {
       UpdatePresupuestoDto: {
         type: "object",
         properties: {
+          nombre: {
+            type: "string",
+            nullable: true
+          },
           clienteId: {
             type: "number",
             nullable: true,
@@ -374,7 +438,11 @@ export const presupuestoDocs = {
             type: "number",
             minimum: 0
           },
-          totalVenta: {
+          costosIndirectos: {
+            type: "number",
+            minimum: 0
+          },
+          ganancias: {
             type: "number",
             minimum: 0
           },
@@ -385,6 +453,10 @@ export const presupuestoDocs = {
           detalles: {
             type: "array",
             items: { $ref: "#/components/schemas/PresupuestoDetalleDto" }
+          },
+          adicionales: {
+            type: "array",
+            items: { $ref: "#/components/schemas/AdicionalDto" }
           }
         }
       },
@@ -392,6 +464,10 @@ export const presupuestoDocs = {
       PartialUpdatePresupuestoDto: {
         type: "object",
         properties: {
+          nombre: {
+            type: "string",
+            nullable: true
+          },
           clienteId: {
             type: "number",
             nullable: true,
@@ -420,7 +496,11 @@ export const presupuestoDocs = {
             type: "number",
             minimum: 0
           },
-          totalVenta: {
+          costosIndirectos: {
+            type: "number",
+            minimum: 0
+          },
+          ganancias: {
             type: "number",
             minimum: 0
           },
@@ -431,6 +511,10 @@ export const presupuestoDocs = {
           detalles: {
             type: "array",
             items: { $ref: "#/components/schemas/PresupuestoDetalleDto" }
+          },
+          adicionales: {
+            type: "array",
+            items: { $ref: "#/components/schemas/AdicionalDto" }
           }
         }
       },
@@ -446,11 +530,26 @@ export const presupuestoDocs = {
         }
       },
 
+      AdicionalResponse: {
+        type: "object",
+        properties: {
+          id: { type: "number" },
+          nombre: { type: "string" },
+          cantidad: { type: "number" },
+          monto: { type: "number" },
+          totalCosto: { type: "number" },
+          observaciones: { type: "string", nullable: true },
+          createdAt: { type: "string", format: "date-time" },
+          updatedAt: { type: "string", format: "date-time" }
+        }
+      },
+
       PresupuestoResponse: {
         type: "object",
         properties: {
           id: { type: "number" },
           numeroPresupuesto: { type: "number" },
+          nombre: { type: "string", nullable: true },
           clienteId: { type: "number", nullable: true },
           fechaCreacion: { type: "string", format: "date-time" },
           fechaVencimiento: { type: "string", format: "date-time", nullable: true },
@@ -461,11 +560,16 @@ export const presupuestoDocs = {
           margenGananciaPorcentaje: { type: "number" },
           gastosIndirectosPorcentaje: { type: "number" },
           totalCosto: { type: "number" },
-          totalVenta: { type: "number" },
+          costosIndirectos: { type: "number" },
+          ganancias: { type: "number" },
           notas: { type: "string", nullable: true },
           detalles: {
             type: "array",
             items: { $ref: "#/components/schemas/PresupuestoDetalleResponse" }
+          },
+          adicionales: {
+            type: "array",
+            items: { $ref: "#/components/schemas/AdicionalResponse" }
           },
           cliente: {
             type: "object",

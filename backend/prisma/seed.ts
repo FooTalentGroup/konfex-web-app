@@ -300,13 +300,15 @@ async function main() {
   const presupuestos = [
     {
       numeroPresupuesto: 1001,
+      nombre: "Presupuesto Colección Verano 2024",
       clienteId: clientesCreados[0]?.id || 1,
       fechaVencimiento: new Date("2024-12-31"),
       estado: EstadoPresupuesto.ENVIADO,
       margenGananciaPorcentaje: 30.0,
       gastosIndirectosPorcentaje: 15.0,
       totalCosto: 25000.0,
-      totalVenta: 37375.0,
+      costosIndirectos: 3750.0,
+      ganancias: 8625.0,
       notas: "Presupuesto para colección de verano",
       detalles: [
         {
@@ -316,16 +318,27 @@ async function main() {
           costoUnitario: 5000.0,
         },
       ],
+      adicionales: [
+        {
+          nombre: "Embalaje especial",
+          cantidad: 1,
+          monto: 5000.0,
+          totalCosto: 5000.0,
+          observaciones: "Embalaje reforzado para envío",
+        },
+      ],
     },
     {
       numeroPresupuesto: 1002,
+      nombre: "Presupuesto Pedido Mayorista",
       clienteId: clientesCreados[1]?.id || 2,
       fechaVencimiento: new Date("2024-12-15"),
       estado: EstadoPresupuesto.ACEPTADO,
       margenGananciaPorcentaje: 25.0,
       gastosIndirectosPorcentaje: 12.0,
       totalCosto: 18000.0,
-      totalVenta: 25200.0,
+      costosIndirectos: 2160.0,
+      ganancias: 5040.0,
       notas: "Pedido mayorista",
       detalles: [
         {
@@ -335,16 +348,19 @@ async function main() {
           costoUnitario: 1800.0,
         },
       ],
+      adicionales: [],
     },
     {
       numeroPresupuesto: 1003,
+      nombre: "Presupuesto Revisión",
       clienteId: clientesCreados[2]?.id || 3,
       fechaVencimiento: new Date("2025-01-15"),
       estado: EstadoPresupuesto.BORRADOR,
       margenGananciaPorcentaje: 35.0,
       gastosIndirectosPorcentaje: 18.0,
       totalCosto: 32000.0,
-      totalVenta: 48960.0,
+      costosIndirectos: 5760.0,
+      ganancias: 13216.0,
       notas: "Presupuesto en revisión",
       detalles: [
         {
@@ -354,16 +370,27 @@ async function main() {
           costoUnitario: 4000.0,
         },
       ],
+      adicionales: [
+        {
+          nombre: "Etiquetas personalizadas",
+          cantidad: 100,
+          monto: 50.0,
+          totalCosto: 5000.0,
+          observaciones: "Etiquetas con logo del cliente",
+        },
+      ],
     },
     {
       numeroPresupuesto: 1004,
+      nombre: "Presupuesto Vencido",
       clienteId: clientesCreados[3]?.id || 4,
       fechaVencimiento: new Date("2024-11-30"),
       estado: EstadoPresupuesto.VENCIDO,
       margenGananciaPorcentaje: 28.0,
       gastosIndirectosPorcentaje: 14.0,
       totalCosto: 15000.0,
-      totalVenta: 20520.0,
+      costosIndirectos: 2100.0,
+      ganancias: 4788.0,
       notas: "Presupuesto vencido",
       detalles: [
         {
@@ -373,16 +400,19 @@ async function main() {
           costoUnitario: 2500.0,
         },
       ],
+      adicionales: [],
     },
     {
       numeroPresupuesto: 1005,
+      nombre: "Presupuesto Accesorios",
       clienteId: clientesCreados[4]?.id || 5,
       fechaVencimiento: new Date("2025-02-28"),
       estado: EstadoPresupuesto.ENVIADO,
       margenGananciaPorcentaje: 32.0,
       gastosIndirectosPorcentaje: 16.0,
       totalCosto: 42000.0,
-      totalVenta: 62160.0,
+      costosIndirectos: 6720.0,
+      ganancias: 15590.4,
       notas: "Presupuesto para accesorios",
       detalles: [
         {
@@ -392,11 +422,27 @@ async function main() {
           costoUnitario: 3500.0,
         },
       ],
+      adicionales: [
+        {
+          nombre: "Bolsas de tela",
+          cantidad: 50,
+          monto: 200.0,
+          totalCosto: 10000.0,
+          observaciones: "Bolsas ecológicas para empaque",
+        },
+        {
+          nombre: "Tarjetas de agradecimiento",
+          cantidad: 50,
+          monto: 50.0,
+          totalCosto: 2500.0,
+          observaciones: null,
+        },
+      ],
     },
   ];
 
   for (const presupuesto of presupuestos) {
-    const { detalles, ...presupuestoData } = presupuesto;
+    const { detalles, adicionales, ...presupuestoData } = presupuesto;
     await prisma.presupuesto.upsert({
       where: { numeroPresupuesto: presupuesto.numeroPresupuesto },
       update: {},
@@ -409,6 +455,17 @@ async function main() {
                 descripcion: detalle.descripcion,
                 cantidad: detalle.cantidad,
                 costoUnitario: detalle.costoUnitario,
+              })),
+            }
+          : undefined,
+        adicionales: adicionales
+          ? {
+              create: adicionales.map((adicional) => ({
+                nombre: adicional.nombre,
+                cantidad: adicional.cantidad,
+                monto: adicional.monto,
+                totalCosto: adicional.totalCosto,
+                observaciones: adicional.observaciones,
               })),
             }
           : undefined,

@@ -8,38 +8,52 @@ interface PresupuestoDetalleInput {
   costoUnitario: number;
 }
 
+interface AdicionalInput {
+  nombre: string;
+  cantidad: number;
+  monto: number;
+  totalCosto: number;
+  observaciones?: string | null;
+}
+
 interface CreatePresupuestoData {
   data: {
     numeroPresupuesto: number;
+    nombre?: string | null;
     clienteId: number | null;
     fechaVencimiento?: Date | null;
     estado: EstadoPresupuesto;
     margenGananciaPorcentaje: number;
     gastosIndirectosPorcentaje: number;
     totalCosto: number;
-    totalVenta: number;
+    costosIndirectos: number;
+    ganancias: number;
     notas?: string | null;
     detalles?: PresupuestoDetalleInput[];
+    adicionales?: AdicionalInput[];
   };
 }
 
 interface UpdatePresupuestoData {
   data: {
+    nombre?: string | null;
     clienteId?: number | null;
     fechaVencimiento?: Date | null;
     estado?: EstadoPresupuesto;
     margenGananciaPorcentaje?: number;
     gastosIndirectosPorcentaje?: number;
     totalCosto?: number;
-    totalVenta?: number;
+    costosIndirectos?: number;
+    ganancias?: number;
     notas?: string | null;
     detalles?: PresupuestoDetalleInput[];
+    adicionales?: AdicionalInput[];
   };
 }
 
 export const PresupuestoRepository = {
   create: async ({ data }: CreatePresupuestoData) => {
-    const { detalles, clienteId, ...presupuestoData } = data;
+    const { detalles, adicionales, clienteId, ...presupuestoData } = data;
     return prisma.presupuesto.create({
       data: {
         ...presupuestoData,
@@ -54,9 +68,21 @@ export const PresupuestoRepository = {
               })),
             }
           : undefined,
+        adicionales: adicionales
+          ? {
+              create: adicionales.map((adicional) => ({
+                nombre: adicional.nombre,
+                cantidad: adicional.cantidad,
+                monto: adicional.monto,
+                totalCosto: adicional.totalCosto,
+                observaciones: adicional.observaciones,
+              })),
+            }
+          : undefined,
       } as any,
       include: {
         detalles: true,
+        adicionales: true,
         cliente: true,
         pedido: true,
       },
@@ -74,6 +100,7 @@ export const PresupuestoRepository = {
       ...params,
       include: {
         detalles: true,
+        adicionales: true,
         cliente: true,
         pedido: true,
         ...params?.include,
@@ -92,6 +119,7 @@ export const PresupuestoRepository = {
       where: { id },
       include: {
         detalles: true,
+        adicionales: true,
         cliente: true,
         pedido: true,
         ...options?.include,
@@ -100,12 +128,20 @@ export const PresupuestoRepository = {
   },
 
   update: async (id: number, { data }: UpdatePresupuestoData) => {
-    const { detalles, clienteId, ...presupuestoData } = data;
+    const { detalles, adicionales, clienteId, ...presupuestoData } = data;
 
     // Si hay detalles definidos (incluso si es array vacío), eliminamos los existentes
     if (detalles !== undefined) {
       // Eliminar detalles existentes
       await prisma.presupuestoDetalle.deleteMany({
+        where: { presupuestoId: id },
+      });
+    }
+
+    // Si hay adicionales definidos (incluso si es array vacío), eliminamos los existentes
+    if (adicionales !== undefined) {
+      // Eliminar adicionales existentes
+      await prisma.adicional.deleteMany({
         where: { presupuestoId: id },
       });
     }
@@ -125,6 +161,20 @@ export const PresupuestoRepository = {
               }
             : undefined // Si es array vacío, no creamos nada (ya se eliminaron)
           : undefined, // Si no se pasa, no tocamos los detalles
+      adicionales:
+        adicionales !== undefined
+          ? adicionales.length > 0
+            ? {
+                create: adicionales.map((adicional) => ({
+                  nombre: adicional.nombre,
+                  cantidad: adicional.cantidad,
+                  monto: adicional.monto,
+                  totalCosto: adicional.totalCosto,
+                  observaciones: adicional.observaciones,
+                })),
+              }
+            : undefined // Si es array vacío, no creamos nada (ya se eliminaron)
+          : undefined, // Si no se pasa, no tocamos los adicionales
     };
 
     // Manejar clienteId explícitamente para permitir null
@@ -137,6 +187,7 @@ export const PresupuestoRepository = {
       data: updateData,
       include: {
         detalles: true,
+        adicionales: true,
         cliente: true,
         pedido: true,
       },

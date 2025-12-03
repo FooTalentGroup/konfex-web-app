@@ -393,6 +393,7 @@ export const ModelName = {
   ManoDeObraPorProducto: 'ManoDeObraPorProducto',
   Presupuesto: 'Presupuesto',
   PresupuestoDetalle: 'PresupuestoDetalle',
+  Adicional: 'Adicional',
   Pedido: 'Pedido',
   PedidoDetalle: 'PedidoDetalle',
   ProduccionEtapa: 'ProduccionEtapa',
@@ -412,7 +413,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "cliente" | "producto" | "material" | "manoDeObra" | "materialPorProducto" | "manoDeObraPorProducto" | "presupuesto" | "presupuestoDetalle" | "pedido" | "pedidoDetalle" | "produccionEtapa" | "telegramMessage"
+    modelProps: "user" | "cliente" | "producto" | "material" | "manoDeObra" | "materialPorProducto" | "manoDeObraPorProducto" | "presupuesto" | "presupuestoDetalle" | "adicional" | "pedido" | "pedidoDetalle" | "produccionEtapa" | "telegramMessage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1082,6 +1083,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Adicional: {
+      payload: Prisma.$AdicionalPayload<ExtArgs>
+      fields: Prisma.AdicionalFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AdicionalFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdicionalPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AdicionalFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdicionalPayload>
+        }
+        findFirst: {
+          args: Prisma.AdicionalFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdicionalPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AdicionalFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdicionalPayload>
+        }
+        findMany: {
+          args: Prisma.AdicionalFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdicionalPayload>[]
+        }
+        create: {
+          args: Prisma.AdicionalCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdicionalPayload>
+        }
+        createMany: {
+          args: Prisma.AdicionalCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AdicionalCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdicionalPayload>[]
+        }
+        delete: {
+          args: Prisma.AdicionalDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdicionalPayload>
+        }
+        update: {
+          args: Prisma.AdicionalUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdicionalPayload>
+        }
+        deleteMany: {
+          args: Prisma.AdicionalDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AdicionalUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AdicionalUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdicionalPayload>[]
+        }
+        upsert: {
+          args: Prisma.AdicionalUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AdicionalPayload>
+        }
+        aggregate: {
+          args: Prisma.AdicionalAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAdicional>
+        }
+        groupBy: {
+          args: Prisma.AdicionalGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdicionalGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AdicionalCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AdicionalCountAggregateOutputType> | number
+        }
+      }
+    }
     Pedido: {
       payload: Prisma.$PedidoPayload<ExtArgs>
       fields: Prisma.PedidoFieldRefs
@@ -1515,6 +1590,7 @@ export type ManoDeObraPorProductoScalarFieldEnum = (typeof ManoDeObraPorProducto
 export const PresupuestoScalarFieldEnum = {
   id: 'id',
   numeroPresupuesto: 'numeroPresupuesto',
+  nombre: 'nombre',
   clienteId: 'clienteId',
   fechaCreacion: 'fechaCreacion',
   fechaVencimiento: 'fechaVencimiento',
@@ -1522,7 +1598,8 @@ export const PresupuestoScalarFieldEnum = {
   margenGananciaPorcentaje: 'margenGananciaPorcentaje',
   gastosIndirectosPorcentaje: 'gastosIndirectosPorcentaje',
   totalCosto: 'totalCosto',
-  totalVenta: 'totalVenta',
+  costosIndirectos: 'costosIndirectos',
+  ganancias: 'ganancias',
   notas: 'notas',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1541,6 +1618,21 @@ export const PresupuestoDetalleScalarFieldEnum = {
 } as const
 
 export type PresupuestoDetalleScalarFieldEnum = (typeof PresupuestoDetalleScalarFieldEnum)[keyof typeof PresupuestoDetalleScalarFieldEnum]
+
+
+export const AdicionalScalarFieldEnum = {
+  id: 'id',
+  presupuestoId: 'presupuestoId',
+  nombre: 'nombre',
+  cantidad: 'cantidad',
+  monto: 'monto',
+  totalCosto: 'totalCosto',
+  observaciones: 'observaciones',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdicionalScalarFieldEnum = (typeof AdicionalScalarFieldEnum)[keyof typeof AdicionalScalarFieldEnum]
 
 
 export const PedidoScalarFieldEnum = {
@@ -1823,6 +1915,7 @@ export type GlobalOmitConfig = {
   manoDeObraPorProducto?: Prisma.ManoDeObraPorProductoOmit
   presupuesto?: Prisma.PresupuestoOmit
   presupuestoDetalle?: Prisma.PresupuestoDetalleOmit
+  adicional?: Prisma.AdicionalOmit
   pedido?: Prisma.PedidoOmit
   pedidoDetalle?: Prisma.PedidoDetalleOmit
   produccionEtapa?: Prisma.ProduccionEtapaOmit

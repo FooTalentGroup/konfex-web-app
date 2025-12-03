@@ -26,8 +26,24 @@ export const presupuestoDetalleSchema = z.object({
     .min(0, { message: "El costo unitario no puede ser negativo" }),
 });
 
+export const adicionalSchema = z.object({
+  nombre: z.string().min(1, { message: "El nombre es requerido" }),
+  cantidad: z
+    .number()
+    .int()
+    .min(1, { message: "La cantidad debe ser mayor a 0" }),
+  monto: z
+    .number()
+    .min(0, { message: "El monto no puede ser negativo" }),
+  totalCosto: z
+    .number()
+    .min(0, { message: "El total costo no puede ser negativo" }),
+  observaciones: z.string().optional(),
+});
+
 export const createPresupuestoSchema = z.object({
   body: z.object({
+    nombre: z.string().optional(),
     clienteId: z
       .number()
       .min(1, { message: "clienteId inválido" })
@@ -57,13 +73,18 @@ export const createPresupuestoSchema = z.object({
       .number()
       .min(0, "totalCosto no puede ser negativo"),
 
-    totalVenta: z
+    costosIndirectos: z
       .number()
-      .min(0, "totalVenta no puede ser negativo"),
+      .min(0, "costosIndirectos no puede ser negativo"),
+
+    ganancias: z
+      .number()
+      .min(0, "ganancias no puede ser negativo"),
 
     notas: z.string().optional(),
 
     detalles: z.array(presupuestoDetalleSchema).optional(),
+    adicionales: z.array(adicionalSchema).optional(),
   }),
 });
 
@@ -72,6 +93,7 @@ export type CreatePresupuestoRequestDto =
 
 export const updatePresupuestoSchema = z.object({
   body: z.object({
+    nombre: z.string().optional(),
     clienteId: z
       .number()
       .min(1, { message: "clienteId inválido" })
@@ -89,11 +111,13 @@ export const updatePresupuestoSchema = z.object({
     gastosIndirectosPorcentaje: z.number().min(0).max(100),
 
     totalCosto: z.number().min(0),
-    totalVenta: z.number().min(0),
+    costosIndirectos: z.number().min(0),
+    ganancias: z.number().min(0),
 
     notas: z.string().optional(),
 
     detalles: z.array(presupuestoDetalleSchema).optional(),
+    adicionales: z.array(adicionalSchema).optional(),
   }),
 });
 
@@ -102,6 +126,7 @@ export type UpdatePresupuestoRequestDto =
 
 export const partialUpdatePresupuestoSchema = z.object({
   body: z.object({
+    nombre: z.string().optional(),
     clienteId: z
       .number()
       .min(1, { message: "clienteId inválido" })
@@ -119,11 +144,13 @@ export const partialUpdatePresupuestoSchema = z.object({
     gastosIndirectosPorcentaje: z.number().min(0).max(100).optional(),
 
     totalCosto: z.number().min(0).optional(),
-    totalVenta: z.number().min(0).optional(),
+    costosIndirectos: z.number().min(0).optional(),
+    ganancias: z.number().min(0).optional(),
 
     notas: z.string().optional(),
 
     detalles: z.array(presupuestoDetalleSchema).optional(),
+    adicionales: z.array(adicionalSchema).optional(),
   }),
 });
 

@@ -107,6 +107,7 @@ model ManoDeObraPorProducto {
 model Presupuesto {
   id                         Int                  @id @default(autoincrement())
   numeroPresupuesto          Int                  @unique
+  nombre                     String?
   clienteId                  Int?
   fechaCreacion              DateTime             @default(now())
   fechaVencimiento           DateTime?
@@ -114,13 +115,15 @@ model Presupuesto {
   margenGananciaPorcentaje   Float
   gastosIndirectosPorcentaje Float
   totalCosto                 Float
-  totalVenta                 Float
+  costosIndirectos           Float
+  ganancias                  Float
   notas                      String?
   createdAt                  DateTime             @default(now())
   updatedAt                  DateTime             @updatedAt
   pedido                     Pedido?
   cliente                    Cliente?             @relation(fields: [clienteId], references: [id], onDelete: Restrict)
   detalles                   PresupuestoDetalle[]
+  adicionales                Adicional[]
 }
 
 model PresupuestoDetalle {
@@ -132,6 +135,21 @@ model PresupuestoDetalle {
   costoUnitario Float
   presupuesto   Presupuesto @relation(fields: [presupuestoId], references: [id], onDelete: Cascade)
   producto      Producto    @relation(fields: [productoId], references: [id])
+
+  @@index([presupuestoId])
+}
+
+model Adicional {
+  id            Int         @id @default(autoincrement())
+  presupuestoId Int
+  nombre        String
+  cantidad      Int
+  monto         Float
+  totalCosto    Float
+  observaciones String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  presupuesto   Presupuesto @relation(fields: [presupuestoId], references: [id], onDelete: Cascade)
 
   @@index([presupuestoId])
 }

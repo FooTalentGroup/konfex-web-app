@@ -60,6 +60,7 @@ export const ModelName = {
   ManoDeObraPorProducto: 'ManoDeObraPorProducto',
   Presupuesto: 'Presupuesto',
   PresupuestoDetalle: 'PresupuestoDetalle',
+  Adicional: 'Adicional',
   Pedido: 'Pedido',
   PedidoDetalle: 'PedidoDetalle',
   ProduccionEtapa: 'ProduccionEtapa',
@@ -180,6 +181,7 @@ export type ManoDeObraPorProductoScalarFieldEnum = (typeof ManoDeObraPorProducto
 export const PresupuestoScalarFieldEnum = {
   id: 'id',
   numeroPresupuesto: 'numeroPresupuesto',
+  nombre: 'nombre',
   clienteId: 'clienteId',
   fechaCreacion: 'fechaCreacion',
   fechaVencimiento: 'fechaVencimiento',
@@ -187,7 +189,8 @@ export const PresupuestoScalarFieldEnum = {
   margenGananciaPorcentaje: 'margenGananciaPorcentaje',
   gastosIndirectosPorcentaje: 'gastosIndirectosPorcentaje',
   totalCosto: 'totalCosto',
-  totalVenta: 'totalVenta',
+  costosIndirectos: 'costosIndirectos',
+  ganancias: 'ganancias',
   notas: 'notas',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -206,6 +209,21 @@ export const PresupuestoDetalleScalarFieldEnum = {
 } as const
 
 export type PresupuestoDetalleScalarFieldEnum = (typeof PresupuestoDetalleScalarFieldEnum)[keyof typeof PresupuestoDetalleScalarFieldEnum]
+
+
+export const AdicionalScalarFieldEnum = {
+  id: 'id',
+  presupuestoId: 'presupuestoId',
+  nombre: 'nombre',
+  cantidad: 'cantidad',
+  monto: 'monto',
+  totalCosto: 'totalCosto',
+  observaciones: 'observaciones',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdicionalScalarFieldEnum = (typeof AdicionalScalarFieldEnum)[keyof typeof AdicionalScalarFieldEnum]
 
 
 export const PedidoScalarFieldEnum = {
