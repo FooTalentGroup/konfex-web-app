@@ -68,6 +68,11 @@ export type PresupuestoDetalle = Prisma.PresupuestoDetalleModel
  */
 export type Adicional = Prisma.AdicionalModel
 /**
+ * Model GastosNegocio
+ * 
+ */
+export type GastosNegocio = Prisma.GastosNegocioModel
+/**
  * Model Pedido
  * 
  */

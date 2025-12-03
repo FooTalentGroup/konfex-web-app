@@ -394,6 +394,7 @@ export const ModelName = {
   Presupuesto: 'Presupuesto',
   PresupuestoDetalle: 'PresupuestoDetalle',
   Adicional: 'Adicional',
+  GastosNegocio: 'GastosNegocio',
   Pedido: 'Pedido',
   PedidoDetalle: 'PedidoDetalle',
   ProduccionEtapa: 'ProduccionEtapa',
@@ -413,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "cliente" | "producto" | "material" | "manoDeObra" | "materialPorProducto" | "manoDeObraPorProducto" | "presupuesto" | "presupuestoDetalle" | "adicional" | "pedido" | "pedidoDetalle" | "produccionEtapa" | "telegramMessage"
+    modelProps: "user" | "cliente" | "producto" | "material" | "manoDeObra" | "materialPorProducto" | "manoDeObraPorProducto" | "presupuesto" | "presupuestoDetalle" | "adicional" | "gastosNegocio" | "pedido" | "pedidoDetalle" | "produccionEtapa" | "telegramMessage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1157,6 +1158,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    GastosNegocio: {
+      payload: Prisma.$GastosNegocioPayload<ExtArgs>
+      fields: Prisma.GastosNegocioFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GastosNegocioFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GastosNegocioPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GastosNegocioFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GastosNegocioPayload>
+        }
+        findFirst: {
+          args: Prisma.GastosNegocioFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GastosNegocioPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GastosNegocioFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GastosNegocioPayload>
+        }
+        findMany: {
+          args: Prisma.GastosNegocioFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GastosNegocioPayload>[]
+        }
+        create: {
+          args: Prisma.GastosNegocioCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GastosNegocioPayload>
+        }
+        createMany: {
+          args: Prisma.GastosNegocioCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GastosNegocioCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GastosNegocioPayload>[]
+        }
+        delete: {
+          args: Prisma.GastosNegocioDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GastosNegocioPayload>
+        }
+        update: {
+          args: Prisma.GastosNegocioUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GastosNegocioPayload>
+        }
+        deleteMany: {
+          args: Prisma.GastosNegocioDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GastosNegocioUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GastosNegocioUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GastosNegocioPayload>[]
+        }
+        upsert: {
+          args: Prisma.GastosNegocioUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GastosNegocioPayload>
+        }
+        aggregate: {
+          args: Prisma.GastosNegocioAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGastosNegocio>
+        }
+        groupBy: {
+          args: Prisma.GastosNegocioGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GastosNegocioGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GastosNegocioCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GastosNegocioCountAggregateOutputType> | number
+        }
+      }
+    }
     Pedido: {
       payload: Prisma.$PedidoPayload<ExtArgs>
       fields: Prisma.PedidoFieldRefs
@@ -1598,7 +1673,7 @@ export const PresupuestoScalarFieldEnum = {
   margenGananciaPorcentaje: 'margenGananciaPorcentaje',
   gastosIndirectosPorcentaje: 'gastosIndirectosPorcentaje',
   totalCosto: 'totalCosto',
-  costosIndirectos: 'costosIndirectos',
+  gastosNegocioId: 'gastosNegocioId',
   ganancias: 'ganancias',
   notas: 'notas',
   createdAt: 'createdAt',
@@ -1633,6 +1708,18 @@ export const AdicionalScalarFieldEnum = {
 } as const
 
 export type AdicionalScalarFieldEnum = (typeof AdicionalScalarFieldEnum)[keyof typeof AdicionalScalarFieldEnum]
+
+
+export const GastosNegocioScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  porcentaje: 'porcentaje',
+  impuestos: 'impuestos',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GastosNegocioScalarFieldEnum = (typeof GastosNegocioScalarFieldEnum)[keyof typeof GastosNegocioScalarFieldEnum]
 
 
 export const PedidoScalarFieldEnum = {
@@ -1916,6 +2003,7 @@ export type GlobalOmitConfig = {
   presupuesto?: Prisma.PresupuestoOmit
   presupuestoDetalle?: Prisma.PresupuestoDetalleOmit
   adicional?: Prisma.AdicionalOmit
+  gastosNegocio?: Prisma.GastosNegocioOmit
   pedido?: Prisma.PedidoOmit
   pedidoDetalle?: Prisma.PedidoDetalleOmit
   produccionEtapa?: Prisma.ProduccionEtapaOmit
