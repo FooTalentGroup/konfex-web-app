@@ -63,8 +63,7 @@ export const ModelName = {
   Pedido: 'Pedido',
   PedidoDetalle: 'PedidoDetalle',
   ProduccionEtapa: 'ProduccionEtapa',
-  TelegramMessage: 'TelegramMessage',
-  Calculadora: 'Calculadora'
+  TelegramMessage: 'TelegramMessage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -265,22 +264,6 @@ export const TelegramMessageScalarFieldEnum = {
 } as const
 
 export type TelegramMessageScalarFieldEnum = (typeof TelegramMessageScalarFieldEnum)[keyof typeof TelegramMessageScalarFieldEnum]
-
-
-export const CalculadoraScalarFieldEnum = {
-  id: 'id',
-  clienteId: 'clienteId',
-  numeroPresupuesto: 'numeroPresupuesto',
-  precioPrendaNeto: 'precioPrendaNeto',
-  horasTrabajo: 'horasTrabajo',
-  porcentaje: 'porcentaje',
-  gastoAdicional: 'gastoAdicional',
-  gastoEnvio: 'gastoEnvio',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type CalculadoraScalarFieldEnum = (typeof CalculadoraScalarFieldEnum)[keyof typeof CalculadoraScalarFieldEnum]
 
 
 export const SortOrder = {

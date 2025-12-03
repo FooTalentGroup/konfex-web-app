@@ -307,7 +307,6 @@ export type PresupuestoWhereInput = {
   pedido?: Prisma.XOR<Prisma.PedidoNullableScalarRelationFilter, Prisma.PedidoWhereInput> | null
   cliente?: Prisma.XOR<Prisma.ClienteNullableScalarRelationFilter, Prisma.ClienteWhereInput> | null
   detalles?: Prisma.PresupuestoDetalleListRelationFilter
-  calculadoras?: Prisma.CalculadoraListRelationFilter
 }
 
 export type PresupuestoOrderByWithRelationInput = {
@@ -327,7 +326,6 @@ export type PresupuestoOrderByWithRelationInput = {
   pedido?: Prisma.PedidoOrderByWithRelationInput
   cliente?: Prisma.ClienteOrderByWithRelationInput
   detalles?: Prisma.PresupuestoDetalleOrderByRelationAggregateInput
-  calculadoras?: Prisma.CalculadoraOrderByRelationAggregateInput
 }
 
 export type PresupuestoWhereUniqueInput = Prisma.AtLeast<{
@@ -350,7 +348,6 @@ export type PresupuestoWhereUniqueInput = Prisma.AtLeast<{
   pedido?: Prisma.XOR<Prisma.PedidoNullableScalarRelationFilter, Prisma.PedidoWhereInput> | null
   cliente?: Prisma.XOR<Prisma.ClienteNullableScalarRelationFilter, Prisma.ClienteWhereInput> | null
   detalles?: Prisma.PresupuestoDetalleListRelationFilter
-  calculadoras?: Prisma.CalculadoraListRelationFilter
 }, "id" | "numeroPresupuesto">
 
 export type PresupuestoOrderByWithAggregationInput = {
@@ -408,7 +405,6 @@ export type PresupuestoCreateInput = {
   pedido?: Prisma.PedidoCreateNestedOneWithoutPresupuestoInput
   cliente?: Prisma.ClienteCreateNestedOneWithoutPresupuestosInput
   detalles?: Prisma.PresupuestoDetalleCreateNestedManyWithoutPresupuestoInput
-  calculadoras?: Prisma.CalculadoraCreateNestedManyWithoutPresupuestoInput
 }
 
 export type PresupuestoUncheckedCreateInput = {
@@ -427,7 +423,6 @@ export type PresupuestoUncheckedCreateInput = {
   updatedAt?: Date | string
   pedido?: Prisma.PedidoUncheckedCreateNestedOneWithoutPresupuestoInput
   detalles?: Prisma.PresupuestoDetalleUncheckedCreateNestedManyWithoutPresupuestoInput
-  calculadoras?: Prisma.CalculadoraUncheckedCreateNestedManyWithoutPresupuestoInput
 }
 
 export type PresupuestoUpdateInput = {
@@ -445,7 +440,6 @@ export type PresupuestoUpdateInput = {
   pedido?: Prisma.PedidoUpdateOneWithoutPresupuestoNestedInput
   cliente?: Prisma.ClienteUpdateOneWithoutPresupuestosNestedInput
   detalles?: Prisma.PresupuestoDetalleUpdateManyWithoutPresupuestoNestedInput
-  calculadoras?: Prisma.CalculadoraUpdateManyWithoutPresupuestoNestedInput
 }
 
 export type PresupuestoUncheckedUpdateInput = {
@@ -464,7 +458,6 @@ export type PresupuestoUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedido?: Prisma.PedidoUncheckedUpdateOneWithoutPresupuestoNestedInput
   detalles?: Prisma.PresupuestoDetalleUncheckedUpdateManyWithoutPresupuestoNestedInput
-  calculadoras?: Prisma.CalculadoraUncheckedUpdateManyWithoutPresupuestoNestedInput
 }
 
 export type PresupuestoCreateManyInput = {
@@ -682,20 +675,6 @@ export type PresupuestoUpdateOneRequiredWithoutPedidoNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PresupuestoUpdateToOneWithWhereWithoutPedidoInput, Prisma.PresupuestoUpdateWithoutPedidoInput>, Prisma.PresupuestoUncheckedUpdateWithoutPedidoInput>
 }
 
-export type PresupuestoCreateNestedOneWithoutCalculadorasInput = {
-  create?: Prisma.XOR<Prisma.PresupuestoCreateWithoutCalculadorasInput, Prisma.PresupuestoUncheckedCreateWithoutCalculadorasInput>
-  connectOrCreate?: Prisma.PresupuestoCreateOrConnectWithoutCalculadorasInput
-  connect?: Prisma.PresupuestoWhereUniqueInput
-}
-
-export type PresupuestoUpdateOneRequiredWithoutCalculadorasNestedInput = {
-  create?: Prisma.XOR<Prisma.PresupuestoCreateWithoutCalculadorasInput, Prisma.PresupuestoUncheckedCreateWithoutCalculadorasInput>
-  connectOrCreate?: Prisma.PresupuestoCreateOrConnectWithoutCalculadorasInput
-  upsert?: Prisma.PresupuestoUpsertWithoutCalculadorasInput
-  connect?: Prisma.PresupuestoWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.PresupuestoUpdateToOneWithWhereWithoutCalculadorasInput, Prisma.PresupuestoUpdateWithoutCalculadorasInput>, Prisma.PresupuestoUncheckedUpdateWithoutCalculadorasInput>
-}
-
 export type PresupuestoCreateWithoutClienteInput = {
   numeroPresupuesto: number
   fechaCreacion?: Date | string
@@ -710,7 +689,6 @@ export type PresupuestoCreateWithoutClienteInput = {
   updatedAt?: Date | string
   pedido?: Prisma.PedidoCreateNestedOneWithoutPresupuestoInput
   detalles?: Prisma.PresupuestoDetalleCreateNestedManyWithoutPresupuestoInput
-  calculadoras?: Prisma.CalculadoraCreateNestedManyWithoutPresupuestoInput
 }
 
 export type PresupuestoUncheckedCreateWithoutClienteInput = {
@@ -728,7 +706,6 @@ export type PresupuestoUncheckedCreateWithoutClienteInput = {
   updatedAt?: Date | string
   pedido?: Prisma.PedidoUncheckedCreateNestedOneWithoutPresupuestoInput
   detalles?: Prisma.PresupuestoDetalleUncheckedCreateNestedManyWithoutPresupuestoInput
-  calculadoras?: Prisma.CalculadoraUncheckedCreateNestedManyWithoutPresupuestoInput
 }
 
 export type PresupuestoCreateOrConnectWithoutClienteInput = {
@@ -790,7 +767,6 @@ export type PresupuestoCreateWithoutDetallesInput = {
   updatedAt?: Date | string
   pedido?: Prisma.PedidoCreateNestedOneWithoutPresupuestoInput
   cliente?: Prisma.ClienteCreateNestedOneWithoutPresupuestosInput
-  calculadoras?: Prisma.CalculadoraCreateNestedManyWithoutPresupuestoInput
 }
 
 export type PresupuestoUncheckedCreateWithoutDetallesInput = {
@@ -808,7 +784,6 @@ export type PresupuestoUncheckedCreateWithoutDetallesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   pedido?: Prisma.PedidoUncheckedCreateNestedOneWithoutPresupuestoInput
-  calculadoras?: Prisma.CalculadoraUncheckedCreateNestedManyWithoutPresupuestoInput
 }
 
 export type PresupuestoCreateOrConnectWithoutDetallesInput = {
@@ -841,7 +816,6 @@ export type PresupuestoUpdateWithoutDetallesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedido?: Prisma.PedidoUpdateOneWithoutPresupuestoNestedInput
   cliente?: Prisma.ClienteUpdateOneWithoutPresupuestosNestedInput
-  calculadoras?: Prisma.CalculadoraUpdateManyWithoutPresupuestoNestedInput
 }
 
 export type PresupuestoUncheckedUpdateWithoutDetallesInput = {
@@ -859,7 +833,6 @@ export type PresupuestoUncheckedUpdateWithoutDetallesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedido?: Prisma.PedidoUncheckedUpdateOneWithoutPresupuestoNestedInput
-  calculadoras?: Prisma.CalculadoraUncheckedUpdateManyWithoutPresupuestoNestedInput
 }
 
 export type PresupuestoCreateWithoutPedidoInput = {
@@ -876,7 +849,6 @@ export type PresupuestoCreateWithoutPedidoInput = {
   updatedAt?: Date | string
   cliente?: Prisma.ClienteCreateNestedOneWithoutPresupuestosInput
   detalles?: Prisma.PresupuestoDetalleCreateNestedManyWithoutPresupuestoInput
-  calculadoras?: Prisma.CalculadoraCreateNestedManyWithoutPresupuestoInput
 }
 
 export type PresupuestoUncheckedCreateWithoutPedidoInput = {
@@ -894,7 +866,6 @@ export type PresupuestoUncheckedCreateWithoutPedidoInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   detalles?: Prisma.PresupuestoDetalleUncheckedCreateNestedManyWithoutPresupuestoInput
-  calculadoras?: Prisma.CalculadoraUncheckedCreateNestedManyWithoutPresupuestoInput
 }
 
 export type PresupuestoCreateOrConnectWithoutPedidoInput = {
@@ -927,7 +898,6 @@ export type PresupuestoUpdateWithoutPedidoInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cliente?: Prisma.ClienteUpdateOneWithoutPresupuestosNestedInput
   detalles?: Prisma.PresupuestoDetalleUpdateManyWithoutPresupuestoNestedInput
-  calculadoras?: Prisma.CalculadoraUpdateManyWithoutPresupuestoNestedInput
 }
 
 export type PresupuestoUncheckedUpdateWithoutPedidoInput = {
@@ -944,93 +914,6 @@ export type PresupuestoUncheckedUpdateWithoutPedidoInput = {
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  detalles?: Prisma.PresupuestoDetalleUncheckedUpdateManyWithoutPresupuestoNestedInput
-  calculadoras?: Prisma.CalculadoraUncheckedUpdateManyWithoutPresupuestoNestedInput
-}
-
-export type PresupuestoCreateWithoutCalculadorasInput = {
-  numeroPresupuesto: number
-  fechaCreacion?: Date | string
-  fechaVencimiento?: Date | string | null
-  estado: $Enums.EstadoPresupuesto
-  margenGananciaPorcentaje: number
-  gastosIndirectosPorcentaje: number
-  totalCosto: number
-  totalVenta: number
-  notas?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  pedido?: Prisma.PedidoCreateNestedOneWithoutPresupuestoInput
-  cliente?: Prisma.ClienteCreateNestedOneWithoutPresupuestosInput
-  detalles?: Prisma.PresupuestoDetalleCreateNestedManyWithoutPresupuestoInput
-}
-
-export type PresupuestoUncheckedCreateWithoutCalculadorasInput = {
-  id?: number
-  numeroPresupuesto: number
-  clienteId?: number | null
-  fechaCreacion?: Date | string
-  fechaVencimiento?: Date | string | null
-  estado: $Enums.EstadoPresupuesto
-  margenGananciaPorcentaje: number
-  gastosIndirectosPorcentaje: number
-  totalCosto: number
-  totalVenta: number
-  notas?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  pedido?: Prisma.PedidoUncheckedCreateNestedOneWithoutPresupuestoInput
-  detalles?: Prisma.PresupuestoDetalleUncheckedCreateNestedManyWithoutPresupuestoInput
-}
-
-export type PresupuestoCreateOrConnectWithoutCalculadorasInput = {
-  where: Prisma.PresupuestoWhereUniqueInput
-  create: Prisma.XOR<Prisma.PresupuestoCreateWithoutCalculadorasInput, Prisma.PresupuestoUncheckedCreateWithoutCalculadorasInput>
-}
-
-export type PresupuestoUpsertWithoutCalculadorasInput = {
-  update: Prisma.XOR<Prisma.PresupuestoUpdateWithoutCalculadorasInput, Prisma.PresupuestoUncheckedUpdateWithoutCalculadorasInput>
-  create: Prisma.XOR<Prisma.PresupuestoCreateWithoutCalculadorasInput, Prisma.PresupuestoUncheckedCreateWithoutCalculadorasInput>
-  where?: Prisma.PresupuestoWhereInput
-}
-
-export type PresupuestoUpdateToOneWithWhereWithoutCalculadorasInput = {
-  where?: Prisma.PresupuestoWhereInput
-  data: Prisma.XOR<Prisma.PresupuestoUpdateWithoutCalculadorasInput, Prisma.PresupuestoUncheckedUpdateWithoutCalculadorasInput>
-}
-
-export type PresupuestoUpdateWithoutCalculadorasInput = {
-  numeroPresupuesto?: Prisma.IntFieldUpdateOperationsInput | number
-  fechaCreacion?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  fechaVencimiento?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  estado?: Prisma.EnumEstadoPresupuestoFieldUpdateOperationsInput | $Enums.EstadoPresupuesto
-  margenGananciaPorcentaje?: Prisma.FloatFieldUpdateOperationsInput | number
-  gastosIndirectosPorcentaje?: Prisma.FloatFieldUpdateOperationsInput | number
-  totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
-  totalVenta?: Prisma.FloatFieldUpdateOperationsInput | number
-  notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  pedido?: Prisma.PedidoUpdateOneWithoutPresupuestoNestedInput
-  cliente?: Prisma.ClienteUpdateOneWithoutPresupuestosNestedInput
-  detalles?: Prisma.PresupuestoDetalleUpdateManyWithoutPresupuestoNestedInput
-}
-
-export type PresupuestoUncheckedUpdateWithoutCalculadorasInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  numeroPresupuesto?: Prisma.IntFieldUpdateOperationsInput | number
-  clienteId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  fechaCreacion?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  fechaVencimiento?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  estado?: Prisma.EnumEstadoPresupuestoFieldUpdateOperationsInput | $Enums.EstadoPresupuesto
-  margenGananciaPorcentaje?: Prisma.FloatFieldUpdateOperationsInput | number
-  gastosIndirectosPorcentaje?: Prisma.FloatFieldUpdateOperationsInput | number
-  totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
-  totalVenta?: Prisma.FloatFieldUpdateOperationsInput | number
-  notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  pedido?: Prisma.PedidoUncheckedUpdateOneWithoutPresupuestoNestedInput
   detalles?: Prisma.PresupuestoDetalleUncheckedUpdateManyWithoutPresupuestoNestedInput
 }
 
@@ -1063,7 +946,6 @@ export type PresupuestoUpdateWithoutClienteInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedido?: Prisma.PedidoUpdateOneWithoutPresupuestoNestedInput
   detalles?: Prisma.PresupuestoDetalleUpdateManyWithoutPresupuestoNestedInput
-  calculadoras?: Prisma.CalculadoraUpdateManyWithoutPresupuestoNestedInput
 }
 
 export type PresupuestoUncheckedUpdateWithoutClienteInput = {
@@ -1081,7 +963,6 @@ export type PresupuestoUncheckedUpdateWithoutClienteInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedido?: Prisma.PedidoUncheckedUpdateOneWithoutPresupuestoNestedInput
   detalles?: Prisma.PresupuestoDetalleUncheckedUpdateManyWithoutPresupuestoNestedInput
-  calculadoras?: Prisma.CalculadoraUncheckedUpdateManyWithoutPresupuestoNestedInput
 }
 
 export type PresupuestoUncheckedUpdateManyWithoutClienteInput = {
@@ -1106,12 +987,10 @@ export type PresupuestoUncheckedUpdateManyWithoutClienteInput = {
 
 export type PresupuestoCountOutputType = {
   detalles: number
-  calculadoras: number
 }
 
 export type PresupuestoCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   detalles?: boolean | PresupuestoCountOutputTypeCountDetallesArgs
-  calculadoras?: boolean | PresupuestoCountOutputTypeCountCalculadorasArgs
 }
 
 /**
@@ -1129,13 +1008,6 @@ export type PresupuestoCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.
  */
 export type PresupuestoCountOutputTypeCountDetallesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PresupuestoDetalleWhereInput
-}
-
-/**
- * PresupuestoCountOutputType without action
- */
-export type PresupuestoCountOutputTypeCountCalculadorasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.CalculadoraWhereInput
 }
 
 
@@ -1156,7 +1028,6 @@ export type PresupuestoSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   pedido?: boolean | Prisma.Presupuesto$pedidoArgs<ExtArgs>
   cliente?: boolean | Prisma.Presupuesto$clienteArgs<ExtArgs>
   detalles?: boolean | Prisma.Presupuesto$detallesArgs<ExtArgs>
-  calculadoras?: boolean | Prisma.Presupuesto$calculadorasArgs<ExtArgs>
   _count?: boolean | Prisma.PresupuestoCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["presupuesto"]>
 
@@ -1215,7 +1086,6 @@ export type PresupuestoInclude<ExtArgs extends runtime.Types.Extensions.Internal
   pedido?: boolean | Prisma.Presupuesto$pedidoArgs<ExtArgs>
   cliente?: boolean | Prisma.Presupuesto$clienteArgs<ExtArgs>
   detalles?: boolean | Prisma.Presupuesto$detallesArgs<ExtArgs>
-  calculadoras?: boolean | Prisma.Presupuesto$calculadorasArgs<ExtArgs>
   _count?: boolean | Prisma.PresupuestoCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PresupuestoIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1231,7 +1101,6 @@ export type $PresupuestoPayload<ExtArgs extends runtime.Types.Extensions.Interna
     pedido: Prisma.$PedidoPayload<ExtArgs> | null
     cliente: Prisma.$ClientePayload<ExtArgs> | null
     detalles: Prisma.$PresupuestoDetallePayload<ExtArgs>[]
-    calculadoras: Prisma.$CalculadoraPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1644,7 +1513,6 @@ export interface Prisma__PresupuestoClient<T, Null = never, ExtArgs extends runt
   pedido<T extends Prisma.Presupuesto$pedidoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Presupuesto$pedidoArgs<ExtArgs>>): Prisma.Prisma__PedidoClient<runtime.Types.Result.GetResult<Prisma.$PedidoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   cliente<T extends Prisma.Presupuesto$clienteArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Presupuesto$clienteArgs<ExtArgs>>): Prisma.Prisma__ClienteClient<runtime.Types.Result.GetResult<Prisma.$ClientePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   detalles<T extends Prisma.Presupuesto$detallesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Presupuesto$detallesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PresupuestoDetallePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  calculadoras<T extends Prisma.Presupuesto$calculadorasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Presupuesto$calculadorasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CalculadoraPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2142,30 +2010,6 @@ export type Presupuesto$detallesArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.PresupuestoDetalleScalarFieldEnum | Prisma.PresupuestoDetalleScalarFieldEnum[]
-}
-
-/**
- * Presupuesto.calculadoras
- */
-export type Presupuesto$calculadorasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Calculadora
-   */
-  select?: Prisma.CalculadoraSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Calculadora
-   */
-  omit?: Prisma.CalculadoraOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.CalculadoraInclude<ExtArgs> | null
-  where?: Prisma.CalculadoraWhereInput
-  orderBy?: Prisma.CalculadoraOrderByWithRelationInput | Prisma.CalculadoraOrderByWithRelationInput[]
-  cursor?: Prisma.CalculadoraWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.CalculadoraScalarFieldEnum | Prisma.CalculadoraScalarFieldEnum[]
 }
 
 /**

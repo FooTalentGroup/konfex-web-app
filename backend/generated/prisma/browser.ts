@@ -82,8 +82,3 @@ export type ProduccionEtapa = Prisma.ProduccionEtapaModel
  * 
  */
 export type TelegramMessage = Prisma.TelegramMessageModel
-/**
- * Model Calculadora
- * 
- */
-export type Calculadora = Prisma.CalculadoraModel

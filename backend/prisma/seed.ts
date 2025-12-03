@@ -378,66 +378,6 @@ async function main() {
     });
   }
 
-  // Obtener presupuestos creados para las calculadoras
-  const presupuestosCreados = await prisma.presupuesto.findMany({
-    orderBy: { numeroPresupuesto: "asc" },
-  });
-
-  // Calculadoras
-  const calculadoras = [
-    {
-      clienteId: clientesCreados[0]?.id || 1,
-      numeroPresupuesto: presupuestosCreados[0]?.numeroPresupuesto || 1001,
-      precioPrendaNeto: 15000.5,
-      horasTrabajo: 8.5,
-      porcentaje: 15.0,
-      gastoAdicional: 5000.0,
-      gastoEnvio: 3000.0,
-    },
-    {
-      clienteId: clientesCreados[1]?.id || 2,
-      numeroPresupuesto: presupuestosCreados[1]?.numeroPresupuesto || 1002,
-      precioPrendaNeto: 12000.0,
-      horasTrabajo: 6.0,
-      porcentaje: 20.0,
-      gastoAdicional: 3000.0,
-      gastoEnvio: 2000.0,
-    },
-    {
-      clienteId: clientesCreados[2]?.id || 3,
-      numeroPresupuesto: presupuestosCreados[2]?.numeroPresupuesto || 1003,
-      precioPrendaNeto: 18000.0,
-      horasTrabajo: 10.0,
-      porcentaje: 18.0,
-      gastoAdicional: 6000.0,
-      gastoEnvio: 4000.0,
-    },
-    {
-      clienteId: clientesCreados[3]?.id || 4,
-      numeroPresupuesto: presupuestosCreados[3]?.numeroPresupuesto || 1004,
-      precioPrendaNeto: 10000.0,
-      horasTrabajo: 5.5,
-      porcentaje: 12.0,
-      gastoAdicional: 2500.0,
-      gastoEnvio: 1500.0,
-    },
-    {
-      clienteId: clientesCreados[4]?.id || 5,
-      numeroPresupuesto: presupuestosCreados[4]?.numeroPresupuesto || 1005,
-      precioPrendaNeto: 22000.0,
-      horasTrabajo: 12.0,
-      porcentaje: 25.0,
-      gastoAdicional: 8000.0,
-      gastoEnvio: 5000.0,
-    },
-  ];
-
-  for (const calculadora of calculadoras) {
-    await prisma.calculadora.create({
-      data: calculadora,
-    });
-  }
-
   console.log("Database seeded successfully");
 }
 

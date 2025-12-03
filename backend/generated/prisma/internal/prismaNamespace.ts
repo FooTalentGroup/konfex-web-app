@@ -396,8 +396,7 @@ export const ModelName = {
   Pedido: 'Pedido',
   PedidoDetalle: 'PedidoDetalle',
   ProduccionEtapa: 'ProduccionEtapa',
-  TelegramMessage: 'TelegramMessage',
-  Calculadora: 'Calculadora'
+  TelegramMessage: 'TelegramMessage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -413,7 +412,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "cliente" | "producto" | "material" | "manoDeObra" | "materialPorProducto" | "manoDeObraPorProducto" | "presupuesto" | "presupuestoDetalle" | "pedido" | "pedidoDetalle" | "produccionEtapa" | "telegramMessage" | "calculadora"
+    modelProps: "user" | "cliente" | "producto" | "material" | "manoDeObra" | "materialPorProducto" | "manoDeObraPorProducto" | "presupuesto" | "presupuestoDetalle" | "pedido" | "pedidoDetalle" | "produccionEtapa" | "telegramMessage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1379,80 +1378,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    Calculadora: {
-      payload: Prisma.$CalculadoraPayload<ExtArgs>
-      fields: Prisma.CalculadoraFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.CalculadoraFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalculadoraPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.CalculadoraFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalculadoraPayload>
-        }
-        findFirst: {
-          args: Prisma.CalculadoraFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalculadoraPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.CalculadoraFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalculadoraPayload>
-        }
-        findMany: {
-          args: Prisma.CalculadoraFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalculadoraPayload>[]
-        }
-        create: {
-          args: Prisma.CalculadoraCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalculadoraPayload>
-        }
-        createMany: {
-          args: Prisma.CalculadoraCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.CalculadoraCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalculadoraPayload>[]
-        }
-        delete: {
-          args: Prisma.CalculadoraDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalculadoraPayload>
-        }
-        update: {
-          args: Prisma.CalculadoraUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalculadoraPayload>
-        }
-        deleteMany: {
-          args: Prisma.CalculadoraDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.CalculadoraUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.CalculadoraUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalculadoraPayload>[]
-        }
-        upsert: {
-          args: Prisma.CalculadoraUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalculadoraPayload>
-        }
-        aggregate: {
-          args: Prisma.CalculadoraAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateCalculadora>
-        }
-        groupBy: {
-          args: Prisma.CalculadoraGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.CalculadoraGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.CalculadoraCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.CalculadoraCountAggregateOutputType> | number
-        }
-      }
-    }
   }
 } & {
   other: {
@@ -1674,22 +1599,6 @@ export const TelegramMessageScalarFieldEnum = {
 } as const
 
 export type TelegramMessageScalarFieldEnum = (typeof TelegramMessageScalarFieldEnum)[keyof typeof TelegramMessageScalarFieldEnum]
-
-
-export const CalculadoraScalarFieldEnum = {
-  id: 'id',
-  clienteId: 'clienteId',
-  numeroPresupuesto: 'numeroPresupuesto',
-  precioPrendaNeto: 'precioPrendaNeto',
-  horasTrabajo: 'horasTrabajo',
-  porcentaje: 'porcentaje',
-  gastoAdicional: 'gastoAdicional',
-  gastoEnvio: 'gastoEnvio',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type CalculadoraScalarFieldEnum = (typeof CalculadoraScalarFieldEnum)[keyof typeof CalculadoraScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1918,7 +1827,6 @@ export type GlobalOmitConfig = {
   pedidoDetalle?: Prisma.PedidoDetalleOmit
   produccionEtapa?: Prisma.ProduccionEtapaOmit
   telegramMessage?: Prisma.TelegramMessageOmit
-  calculadora?: Prisma.CalculadoraOmit
 }
 
 /* Types for Logging */

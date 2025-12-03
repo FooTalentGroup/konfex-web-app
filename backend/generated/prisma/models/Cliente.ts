@@ -250,7 +250,6 @@ export type ClienteWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Cliente"> | Date | string
   pedidos?: Prisma.PedidoListRelationFilter
   presupuestos?: Prisma.PresupuestoListRelationFilter
-  calculadoras?: Prisma.CalculadoraListRelationFilter
 }
 
 export type ClienteOrderByWithRelationInput = {
@@ -265,7 +264,6 @@ export type ClienteOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   pedidos?: Prisma.PedidoOrderByRelationAggregateInput
   presupuestos?: Prisma.PresupuestoOrderByRelationAggregateInput
-  calculadoras?: Prisma.CalculadoraOrderByRelationAggregateInput
 }
 
 export type ClienteWhereUniqueInput = Prisma.AtLeast<{
@@ -283,7 +281,6 @@ export type ClienteWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Cliente"> | Date | string
   pedidos?: Prisma.PedidoListRelationFilter
   presupuestos?: Prisma.PresupuestoListRelationFilter
-  calculadoras?: Prisma.CalculadoraListRelationFilter
 }, "id">
 
 export type ClienteOrderByWithAggregationInput = {
@@ -329,7 +326,6 @@ export type ClienteCreateInput = {
   updatedAt?: Date | string
   pedidos?: Prisma.PedidoCreateNestedManyWithoutClienteInput
   presupuestos?: Prisma.PresupuestoCreateNestedManyWithoutClienteInput
-  calculadoras?: Prisma.CalculadoraCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteUncheckedCreateInput = {
@@ -344,7 +340,6 @@ export type ClienteUncheckedCreateInput = {
   updatedAt?: Date | string
   pedidos?: Prisma.PedidoUncheckedCreateNestedManyWithoutClienteInput
   presupuestos?: Prisma.PresupuestoUncheckedCreateNestedManyWithoutClienteInput
-  calculadoras?: Prisma.CalculadoraUncheckedCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteUpdateInput = {
@@ -358,7 +353,6 @@ export type ClienteUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedidos?: Prisma.PedidoUpdateManyWithoutClienteNestedInput
   presupuestos?: Prisma.PresupuestoUpdateManyWithoutClienteNestedInput
-  calculadoras?: Prisma.CalculadoraUpdateManyWithoutClienteNestedInput
 }
 
 export type ClienteUncheckedUpdateInput = {
@@ -373,7 +367,6 @@ export type ClienteUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedidos?: Prisma.PedidoUncheckedUpdateManyWithoutClienteNestedInput
   presupuestos?: Prisma.PresupuestoUncheckedUpdateManyWithoutClienteNestedInput
-  calculadoras?: Prisma.CalculadoraUncheckedUpdateManyWithoutClienteNestedInput
 }
 
 export type ClienteCreateManyInput = {
@@ -495,20 +488,6 @@ export type ClienteUpdateOneRequiredWithoutPedidosNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClienteUpdateToOneWithWhereWithoutPedidosInput, Prisma.ClienteUpdateWithoutPedidosInput>, Prisma.ClienteUncheckedUpdateWithoutPedidosInput>
 }
 
-export type ClienteCreateNestedOneWithoutCalculadorasInput = {
-  create?: Prisma.XOR<Prisma.ClienteCreateWithoutCalculadorasInput, Prisma.ClienteUncheckedCreateWithoutCalculadorasInput>
-  connectOrCreate?: Prisma.ClienteCreateOrConnectWithoutCalculadorasInput
-  connect?: Prisma.ClienteWhereUniqueInput
-}
-
-export type ClienteUpdateOneRequiredWithoutCalculadorasNestedInput = {
-  create?: Prisma.XOR<Prisma.ClienteCreateWithoutCalculadorasInput, Prisma.ClienteUncheckedCreateWithoutCalculadorasInput>
-  connectOrCreate?: Prisma.ClienteCreateOrConnectWithoutCalculadorasInput
-  upsert?: Prisma.ClienteUpsertWithoutCalculadorasInput
-  connect?: Prisma.ClienteWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ClienteUpdateToOneWithWhereWithoutCalculadorasInput, Prisma.ClienteUpdateWithoutCalculadorasInput>, Prisma.ClienteUncheckedUpdateWithoutCalculadorasInput>
-}
-
 export type ClienteCreateWithoutPresupuestosInput = {
   nombre: string
   telefono?: string | null
@@ -519,7 +498,6 @@ export type ClienteCreateWithoutPresupuestosInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   pedidos?: Prisma.PedidoCreateNestedManyWithoutClienteInput
-  calculadoras?: Prisma.CalculadoraCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteUncheckedCreateWithoutPresupuestosInput = {
@@ -533,7 +511,6 @@ export type ClienteUncheckedCreateWithoutPresupuestosInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   pedidos?: Prisma.PedidoUncheckedCreateNestedManyWithoutClienteInput
-  calculadoras?: Prisma.CalculadoraUncheckedCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteCreateOrConnectWithoutPresupuestosInput = {
@@ -562,7 +539,6 @@ export type ClienteUpdateWithoutPresupuestosInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedidos?: Prisma.PedidoUpdateManyWithoutClienteNestedInput
-  calculadoras?: Prisma.CalculadoraUpdateManyWithoutClienteNestedInput
 }
 
 export type ClienteUncheckedUpdateWithoutPresupuestosInput = {
@@ -576,7 +552,6 @@ export type ClienteUncheckedUpdateWithoutPresupuestosInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedidos?: Prisma.PedidoUncheckedUpdateManyWithoutClienteNestedInput
-  calculadoras?: Prisma.CalculadoraUncheckedUpdateManyWithoutClienteNestedInput
 }
 
 export type ClienteCreateWithoutPedidosInput = {
@@ -589,7 +564,6 @@ export type ClienteCreateWithoutPedidosInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   presupuestos?: Prisma.PresupuestoCreateNestedManyWithoutClienteInput
-  calculadoras?: Prisma.CalculadoraCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteUncheckedCreateWithoutPedidosInput = {
@@ -603,7 +577,6 @@ export type ClienteUncheckedCreateWithoutPedidosInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   presupuestos?: Prisma.PresupuestoUncheckedCreateNestedManyWithoutClienteInput
-  calculadoras?: Prisma.CalculadoraUncheckedCreateNestedManyWithoutClienteInput
 }
 
 export type ClienteCreateOrConnectWithoutPedidosInput = {
@@ -632,7 +605,6 @@ export type ClienteUpdateWithoutPedidosInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   presupuestos?: Prisma.PresupuestoUpdateManyWithoutClienteNestedInput
-  calculadoras?: Prisma.CalculadoraUpdateManyWithoutClienteNestedInput
 }
 
 export type ClienteUncheckedUpdateWithoutPedidosInput = {
@@ -646,77 +618,6 @@ export type ClienteUncheckedUpdateWithoutPedidosInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   presupuestos?: Prisma.PresupuestoUncheckedUpdateManyWithoutClienteNestedInput
-  calculadoras?: Prisma.CalculadoraUncheckedUpdateManyWithoutClienteNestedInput
-}
-
-export type ClienteCreateWithoutCalculadorasInput = {
-  nombre: string
-  telefono?: string | null
-  email?: string | null
-  origen?: string | null
-  instagramUser?: string | null
-  notas?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  pedidos?: Prisma.PedidoCreateNestedManyWithoutClienteInput
-  presupuestos?: Prisma.PresupuestoCreateNestedManyWithoutClienteInput
-}
-
-export type ClienteUncheckedCreateWithoutCalculadorasInput = {
-  id?: number
-  nombre: string
-  telefono?: string | null
-  email?: string | null
-  origen?: string | null
-  instagramUser?: string | null
-  notas?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  pedidos?: Prisma.PedidoUncheckedCreateNestedManyWithoutClienteInput
-  presupuestos?: Prisma.PresupuestoUncheckedCreateNestedManyWithoutClienteInput
-}
-
-export type ClienteCreateOrConnectWithoutCalculadorasInput = {
-  where: Prisma.ClienteWhereUniqueInput
-  create: Prisma.XOR<Prisma.ClienteCreateWithoutCalculadorasInput, Prisma.ClienteUncheckedCreateWithoutCalculadorasInput>
-}
-
-export type ClienteUpsertWithoutCalculadorasInput = {
-  update: Prisma.XOR<Prisma.ClienteUpdateWithoutCalculadorasInput, Prisma.ClienteUncheckedUpdateWithoutCalculadorasInput>
-  create: Prisma.XOR<Prisma.ClienteCreateWithoutCalculadorasInput, Prisma.ClienteUncheckedCreateWithoutCalculadorasInput>
-  where?: Prisma.ClienteWhereInput
-}
-
-export type ClienteUpdateToOneWithWhereWithoutCalculadorasInput = {
-  where?: Prisma.ClienteWhereInput
-  data: Prisma.XOR<Prisma.ClienteUpdateWithoutCalculadorasInput, Prisma.ClienteUncheckedUpdateWithoutCalculadorasInput>
-}
-
-export type ClienteUpdateWithoutCalculadorasInput = {
-  nombre?: Prisma.StringFieldUpdateOperationsInput | string
-  telefono?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  origen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  instagramUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  pedidos?: Prisma.PedidoUpdateManyWithoutClienteNestedInput
-  presupuestos?: Prisma.PresupuestoUpdateManyWithoutClienteNestedInput
-}
-
-export type ClienteUncheckedUpdateWithoutCalculadorasInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  nombre?: Prisma.StringFieldUpdateOperationsInput | string
-  telefono?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  origen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  instagramUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  pedidos?: Prisma.PedidoUncheckedUpdateManyWithoutClienteNestedInput
-  presupuestos?: Prisma.PresupuestoUncheckedUpdateManyWithoutClienteNestedInput
 }
 
 
@@ -727,13 +628,11 @@ export type ClienteUncheckedUpdateWithoutCalculadorasInput = {
 export type ClienteCountOutputType = {
   pedidos: number
   presupuestos: number
-  calculadoras: number
 }
 
 export type ClienteCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   pedidos?: boolean | ClienteCountOutputTypeCountPedidosArgs
   presupuestos?: boolean | ClienteCountOutputTypeCountPresupuestosArgs
-  calculadoras?: boolean | ClienteCountOutputTypeCountCalculadorasArgs
 }
 
 /**
@@ -760,13 +659,6 @@ export type ClienteCountOutputTypeCountPresupuestosArgs<ExtArgs extends runtime.
   where?: Prisma.PresupuestoWhereInput
 }
 
-/**
- * ClienteCountOutputType without action
- */
-export type ClienteCountOutputTypeCountCalculadorasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.CalculadoraWhereInput
-}
-
 
 export type ClienteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -780,7 +672,6 @@ export type ClienteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   updatedAt?: boolean
   pedidos?: boolean | Prisma.Cliente$pedidosArgs<ExtArgs>
   presupuestos?: boolean | Prisma.Cliente$presupuestosArgs<ExtArgs>
-  calculadoras?: boolean | Prisma.Cliente$calculadorasArgs<ExtArgs>
   _count?: boolean | Prisma.ClienteCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cliente"]>
 
@@ -824,7 +715,6 @@ export type ClienteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type ClienteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   pedidos?: boolean | Prisma.Cliente$pedidosArgs<ExtArgs>
   presupuestos?: boolean | Prisma.Cliente$presupuestosArgs<ExtArgs>
-  calculadoras?: boolean | Prisma.Cliente$calculadorasArgs<ExtArgs>
   _count?: boolean | Prisma.ClienteCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ClienteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -835,7 +725,6 @@ export type $ClientePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     pedidos: Prisma.$PedidoPayload<ExtArgs>[]
     presupuestos: Prisma.$PresupuestoPayload<ExtArgs>[]
-    calculadoras: Prisma.$CalculadoraPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1243,7 +1132,6 @@ export interface Prisma__ClienteClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   pedidos<T extends Prisma.Cliente$pedidosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$pedidosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PedidoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   presupuestos<T extends Prisma.Cliente$presupuestosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$presupuestosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PresupuestoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  calculadoras<T extends Prisma.Cliente$calculadorasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Cliente$calculadorasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CalculadoraPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1715,30 +1603,6 @@ export type Cliente$presupuestosArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.PresupuestoScalarFieldEnum | Prisma.PresupuestoScalarFieldEnum[]
-}
-
-/**
- * Cliente.calculadoras
- */
-export type Cliente$calculadorasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Calculadora
-   */
-  select?: Prisma.CalculadoraSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Calculadora
-   */
-  omit?: Prisma.CalculadoraOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.CalculadoraInclude<ExtArgs> | null
-  where?: Prisma.CalculadoraWhereInput
-  orderBy?: Prisma.CalculadoraOrderByWithRelationInput | Prisma.CalculadoraOrderByWithRelationInput[]
-  cursor?: Prisma.CalculadoraWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.CalculadoraScalarFieldEnum | Prisma.CalculadoraScalarFieldEnum[]
 }
 
 /**

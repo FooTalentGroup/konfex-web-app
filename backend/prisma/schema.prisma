@@ -32,7 +32,6 @@ model Cliente {
   updatedAt     DateTime      @updatedAt
   pedidos       Pedido[]
   presupuestos  Presupuesto[]
-  calculadoras  Calculadora[]
 }
 
 model Producto {
@@ -122,7 +121,6 @@ model Presupuesto {
   pedido                     Pedido?
   cliente                    Cliente?             @relation(fields: [clienteId], references: [id], onDelete: Restrict)
   detalles                   PresupuestoDetalle[]
-  calculadoras               Calculadora[]
 }
 
 model PresupuestoDetalle {
@@ -214,21 +212,3 @@ enum Role {
   ADMIN
 }
 
-model Calculadora {
-  id                Int      @id @default(autoincrement())
-  clienteId         Int
-  numeroPresupuesto Int
-  precioPrendaNeto  Float
-  horasTrabajo      Float
-  porcentaje        Float
-  gastoAdicional    Float
-  gastoEnvio        Float
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-
-  cliente     Cliente     @relation(fields: [clienteId], references: [id], onDelete: Restrict)
-  presupuesto Presupuesto @relation(fields: [numeroPresupuesto], references: [numeroPresupuesto], onDelete: Restrict)
-
-  @@index([clienteId])
-  @@index([numeroPresupuesto])
-}
