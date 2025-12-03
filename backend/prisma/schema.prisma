@@ -1,21 +1,22 @@
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client"
+  output     = "../generated/prisma"
+  engineType = "client"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  active    Boolean  @default(true)
+  id               Int               @id @default(autoincrement())
+  email            String            @unique
+  name             String?
+  password         String
+  role             Role              @default(USER)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  active           Boolean           @default(true)
   telegramMessages TelegramMessage[]
 }
 
@@ -50,19 +51,19 @@ model Producto {
 }
 
 model Material {
-  id            Int                   @id @default(autoincrement())
-  nombre        String
-  url_imagen    String?
-  categoria     String
-  unidadMedida  String
-  ancho         Float?
-  peso          Float?
-  colores       String[]
-  proveedor     String
-  precio        Float
-  createdAt     DateTime              @default(now())
-  updatedAt     DateTime              @updatedAt
-  productos     MaterialPorProducto[]
+  id           Int                   @id @default(autoincrement())
+  nombre       String
+  url_imagen   String?
+  categoria    String
+  unidadMedida String
+  ancho        Float?
+  peso         Float?
+  colores      String[]
+  proveedor    String
+  precio       Float
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  productos    MaterialPorProducto[]
 
   @@index([categoria])
   @@index([precio])
@@ -79,13 +80,13 @@ model ManoDeObra {
 }
 
 model MaterialPorProducto {
-  id         Int      @id @default(autoincrement())
+  id         Int   @id @default(autoincrement())
   productoId Int
   materialId Int
   cantidad   Float
 
-  material   Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
-  producto   Producto @relation(fields: [productoId], references: [id], onDelete: Cascade)
+  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  producto Producto @relation(fields: [productoId], references: [id], onDelete: Cascade)
 
   @@unique([productoId, materialId])
   @@index([materialId])
@@ -181,15 +182,15 @@ model ProduccionEtapa {
 model TelegramMessage {
   id        Int      @id @default(autoincrement())
   chatId    String
-  userId    Int?     // Relación con tu tabla de usuarios si ya está registrado
-  firstName String?  // Nombre del usuario en Telegram
-  lastName  String?  // Apellido del usuario en Telegram
-  username  String?  // Username de Telegram
+  userId    Int? // Relación con tu tabla de usuarios si ya está registrado
+  firstName String? // Nombre del usuario en Telegram
+  lastName  String? // Apellido del usuario en Telegram
+  username  String? // Username de Telegram
   text      String
   source    String   @default("telegram") // opcional, puede ser 'telegram' u otra fuente
   timestamp DateTime @default(now())
 
-  user      User?    @relation(fields: [userId], references: [id])
+  user User? @relation(fields: [userId], references: [id])
 }
 
 enum EstadoPresupuesto {
@@ -214,19 +215,19 @@ enum Role {
 }
 
 model Calculadora {
-  id                      Int      @id @default(autoincrement())  
-  clienteId               Int
-  numeroPresupuesto       Int
-  precioPrendaNeto        Int
-  horasTrabajo            Float
-  porcentaje              Float
-  gastoAdicional          Float
-  gastoEnvio              Float
-  createdAt               DateTime  @default(now())
-  updatedAt               DateTime  @updatedAt
+  id                Int      @id @default(autoincrement())
+  clienteId         Int
+  numeroPresupuesto Int
+  precioPrendaNeto  Float
+  horasTrabajo      Float
+  porcentaje        Float
+  gastoAdicional    Float
+  gastoEnvio        Float
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
-  cliente                 Cliente   @relation(fields: [clienteId], references: [id], onDelete: Restrict)
-  presupuesto             Presupuesto @relation(fields: [numeroPresupuesto], references: [numeroPresupuesto], onDelete: Restrict)
+  cliente     Cliente     @relation(fields: [clienteId], references: [id], onDelete: Restrict)
+  presupuesto Presupuesto @relation(fields: [numeroPresupuesto], references: [numeroPresupuesto], onDelete: Restrict)
 
   @@index([clienteId])
   @@index([numeroPresupuesto])
