@@ -189,7 +189,7 @@ model TelegramMessage {
   text          String?
 
   // Archivos multimedia
-  type          String?   // "photo" | "video" | "audio" | "document" | "sticker" | etc.
+  type          String?   @default("text") // "photo" | "video" | "audio" | "document" | "sticker" | etc.
   fileId        String?
   fileUniqueId  String?
   filePath      String?   // ruta interna de Telegram
