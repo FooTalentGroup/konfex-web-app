@@ -3,7 +3,7 @@ export * from './ApiTest';
 export * from './autoCompleteSelect';
 export * from './BackNavigationBar';
 export * from './Button';
-export * from './CalculatorTemplate';
+export * from '../calculator/CalculatorTemplate';
 export * from './CategoryButton';
 export * from './CreateFabricTemplate';
 export * from './FabricForm';

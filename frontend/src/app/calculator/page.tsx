@@ -6,7 +6,7 @@ import Footer from '@/components/common/Footer';
 import Sidebar from '@/components/common/Sidebar';
 import { useAuth } from '@/hooks/useAuth';
 import { useSidebar } from '@/hooks/useSidebar';
-import CalculatorTemplate from "@/components/common/CalculatorTemplate"
+import CalculatorTemplate from "@/components/calculator/CalculatorTemplate"
 
 export default function CalculatorPage() {
   const { user, mounted } = useAuth();
