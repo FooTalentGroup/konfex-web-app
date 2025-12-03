@@ -1,54 +1,34 @@
 import prisma from "../../config/prisma";
+import { ClienteCreateInput, ClienteUpdateInput } from "./cliente.types";
 
-// Interfaces de input
-export interface ClienteCreateInput {
-  nombre: string;
-  telefono?: string | null;
-  email?: string | null;
-  origen?: string | null;
-  instagramUser?: string | null;
-  notas?: string | null;
-}
-
-export interface ClienteUpdateInput {
-  nombre?: string;
-  telefono?: string | null;
-  email?: string | null;
-  origen?: string | null;
-  instagramUser?: string | null;
-  notas?: string | null;
-}
-
-// Repositorio
 export const clienteRepository = {
-    create: async (data: ClienteCreateInput) => {
-        return prisma.cliente.create({ data });
-    },
+    // Crear cliente
+    create: (data: ClienteCreateInput) =>
+        prisma.cliente.create({ data }),
 
-    findAll: async (params?: { include?: any }) => {
-        return prisma.cliente.findMany({
+    // Actualizar cliente
+    update: (id: number, data: ClienteUpdateInput) =>
+        prisma.cliente.update({ where: { id }, data }),
+
+    // Traer todos
+    findAll: (params?: { include?: any }) =>
+        prisma.cliente.findMany({
         orderBy: { createdAt: "desc" },
         include: params?.include,
-        });
-    },
+        }),
 
-    findById: async (id: number, params?: { include?: any }) => {
-        return prisma.cliente.findUnique({
+    // Buscar por ID
+    findById: (id: number, params?: { include?: any }) =>
+        prisma.cliente.findUnique({
         where: { id },
         include: params?.include,
-        });
-    },
+        }),
 
-    update: async (id: number, data: ClienteUpdateInput) => {
-        return prisma.cliente.update({
-        where: { id },
-        data
-        });
-    },
+    /** Buscar por nombre */
+    findByName: (nombre: string) =>
+        prisma.cliente.findUnique({ where: { nombre } }),
 
-    delete: async (id: number) => {
-        return prisma.cliente.delete({
-        where: { id },
-        });
-    },
+    // Eliminar
+    delete: (id: number) =>
+        prisma.cliente.delete({ where: { id } }),
 };
