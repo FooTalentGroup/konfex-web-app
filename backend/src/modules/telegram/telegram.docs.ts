@@ -75,7 +75,31 @@ export const telegramDocs = {
             description: "Lista de chats obtenida correctamente",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/SuccessResponseChats" }
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    statusCode: { type: "number" },
+                    message: { type: "string" },
+                    data: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          chatId: { type: "string" },
+                          name: { type: "string" },
+                          lastMessage: { type: "string" },
+                          lastMessageSource: {
+                            type: "string",
+                            enum: ["telegram", "konfex"]
+                          },
+                          timestamp: { type: "string", format: "date-time" },
+                          hasBudget: { type: "boolean" }
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -94,7 +118,33 @@ export const telegramDocs = {
             description: "Mensajes obtenidos correctamente",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/SuccessResponseMessages" }
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    statusCode: { type: "number" },
+                    message: { type: "string" },
+                    data: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          id: { type: "number" },
+                          chatId: { type: "string" },
+                          text: { type: "string" },
+                          source: {
+                            type: "string",
+                            enum: ["telegram", "konfex"]
+                          },
+                          firstName: { type: "string", nullable: true },
+                          lastName: { type: "string", nullable: true },
+                          username: { type: "string", nullable: true },
+                          timestamp: { type: "string", format: "date-time" }
+                        }
+                      }
+                    }
+                  }
+                }
               }
             }
           },
@@ -249,65 +299,6 @@ export const telegramDocs = {
         }
       },
 
-      ChatItem: {
-        type: "object",
-        properties: {
-          chatId: { type: "string" },
-          name: { type: "string", description: "Nombre completo del chat" },
-          lastMessage: { type: "string", description: "Último mensaje del chat" },
-          lastMessageSource: {
-            type: "string",
-            enum: ["telegram", "konfex"],
-            description: "Origen del último mensaje"
-          },
-          timestamp: { type: "string", format: "date-time" },
-          hasBudget: { type: "boolean", description: "Indica si el chat tiene un presupuesto asociado" }
-        }
-      },
-
-      MessageItem: {
-        type: "object",
-        properties: {
-          id: { type: "number" },
-          chatId: { type: "string" },
-          text: { type: "string" },
-          source: {
-            type: "string",
-            enum: ["telegram", "konfex"],
-            description: "Origen del mensaje"
-          },
-          firstName: { type: "string", nullable: true },
-          lastName: { type: "string", nullable: true },
-          username: { type: "string", nullable: true },
-          timestamp: { type: "string", format: "date-time" }
-        }
-      },
-
-      SuccessResponseChats: {
-        type: "object",
-        properties: {
-          success: { type: "boolean" },
-          statusCode: { type: "number" },
-          message: { type: "string" },
-          data: {
-            type: "array",
-            items: { $ref: "#/components/schemas/ChatItem" }
-          }
-        }
-      },
-
-      SuccessResponseMessages: {
-        type: "object",
-        properties: {
-          success: { type: "boolean" },
-          statusCode: { type: "number" },
-          message: { type: "string" },
-          data: {
-            type: "array",
-            items: { $ref: "#/components/schemas/MessageItem" }
-          }
-        }
-      },
 
       ErrorResponse: {
         type: "object",
