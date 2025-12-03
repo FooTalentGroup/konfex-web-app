@@ -415,6 +415,270 @@ async function main() {
     });
   }
 
+  // MaterialPorProducto - Relaciones entre productos y materiales
+  if (productosCreados.length > 0 && materialesCreados.length > 0) {
+    const materialPorProducto = [
+      {
+        productoId: productosCreados[0]?.id || 1, // Pantalón Casual
+        materialId: materialesCreados[0]?.id || 1, // Algodón Premium
+        cantidad: 2.5, // metros
+      },
+      {
+        productoId: productosCreados[0]?.id || 1, // Pantalón Casual
+        materialId: materialesCreados[3]?.id || 4, // Hilo de Algodón
+        cantidad: 0.5, // carretes
+      },
+      {
+        productoId: productosCreados[0]?.id || 1, // Pantalón Casual
+        materialId: materialesCreados[4]?.id || 5, // Cierres Metálicos
+        cantidad: 1, // unidades
+      },
+      {
+        productoId: productosCreados[1]?.id || 2, // Camiseta Deportiva
+        materialId: materialesCreados[1]?.id || 2, // Poliéster Deportivo
+        cantidad: 1.5, // metros
+      },
+      {
+        productoId: productosCreados[1]?.id || 2, // Camiseta Deportiva
+        materialId: materialesCreados[3]?.id || 4, // Hilo de Algodón
+        cantidad: 0.3, // carretes
+      },
+    ];
+
+    for (const relacion of materialPorProducto) {
+      try {
+        await prisma.materialPorProducto.upsert({
+          where: {
+            productoId_materialId: {
+              productoId: relacion.productoId,
+              materialId: relacion.materialId,
+            },
+          },
+          update: {},
+          create: relacion,
+        });
+      } catch (error: any) {
+        if (error.code !== "P2002") {
+          throw error;
+        }
+      }
+    }
+  }
+
+  // ManoDeObraPorProducto - Relaciones entre productos y mano de obra
+  if (productosCreados.length > 0 && manoDeObraCreada.length > 0) {
+    const manoDeObraPorProducto = [
+      {
+        productoId: productosCreados[0]?.id || 1, // Pantalón Casual
+        manoDeObraId: manoDeObraCreada[1]?.id || 2, // Diseñador de Patrones
+        cantidadHoras: 2.0,
+        costoHora: 20000.0,
+      },
+      {
+        productoId: productosCreados[0]?.id || 1, // Pantalón Casual
+        manoDeObraId: manoDeObraCreada[2]?.id || 3, // Cortador
+        cantidadHoras: 1.5,
+        costoHora: 12000.0,
+      },
+      {
+        productoId: productosCreados[0]?.id || 1, // Pantalón Casual
+        manoDeObraId: manoDeObraCreada[0]?.id || 1, // Costurera Principal
+        cantidadHoras: 4.0,
+        costoHora: 15000.0,
+      },
+      {
+        productoId: productosCreados[0]?.id || 1, // Pantalón Casual
+        manoDeObraId: manoDeObraCreada[3]?.id || 4, // Terminador
+        cantidadHoras: 1.0,
+        costoHora: 10000.0,
+      },
+      {
+        productoId: productosCreados[1]?.id || 2, // Camiseta Deportiva
+        manoDeObraId: manoDeObraCreada[1]?.id || 2, // Diseñador de Patrones
+        cantidadHoras: 1.5,
+        costoHora: 20000.0,
+      },
+      {
+        productoId: productosCreados[1]?.id || 2, // Camiseta Deportiva
+        manoDeObraId: manoDeObraCreada[2]?.id || 3, // Cortador
+        cantidadHoras: 1.0,
+        costoHora: 12000.0,
+      },
+      {
+        productoId: productosCreados[1]?.id || 2, // Camiseta Deportiva
+        manoDeObraId: manoDeObraCreada[0]?.id || 1, // Costurera Principal
+        cantidadHoras: 2.5,
+        costoHora: 15000.0,
+      },
+      {
+        productoId: productosCreados[1]?.id || 2, // Camiseta Deportiva
+        manoDeObraId: manoDeObraCreada[3]?.id || 4, // Terminador
+        cantidadHoras: 0.5,
+        costoHora: 10000.0,
+      },
+    ];
+
+    for (const relacion of manoDeObraPorProducto) {
+      try {
+        await prisma.manoDeObraPorProducto.create({
+          data: relacion,
+        });
+      } catch (error: any) {
+        // Ignorar errores de duplicados
+        if (error.code !== "P2002") {
+          throw error;
+        }
+      }
+    }
+  }
+
+  // Obtener presupuestos aceptados para crear pedidos
+  const presupuestosAceptados = await prisma.presupuesto.findMany({
+    where: { estado: EstadoPresupuesto.ACEPTADO },
+    include: { detalles: true },
+  });
+
+  // Pedidos - Solo para presupuestos aceptados
+  for (const presupuesto of presupuestosAceptados) {
+    if (!presupuesto.clienteId) continue;
+
+    try {
+      const pedido = await prisma.pedido.upsert({
+        where: { presupuestoId: presupuesto.id },
+        update: {},
+        create: {
+          presupuestoId: presupuesto.id,
+          clienteId: presupuesto.clienteId,
+          estado: EstadoPedido.EN_PRODUCCION,
+          pagado: false,
+          fechaEntregaEstimada: new Date(
+            new Date().getTime() + 14 * 24 * 60 * 60 * 1000
+          ), // 14 días desde ahora
+          detalles: {
+            create: presupuesto.detalles.map((detalle) => ({
+              productoId: detalle.productoId,
+              cantidad: detalle.cantidad,
+              talle: "M", // Talla por defecto
+              color: "Negro", // Color por defecto
+              costoUnitario: detalle.costoUnitario,
+              precioUnitario: detalle.costoUnitario * 1.4, // 40% de margen
+              subtotal:
+                detalle.cantidad * detalle.costoUnitario * 1.4,
+            })),
+          },
+        },
+        include: { detalles: true },
+      });
+
+      // ProduccionEtapa - Etapas de producción para los pedidos
+      const etapas = [
+        {
+          pedidoId: pedido.id,
+          etapa: "Corte",
+          fechaInicio: new Date(),
+          responsable: "Juan Pérez",
+        },
+        {
+          pedidoId: pedido.id,
+          etapa: "Confección",
+          fechaInicio: null,
+          responsable: null,
+        },
+        {
+          pedidoId: pedido.id,
+          etapa: "Terminación",
+          fechaInicio: null,
+          responsable: null,
+        },
+      ];
+
+      for (const etapa of etapas) {
+        try {
+          await prisma.produccionEtapa.create({
+            data: etapa,
+          });
+        } catch (error: any) {
+          // Ignorar errores de duplicados
+          if (error.code !== "P2002") {
+            throw error;
+          }
+        }
+      }
+    } catch (error: any) {
+      if (error.code !== "P2002") {
+        throw error;
+      }
+    }
+  }
+
+  // TelegramMessage - Mensajes de ejemplo
+  const usuariosCreados = await prisma.user.findMany();
+  const telegramMessages = [
+    {
+      chatId: "123456789",
+      userId: usuariosCreados[0]?.id || null,
+      firstName: "Claudia",
+      lastName: "Muñoz",
+      username: "claudia_munoz",
+      text: "Hola, me interesa ver el catálogo de productos",
+      source: "telegram",
+      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 días atrás
+    },
+    {
+      chatId: "123456789",
+      userId: null,
+      firstName: "Konfex",
+      lastName: "Bot",
+      username: null,
+      text: "¡Hola Claudia! Te envío nuestro catálogo completo",
+      source: "konfex",
+      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 60000), // 1 minuto después
+    },
+    {
+      chatId: "987654321",
+      userId: null,
+      firstName: "Carlos",
+      lastName: "Rojas",
+      username: "carlos_rojas",
+      text: "Necesito un presupuesto para 50 unidades",
+      source: "telegram",
+      timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 día atrás
+    },
+    {
+      chatId: "987654321",
+      userId: null,
+      firstName: "Konfex",
+      lastName: "Bot",
+      username: null,
+      text: "Perfecto Carlos, te preparo el presupuesto. ¿Qué productos necesitas?",
+      source: "konfex",
+      timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 + 120000), // 2 minutos después
+    },
+    {
+      chatId: "555666777",
+      userId: null,
+      firstName: "María",
+      lastName: "Pérez",
+      username: "maria_p",
+      text: "¿Tienen tallas grandes disponibles?",
+      source: "telegram",
+      timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000), // 3 horas atrás
+    },
+  ];
+
+  for (const message of telegramMessages) {
+    try {
+      await prisma.telegramMessage.create({
+        data: message,
+      });
+    } catch (error: any) {
+      // Ignorar errores de duplicados
+      if (error.code !== "P2002") {
+        throw error;
+      }
+    }
+  }
+
   console.log("Database seeded successfully");
 }
 
