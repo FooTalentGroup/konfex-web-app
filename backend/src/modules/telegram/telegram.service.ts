@@ -16,7 +16,12 @@ export const handleIncomingUpdate = async (update: any) => {
   const username = from.username || undefined;
   const timestamp = new Date().toISOString();
 
-  console.log(update.mensaje )
+  console.log(update.message )
+  console.log(chatId )
+  console.log(from )
+  console.log(firstName )
+  console.log(lastName )
+  console.log(timestamp )
 
   let payload: any = {
     chatId,
