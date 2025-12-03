@@ -73,9 +73,9 @@ export const sendTextMessage = async (
   return response.json();
 };
 
-export const associateUser = async (chatId: string | number, userId: number) => {
-  return telegramMessageRepository.associateUserToChat(chatId, userId);
-};
+export const associateUser = async (chatId: string | number, clienteId: number) => {
+  return telegramMessageRepository.associateUserToChat(chatId, clienteId);
+}
 
 export const getChatMessages = async (chatId: string | number) => {
   const messages = await telegramMessageRepository.findByChatId(chatId);
