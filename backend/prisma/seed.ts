@@ -290,6 +290,59 @@ async function main() {
     }
   }
 
+  // Impuesto General (solo uno activo)
+  console.log("Seeding ImpuestoGeneral...");
+  const impuestoGeneral = {
+    nombre: "IVA",
+    porcentaje: 19,
+  };
+
+  try {
+    const existe = await prisma.impuestoGeneral.findFirst();
+    if (!existe) {
+      await prisma.impuestoGeneral.create({ data: impuestoGeneral });
+      console.log("ImpuestoGeneral creado:", impuestoGeneral);
+    } else {
+      console.log("ImpuestoGeneral ya existe, omitiendo...");
+    }
+  } catch (error: any) {
+    if (error.code !== "P2002") {
+      throw error;
+    }
+  }
+
+  // Gastos de Negocio
+  console.log("Seeding GastosNegocio...");
+  const gastosNegocio = [
+    {
+      nombre: "Gastos Generales",
+      porcentaje: 15,
+    },
+    {
+      nombre: "Gastos Administrativos",
+      porcentaje: 10,
+    },
+    {
+      nombre: "Gastos de Operación",
+      porcentaje: 12,
+    },
+    {
+      nombre: "Gastos Fijos",
+      porcentaje: 8,
+    },
+  ];
+
+  for (const gasto of gastosNegocio) {
+    try {
+      await prisma.gastosNegocio.create({ data: gasto });
+      console.log("GastosNegocio creado:", gasto);
+    } catch (error: any) {
+      if (error.code !== "P2002") {
+        throw error;
+      }
+    }
+  }
+
   // Obtener clientes, productos y materiales creados para las relaciones
   const clientesCreados = await prisma.cliente.findMany();
   const productosCreados = await prisma.producto.findMany();
@@ -441,13 +494,30 @@ async function main() {
     },
   ];
 
+  // Obtener el impuesto general para calcular IVA
+  const impuestoActivo = await prisma.impuestoGeneral.findFirst();
+  const ivaPorcentaje = impuestoActivo?.porcentaje || 0;
+
   for (const presupuesto of presupuestos) {
-    const { detalles, adicionales, ...presupuestoData } = presupuesto;
+    const { detalles, adicionales, clienteId, ...presupuestoData } =
+      presupuesto;
+
+    // Calcular IVA y totalFinal
+    const subtotal =
+      presupuestoData.totalCosto +
+      presupuestoData.costosIndirectos +
+      presupuestoData.ganancias;
+    const iva = subtotal * (ivaPorcentaje / 100);
+    const totalFinal = subtotal + iva;
+
     await prisma.presupuesto.upsert({
       where: { numeroPresupuesto: presupuesto.numeroPresupuesto },
       update: {},
       create: {
         ...presupuestoData,
+        clienteId: clienteId ?? null,
+        iva,
+        totalFinal,
         detalles: detalles
           ? {
               create: detalles.map((detalle) => ({
