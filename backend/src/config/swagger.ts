@@ -4,6 +4,7 @@ import { Express } from "express";
 import { productoDocs } from "../modules/producto";
 import { authDocs } from "../modules/auth";
 import { materialDocs } from "../modules/material";
+import { clienteDocs } from "@/modules/cliente/cliente.docs";
 
 const options = {
   definition: {
@@ -18,19 +19,22 @@ const options = {
       schemas: {
         ...productoDocs.components.schemas,
         ...authDocs.components.schemas,
-        ...materialDocs.components.schemas
+        ...materialDocs.components.schemas,
+        ...clienteDocs.components.schemas
       },
       parameters: {
         ...productoDocs.components.parameters,
         ...authDocs.components.parameters,
-        ...materialDocs.components.parameters
+        ...materialDocs.components.parameters,
+        ...clienteDocs.components.parameters
       }
     },
 
     paths: {
       ...productoDocs.paths,
       ...authDocs.paths,
-      ...materialDocs.paths
+      ...materialDocs.paths,
+      ...clienteDocs.paths
     }
   },
 

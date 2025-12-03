@@ -3,54 +3,45 @@ import { controllerHandler } from "../../common/handlers";
 import { clienteService } from "./cliente.service";
 import { CreateClienteDto, UpdateClienteDto } from "./cliente.schema";
 
-// Crear cliente
 export const createClienteController = controllerHandler(
   async (req: Request) => {
     const data: CreateClienteDto = req.body;
-    const cliente = await clienteService.create(data);
-    return cliente;
+    return await clienteService.create(data);
   },
   "Cliente creado exitosamente",
   201
 );
 
-// Obtener todos los clientes
 export const getAllClientesController = controllerHandler(
-  async (_req: Request) => {
-    const clientes = await clienteService.getAll();
-    return clientes;
+  async () => {
+    return await clienteService.getAll();
   },
   "Clientes obtenidos correctamente"
 );
 
-// Obtener cliente por ID
 export const getClienteByIdController = controllerHandler(
   async (req: Request) => {
     const id = Number(req.params.id);
-    const cliente = await clienteService.getById(id);
-    return cliente;
+    return await clienteService.getById(id);
   },
   "Cliente obtenido correctamente"
 );
 
-// Actualizar cliente
 export const updateClienteController = controllerHandler(
   async (req: Request) => {
     const id = Number(req.params.id);
     const data: UpdateClienteDto = req.body;
-    const cliente = await clienteService.update(id, data);
-    return cliente;
+    return await clienteService.update(id, data);
   },
   "Cliente actualizado correctamente"
 );
 
-// Eliminar cliente
 export const deleteClienteController = controllerHandler(
-    async (req: Request) => {
-      const id = Number(req.params.id);
-      await clienteService.delete(id);
-      return null; // body se ignora
-    },
-    "Cliente eliminado correctamente",
-    204
-  );
+  async (req: Request) => {
+    const id = Number(req.params.id);
+    await clienteService.delete(id);
+    return null;
+  },
+  "Cliente eliminado correctamente",
+  200
+);
