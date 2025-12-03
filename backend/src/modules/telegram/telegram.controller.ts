@@ -10,6 +10,7 @@ export const telegramWebhookController = async (req: Request, res: Response) => 
 
     const update = req.body;
     console.log("Telegram update received:", JSON.stringify(update).slice(0,2000));
+    console.log(update.message.text)
 
     await handleIncomingUpdate(update);
 
@@ -39,6 +40,7 @@ export const getChatMessagesController = controllerHandler(
   "Mensajes del chat obtenidos exitosamente",
   200
 );
+
 
 export const sendTelegramMessageController = async (req: Request, res: Response) => {
   try {

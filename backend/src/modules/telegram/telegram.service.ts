@@ -121,51 +121,51 @@ export const handleIncomingUpdate = async (update: any) => {
 };
 
 // Enviar mensaje a Telegram
-export const sendMessageToTelegram = async (params: {
-  chatId: number | string;
-  text?: string;
-  type?: "text" | "photo" | "document" | "video" | "audio" | "voice";
-  fileUrl?: string;
-  fileName?: string;
-  firstName?: string;
-  lastName?: string;
-  username?: string | null;
-}) => {
-  const token = process.env.TELEGRAM_BOT_TOKEN!;
-  const { chatId, text, type = "text", fileUrl, fileName, firstName, lastName, username } = params;
+  export const sendMessageToTelegram = async (params: {
+    chatId: number | string;
+    text?: string;
+    type?: "text" | "photo" | "document" | "video" | "audio" | "voice";
+    fileUrl?: string;
+    fileName?: string;
+    firstName?: string;
+    lastName?: string;
+    username?: string | null;
+  }) => {
+    const token = process.env.TELEGRAM_BOT_TOKEN!;
+    const { chatId, text, type = "text", fileUrl, fileName, firstName, lastName, username } = params;
 
-  let url = `${TELEGRAM_API(token)}/sendMessage`;
-  const body: any = { chat_id: chatId };
+    let url = `${TELEGRAM_API(token)}/sendMessage`;
+    const body: any = { chat_id: chatId };
 
-  if (type === "text") body.text = text;
-  else if (type === "photo") { url = `${TELEGRAM_API(token)}/sendPhoto`; body.photo = fileUrl; if (text) body.caption = text; }
-  else if (type === "document") { url = `${TELEGRAM_API(token)}/sendDocument`; body.document = fileUrl; if (text) body.caption = text; }
-  else if (type === "video") { url = `${TELEGRAM_API(token)}/sendVideo`; body.video = fileUrl; if (text) body.caption = text; }
-  else if (type === "audio") { url = `${TELEGRAM_API(token)}/sendAudio`; body.audio = fileUrl; if (text) body.caption = text; }
-  else if (type === "voice") { url = `${TELEGRAM_API(token)}/sendVoice`; body.voice = fileUrl; if (text) body.caption = text; }
+    if (type === "text") body.text = text;
+    else if (type === "photo") { url = `${TELEGRAM_API(token)}/sendPhoto`; body.photo = fileUrl; if (text) body.caption = text; }
+    else if (type === "document") { url = `${TELEGRAM_API(token)}/sendDocument`; body.document = fileUrl; if (text) body.caption = text; }
+    else if (type === "video") { url = `${TELEGRAM_API(token)}/sendVideo`; body.video = fileUrl; if (text) body.caption = text; }
+    else if (type === "audio") { url = `${TELEGRAM_API(token)}/sendAudio`; body.audio = fileUrl; if (text) body.caption = text; }
+    else if (type === "voice") { url = `${TELEGRAM_API(token)}/sendVoice`; body.voice = fileUrl; if (text) body.caption = text; }
 
-  const response = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`Telegram API error: ${error}`);
-  }
+    const response = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`Telegram API error: ${error}`);
+    }
 
-  const msgData: TelegramMessage = {
-    chatId,
-    text: text || fileName || "Archivo enviado",
-    type,
-    fileUrl,
-    timestamp: new Date().toISOString(), // string
-    firstName,
-    lastName,
-    username: username || undefined,
+    const msgData: TelegramMessage = {
+      chatId,
+      text: text || fileName || "Archivo enviado",
+      type,
+      fileUrl,
+      timestamp: new Date().toISOString(), // string
+      firstName,
+      lastName,
+      username: username || undefined,
+    };
+
+    await telegramMessageRepository.save(msgData);
+    io.emit("telegram_message", msgData);
+
+    return response.json();
   };
-
-  await telegramMessageRepository.save(msgData);
-  io.emit("telegram_message", msgData);
-
-  return response.json();
-};
 
 // Asociar usuario a chat
 export const associateUser = async (chatId: string | number, clienteId: number) => {
