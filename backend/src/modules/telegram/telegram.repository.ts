@@ -28,9 +28,9 @@ export const telegramMessageRepository = {
 
   findByChatId: async (chatId: string | number) => {
     // @ts-ignore
-    return prisma.telegramMessage.findMany({ 
+    return prisma.telegramMessage.findMany({
       where: { chatId: String(chatId) },
-      orderBy: { timestamp: 'asc' }
+      orderBy: { timestamp: "asc" },
     });
   },
 

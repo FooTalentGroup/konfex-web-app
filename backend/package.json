@@ -13,8 +13,10 @@
     "start": "node dist/index.js",
     "start:prod": "npm run build && node dist/index.js",
     "prisma:migrate": "prisma migrate dev",
-    "lint": "eslint . --ext .ts",
-    "test": "jest --config jest.config.ts --runInBand",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"src/**/*.{ts,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,json}\"",
     "seed": "prisma db seed"
   },
   "repository": {
@@ -52,18 +54,19 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@types/jest": "^30.0.0",
+    "@eslint/compat": "^2.0.0",
+    "@eslint/eslintrc": "^3.3.3",
+    "@eslint/js": "^9.39.1",
     "@types/node": "^24.10.1",
-    "@types/supertest": "^6.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.48.1",
+    "@typescript-eslint/parser": "^8.48.1",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
-    "husky": "^9.1.7",
-    "jest": "^30.2.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "globals": "^16.5.0",
     "pino-pretty": "^13.1.2",
     "prettier": "^3.6.2",
-    "supertest": "^7.1.4",
-    "ts-jest": "^29.4.5",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0"
   }

@@ -21,34 +21,34 @@ export interface ClienteUpdateInput {
 
 // Repositorio
 export const clienteRepository = {
-    create: async (data: ClienteCreateInput) => {
-        return prisma.cliente.create({ data });
-    },
+  create: async (data: ClienteCreateInput) => {
+    return prisma.cliente.create({ data });
+  },
 
-    findAll: async (params?: { include?: any }) => {
-        return prisma.cliente.findMany({
-        orderBy: { createdAt: "desc" },
-        include: params?.include,
-        });
-    },
+  findAll: async (params?: { include?: any }) => {
+    return prisma.cliente.findMany({
+      orderBy: { createdAt: "desc" },
+      include: params?.include,
+    });
+  },
 
-    findById: async (id: number, params?: { include?: any }) => {
-        return prisma.cliente.findUnique({
-        where: { id },
-        include: params?.include,
-        });
-    },
+  findById: async (id: number, params?: { include?: any }) => {
+    return prisma.cliente.findUnique({
+      where: { id },
+      include: params?.include,
+    });
+  },
 
-    update: async (id: number, data: ClienteUpdateInput) => {
-        return prisma.cliente.update({
-        where: { id },
-        data
-        });
-    },
+  update: async (id: number, data: ClienteUpdateInput) => {
+    return prisma.cliente.update({
+      where: { id },
+      data,
+    });
+  },
 
-    delete: async (id: number) => {
-        return prisma.cliente.delete({
-        where: { id },
-        });
-    },
+  delete: async (id: number) => {
+    return prisma.cliente.delete({
+      where: { id },
+    });
+  },
 };

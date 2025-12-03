@@ -111,14 +111,7 @@ export const materialDocs = {
             required: false,
             schema: {
               type: "string",
-              enum: [
-                "nombre",
-                "precio",
-                "peso",
-                "ancho",
-                "categoria",
-                "createdAt",
-              ],
+              enum: ["nombre", "precio", "peso", "ancho", "categoria", "createdAt"],
             },
             example: "precio",
           },
@@ -200,10 +193,7 @@ export const materialDocs = {
                   success: false,
                   statusCode: 400,
                   message: "Error de validación",
-                  errors: [
-                    "El nombre es obligatorio",
-                    "Debe tener al menos un color",
-                  ],
+                  errors: ["El nombre es obligatorio", "Debe tener al menos un color"],
                 },
               },
             },
@@ -216,8 +206,7 @@ export const materialDocs = {
       get: {
         tags: ["Materiales"],
         summary: "Obtener material por ID",
-        description:
-          "Obtiene los detalles de un material específico por su ID.",
+        description: "Obtiene los detalles de un material específico por su ID.",
         parameters: [{ $ref: "#/components/parameters/MaterialId" }],
         responses: {
           200: {
@@ -296,8 +285,7 @@ export const materialDocs = {
       delete: {
         tags: ["Materiales"],
         summary: "Eliminar un material",
-        description:
-          "Elimina un material del inventario. Esta acción no se puede deshacer.",
+        description: "Elimina un material del inventario. Esta acción no se puede deshacer.",
         parameters: [{ $ref: "#/components/parameters/MaterialId" }],
         responses: {
           204: {
@@ -631,10 +619,7 @@ export const materialDocs = {
               { type: "object" },
               { type: "null" },
             ],
-            example: [
-              "El nombre es obligatorio",
-              "Debe tener al menos un color",
-            ],
+            example: ["El nombre es obligatorio", "Debe tener al menos un color"],
           },
         },
       },

@@ -1,6 +1,7 @@
 import { AppError } from "@/common/errors";
+
 import { productoRepository } from "./producto.repository";
-import { CreateProductoDto, UpdateProductoDto } from "./producto.schema";
+import type { CreateProductoDto, UpdateProductoDto } from "./producto.schema";
 
 export const productoService = {
   // Crear producto

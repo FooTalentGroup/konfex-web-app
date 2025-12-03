@@ -1,4 +1,4 @@
-import { EstadoPresupuesto } from "./presupuesto.schema";
+import type { EstadoPresupuesto } from "./presupuesto.schema";
 
 export interface PresupuestoDetalleResponseDto {
   id: number;
