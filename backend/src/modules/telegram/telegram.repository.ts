@@ -6,7 +6,7 @@ export const telegramMessageRepository = {
     text: string;
     timestamp: string;
     source: string;
-    userId?: number;
+    clienteId?: number;
     firstName?: string;
     lastName?: string;
     username?: string;
@@ -18,7 +18,7 @@ export const telegramMessageRepository = {
         text: data.text,
         source: data.source,
         timestamp: new Date(data.timestamp),
-        userId: data.userId ?? null,
+        clienteId: data.clienteId ?? null,
         firstName: data.firstName ?? "Nuevo",
         lastName: data.lastName ?? "Cliente",
         username: data.username ?? null,
@@ -41,11 +41,11 @@ export const telegramMessageRepository = {
     });
   },
 
-  associateUserToChat: async (chatId: string | number, userId: number) => {
+  associateUserToChat: async (chatId: string | number, clienteId: number) => {
     // @ts-ignore
     return prisma.telegramMessage.updateMany({
       where: { chatId: String(chatId) },
-      data: { userId },
+      data: { clienteId },
     });
   },
 };

@@ -16,12 +16,12 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   active    Boolean  @default(true)
-  telegramMessages TelegramMessage[]
+
 }
 
 model Cliente {
   id            Int           @id @default(autoincrement())
-  nombre        String
+  nombre        String        @unique
   telefono      String?
   email         String?
   origen        String?
@@ -31,6 +31,7 @@ model Cliente {
   updatedAt     DateTime      @updatedAt
   pedidos       Pedido[]
   presupuestos  Presupuesto[]
+  telegramMessages TelegramMessage[]
 }
 
 model Producto {
@@ -177,17 +178,17 @@ model ProduccionEtapa {
 }
 
 model TelegramMessage {
-  id        Int      @id @default(autoincrement())
-  chatId    String
-  userId    Int?     // Relación con tu tabla de usuarios si ya está registrado
-  firstName String?  // Nombre del usuario en Telegram
-  lastName  String?  // Apellido del usuario en Telegram
-  username  String?  // Username de Telegram
-  text      String
-  source    String   @default("telegram") // opcional, puede ser 'telegram' u otra fuente
-  timestamp DateTime @default(now())
+  id         Int       @id @default(autoincrement())
+  chatId     String
+  clienteId  Int?
+  firstName  String?
+  lastName   String?
+  username   String?
+  text       String
+  source     String    @default("telegram")
+  timestamp  DateTime  @default(now())
 
-  user      User?    @relation(fields: [userId], references: [id])
+  cliente    Cliente?  @relation(fields: [clienteId], references: [id])
 }
 
 enum EstadoPresupuesto {
