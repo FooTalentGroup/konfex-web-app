@@ -82,7 +82,7 @@ Consulta el [README del Frontend](./frontend/README.md) para las instrucciones d
 ```bash
 cd backend
 npm install
-npm run dev
+npm run server
 ```
 
 El backend estará disponible en: `http://localhost:3001`

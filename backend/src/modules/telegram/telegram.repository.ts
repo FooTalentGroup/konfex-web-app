@@ -1,4 +1,4 @@
-import prisma from "@/config/prisma";
+import prisma from "../../config/prisma";
 
 export const telegramMessageRepository = {
   save: async (data: {
@@ -6,19 +6,18 @@ export const telegramMessageRepository = {
     text: string;
     timestamp: string;
     source: string;
-    userId?: number;
+    clienteId?: number;
     firstName?: string;
     lastName?: string;
     username?: string;
   }) => {
-    // @ts-ignore
     return prisma.telegramMessage.create({
       data: {
         chatId: String(data.chatId),
         text: data.text,
         source: data.source,
         timestamp: new Date(data.timestamp),
-        userId: data.userId ?? null,
+        clienteId: data.clienteId ?? null,
         firstName: data.firstName ?? "Nuevo",
         lastName: data.lastName ?? "Cliente",
         username: data.username ?? null,
@@ -27,25 +26,22 @@ export const telegramMessageRepository = {
   },
 
   findByChatId: async (chatId: string | number) => {
-    // @ts-ignore
     return prisma.telegramMessage.findMany({ 
       where: { chatId: String(chatId) },
-      orderBy: { timestamp: 'asc' }
+      orderBy: { timestamp: "asc" },
     });
   },
 
   findAll: async () => {
-    // @ts-ignore
     return prisma.telegramMessage.findMany({
       orderBy: { timestamp: "desc" },
     });
   },
 
-  associateUserToChat: async (chatId: string | number, userId: number) => {
-    // @ts-ignore
+  associateUserToChat: async (chatId: string | number, clienteId: number) => {
     return prisma.telegramMessage.updateMany({
       where: { chatId: String(chatId) },
-      data: { userId },
+      data: { clienteId },
     });
   },
 };

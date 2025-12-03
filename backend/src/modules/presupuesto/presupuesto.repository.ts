@@ -1,5 +1,5 @@
 import prisma from "../../config/prisma";
-import { EstadoPresupuesto } from "./presupuesto.schema";
+import type { EstadoPresupuesto } from "./presupuesto.schema";
 
 interface PresupuestoDetalleInput {
   productoId: number;

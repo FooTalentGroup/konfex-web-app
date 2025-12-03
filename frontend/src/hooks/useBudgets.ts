@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Budget, PresupuestoResponseDto } from '@/types/presupuesto.types';
 import { presupuestoService } from '@/services/presupuesto.service';
 
@@ -20,6 +21,7 @@ const mapPresupuestoToBudget = (presupuesto: PresupuestoResponseDto): Budget => 
 };
 
 export const useBudgets = () => {
+  const router = useRouter();
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -66,7 +68,8 @@ export const useBudgets = () => {
   };
 
   const handleBudgetClick = (budgetId: number) => {
-    console.log('Budget clicked:', budgetId);
+    // Navegar a la página de detalle del presupuesto
+    router.push(`/presupuestos/${budgetId}`);
   };
 
   return {

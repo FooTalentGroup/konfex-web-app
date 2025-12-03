@@ -53,7 +53,15 @@ const Button: React.FC<ButtonProps> = ({
     <button
       {...props}
       disabled={isDisabled}
-      className={`hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#8B709D] focus:ring-offset-2 transition-opacity w-full disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+      className={`
+        w-full 
+        transition-opacity
+        focus:outline-none 
+        ${!isDisabled ? 'hover:opacity-90 focus:ring-2 focus:ring-[#8B709D] focus:ring-offset-2' : ''}
+        disabled:opacity-50 
+        disabled:cursor-not-allowed 
+        ${className}
+      `}
       style={{
         height: '42px',
         borderRadius: '8px',

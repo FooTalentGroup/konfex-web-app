@@ -9,22 +9,17 @@ export interface CreateProductoDto {
 }
 
 export const productoRepository = {
-  create: (data: CreateProductoDto) =>
-    prisma.producto.create({ data }),
+  create: (data: CreateProductoDto) => prisma.producto.create({ data }),
 
   update: (id: number, data: Partial<CreateProductoDto>) =>
     prisma.producto.update({ where: { id }, data }),
 
-  findAll: () =>
-    prisma.producto.findMany({ orderBy: { createdAt: "desc" } }),
+  findAll: () => prisma.producto.findMany({ orderBy: { createdAt: "desc" } }),
 
-  findById: (id: number) =>
-    prisma.producto.findUnique({ where: { id } }),
+  findById: (id: number) => prisma.producto.findUnique({ where: { id } }),
 
   /** 🔥 Nuevo método para validar productos duplicados */
-  findByName: (nombre: string) =>
-    prisma.producto.findUnique({ where: { nombre } }),
+  findByName: (nombre: string) => prisma.producto.findUnique({ where: { nombre } }),
 
-  delete: (id: number) =>
-    prisma.producto.delete({ where: { id } }),
+  delete: (id: number) => prisma.producto.delete({ where: { id } }),
 };

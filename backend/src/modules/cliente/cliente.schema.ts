@@ -3,17 +3,20 @@ import { z } from "zod";
 // ✅ Schemas de validación
 export const createClienteSchema = z.object({
   body: z.object({
-    nombre: z.string(),
-    telefono: z.string().optional(),
-    email: z.string().optional().nullable(),
-    origen: z.string().optional(),
-    instagramUser: z.string().optional(),
-    notas: z.string().optional(),
+    nombre: z
+      .string()
+      .trim()
+      .min(1, "El nombre es obligatorio y no puede estar vacío"),
+    telefono: z.string().trim().optional(),
+    email: z.string().trim().optional().nullable(),
+    origen: z.string().trim().optional(),
+    instagramUser: z.string().trim().optional(),
+    notas: z.string().trim().optional(),
   }),
 });
 
 export const updateClienteSchema = z.object({
-  body: createClienteSchema.shape.body.partial(), // body obligatorio, campos internos opcionales
+  body: createClienteSchema.shape.body.partial(),
 });
 
 export type CreateClienteDto = z.infer<typeof createClienteSchema>["body"];

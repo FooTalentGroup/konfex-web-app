@@ -1,6 +1,7 @@
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { UserRole } from "@/modules/user/users.types";
+import jwt from "jsonwebtoken";
+
+import type { UserRole } from "@/modules/user/users.types";
 
 export const PasswordHasher = {
   compare: (password: string, hash: string) => {

@@ -1,16 +1,11 @@
-import {
-  Presupuesto,
-  PresupuestoDetalle,
-  Cliente,
-  Pedido,
-} from "@prisma/client";
+import type { Cliente, Pedido, Presupuesto, PresupuestoDetalle } from "@prisma/client";
 
-import {
-  PresupuestoResponseDto,
+import type { EstadoPresupuesto } from "./presupuesto.schema";
+import type {
   PresupuestoDetalleResponseDto,
   PresupuestoListItemDto,
+  PresupuestoResponseDto,
 } from "./presupuesto.types";
-import { EstadoPresupuesto } from "./presupuesto.schema";
 
 export const toPresupuestoDetalleResponseDto = (
   detalle: PresupuestoDetalle

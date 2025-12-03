@@ -1,22 +1,45 @@
+import { AppError } from "@/common/errors";
+
 import { materialRepository } from "./material.repository";
-import { CreateMaterialDto, UpdateMaterialDto } from "./material.schema";
+import type { CreateMaterialDto, MaterialQueryDto, UpdateMaterialDto } from "./material.schema";
 
 export const materialService = {
   create: async (data: CreateMaterialDto) => materialRepository.create(data),
-  getAll: async () => materialRepository.findAll(),
+  getAll: async (filters?: MaterialQueryDto) => {
+    const [materials, total] = await Promise.all([
+      materialRepository.findAll(filters),
+      materialRepository.count(filters),
+    ]);
+
+    return {
+      data: materials,
+      pagination: {
+        page: filters?.page || 1,
+        limit: filters?.limit || 10,
+        total,
+        totalPages: Math.ceil(total / (filters?.limit || 10)),
+      },
+    };
+  },
   getById: async (id: number) => {
+    if (!id || isNaN(id)) {
+      throw new AppError("ID inválido", 400);
+    }
+
     const material = await materialRepository.findById(id);
-    if (!material) throw new Error("Material no encontrado");
+
+    if (!material) {
+      throw new AppError("Material no encontrado", 404);
+    }
+
     return material;
   },
   update: async (id: number, data: UpdateMaterialDto) => {
-    const exists = await materialRepository.findById(id);
-    if (!exists) throw new Error("Material no encontrado");
+    await materialService.getById(id);
     return materialRepository.update(id, data);
   },
   delete: async (id: number) => {
-    const exists = await materialRepository.findById(id);
-    if (!exists) throw new Error("Material no encontrado");
+    await materialService.getById(id);
     return materialRepository.delete(id);
   },
 };

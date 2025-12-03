@@ -1,31 +1,46 @@
+import { AppError } from "../../common/errors";
 import { clienteRepository } from "./cliente.repository";
+import { CreateClienteDto, UpdateClienteDto } from "./cliente.schema";
 
 export const clienteService = {
-  create: async (data: any) => {
+  // Crear cliente
+  create: async (data: CreateClienteDto) => {
+    // Validación: nombre único
+    const exists = await clienteRepository.findByName(data.nombre);
+    if (exists) {
+      throw new AppError("El cliente ya existe", 409);
+    }
+
     return clienteRepository.create(data);
   },
 
-  getAll: async () => {
-    return clienteRepository.findAll();
-  },
+  // Obtener todos
+  getAll: () => clienteRepository.findAll(),
 
+  // Obtener por ID
   getById: async (id: number) => {
+    if (!id || isNaN(id)) {
+      throw new AppError("ID inválido", 400);
+    }
+
     const cliente = await clienteRepository.findById(id);
-    if (!cliente) throw new Error("Cliente no encontrado");
+
+    if (!cliente) {
+      throw new AppError("Cliente no encontrado", 404);
+    }
+
     return cliente;
   },
 
-  update: async (id: number, data: any) => {
-    const exists = await clienteRepository.findById(id);
-    if (!exists) throw new Error("Cliente no encontrado");
-
+  // Actualizar
+  update: async (id: number, data: UpdateClienteDto) => {
+    await clienteService.getById(id); // valida existencia
     return clienteRepository.update(id, data);
   },
 
+  // Eliminar
   delete: async (id: number) => {
-    const exists = await clienteRepository.findById(id);
-    if (!exists) throw new Error("Cliente no encontrado");
-
+    await clienteService.getById(id); // valida existencia
     return clienteRepository.delete(id);
   },
 };

@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useImageUpload } from '@/hooks/useImageUpload'
 import CustomInputWithSelect from '../ui/CustomInputWithSelect'
+import { useMaterialSubmit } from '@/hooks'
 
 export default function FabricForm() {
 
@@ -13,6 +14,7 @@ export default function FabricForm() {
         register,
         handleSubmit,
         setValue,
+        reset,
         formState: { errors, isSubmitting },
     } = useForm({
         resolver: zodResolver(fabricSchema),
@@ -46,17 +48,23 @@ export default function FabricForm() {
         })
     }
 
-    const onSubmit = async (data: FabricFormData) => {
-        try {
-            console.log('Datos del formulario:', data)
-
-            await new Promise(resolve => setTimeout(resolve, 1000))
-
-            alert('Tela guardada exitosamente!')
-        } catch (error) {
-            console.error('Error al guardar:', error)
-            alert('Error al guardar la tela')
+    const { createMaterial, error: submitError } = useMaterialSubmit({
+        onSuccess: (data, operation) => {
+            console.log(`✅ ${operation} exitoso:`, data)
+            if (operation === 'create') {
+                alert('¡Tela creada exitosamente!')
+                reset()
+                handleRemoveImage()
+            }
+        },
+        onError: (error, operation) => {
+            console.error(`❌ Error en ${operation}:`, error)
+            alert(`Error al guardar la tela: ${error.message}`)
         }
+    })
+
+    const onSubmit = async (data: FabricFormData) => {
+        await createMaterial(data)
     }
 
     const rollWidthOptions = [
@@ -73,6 +81,11 @@ export default function FabricForm() {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="relative">
+            {submitError && (
+                <div className="mx-6 mt-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+                    {submitError.message}
+                </div>
+            )}
             <div className="p-6 space-y-6">
                 <ImageUploadField
                     imagePreview={imagePreview}
