@@ -7,6 +7,7 @@ import { materialDocs } from "../modules/material";
 import { clienteDocs } from "../modules/cliente";
 import { presupuestoDocs } from "../modules/presupuesto";
 import { telegramDocs } from "../modules/telegram";
+import { gastosNegocioDocs } from "../modules/gastos-negocio";
 
 const options = {
   definition: {
@@ -24,7 +25,8 @@ const options = {
         ...materialDocs.components.schemas,
         ...clienteDocs.components.schemas,
         ...presupuestoDocs.components.schemas,
-        ...telegramDocs.components.schemas
+        ...telegramDocs.components.schemas,
+        ...gastosNegocioDocs.components.schemas
       },
       parameters: {
         ...productoDocs.components.parameters,
@@ -32,7 +34,8 @@ const options = {
         ...materialDocs.components.parameters,
         ...clienteDocs.components.parameters,
         ...presupuestoDocs.components.parameters,
-        ...telegramDocs.components.parameters
+        ...telegramDocs.components.parameters,
+        ...gastosNegocioDocs.components.parameters
       }
     },
 
@@ -42,7 +45,8 @@ const options = {
       ...materialDocs.paths,
       ...clienteDocs.paths,
       ...presupuestoDocs.paths,
-      ...telegramDocs.paths
+      ...telegramDocs.paths,
+      ...gastosNegocioDocs.paths
     }
   },
 
