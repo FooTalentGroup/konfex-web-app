@@ -277,11 +277,12 @@ async function main() {
 
   for (const mano of manoDeObra) {
     try {
-      await prisma.manoDeObra.upsert({
+      const existe = await prisma.manoDeObra.findFirst({
         where: { nombre: mano.nombre },
-        update: {},
-        create: mano,
       });
+      if (!existe) {
+        await prisma.manoDeObra.create({ data: mano });
+      }
     } catch (error: any) {
       if (error.code !== "P2002") {
         throw error;
@@ -552,7 +553,7 @@ async function main() {
           estado: EstadoPedido.EN_PRODUCCION,
           pagado: false,
           fechaEntregaEstimada: new Date(
-            new Date().getTime() + 14 * 24 * 60 * 60 * 1000
+            new Date().getTime() + 14 * 24 * 60 * 60 * 1000,
           ), // 14 días desde ahora
           detalles: {
             create: presupuesto.detalles.map((detalle) => ({
@@ -562,8 +563,7 @@ async function main() {
               color: "Negro", // Color por defecto
               costoUnitario: detalle.costoUnitario,
               precioUnitario: detalle.costoUnitario * 1.4, // 40% de margen
-              subtotal:
-                detalle.cantidad * detalle.costoUnitario * 1.4,
+              subtotal: detalle.cantidad * detalle.costoUnitario * 1.4,
             })),
           },
         },
@@ -581,14 +581,12 @@ async function main() {
         {
           pedidoId: pedido.id,
           etapa: "Confección",
-          fechaInicio: null,
-          responsable: null,
+          // fechaInicio y responsable se omiten (serán null por defecto)
         },
         {
           pedidoId: pedido.id,
           etapa: "Terminación",
-          fechaInicio: null,
-          responsable: null,
+          // fechaInicio y responsable se omiten (serán null por defecto)
         },
       ];
 
