@@ -155,6 +155,18 @@ model Adicional {
   @@index([presupuestoId])
 }
 
+model GastosNegocio {
+  id          Int           @id @default(autoincrement())
+  nombre      String
+  porcentaje  Int
+  impuestos   Int
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  presupuestos Presupuesto[]
+
+  @@index([nombre])
+}
+
 model Pedido {
   id                   Int               @id @default(autoincrement())
   presupuestoId        Int               @unique
