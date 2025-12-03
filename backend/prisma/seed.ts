@@ -360,7 +360,6 @@ async function main() {
       margenGananciaPorcentaje: 30.0,
       gastosIndirectosPorcentaje: 15.0,
       totalCosto: 25000.0,
-      costosIndirectos: 3750.0,
       ganancias: 8625.0,
       notas: "Presupuesto para colección de verano",
       detalles: [
@@ -390,7 +389,6 @@ async function main() {
       margenGananciaPorcentaje: 25.0,
       gastosIndirectosPorcentaje: 12.0,
       totalCosto: 18000.0,
-      costosIndirectos: 2160.0,
       ganancias: 5040.0,
       notas: "Pedido mayorista",
       detalles: [
@@ -412,7 +410,6 @@ async function main() {
       margenGananciaPorcentaje: 35.0,
       gastosIndirectosPorcentaje: 18.0,
       totalCosto: 32000.0,
-      costosIndirectos: 5760.0,
       ganancias: 13216.0,
       notas: "Presupuesto en revisión",
       detalles: [
@@ -442,7 +439,6 @@ async function main() {
       margenGananciaPorcentaje: 28.0,
       gastosIndirectosPorcentaje: 14.0,
       totalCosto: 15000.0,
-      costosIndirectos: 2100.0,
       ganancias: 4788.0,
       notas: "Presupuesto vencido",
       detalles: [
@@ -464,7 +460,6 @@ async function main() {
       margenGananciaPorcentaje: 32.0,
       gastosIndirectosPorcentaje: 16.0,
       totalCosto: 42000.0,
-      costosIndirectos: 6720.0,
       ganancias: 15590.4,
       notas: "Presupuesto para accesorios",
       detalles: [
@@ -503,10 +498,12 @@ async function main() {
       presupuesto;
 
     // Calcular IVA y totalFinal
+    // Calcular costos indirectos desde el porcentaje
+    const costosIndirectos =
+      presupuestoData.totalCosto *
+      (presupuestoData.gastosIndirectosPorcentaje / 100);
     const subtotal =
-      presupuestoData.totalCosto +
-      presupuestoData.costosIndirectos +
-      presupuestoData.ganancias;
+      presupuestoData.totalCosto + costosIndirectos + presupuestoData.ganancias;
     const iva = subtotal * (ivaPorcentaje / 100);
     const totalFinal = subtotal + iva;
 
@@ -737,11 +734,10 @@ async function main() {
   }
 
   // TelegramMessage - Mensajes de ejemplo
-  const usuariosCreados = await prisma.user.findMany();
   const telegramMessages = [
     {
       chatId: "123456789",
-      userId: usuariosCreados[0]?.id || null,
+      clienteId: clientesCreados[0]?.id || null,
       firstName: "Claudia",
       lastName: "Muñoz",
       username: "claudia_munoz",
@@ -751,7 +747,7 @@ async function main() {
     },
     {
       chatId: "123456789",
-      userId: null,
+      clienteId: null,
       firstName: "Konfex",
       lastName: "Bot",
       username: null,
@@ -761,7 +757,7 @@ async function main() {
     },
     {
       chatId: "987654321",
-      userId: null,
+      clienteId: clientesCreados[1]?.id || null,
       firstName: "Carlos",
       lastName: "Rojas",
       username: "carlos_rojas",
@@ -771,7 +767,7 @@ async function main() {
     },
     {
       chatId: "987654321",
-      userId: null,
+      clienteId: null,
       firstName: "Konfex",
       lastName: "Bot",
       username: null,
@@ -781,7 +777,7 @@ async function main() {
     },
     {
       chatId: "555666777",
-      userId: null,
+      clienteId: clientesCreados[2]?.id || null,
       firstName: "María",
       lastName: "Pérez",
       username: "maria_p",

@@ -1855,11 +1855,18 @@ export type ProduccionEtapaScalarFieldEnum = (typeof ProduccionEtapaScalarFieldE
 export const TelegramMessageScalarFieldEnum = {
   id: 'id',
   chatId: 'chatId',
-  userId: 'userId',
+  clienteId: 'clienteId',
   firstName: 'firstName',
   lastName: 'lastName',
   username: 'username',
   text: 'text',
+  type: 'type',
+  fileId: 'fileId',
+  fileUniqueId: 'fileUniqueId',
+  filePath: 'filePath',
+  fileUrl: 'fileUrl',
+  mimeType: 'mimeType',
+  fileSize: 'fileSize',
   source: 'source',
   timestamp: 'timestamp'
 } as const
