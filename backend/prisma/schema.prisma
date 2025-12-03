@@ -178,18 +178,32 @@ model ProduccionEtapa {
 }
 
 model TelegramMessage {
-  id         Int       @id @default(autoincrement())
-  chatId     String
-  clienteId  Int?
-  firstName  String?
-  lastName   String?
-  username   String?
-  text       String
-  source     String    @default("telegram")
-  timestamp  DateTime  @default(now())
+  id            Int       @id @default(autoincrement())
+  chatId        String
+  clienteId     Int?
+  firstName     String?
+  lastName      String?
+  username      String?
 
-  cliente    Cliente?  @relation(fields: [clienteId], references: [id])
+  // Mensajes de texto
+  text          String?
+
+  // Archivos multimedia
+  type          String?   @default("text") // "photo" | "video" | "audio" | "document" | "sticker" | etc.
+  fileId        String?
+  fileUniqueId  String?
+  filePath      String?   // ruta interna de Telegram
+  fileUrl       String?   // URL completa hacia el archivo
+  mimeType      String?   // video/mp4, image/jpeg, application/pdf
+  fileSize      Int?      // tamaño
+
+  // Metadatos
+  source        String    @default("telegram")
+  timestamp     DateTime  @default(now())
+
+  cliente       Cliente?  @relation(fields: [clienteId], references: [id])
 }
+
 
 enum EstadoPresupuesto {
   BORRADOR
