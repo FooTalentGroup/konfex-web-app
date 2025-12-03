@@ -1,7 +1,24 @@
-import { PrismaClient, Role } from "@prisma/client";
+import "dotenv/config";
+import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
+import {
+  PrismaClient,
+  Role,
+  EstadoPresupuesto,
+} from "../generated/prisma/client";
 import bcrypt from "bcrypt";
 
-const prisma = new PrismaClient();
+const databaseUrl = process.env.DATABASE_URL;
+if (!databaseUrl) {
+  throw new Error("Missing required environment variable: DATABASE_URL");
+}
+
+const pool = new Pool({ connectionString: databaseUrl });
+const adapter = new PrismaPg(pool);
+
+const prisma = new PrismaClient({
+  adapter,
+});
 
 async function main() {
   console.log("Seeding database...");
@@ -67,7 +84,14 @@ async function main() {
   ];
 
   for (const cliente of clientes) {
-    await prisma.cliente.create({ data: cliente });
+    try {
+      await prisma.cliente.create({ data: cliente });
+    } catch (error: any) {
+      // Ignorar errores de duplicados
+      if (error.code !== "P2002") {
+        throw error;
+      }
+    }
   }
 
   // Productos
@@ -89,7 +113,11 @@ async function main() {
   ];
 
   for (const producto of productos) {
-    await prisma.producto.create({ data: producto });
+    await prisma.producto.upsert({
+      where: { nombre: producto.nombre },
+      update: {},
+      create: producto,
+    });
   }
 
   // Materiales
@@ -185,9 +213,17 @@ async function main() {
   ];
 
   for (const material of materiales) {
-    await prisma.material.create({ data: material as any });
+    try {
+      await prisma.material.create({ data: material as any });
+    } catch (error: any) {
+      // Ignorar errores de duplicados
+      if (error.code !== "P2002") {
+        throw error;
+      }
+    }
   }
 
+  // Usuarios
   const users = [
     {
       email: "mia@mail.com",
@@ -206,13 +242,199 @@ async function main() {
   for (const user of users) {
     const hashedPassword = await bcrypt.hash(user.password, 10);
 
-    await prisma.user.create({
-      data: {
+    await prisma.user.upsert({
+      where: { email: user.email },
+      update: {},
+      create: {
         email: user.email,
         name: user.name,
         password: hashedPassword,
         role: user.role,
       },
+    });
+  }
+
+  // Obtener clientes y productos creados para las relaciones
+  const clientesCreados = await prisma.cliente.findMany();
+  const productosCreados = await prisma.producto.findMany();
+
+  // Presupuestos
+  const presupuestos = [
+    {
+      numeroPresupuesto: 1001,
+      clienteId: clientesCreados[0]?.id || 1,
+      fechaVencimiento: new Date("2024-12-31"),
+      estado: EstadoPresupuesto.ENVIADO,
+      margenGananciaPorcentaje: 30.0,
+      gastosIndirectosPorcentaje: 15.0,
+      totalCosto: 25000.0,
+      totalVenta: 37375.0,
+      notas: "Presupuesto para colección de verano",
+      detalles: [
+        {
+          productoId: productosCreados[0]?.id || 1,
+          descripcion: "Pantalón Casual - Talla M",
+          cantidad: 5,
+          costoUnitario: 5000.0,
+        },
+      ],
+    },
+    {
+      numeroPresupuesto: 1002,
+      clienteId: clientesCreados[1]?.id || 2,
+      fechaVencimiento: new Date("2024-12-15"),
+      estado: EstadoPresupuesto.ACEPTADO,
+      margenGananciaPorcentaje: 25.0,
+      gastosIndirectosPorcentaje: 12.0,
+      totalCosto: 18000.0,
+      totalVenta: 25200.0,
+      notas: "Pedido mayorista",
+      detalles: [
+        {
+          productoId: productosCreados[1]?.id || 2,
+          descripcion: "Camiseta Deportiva - Varias tallas",
+          cantidad: 10,
+          costoUnitario: 1800.0,
+        },
+      ],
+    },
+    {
+      numeroPresupuesto: 1003,
+      clienteId: clientesCreados[2]?.id || 3,
+      fechaVencimiento: new Date("2025-01-15"),
+      estado: EstadoPresupuesto.BORRADOR,
+      margenGananciaPorcentaje: 35.0,
+      gastosIndirectosPorcentaje: 18.0,
+      totalCosto: 32000.0,
+      totalVenta: 48960.0,
+      notas: "Presupuesto en revisión",
+      detalles: [
+        {
+          productoId: productosCreados[0]?.id || 1,
+          descripcion: "Pantalón Casual - Talla XL",
+          cantidad: 8,
+          costoUnitario: 4000.0,
+        },
+      ],
+    },
+    {
+      numeroPresupuesto: 1004,
+      clienteId: clientesCreados[3]?.id || 4,
+      fechaVencimiento: new Date("2024-11-30"),
+      estado: EstadoPresupuesto.VENCIDO,
+      margenGananciaPorcentaje: 28.0,
+      gastosIndirectosPorcentaje: 14.0,
+      totalCosto: 15000.0,
+      totalVenta: 20520.0,
+      notas: "Presupuesto vencido",
+      detalles: [
+        {
+          productoId: productosCreados[1]?.id || 2,
+          descripcion: "Camiseta Deportiva - Talla L",
+          cantidad: 6,
+          costoUnitario: 2500.0,
+        },
+      ],
+    },
+    {
+      numeroPresupuesto: 1005,
+      clienteId: clientesCreados[4]?.id || 5,
+      fechaVencimiento: new Date("2025-02-28"),
+      estado: EstadoPresupuesto.ENVIADO,
+      margenGananciaPorcentaje: 32.0,
+      gastosIndirectosPorcentaje: 16.0,
+      totalCosto: 42000.0,
+      totalVenta: 62160.0,
+      notas: "Presupuesto para accesorios",
+      detalles: [
+        {
+          productoId: productosCreados[0]?.id || 1,
+          descripcion: "Pantalón Casual - Varias tallas",
+          cantidad: 12,
+          costoUnitario: 3500.0,
+        },
+      ],
+    },
+  ];
+
+  for (const presupuesto of presupuestos) {
+    const { detalles, ...presupuestoData } = presupuesto;
+    await prisma.presupuesto.upsert({
+      where: { numeroPresupuesto: presupuesto.numeroPresupuesto },
+      update: {},
+      create: {
+        ...presupuestoData,
+        detalles: detalles
+          ? {
+              create: detalles.map((detalle) => ({
+                productoId: detalle.productoId,
+                descripcion: detalle.descripcion,
+                cantidad: detalle.cantidad,
+                costoUnitario: detalle.costoUnitario,
+              })),
+            }
+          : undefined,
+      } as any,
+    });
+  }
+
+  // Obtener presupuestos creados para las calculadoras
+  const presupuestosCreados = await prisma.presupuesto.findMany({
+    orderBy: { numeroPresupuesto: "asc" },
+  });
+
+  // Calculadoras
+  const calculadoras = [
+    {
+      clienteId: clientesCreados[0]?.id || 1,
+      numeroPresupuesto: presupuestosCreados[0]?.numeroPresupuesto || 1001,
+      precioPrendaNeto: 15000.5,
+      horasTrabajo: 8.5,
+      porcentaje: 15.0,
+      gastoAdicional: 5000.0,
+      gastoEnvio: 3000.0,
+    },
+    {
+      clienteId: clientesCreados[1]?.id || 2,
+      numeroPresupuesto: presupuestosCreados[1]?.numeroPresupuesto || 1002,
+      precioPrendaNeto: 12000.0,
+      horasTrabajo: 6.0,
+      porcentaje: 20.0,
+      gastoAdicional: 3000.0,
+      gastoEnvio: 2000.0,
+    },
+    {
+      clienteId: clientesCreados[2]?.id || 3,
+      numeroPresupuesto: presupuestosCreados[2]?.numeroPresupuesto || 1003,
+      precioPrendaNeto: 18000.0,
+      horasTrabajo: 10.0,
+      porcentaje: 18.0,
+      gastoAdicional: 6000.0,
+      gastoEnvio: 4000.0,
+    },
+    {
+      clienteId: clientesCreados[3]?.id || 4,
+      numeroPresupuesto: presupuestosCreados[3]?.numeroPresupuesto || 1004,
+      precioPrendaNeto: 10000.0,
+      horasTrabajo: 5.5,
+      porcentaje: 12.0,
+      gastoAdicional: 2500.0,
+      gastoEnvio: 1500.0,
+    },
+    {
+      clienteId: clientesCreados[4]?.id || 5,
+      numeroPresupuesto: presupuestosCreados[4]?.numeroPresupuesto || 1005,
+      precioPrendaNeto: 22000.0,
+      horasTrabajo: 12.0,
+      porcentaje: 25.0,
+      gastoAdicional: 8000.0,
+      gastoEnvio: 5000.0,
+    },
+  ];
+
+  for (const calculadora of calculadoras) {
+    await prisma.calculadora.create({
+      data: calculadora,
     });
   }
 
