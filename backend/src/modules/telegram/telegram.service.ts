@@ -4,31 +4,107 @@ import {telegramMessageRepository} from "./telegram.repository";
 const TELEGRAM_API = (token: string) => `https://api.telegram.org/bot${token}`;
 
 export const handleIncomingUpdate = async (update: any) => {
-  if (update.message && update.message.text) {
-    const chatId = update.message.chat.id;
-    const text = update.message.text;
-    const firstName = update.message.from?.first_name || "Nuevo";
-    const lastName = update.message.from?.last_name || "Cliente";
-    const username = update.message.from?.username || null;
-    console.log(chatId, text)
+  if (!update.message) return;
 
-    const msgData = { 
-      chatId, 
-      text,
-      source: "telegram",
-      firstName,
-      lastName,
-      username,
-      timestamp: new Date().toISOString(),
-    };
-  
-    console.log("📩 Mensaje recibido del bot:", msgData);
-    
-    await telegramMessageRepository.save(msgData);
+  const chatId = update.message.chat.id;
+  const from = update.message.from || {};
+  const firstName = from.first_name || "Nuevo";
+  const lastName = from.last_name || "Cliente";
+  const username = from.username || null;
+  const timestamp = new Date().toISOString();
 
-    io.emit("telegram_message", msgData);
+  let payload: any = {
+    chatId,
+    firstName,
+    lastName,
+    username,
+    source: "telegram",
+    timestamp,
+  };
+
+  // informacion de mensajes
+  if (update.message.text) {
+    payload.type = "text";
+    payload.text = update.message.text;
   }
+
+  // Informacion de fotos
+  else if (update.message.photo) {
+    const photo = update.message.photo.pop(); // última = mayor calidad
+    payload.type = "photo";
+    payload.fileId = photo.file_id;
+    payload.fileUniqueId = photo.file_unique_id;
+    payload.fileSize = photo.file_size;
+  }
+
+  // informacion de documentos
+  else if (update.message.document) {
+    const doc = update.message.document;
+    payload.type = "document";
+    payload.fileId = doc.file_id;
+    payload.fileUniqueId = doc.file_unique_id;
+    payload.fileSize = doc.file_size;
+    payload.mimeType = doc.mime_type;
+    payload.text = doc.file_name || "Documento recibido";
+  }
+
+  // informacion de video
+  else if (update.message.video) {
+    const v = update.message.video;
+    payload.type = "video";
+    payload.fileId = v.file_id;
+    payload.fileUniqueId = v.file_unique_id;
+    payload.fileSize = v.file_size;
+    payload.mimeType = v.mime_type;
+  }
+
+  // informacion de audio
+  else if (update.message.audio) {
+    const a = update.message.audio;
+    payload.type = "audio";
+    payload.fileId = a.file_id;
+    payload.fileUniqueId = a.file_unique_id;
+    payload.fileSize = a.file_size;
+    payload.mimeType = a.mime_type;
+  }
+
+  // informacion de notas de voz
+  else if (update.message.voice) {
+    const v = update.message.voice;
+    payload.type = "voice";
+    payload.fileId = v.file_id;
+    payload.fileUniqueId = v.file_unique_id;
+    payload.fileSize = v.file_size;
+    payload.mimeType = v.mime_type;
+  }
+
+  else {
+    console.log("Mensaje no manejado", update.message);
+    return;
+  }
+
+  // Si es archivo → obtener file_path y URL de descarga
+  if (payload.fileId) {
+    const token = process.env.TELEGRAM_TOKENy;
+    const res = await fetch(
+      `https://api.telegram.org/bot${token}/getFile?file_id=${payload.fileId}`
+    );
+    const data = await res.json() as any;
+
+    if (data.ok) {
+      payload.filePath = data.result.file_path;
+      payload.fileUrl = `https://api.telegram.org/file/bot${token}/${data.result.file_path}`;
+    }
+  }
+
+  // Guardar en BD
+  console.log(payload)
+  await telegramMessageRepository.save(payload);
+
+  // Emitir al frontend en tiempo real
+  io.emit("telegram_message", payload);
 };
+
 
 export const sendTextMessage = async (chatId: number | string, text: string, firstName: string, lastName: string, username: string) => {
   const token = process.env.TELEGRAM_BOT_TOKEN!;
