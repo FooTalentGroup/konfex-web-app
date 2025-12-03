@@ -16,10 +16,7 @@ export const gastosNegocioRepository = {
   findAll: () =>
     prisma.gastosNegocio.findMany({ orderBy: { createdAt: "desc" } }),
 
-  findById: (id: number) =>
-    prisma.gastosNegocio.findUnique({ where: { id } }),
+  findById: (id: number) => prisma.gastosNegocio.findUnique({ where: { id } }),
 
-  delete: (id: number) =>
-    prisma.gastosNegocio.delete({ where: { id } }),
+  delete: (id: number) => prisma.gastosNegocio.delete({ where: { id } }),
 };
-
