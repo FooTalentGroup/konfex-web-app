@@ -15,7 +15,7 @@ import {
 import { EstadoPresupuesto } from "./presupuesto.schema";
 
 export const toPresupuestoDetalleResponseDto = (
-  detalle: PresupuestoDetalle
+  detalle: PresupuestoDetalle,
 ): PresupuestoDetalleResponseDto => ({
   id: detalle.id,
   productoId: detalle.productoId,
@@ -25,7 +25,7 @@ export const toPresupuestoDetalleResponseDto = (
 });
 
 export const toAdicionalResponseDto = (
-  adicional: Adicional
+  adicional: Adicional,
 ): AdicionalResponseDto => ({
   id: adicional.id,
   nombre: adicional.nombre,
@@ -43,7 +43,7 @@ export const toPresupuestoResponseDto = (
     adicionales?: Adicional[];
     cliente?: Cliente | null;
     pedido?: Pedido | null;
-  }
+  },
 ): PresupuestoResponseDto => ({
   id: presupuesto.id,
   numeroPresupuesto: presupuesto.numeroPresupuesto,
@@ -59,6 +59,8 @@ export const toPresupuestoResponseDto = (
   totalCosto: presupuesto.totalCosto,
   costosIndirectos: presupuesto.costosIndirectos,
   ganancias: presupuesto.ganancias,
+  iva: presupuesto.iva,
+  totalFinal: presupuesto.totalFinal,
   notas: presupuesto.notas,
 
   detalles: presupuesto.detalles?.map(toPresupuestoDetalleResponseDto) ?? [],
@@ -86,5 +88,5 @@ export const toPresupuestoListResponseDto = (
     adicionales?: Adicional[];
     cliente?: Cliente | null;
     pedido?: Pedido | null;
-  })[]
+  })[],
 ): PresupuestoListItemDto[] => items.map(toPresupuestoResponseDto);

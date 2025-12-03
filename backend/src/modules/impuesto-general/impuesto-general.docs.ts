@@ -1,12 +1,12 @@
-export const gastosNegocioDocs = {
+export const impuestoGeneralDocs = {
   paths: {
-    "/api/v1/gastos-negocio": {
+    "/api/v1/impuesto-general": {
       get: {
-        tags: ["Gastos de Negocio"],
-        summary: "Obtener todos los gastos de negocio",
+        tags: ["Impuesto General"],
+        summary: "Obtener todos los impuestos generales",
         responses: {
           200: {
-            description: "Gastos de negocio obtenidos correctamente",
+            description: "Impuestos generales obtenidos correctamente",
             content: {
               "application/json": {
                 schema: {
@@ -37,23 +37,25 @@ export const gastosNegocioDocs = {
       },
 
       post: {
-        tags: ["Gastos de Negocio"],
-        summary: "Crear un gasto de negocio",
+        tags: ["Impuesto General"],
+        summary: "Crear un impuesto general",
+        description:
+          "Solo puede haber un impuesto general activo. Si ya existe uno, use PUT para actualizarlo.",
         requestBody: {
           required: true,
           content: {
             "application/json": {
-              schema: { $ref: "#/components/schemas/CreateGastosNegocioDto" },
+              schema: { $ref: "#/components/schemas/CreateImpuestoGeneralDto" },
               example: {
-                nombre: "Gastos Generales",
-                porcentaje: 15,
+                nombre: "IVA",
+                porcentaje: 19,
               },
             },
           },
         },
         responses: {
           201: {
-            description: "Gastos de negocio creados exitosamente",
+            description: "Impuesto general creado exitosamente",
             content: {
               "application/json": {
                 schema: {
@@ -68,7 +70,6 @@ export const gastosNegocioDocs = {
                         id: { type: "number" },
                         nombre: { type: "string" },
                         porcentaje: { type: "number" },
-                        impuestos: { type: "number" },
                         createdAt: { type: "string", format: "date-time" },
                         updatedAt: { type: "string", format: "date-time" },
                       },
@@ -78,15 +79,16 @@ export const gastosNegocioDocs = {
               },
             },
           },
-          400: {
-            description: "Error de validación",
+          409: {
+            description: "Ya existe un impuesto general",
             content: {
               "application/json": {
                 schema: { $ref: "#/components/schemas/ErrorResponse" },
                 example: {
                   success: false,
-                  statusCode: 400,
-                  message: "Error de validación",
+                  statusCode: 409,
+                  message:
+                    "Ya existe un impuesto general. Solo puede haber uno activo. Use PUT para actualizarlo.",
                   errors: null,
                 },
               },
@@ -96,14 +98,15 @@ export const gastosNegocioDocs = {
       },
     },
 
-    "/api/v1/gastos-negocio/{id}": {
+    "/api/v1/impuesto-general/activo": {
       get: {
-        tags: ["Gastos de Negocio"],
-        summary: "Obtener gasto de negocio por ID",
-        parameters: [{ $ref: "#/components/parameters/GastosNegocioId" }],
+        tags: ["Impuesto General"],
+        summary: "Obtener el impuesto general activo",
+        description:
+          "Retorna el impuesto general que está actualmente activo (el primero encontrado).",
         responses: {
           200: {
-            description: "Gastos de negocio obtenidos correctamente",
+            description: "Impuesto general activo obtenido correctamente",
             content: {
               "application/json": {
                 schema: {
@@ -118,7 +121,6 @@ export const gastosNegocioDocs = {
                         id: { type: "number" },
                         nombre: { type: "string" },
                         porcentaje: { type: "number" },
-                        impuestos: { type: "number" },
                         createdAt: { type: "string", format: "date-time" },
                         updatedAt: { type: "string", format: "date-time" },
                       },
@@ -129,15 +131,53 @@ export const gastosNegocioDocs = {
             },
           },
           404: {
-            description: "Gastos de negocio no encontrados",
+            description: "No hay impuesto general configurado",
             content: {
               "application/json": {
                 schema: { $ref: "#/components/schemas/ErrorResponse" },
-                example: {
-                  success: false,
-                  statusCode: 404,
-                  message: "Gastos de negocio no encontrados",
+              },
+            },
+          },
+        },
+      },
+    },
+
+    "/api/v1/impuesto-general/{id}": {
+      get: {
+        tags: ["Impuesto General"],
+        summary: "Obtener impuesto general por ID",
+        parameters: [{ $ref: "#/components/parameters/ImpuestoGeneralId" }],
+        responses: {
+          200: {
+            description: "Impuesto general obtenido correctamente",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    statusCode: { type: "number" },
+                    message: { type: "string" },
+                    data: {
+                      type: "object",
+                      properties: {
+                        id: { type: "number" },
+                        nombre: { type: "string" },
+                        porcentaje: { type: "number" },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" },
+                      },
+                    },
+                  },
                 },
+              },
+            },
+          },
+          404: {
+            description: "Impuesto general no encontrado",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
               },
             },
           },
@@ -145,23 +185,23 @@ export const gastosNegocioDocs = {
       },
 
       put: {
-        tags: ["Gastos de Negocio"],
-        summary: "Actualizar un gasto de negocio",
-        parameters: [{ $ref: "#/components/parameters/GastosNegocioId" }],
+        tags: ["Impuesto General"],
+        summary: "Actualizar un impuesto general",
+        parameters: [{ $ref: "#/components/parameters/ImpuestoGeneralId" }],
         requestBody: {
           content: {
             "application/json": {
-              schema: { $ref: "#/components/schemas/UpdateGastosNegocioDto" },
+              schema: { $ref: "#/components/schemas/UpdateImpuestoGeneralDto" },
               example: {
-                nombre: "Gastos Generales Actualizados",
-                porcentaje: 18,
+                nombre: "IVA Actualizado",
+                porcentaje: 21,
               },
             },
           },
         },
         responses: {
           200: {
-            description: "Gastos de negocio actualizados correctamente",
+            description: "Impuesto general actualizado correctamente",
             content: {
               "application/json": {
                 schema: {
@@ -176,7 +216,6 @@ export const gastosNegocioDocs = {
                         id: { type: "number" },
                         nombre: { type: "string" },
                         porcentaje: { type: "number" },
-                        impuestos: { type: "number" },
                         createdAt: { type: "string", format: "date-time" },
                         updatedAt: { type: "string", format: "date-time" },
                       },
@@ -187,7 +226,7 @@ export const gastosNegocioDocs = {
             },
           },
           404: {
-            description: "Gastos de negocio no encontrados",
+            description: "Impuesto general no encontrado",
             content: {
               "application/json": {
                 schema: { $ref: "#/components/schemas/ErrorResponse" },
@@ -198,13 +237,13 @@ export const gastosNegocioDocs = {
       },
 
       delete: {
-        tags: ["Gastos de Negocio"],
-        summary: "Eliminar un gasto de negocio",
-        parameters: [{ $ref: "#/components/parameters/GastosNegocioId" }],
+        tags: ["Impuesto General"],
+        summary: "Eliminar un impuesto general",
+        parameters: [{ $ref: "#/components/parameters/ImpuestoGeneralId" }],
         responses: {
-          204: { description: "Gastos de negocio eliminados correctamente" },
+          204: { description: "Impuesto general eliminado correctamente" },
           404: {
-            description: "Gastos de negocio no encontrados",
+            description: "Impuesto general no encontrado",
             content: {
               "application/json": {
                 schema: { $ref: "#/components/schemas/ErrorResponse" },
@@ -218,7 +257,7 @@ export const gastosNegocioDocs = {
 
   components: {
     schemas: {
-      CreateGastosNegocioDto: {
+      CreateImpuestoGeneralDto: {
         type: "object",
         required: ["nombre", "porcentaje"],
         properties: {
@@ -227,7 +266,7 @@ export const gastosNegocioDocs = {
         },
       },
 
-      UpdateGastosNegocioDto: {
+      UpdateImpuestoGeneralDto: {
         type: "object",
         properties: {
           nombre: { type: "string" },
@@ -253,7 +292,7 @@ export const gastosNegocioDocs = {
     },
 
     parameters: {
-      GastosNegocioId: {
+      ImpuestoGeneralId: {
         name: "id",
         in: "path",
         required: true,

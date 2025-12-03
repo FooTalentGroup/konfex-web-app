@@ -6,6 +6,7 @@ import { materialRoutes } from "@/modules/material/material.routes";
 import { productoRoutes } from "@/modules/producto/producto.routes";
 import telegramRoutes from "@/modules/telegram/telegram.routes";
 import { gastosNegocioRoutes } from "@/modules/gastos-negocio";
+import { impuestoGeneralRoutes } from "@/modules/impuesto-general";
 
 const router: Router = Router();
 
@@ -15,6 +16,7 @@ router.use("/clientes", clienteRoutes);
 router.use("/materiales", materialRoutes);
 router.use("/productos", productoRoutes);
 router.use("/gastos-negocio", gastosNegocioRoutes);
+router.use("/impuesto-general", impuestoGeneralRoutes);
 router.use("/telegram", telegramRoutes);
 
 export default router;

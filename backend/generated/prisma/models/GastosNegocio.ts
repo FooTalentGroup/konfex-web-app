@@ -29,20 +29,17 @@ export type AggregateGastosNegocio = {
 export type GastosNegocioAvgAggregateOutputType = {
   id: number | null
   porcentaje: number | null
-  impuestos: number | null
 }
 
 export type GastosNegocioSumAggregateOutputType = {
   id: number | null
   porcentaje: number | null
-  impuestos: number | null
 }
 
 export type GastosNegocioMinAggregateOutputType = {
   id: number | null
   nombre: string | null
   porcentaje: number | null
-  impuestos: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -51,7 +48,6 @@ export type GastosNegocioMaxAggregateOutputType = {
   id: number | null
   nombre: string | null
   porcentaje: number | null
-  impuestos: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,7 +56,6 @@ export type GastosNegocioCountAggregateOutputType = {
   id: number
   nombre: number
   porcentaje: number
-  impuestos: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -70,20 +65,17 @@ export type GastosNegocioCountAggregateOutputType = {
 export type GastosNegocioAvgAggregateInputType = {
   id?: true
   porcentaje?: true
-  impuestos?: true
 }
 
 export type GastosNegocioSumAggregateInputType = {
   id?: true
   porcentaje?: true
-  impuestos?: true
 }
 
 export type GastosNegocioMinAggregateInputType = {
   id?: true
   nombre?: true
   porcentaje?: true
-  impuestos?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -92,7 +84,6 @@ export type GastosNegocioMaxAggregateInputType = {
   id?: true
   nombre?: true
   porcentaje?: true
-  impuestos?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -101,7 +92,6 @@ export type GastosNegocioCountAggregateInputType = {
   id?: true
   nombre?: true
   porcentaje?: true
-  impuestos?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -197,7 +187,6 @@ export type GastosNegocioGroupByOutputType = {
   id: number
   nombre: string
   porcentaje: number
-  impuestos: number
   createdAt: Date
   updatedAt: Date
   _count: GastosNegocioCountAggregateOutputType | null
@@ -229,7 +218,6 @@ export type GastosNegocioWhereInput = {
   id?: Prisma.IntFilter<"GastosNegocio"> | number
   nombre?: Prisma.StringFilter<"GastosNegocio"> | string
   porcentaje?: Prisma.IntFilter<"GastosNegocio"> | number
-  impuestos?: Prisma.IntFilter<"GastosNegocio"> | number
   createdAt?: Prisma.DateTimeFilter<"GastosNegocio"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GastosNegocio"> | Date | string
   presupuestos?: Prisma.PresupuestoListRelationFilter
@@ -239,7 +227,6 @@ export type GastosNegocioOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   porcentaje?: Prisma.SortOrder
-  impuestos?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   presupuestos?: Prisma.PresupuestoOrderByRelationAggregateInput
@@ -252,7 +239,6 @@ export type GastosNegocioWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.GastosNegocioWhereInput | Prisma.GastosNegocioWhereInput[]
   nombre?: Prisma.StringFilter<"GastosNegocio"> | string
   porcentaje?: Prisma.IntFilter<"GastosNegocio"> | number
-  impuestos?: Prisma.IntFilter<"GastosNegocio"> | number
   createdAt?: Prisma.DateTimeFilter<"GastosNegocio"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GastosNegocio"> | Date | string
   presupuestos?: Prisma.PresupuestoListRelationFilter
@@ -262,7 +248,6 @@ export type GastosNegocioOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   porcentaje?: Prisma.SortOrder
-  impuestos?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.GastosNegocioCountOrderByAggregateInput
@@ -279,7 +264,6 @@ export type GastosNegocioScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"GastosNegocio"> | number
   nombre?: Prisma.StringWithAggregatesFilter<"GastosNegocio"> | string
   porcentaje?: Prisma.IntWithAggregatesFilter<"GastosNegocio"> | number
-  impuestos?: Prisma.IntWithAggregatesFilter<"GastosNegocio"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"GastosNegocio"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"GastosNegocio"> | Date | string
 }
@@ -287,7 +271,6 @@ export type GastosNegocioScalarWhereWithAggregatesInput = {
 export type GastosNegocioCreateInput = {
   nombre: string
   porcentaje: number
-  impuestos: number
   createdAt?: Date | string
   updatedAt?: Date | string
   presupuestos?: Prisma.PresupuestoCreateNestedManyWithoutGastosNegocioInput
@@ -297,7 +280,6 @@ export type GastosNegocioUncheckedCreateInput = {
   id?: number
   nombre: string
   porcentaje: number
-  impuestos: number
   createdAt?: Date | string
   updatedAt?: Date | string
   presupuestos?: Prisma.PresupuestoUncheckedCreateNestedManyWithoutGastosNegocioInput
@@ -306,7 +288,6 @@ export type GastosNegocioUncheckedCreateInput = {
 export type GastosNegocioUpdateInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   porcentaje?: Prisma.IntFieldUpdateOperationsInput | number
-  impuestos?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   presupuestos?: Prisma.PresupuestoUpdateManyWithoutGastosNegocioNestedInput
@@ -316,7 +297,6 @@ export type GastosNegocioUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   porcentaje?: Prisma.IntFieldUpdateOperationsInput | number
-  impuestos?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   presupuestos?: Prisma.PresupuestoUncheckedUpdateManyWithoutGastosNegocioNestedInput
@@ -326,7 +306,6 @@ export type GastosNegocioCreateManyInput = {
   id?: number
   nombre: string
   porcentaje: number
-  impuestos: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -334,7 +313,6 @@ export type GastosNegocioCreateManyInput = {
 export type GastosNegocioUpdateManyMutationInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   porcentaje?: Prisma.IntFieldUpdateOperationsInput | number
-  impuestos?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -343,7 +321,6 @@ export type GastosNegocioUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   porcentaje?: Prisma.IntFieldUpdateOperationsInput | number
-  impuestos?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -357,7 +334,6 @@ export type GastosNegocioCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   porcentaje?: Prisma.SortOrder
-  impuestos?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -365,14 +341,12 @@ export type GastosNegocioCountOrderByAggregateInput = {
 export type GastosNegocioAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   porcentaje?: Prisma.SortOrder
-  impuestos?: Prisma.SortOrder
 }
 
 export type GastosNegocioMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   porcentaje?: Prisma.SortOrder
-  impuestos?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -381,7 +355,6 @@ export type GastosNegocioMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   porcentaje?: Prisma.SortOrder
-  impuestos?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -389,7 +362,6 @@ export type GastosNegocioMinOrderByAggregateInput = {
 export type GastosNegocioSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   porcentaje?: Prisma.SortOrder
-  impuestos?: Prisma.SortOrder
 }
 
 export type GastosNegocioCreateNestedOneWithoutPresupuestosInput = {
@@ -411,7 +383,6 @@ export type GastosNegocioUpdateOneWithoutPresupuestosNestedInput = {
 export type GastosNegocioCreateWithoutPresupuestosInput = {
   nombre: string
   porcentaje: number
-  impuestos: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -420,7 +391,6 @@ export type GastosNegocioUncheckedCreateWithoutPresupuestosInput = {
   id?: number
   nombre: string
   porcentaje: number
-  impuestos: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -444,7 +414,6 @@ export type GastosNegocioUpdateToOneWithWhereWithoutPresupuestosInput = {
 export type GastosNegocioUpdateWithoutPresupuestosInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   porcentaje?: Prisma.IntFieldUpdateOperationsInput | number
-  impuestos?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -453,7 +422,6 @@ export type GastosNegocioUncheckedUpdateWithoutPresupuestosInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   porcentaje?: Prisma.IntFieldUpdateOperationsInput | number
-  impuestos?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -493,7 +461,6 @@ export type GastosNegocioSelect<ExtArgs extends runtime.Types.Extensions.Interna
   id?: boolean
   nombre?: boolean
   porcentaje?: boolean
-  impuestos?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   presupuestos?: boolean | Prisma.GastosNegocio$presupuestosArgs<ExtArgs>
@@ -504,7 +471,6 @@ export type GastosNegocioSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   id?: boolean
   nombre?: boolean
   porcentaje?: boolean
-  impuestos?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["gastosNegocio"]>
@@ -513,7 +479,6 @@ export type GastosNegocioSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   id?: boolean
   nombre?: boolean
   porcentaje?: boolean
-  impuestos?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["gastosNegocio"]>
@@ -522,12 +487,11 @@ export type GastosNegocioSelectScalar = {
   id?: boolean
   nombre?: boolean
   porcentaje?: boolean
-  impuestos?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type GastosNegocioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "porcentaje" | "impuestos" | "createdAt" | "updatedAt", ExtArgs["result"]["gastosNegocio"]>
+export type GastosNegocioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "porcentaje" | "createdAt" | "updatedAt", ExtArgs["result"]["gastosNegocio"]>
 export type GastosNegocioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   presupuestos?: boolean | Prisma.GastosNegocio$presupuestosArgs<ExtArgs>
   _count?: boolean | Prisma.GastosNegocioCountOutputTypeDefaultArgs<ExtArgs>
@@ -544,7 +508,6 @@ export type $GastosNegocioPayload<ExtArgs extends runtime.Types.Extensions.Inter
     id: number
     nombre: string
     porcentaje: number
-    impuestos: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["gastosNegocio"]>
@@ -974,7 +937,6 @@ export interface GastosNegocioFieldRefs {
   readonly id: Prisma.FieldRef<"GastosNegocio", 'Int'>
   readonly nombre: Prisma.FieldRef<"GastosNegocio", 'String'>
   readonly porcentaje: Prisma.FieldRef<"GastosNegocio", 'Int'>
-  readonly impuestos: Prisma.FieldRef<"GastosNegocio", 'Int'>
   readonly createdAt: Prisma.FieldRef<"GastosNegocio", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"GastosNegocio", 'DateTime'>
 }

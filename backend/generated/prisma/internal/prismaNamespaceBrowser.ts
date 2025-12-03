@@ -62,6 +62,7 @@ export const ModelName = {
   PresupuestoDetalle: 'PresupuestoDetalle',
   Adicional: 'Adicional',
   GastosNegocio: 'GastosNegocio',
+  ImpuestoGeneral: 'ImpuestoGeneral',
   Pedido: 'Pedido',
   PedidoDetalle: 'PedidoDetalle',
   ProduccionEtapa: 'ProduccionEtapa',
@@ -192,6 +193,8 @@ export const PresupuestoScalarFieldEnum = {
   totalCosto: 'totalCosto',
   gastosNegocioId: 'gastosNegocioId',
   ganancias: 'ganancias',
+  iva: 'iva',
+  totalFinal: 'totalFinal',
   notas: 'notas',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -231,12 +234,22 @@ export const GastosNegocioScalarFieldEnum = {
   id: 'id',
   nombre: 'nombre',
   porcentaje: 'porcentaje',
-  impuestos: 'impuestos',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type GastosNegocioScalarFieldEnum = (typeof GastosNegocioScalarFieldEnum)[keyof typeof GastosNegocioScalarFieldEnum]
+
+
+export const ImpuestoGeneralScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  porcentaje: 'porcentaje',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ImpuestoGeneralScalarFieldEnum = (typeof ImpuestoGeneralScalarFieldEnum)[keyof typeof ImpuestoGeneralScalarFieldEnum]
 
 
 export const PedidoScalarFieldEnum = {

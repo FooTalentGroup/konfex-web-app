@@ -32,6 +32,8 @@ export interface PresupuestoResponseDto {
   totalCosto: number;
   costosIndirectos: number;
   ganancias: number;
+  iva: number;
+  totalFinal: number;
   notas: string | null;
   detalles: PresupuestoDetalleResponseDto[];
   adicionales: AdicionalResponseDto[];

@@ -73,6 +73,11 @@ export type Adicional = Prisma.AdicionalModel
  */
 export type GastosNegocio = Prisma.GastosNegocioModel
 /**
+ * Model ImpuestoGeneral
+ * 
+ */
+export type ImpuestoGeneral = Prisma.ImpuestoGeneralModel
+/**
  * Model Pedido
  * 
  */

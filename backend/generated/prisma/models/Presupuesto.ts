@@ -35,6 +35,8 @@ export type PresupuestoAvgAggregateOutputType = {
   totalCosto: number | null
   gastosNegocioId: number | null
   ganancias: number | null
+  iva: number | null
+  totalFinal: number | null
 }
 
 export type PresupuestoSumAggregateOutputType = {
@@ -46,6 +48,8 @@ export type PresupuestoSumAggregateOutputType = {
   totalCosto: number | null
   gastosNegocioId: number | null
   ganancias: number | null
+  iva: number | null
+  totalFinal: number | null
 }
 
 export type PresupuestoMinAggregateOutputType = {
@@ -61,6 +65,8 @@ export type PresupuestoMinAggregateOutputType = {
   totalCosto: number | null
   gastosNegocioId: number | null
   ganancias: number | null
+  iva: number | null
+  totalFinal: number | null
   notas: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -79,6 +85,8 @@ export type PresupuestoMaxAggregateOutputType = {
   totalCosto: number | null
   gastosNegocioId: number | null
   ganancias: number | null
+  iva: number | null
+  totalFinal: number | null
   notas: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -97,6 +105,8 @@ export type PresupuestoCountAggregateOutputType = {
   totalCosto: number
   gastosNegocioId: number
   ganancias: number
+  iva: number
+  totalFinal: number
   notas: number
   createdAt: number
   updatedAt: number
@@ -113,6 +123,8 @@ export type PresupuestoAvgAggregateInputType = {
   totalCosto?: true
   gastosNegocioId?: true
   ganancias?: true
+  iva?: true
+  totalFinal?: true
 }
 
 export type PresupuestoSumAggregateInputType = {
@@ -124,6 +136,8 @@ export type PresupuestoSumAggregateInputType = {
   totalCosto?: true
   gastosNegocioId?: true
   ganancias?: true
+  iva?: true
+  totalFinal?: true
 }
 
 export type PresupuestoMinAggregateInputType = {
@@ -139,6 +153,8 @@ export type PresupuestoMinAggregateInputType = {
   totalCosto?: true
   gastosNegocioId?: true
   ganancias?: true
+  iva?: true
+  totalFinal?: true
   notas?: true
   createdAt?: true
   updatedAt?: true
@@ -157,6 +173,8 @@ export type PresupuestoMaxAggregateInputType = {
   totalCosto?: true
   gastosNegocioId?: true
   ganancias?: true
+  iva?: true
+  totalFinal?: true
   notas?: true
   createdAt?: true
   updatedAt?: true
@@ -175,6 +193,8 @@ export type PresupuestoCountAggregateInputType = {
   totalCosto?: true
   gastosNegocioId?: true
   ganancias?: true
+  iva?: true
+  totalFinal?: true
   notas?: true
   createdAt?: true
   updatedAt?: true
@@ -280,6 +300,8 @@ export type PresupuestoGroupByOutputType = {
   totalCosto: number
   gastosNegocioId: number | null
   ganancias: number
+  iva: number
+  totalFinal: number
   notas: string | null
   createdAt: Date
   updatedAt: Date
@@ -321,6 +343,8 @@ export type PresupuestoWhereInput = {
   totalCosto?: Prisma.FloatFilter<"Presupuesto"> | number
   gastosNegocioId?: Prisma.IntNullableFilter<"Presupuesto"> | number | null
   ganancias?: Prisma.FloatFilter<"Presupuesto"> | number
+  iva?: Prisma.FloatFilter<"Presupuesto"> | number
+  totalFinal?: Prisma.FloatFilter<"Presupuesto"> | number
   notas?: Prisma.StringNullableFilter<"Presupuesto"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Presupuesto"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Presupuesto"> | Date | string
@@ -344,6 +368,8 @@ export type PresupuestoOrderByWithRelationInput = {
   totalCosto?: Prisma.SortOrder
   gastosNegocioId?: Prisma.SortOrderInput | Prisma.SortOrder
   ganancias?: Prisma.SortOrder
+  iva?: Prisma.SortOrder
+  totalFinal?: Prisma.SortOrder
   notas?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -370,6 +396,8 @@ export type PresupuestoWhereUniqueInput = Prisma.AtLeast<{
   totalCosto?: Prisma.FloatFilter<"Presupuesto"> | number
   gastosNegocioId?: Prisma.IntNullableFilter<"Presupuesto"> | number | null
   ganancias?: Prisma.FloatFilter<"Presupuesto"> | number
+  iva?: Prisma.FloatFilter<"Presupuesto"> | number
+  totalFinal?: Prisma.FloatFilter<"Presupuesto"> | number
   notas?: Prisma.StringNullableFilter<"Presupuesto"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Presupuesto"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Presupuesto"> | Date | string
@@ -393,6 +421,8 @@ export type PresupuestoOrderByWithAggregationInput = {
   totalCosto?: Prisma.SortOrder
   gastosNegocioId?: Prisma.SortOrderInput | Prisma.SortOrder
   ganancias?: Prisma.SortOrder
+  iva?: Prisma.SortOrder
+  totalFinal?: Prisma.SortOrder
   notas?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -419,6 +449,8 @@ export type PresupuestoScalarWhereWithAggregatesInput = {
   totalCosto?: Prisma.FloatWithAggregatesFilter<"Presupuesto"> | number
   gastosNegocioId?: Prisma.IntNullableWithAggregatesFilter<"Presupuesto"> | number | null
   ganancias?: Prisma.FloatWithAggregatesFilter<"Presupuesto"> | number
+  iva?: Prisma.FloatWithAggregatesFilter<"Presupuesto"> | number
+  totalFinal?: Prisma.FloatWithAggregatesFilter<"Presupuesto"> | number
   notas?: Prisma.StringNullableWithAggregatesFilter<"Presupuesto"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Presupuesto"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Presupuesto"> | Date | string
@@ -434,6 +466,8 @@ export type PresupuestoCreateInput = {
   gastosIndirectosPorcentaje: number
   totalCosto: number
   ganancias: number
+  iva?: number
+  totalFinal?: number
   notas?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -457,6 +491,8 @@ export type PresupuestoUncheckedCreateInput = {
   totalCosto: number
   gastosNegocioId?: number | null
   ganancias: number
+  iva?: number
+  totalFinal?: number
   notas?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -475,6 +511,8 @@ export type PresupuestoUpdateInput = {
   gastosIndirectosPorcentaje?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
   ganancias?: Prisma.FloatFieldUpdateOperationsInput | number
+  iva?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -498,6 +536,8 @@ export type PresupuestoUncheckedUpdateInput = {
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
   gastosNegocioId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   ganancias?: Prisma.FloatFieldUpdateOperationsInput | number
+  iva?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -519,6 +559,8 @@ export type PresupuestoCreateManyInput = {
   totalCosto: number
   gastosNegocioId?: number | null
   ganancias: number
+  iva?: number
+  totalFinal?: number
   notas?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -534,6 +576,8 @@ export type PresupuestoUpdateManyMutationInput = {
   gastosIndirectosPorcentaje?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
   ganancias?: Prisma.FloatFieldUpdateOperationsInput | number
+  iva?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -552,6 +596,8 @@ export type PresupuestoUncheckedUpdateManyInput = {
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
   gastosNegocioId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   ganancias?: Prisma.FloatFieldUpdateOperationsInput | number
+  iva?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -580,6 +626,8 @@ export type PresupuestoCountOrderByAggregateInput = {
   totalCosto?: Prisma.SortOrder
   gastosNegocioId?: Prisma.SortOrder
   ganancias?: Prisma.SortOrder
+  iva?: Prisma.SortOrder
+  totalFinal?: Prisma.SortOrder
   notas?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -594,6 +642,8 @@ export type PresupuestoAvgOrderByAggregateInput = {
   totalCosto?: Prisma.SortOrder
   gastosNegocioId?: Prisma.SortOrder
   ganancias?: Prisma.SortOrder
+  iva?: Prisma.SortOrder
+  totalFinal?: Prisma.SortOrder
 }
 
 export type PresupuestoMaxOrderByAggregateInput = {
@@ -609,6 +659,8 @@ export type PresupuestoMaxOrderByAggregateInput = {
   totalCosto?: Prisma.SortOrder
   gastosNegocioId?: Prisma.SortOrder
   ganancias?: Prisma.SortOrder
+  iva?: Prisma.SortOrder
+  totalFinal?: Prisma.SortOrder
   notas?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -627,6 +679,8 @@ export type PresupuestoMinOrderByAggregateInput = {
   totalCosto?: Prisma.SortOrder
   gastosNegocioId?: Prisma.SortOrder
   ganancias?: Prisma.SortOrder
+  iva?: Prisma.SortOrder
+  totalFinal?: Prisma.SortOrder
   notas?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -641,6 +695,8 @@ export type PresupuestoSumOrderByAggregateInput = {
   totalCosto?: Prisma.SortOrder
   gastosNegocioId?: Prisma.SortOrder
   ganancias?: Prisma.SortOrder
+  iva?: Prisma.SortOrder
+  totalFinal?: Prisma.SortOrder
 }
 
 export type PresupuestoScalarRelationFilter = {
@@ -800,6 +856,8 @@ export type PresupuestoCreateWithoutClienteInput = {
   gastosIndirectosPorcentaje: number
   totalCosto: number
   ganancias: number
+  iva?: number
+  totalFinal?: number
   notas?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -821,6 +879,8 @@ export type PresupuestoUncheckedCreateWithoutClienteInput = {
   totalCosto: number
   gastosNegocioId?: number | null
   ganancias: number
+  iva?: number
+  totalFinal?: number
   notas?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -871,6 +931,8 @@ export type PresupuestoScalarWhereInput = {
   totalCosto?: Prisma.FloatFilter<"Presupuesto"> | number
   gastosNegocioId?: Prisma.IntNullableFilter<"Presupuesto"> | number | null
   ganancias?: Prisma.FloatFilter<"Presupuesto"> | number
+  iva?: Prisma.FloatFilter<"Presupuesto"> | number
+  totalFinal?: Prisma.FloatFilter<"Presupuesto"> | number
   notas?: Prisma.StringNullableFilter<"Presupuesto"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Presupuesto"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Presupuesto"> | Date | string
@@ -886,6 +948,8 @@ export type PresupuestoCreateWithoutDetallesInput = {
   gastosIndirectosPorcentaje: number
   totalCosto: number
   ganancias: number
+  iva?: number
+  totalFinal?: number
   notas?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -908,6 +972,8 @@ export type PresupuestoUncheckedCreateWithoutDetallesInput = {
   totalCosto: number
   gastosNegocioId?: number | null
   ganancias: number
+  iva?: number
+  totalFinal?: number
   notas?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -941,6 +1007,8 @@ export type PresupuestoUpdateWithoutDetallesInput = {
   gastosIndirectosPorcentaje?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
   ganancias?: Prisma.FloatFieldUpdateOperationsInput | number
+  iva?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -963,6 +1031,8 @@ export type PresupuestoUncheckedUpdateWithoutDetallesInput = {
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
   gastosNegocioId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   ganancias?: Prisma.FloatFieldUpdateOperationsInput | number
+  iva?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -980,6 +1050,8 @@ export type PresupuestoCreateWithoutAdicionalesInput = {
   gastosIndirectosPorcentaje: number
   totalCosto: number
   ganancias: number
+  iva?: number
+  totalFinal?: number
   notas?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1002,6 +1074,8 @@ export type PresupuestoUncheckedCreateWithoutAdicionalesInput = {
   totalCosto: number
   gastosNegocioId?: number | null
   ganancias: number
+  iva?: number
+  totalFinal?: number
   notas?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1035,6 +1109,8 @@ export type PresupuestoUpdateWithoutAdicionalesInput = {
   gastosIndirectosPorcentaje?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
   ganancias?: Prisma.FloatFieldUpdateOperationsInput | number
+  iva?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1057,6 +1133,8 @@ export type PresupuestoUncheckedUpdateWithoutAdicionalesInput = {
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
   gastosNegocioId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   ganancias?: Prisma.FloatFieldUpdateOperationsInput | number
+  iva?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1074,6 +1152,8 @@ export type PresupuestoCreateWithoutGastosNegocioInput = {
   gastosIndirectosPorcentaje: number
   totalCosto: number
   ganancias: number
+  iva?: number
+  totalFinal?: number
   notas?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1095,6 +1175,8 @@ export type PresupuestoUncheckedCreateWithoutGastosNegocioInput = {
   gastosIndirectosPorcentaje: number
   totalCosto: number
   ganancias: number
+  iva?: number
+  totalFinal?: number
   notas?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1139,6 +1221,8 @@ export type PresupuestoCreateWithoutPedidoInput = {
   gastosIndirectosPorcentaje: number
   totalCosto: number
   ganancias: number
+  iva?: number
+  totalFinal?: number
   notas?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1161,6 +1245,8 @@ export type PresupuestoUncheckedCreateWithoutPedidoInput = {
   totalCosto: number
   gastosNegocioId?: number | null
   ganancias: number
+  iva?: number
+  totalFinal?: number
   notas?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1194,6 +1280,8 @@ export type PresupuestoUpdateWithoutPedidoInput = {
   gastosIndirectosPorcentaje?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
   ganancias?: Prisma.FloatFieldUpdateOperationsInput | number
+  iva?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1216,6 +1304,8 @@ export type PresupuestoUncheckedUpdateWithoutPedidoInput = {
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
   gastosNegocioId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   ganancias?: Prisma.FloatFieldUpdateOperationsInput | number
+  iva?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1235,6 +1325,8 @@ export type PresupuestoCreateManyClienteInput = {
   totalCosto: number
   gastosNegocioId?: number | null
   ganancias: number
+  iva?: number
+  totalFinal?: number
   notas?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1250,6 +1342,8 @@ export type PresupuestoUpdateWithoutClienteInput = {
   gastosIndirectosPorcentaje?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
   ganancias?: Prisma.FloatFieldUpdateOperationsInput | number
+  iva?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1271,6 +1365,8 @@ export type PresupuestoUncheckedUpdateWithoutClienteInput = {
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
   gastosNegocioId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   ganancias?: Prisma.FloatFieldUpdateOperationsInput | number
+  iva?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1291,6 +1387,8 @@ export type PresupuestoUncheckedUpdateManyWithoutClienteInput = {
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
   gastosNegocioId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   ganancias?: Prisma.FloatFieldUpdateOperationsInput | number
+  iva?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1308,6 +1406,8 @@ export type PresupuestoCreateManyGastosNegocioInput = {
   gastosIndirectosPorcentaje: number
   totalCosto: number
   ganancias: number
+  iva?: number
+  totalFinal?: number
   notas?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1323,6 +1423,8 @@ export type PresupuestoUpdateWithoutGastosNegocioInput = {
   gastosIndirectosPorcentaje?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
   ganancias?: Prisma.FloatFieldUpdateOperationsInput | number
+  iva?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1344,6 +1446,8 @@ export type PresupuestoUncheckedUpdateWithoutGastosNegocioInput = {
   gastosIndirectosPorcentaje?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
   ganancias?: Prisma.FloatFieldUpdateOperationsInput | number
+  iva?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1364,6 +1468,8 @@ export type PresupuestoUncheckedUpdateManyWithoutGastosNegocioInput = {
   gastosIndirectosPorcentaje?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
   ganancias?: Prisma.FloatFieldUpdateOperationsInput | number
+  iva?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1422,6 +1528,8 @@ export type PresupuestoSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   totalCosto?: boolean
   gastosNegocioId?: boolean
   ganancias?: boolean
+  iva?: boolean
+  totalFinal?: boolean
   notas?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1446,6 +1554,8 @@ export type PresupuestoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   totalCosto?: boolean
   gastosNegocioId?: boolean
   ganancias?: boolean
+  iva?: boolean
+  totalFinal?: boolean
   notas?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1466,6 +1576,8 @@ export type PresupuestoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   totalCosto?: boolean
   gastosNegocioId?: boolean
   ganancias?: boolean
+  iva?: boolean
+  totalFinal?: boolean
   notas?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1486,12 +1598,14 @@ export type PresupuestoSelectScalar = {
   totalCosto?: boolean
   gastosNegocioId?: boolean
   ganancias?: boolean
+  iva?: boolean
+  totalFinal?: boolean
   notas?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PresupuestoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "numeroPresupuesto" | "nombre" | "clienteId" | "fechaCreacion" | "fechaVencimiento" | "estado" | "margenGananciaPorcentaje" | "gastosIndirectosPorcentaje" | "totalCosto" | "gastosNegocioId" | "ganancias" | "notas" | "createdAt" | "updatedAt", ExtArgs["result"]["presupuesto"]>
+export type PresupuestoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "numeroPresupuesto" | "nombre" | "clienteId" | "fechaCreacion" | "fechaVencimiento" | "estado" | "margenGananciaPorcentaje" | "gastosIndirectosPorcentaje" | "totalCosto" | "gastosNegocioId" | "ganancias" | "iva" | "totalFinal" | "notas" | "createdAt" | "updatedAt", ExtArgs["result"]["presupuesto"]>
 export type PresupuestoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   pedido?: boolean | Prisma.Presupuesto$pedidoArgs<ExtArgs>
   cliente?: boolean | Prisma.Presupuesto$clienteArgs<ExtArgs>
@@ -1531,6 +1645,8 @@ export type $PresupuestoPayload<ExtArgs extends runtime.Types.Extensions.Interna
     totalCosto: number
     gastosNegocioId: number | null
     ganancias: number
+    iva: number
+    totalFinal: number
     notas: string | null
     createdAt: Date
     updatedAt: Date
@@ -1974,6 +2090,8 @@ export interface PresupuestoFieldRefs {
   readonly totalCosto: Prisma.FieldRef<"Presupuesto", 'Float'>
   readonly gastosNegocioId: Prisma.FieldRef<"Presupuesto", 'Int'>
   readonly ganancias: Prisma.FieldRef<"Presupuesto", 'Float'>
+  readonly iva: Prisma.FieldRef<"Presupuesto", 'Float'>
+  readonly totalFinal: Prisma.FieldRef<"Presupuesto", 'Float'>
   readonly notas: Prisma.FieldRef<"Presupuesto", 'String'>
   readonly createdAt: Prisma.FieldRef<"Presupuesto", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Presupuesto", 'DateTime'>

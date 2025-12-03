@@ -395,6 +395,7 @@ export const ModelName = {
   PresupuestoDetalle: 'PresupuestoDetalle',
   Adicional: 'Adicional',
   GastosNegocio: 'GastosNegocio',
+  ImpuestoGeneral: 'ImpuestoGeneral',
   Pedido: 'Pedido',
   PedidoDetalle: 'PedidoDetalle',
   ProduccionEtapa: 'ProduccionEtapa',
@@ -414,7 +415,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "cliente" | "producto" | "material" | "manoDeObra" | "materialPorProducto" | "manoDeObraPorProducto" | "presupuesto" | "presupuestoDetalle" | "adicional" | "gastosNegocio" | "pedido" | "pedidoDetalle" | "produccionEtapa" | "telegramMessage"
+    modelProps: "user" | "cliente" | "producto" | "material" | "manoDeObra" | "materialPorProducto" | "manoDeObraPorProducto" | "presupuesto" | "presupuestoDetalle" | "adicional" | "gastosNegocio" | "impuestoGeneral" | "pedido" | "pedidoDetalle" | "produccionEtapa" | "telegramMessage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1232,6 +1233,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ImpuestoGeneral: {
+      payload: Prisma.$ImpuestoGeneralPayload<ExtArgs>
+      fields: Prisma.ImpuestoGeneralFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ImpuestoGeneralFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImpuestoGeneralPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ImpuestoGeneralFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImpuestoGeneralPayload>
+        }
+        findFirst: {
+          args: Prisma.ImpuestoGeneralFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImpuestoGeneralPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ImpuestoGeneralFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImpuestoGeneralPayload>
+        }
+        findMany: {
+          args: Prisma.ImpuestoGeneralFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImpuestoGeneralPayload>[]
+        }
+        create: {
+          args: Prisma.ImpuestoGeneralCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImpuestoGeneralPayload>
+        }
+        createMany: {
+          args: Prisma.ImpuestoGeneralCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ImpuestoGeneralCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImpuestoGeneralPayload>[]
+        }
+        delete: {
+          args: Prisma.ImpuestoGeneralDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImpuestoGeneralPayload>
+        }
+        update: {
+          args: Prisma.ImpuestoGeneralUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImpuestoGeneralPayload>
+        }
+        deleteMany: {
+          args: Prisma.ImpuestoGeneralDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ImpuestoGeneralUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ImpuestoGeneralUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImpuestoGeneralPayload>[]
+        }
+        upsert: {
+          args: Prisma.ImpuestoGeneralUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImpuestoGeneralPayload>
+        }
+        aggregate: {
+          args: Prisma.ImpuestoGeneralAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateImpuestoGeneral>
+        }
+        groupBy: {
+          args: Prisma.ImpuestoGeneralGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ImpuestoGeneralGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ImpuestoGeneralCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ImpuestoGeneralCountAggregateOutputType> | number
+        }
+      }
+    }
     Pedido: {
       payload: Prisma.$PedidoPayload<ExtArgs>
       fields: Prisma.PedidoFieldRefs
@@ -1675,6 +1750,8 @@ export const PresupuestoScalarFieldEnum = {
   totalCosto: 'totalCosto',
   gastosNegocioId: 'gastosNegocioId',
   ganancias: 'ganancias',
+  iva: 'iva',
+  totalFinal: 'totalFinal',
   notas: 'notas',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1714,12 +1791,22 @@ export const GastosNegocioScalarFieldEnum = {
   id: 'id',
   nombre: 'nombre',
   porcentaje: 'porcentaje',
-  impuestos: 'impuestos',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type GastosNegocioScalarFieldEnum = (typeof GastosNegocioScalarFieldEnum)[keyof typeof GastosNegocioScalarFieldEnum]
+
+
+export const ImpuestoGeneralScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  porcentaje: 'porcentaje',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ImpuestoGeneralScalarFieldEnum = (typeof ImpuestoGeneralScalarFieldEnum)[keyof typeof ImpuestoGeneralScalarFieldEnum]
 
 
 export const PedidoScalarFieldEnum = {
@@ -2004,6 +2091,7 @@ export type GlobalOmitConfig = {
   presupuestoDetalle?: Prisma.PresupuestoDetalleOmit
   adicional?: Prisma.AdicionalOmit
   gastosNegocio?: Prisma.GastosNegocioOmit
+  impuestoGeneral?: Prisma.ImpuestoGeneralOmit
   pedido?: Prisma.PedidoOmit
   pedidoDetalle?: Prisma.PedidoDetalleOmit
   produccionEtapa?: Prisma.ProduccionEtapaOmit
