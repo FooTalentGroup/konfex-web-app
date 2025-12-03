@@ -4,6 +4,7 @@ import { Express } from "express";
 import { productoDocs } from "../modules/producto";
 import { authDocs } from "../modules/auth";
 import { materialDocs } from "../modules/material";
+import { calculadoraDocs } from "../modules/calculadora";
 
 const options = {
   definition: {
@@ -18,19 +19,22 @@ const options = {
       schemas: {
         ...productoDocs.components.schemas,
         ...authDocs.components.schemas,
-        ...materialDocs.components.schemas
+        ...materialDocs.components.schemas,
+        ...calculadoraDocs.components.schemas
       },
       parameters: {
         ...productoDocs.components.parameters,
         ...authDocs.components.parameters,
-        ...materialDocs.components.parameters
+        ...materialDocs.components.parameters,
+        ...calculadoraDocs.components.parameters
       }
     },
 
     paths: {
       ...productoDocs.paths,
       ...authDocs.paths,
-      ...materialDocs.paths
+      ...materialDocs.paths,
+      ...calculadoraDocs.paths
     }
   },
 

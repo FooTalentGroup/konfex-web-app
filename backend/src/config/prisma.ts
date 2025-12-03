@@ -1,14 +1,22 @@
+import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../generated/prisma/client";
-import { env } from "prisma/config";
 
 const adapter = () => {
+  const databaseUrl = process.env.DATABASE_URL;
+  
+  if (!databaseUrl) {
+    throw new Error(
+      "Missing required environment variable: DATABASE_URL. Please check your .env file."
+    );
+  }
+
   return new PrismaClient({
     log:
       process.env.NODE_ENV === "development"
         ? ["query", "error", "warn"]
         : ["error"],
-    adapter: new PrismaPg(env("DATABASE_URL")),
+    adapter: new PrismaPg(databaseUrl),
     errorFormat: "pretty",
   });
 };
