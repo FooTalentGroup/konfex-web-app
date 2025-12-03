@@ -4,7 +4,8 @@ import swaggerUi from "swagger-ui-express";
 
 import { authDocs } from "../modules/auth";
 import { materialDocs } from "../modules/material";
-import { productoDocs } from "../modules/producto";
+import { clienteDocs } from "@/modules/cliente/cliente.docs";
+import { productoDocs } from "@/modules/producto";
 
 const options = {
   definition: {
@@ -20,19 +21,22 @@ const options = {
         ...productoDocs.components.schemas,
         ...authDocs.components.schemas,
         ...materialDocs.components.schemas,
+        ...clienteDocs.components.schemas
       },
       parameters: {
         ...productoDocs.components.parameters,
         ...authDocs.components.parameters,
         ...materialDocs.components.parameters,
-      },
+        ...clienteDocs.components.parameters
+      }
     },
 
     paths: {
       ...productoDocs.paths,
       ...authDocs.paths,
       ...materialDocs.paths,
-    },
+      ...clienteDocs.paths
+    }
   },
 
   // NO vas a usar decoradores ni comentarios → vacío
