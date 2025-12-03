@@ -75,12 +75,31 @@ export const fabricSchema = z.object({
 
 export type FabricFormData = z.infer<typeof fabricSchema>
 
-// export interface FabricFormData {
-//     category: string
-//     material: string
-//     size: string
-//     weight: string
-//     colors: string
-//     supplier: string
-//     totalPrice: string
-// }
+export interface MaterialAPIRequest {
+    nombre: string
+    url_imagen: string
+    categoria: string
+    unidadMedida: string
+    ancho: number
+    peso: number
+    colores: string[]
+    proveedor: string
+    precio: number
+    stock: number
+}
+
+export interface MaterialAPIResponse {
+    id: string
+    nombre: string
+    url_imagen: string
+    categoria: string
+    unidadMedida: string
+    ancho: number
+    peso: number
+    colores: string[]
+    proveedor: string
+    precio: number
+    stock: number
+    createdAt?: string
+    updatedAt?: string
+}
