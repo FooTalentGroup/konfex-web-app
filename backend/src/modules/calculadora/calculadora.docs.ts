@@ -18,6 +18,20 @@ export const calculadoraDocs = {
               },
             },
           },
+          500: {
+            description: "Error interno del servidor",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+                example: {
+                  success: false,
+                  statusCode: 500,
+                  message: "Error al obtener las calculadoras",
+                  errors: null,
+                },
+              },
+            },
+          },
         },
       },
 
@@ -82,6 +96,21 @@ export const calculadoraDocs = {
                   success: false,
                   statusCode: 404,
                   message: "Cliente no encontrado",
+                  errors: null,
+                },
+              },
+            },
+          },
+          500: {
+            description: "Error interno del servidor",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+                example: {
+                  success: false,
+                  statusCode: 500,
+                  message: "Error al crear la calculadora",
+                  errors: null,
                 },
               },
             },
@@ -117,6 +146,21 @@ export const calculadoraDocs = {
                   success: false,
                   statusCode: 404,
                   message: "Calculadora no encontrada",
+                  errors: null,
+                },
+              },
+            },
+          },
+          500: {
+            description: "Error interno del servidor",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+                example: {
+                  success: false,
+                  statusCode: 500,
+                  message: "Error al obtener la calculadora",
+                  errors: null,
                 },
               },
             },
@@ -165,6 +209,7 @@ export const calculadoraDocs = {
                   success: false,
                   statusCode: 404,
                   message: "Calculadora no encontrada",
+                  errors: null,
                 },
               },
             },
@@ -174,6 +219,29 @@ export const calculadoraDocs = {
             content: {
               "application/json": {
                 schema: { $ref: "#/components/schemas/ErrorResponse" },
+                example: {
+                  success: false,
+                  statusCode: 400,
+                  message: "Error de validación",
+                  errors: [
+                    "precioPrendaNeto debe ser un número no negativo",
+                    "porcentaje debe estar entre 0 y 100",
+                  ],
+                },
+              },
+            },
+          },
+          500: {
+            description: "Error interno del servidor",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+                example: {
+                  success: false,
+                  statusCode: 500,
+                  message: "Error al actualizar la calculadora",
+                  errors: null,
+                },
               },
             },
           },
@@ -195,6 +263,26 @@ export const calculadoraDocs = {
             content: {
               "application/json": {
                 schema: { $ref: "#/components/schemas/ErrorResponse" },
+                example: {
+                  success: false,
+                  statusCode: 404,
+                  message: "Calculadora no encontrada",
+                  errors: null,
+                },
+              },
+            },
+          },
+          500: {
+            description: "Error interno del servidor",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+                example: {
+                  success: false,
+                  statusCode: 500,
+                  message: "Error al eliminar la calculadora",
+                  errors: null,
+                },
               },
             },
           },
