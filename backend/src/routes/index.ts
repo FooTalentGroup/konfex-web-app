@@ -1,7 +1,6 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import authRoutes from "@modules/auth/auth.routes";
 import presupuestoRoutes from "@modules/presupuesto/presupuesto.routes";
-import { sendSuccess } from "@/common/responses";
 import { clienteRoutes } from "@/modules/cliente";
 import { materialRoutes } from "@/modules/material/material.routes";
 import { productoRoutes } from "@/modules/producto/producto.routes";
@@ -10,35 +9,12 @@ import { gastosNegocioRoutes } from "@/modules/gastos-negocio";
 
 const router: Router = Router();
 
-router.get("/health", (_req: Request, res: Response) => {
-  sendSuccess(res, {
-    message: "Servidor operativo",
-    data: {
-      status: "OK",
-      timestamp: new Date().toISOString(),
-    },
-  });
-});
-
-// Auth
 router.use("/auth", authRoutes);
-
-// Presupuesto
 router.use("/presupuestos", presupuestoRoutes);
-
-// Clientes
 router.use("/clientes", clienteRoutes);
-
-// Materiales
 router.use("/materiales", materialRoutes);
-
-// Productos
 router.use("/productos", productoRoutes);
-
-// Gastos de Negocio
 router.use("/gastos-negocio", gastosNegocioRoutes);
-
-// Telegram
 router.use("/telegram", telegramRoutes);
 
 export default router;
