@@ -240,7 +240,6 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   active?: Prisma.BoolFilter<"User"> | boolean
-  telegramMessages?: Prisma.TelegramMessageListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -252,7 +251,6 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   active?: Prisma.SortOrder
-  telegramMessages?: Prisma.TelegramMessageOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -267,7 +265,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   active?: Prisma.BoolFilter<"User"> | boolean
-  telegramMessages?: Prisma.TelegramMessageListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -308,7 +305,6 @@ export type UserCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   active?: boolean
-  telegramMessages?: Prisma.TelegramMessageCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -320,7 +316,6 @@ export type UserUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   active?: boolean
-  telegramMessages?: Prisma.TelegramMessageUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -331,7 +326,6 @@ export type UserUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  telegramMessages?: Prisma.TelegramMessageUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -343,7 +337,6 @@ export type UserUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  telegramMessages?: Prisma.TelegramMessageUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -419,11 +412,6 @@ export type UserSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
 }
 
-export type UserNullableScalarRelationFilter = {
-  is?: Prisma.UserWhereInput | null
-  isNot?: Prisma.UserWhereInput | null
-}
-
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -452,109 +440,6 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type UserCreateNestedOneWithoutTelegramMessagesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutTelegramMessagesInput, Prisma.UserUncheckedCreateWithoutTelegramMessagesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTelegramMessagesInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneWithoutTelegramMessagesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutTelegramMessagesInput, Prisma.UserUncheckedCreateWithoutTelegramMessagesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTelegramMessagesInput
-  upsert?: Prisma.UserUpsertWithoutTelegramMessagesInput
-  disconnect?: Prisma.UserWhereInput | boolean
-  delete?: Prisma.UserWhereInput | boolean
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTelegramMessagesInput, Prisma.UserUpdateWithoutTelegramMessagesInput>, Prisma.UserUncheckedUpdateWithoutTelegramMessagesInput>
-}
-
-export type UserCreateWithoutTelegramMessagesInput = {
-  email: string
-  name?: string | null
-  password: string
-  role?: $Enums.Role
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  active?: boolean
-}
-
-export type UserUncheckedCreateWithoutTelegramMessagesInput = {
-  id?: number
-  email: string
-  name?: string | null
-  password: string
-  role?: $Enums.Role
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  active?: boolean
-}
-
-export type UserCreateOrConnectWithoutTelegramMessagesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutTelegramMessagesInput, Prisma.UserUncheckedCreateWithoutTelegramMessagesInput>
-}
-
-export type UserUpsertWithoutTelegramMessagesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutTelegramMessagesInput, Prisma.UserUncheckedUpdateWithoutTelegramMessagesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutTelegramMessagesInput, Prisma.UserUncheckedCreateWithoutTelegramMessagesInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutTelegramMessagesInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutTelegramMessagesInput, Prisma.UserUncheckedUpdateWithoutTelegramMessagesInput>
-}
-
-export type UserUpdateWithoutTelegramMessagesInput = {
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-}
-
-export type UserUncheckedUpdateWithoutTelegramMessagesInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-}
-
-
-/**
- * Count Type UserCountOutputType
- */
-
-export type UserCountOutputType = {
-  telegramMessages: number
-}
-
-export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  telegramMessages?: boolean | UserCountOutputTypeCountTelegramMessagesArgs
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the UserCountOutputType
-   */
-  select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountTelegramMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.TelegramMessageWhereInput
-}
 
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -566,8 +451,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   active?: boolean
-  telegramMessages?: boolean | Prisma.User$telegramMessagesArgs<ExtArgs>
-  _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -604,18 +487,10 @@ export type UserSelectScalar = {
 }
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "role" | "createdAt" | "updatedAt" | "active", ExtArgs["result"]["user"]>
-export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  telegramMessages?: boolean | Prisma.User$telegramMessagesArgs<ExtArgs>
-  _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
-}
-export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
-  objects: {
-    telegramMessages: Prisma.$TelegramMessagePayload<ExtArgs>[]
-  }
+  objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     email: string
@@ -1019,7 +894,6 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  telegramMessages<T extends Prisma.User$telegramMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$telegramMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TelegramMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1074,10 +948,6 @@ export type UserFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  /**
    * Filter, which User to fetch.
    */
   where: Prisma.UserWhereUniqueInput
@@ -1096,10 +966,6 @@ export type UserFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  /**
    * Filter, which User to fetch.
    */
   where: Prisma.UserWhereUniqueInput
@@ -1117,10 +983,6 @@ export type UserFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the User
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null
   /**
    * Filter, which User to fetch.
    */
@@ -1170,10 +1032,6 @@ export type UserFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  /**
    * Filter, which User to fetch.
    */
   where?: Prisma.UserWhereInput
@@ -1222,10 +1080,6 @@ export type UserFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  /**
    * Filter, which Users to fetch.
    */
   where?: Prisma.UserWhereInput
@@ -1268,10 +1122,6 @@ export type UserCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    * Omit specific fields from the User
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null
   /**
    * The data needed to create a User.
    */
@@ -1320,10 +1170,6 @@ export type UserUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    * Omit specific fields from the User
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null
   /**
    * The data needed to update a User.
    */
@@ -1391,10 +1237,6 @@ export type UserUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  /**
    * The filter to search for the User to update in case it exists.
    */
   where: Prisma.UserWhereUniqueInput
@@ -1421,10 +1263,6 @@ export type UserDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  /**
    * Filter which User to delete.
    */
   where: Prisma.UserWhereUniqueInput
@@ -1445,30 +1283,6 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * User.telegramMessages
- */
-export type User$telegramMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the TelegramMessage
-   */
-  select?: Prisma.TelegramMessageSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the TelegramMessage
-   */
-  omit?: Prisma.TelegramMessageOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.TelegramMessageInclude<ExtArgs> | null
-  where?: Prisma.TelegramMessageWhereInput
-  orderBy?: Prisma.TelegramMessageOrderByWithRelationInput | Prisma.TelegramMessageOrderByWithRelationInput[]
-  cursor?: Prisma.TelegramMessageWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.TelegramMessageScalarFieldEnum | Prisma.TelegramMessageScalarFieldEnum[]
-}
-
-/**
  * User without action
  */
 export type UserDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1480,8 +1294,4 @@ export type UserDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    * Omit specific fields from the User
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null
 }
