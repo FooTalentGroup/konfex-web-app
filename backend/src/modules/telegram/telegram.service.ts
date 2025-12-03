@@ -1,5 +1,7 @@
-import {io} from "@/config/socket";
-import {telegramMessageRepository} from "./telegram.repository";
+import { io } from "@/config/socket";
+import { telegramMessageRepository } from "./telegram.repository";
+import { uploadFile } from "@/utils/uploadFile";
+import { TelegramMessage } from "./telegram.types";
 
 const TELEGRAM_API = (token: string) => `https://api.telegram.org/bot${token}`;
 
@@ -10,7 +12,7 @@ export const handleIncomingUpdate = async (update: any) => {
   const from = update.message.from || {};
   const firstName = from.first_name || "Nuevo";
   const lastName = from.last_name || "Cliente";
-  const username = from.username || null;
+  const username = from.username || undefined;
   const timestamp = new Date().toISOString();
 
   let payload: any = {
@@ -22,22 +24,20 @@ export const handleIncomingUpdate = async (update: any) => {
     timestamp,
   };
 
-  // informacion de mensajes
+  // Información de mensajes
   if (update.message.text) {
     payload.type = "text";
     payload.text = update.message.text;
   }
-
-  // Informacion de fotos
+  // Fotos
   else if (update.message.photo) {
-    const photo = update.message.photo.pop(); // última = mayor calidad
+    const photo = update.message.photo.pop(); // mayor calidad
     payload.type = "photo";
     payload.fileId = photo.file_id;
     payload.fileUniqueId = photo.file_unique_id;
     payload.fileSize = photo.file_size;
   }
-
-  // informacion de documentos
+  // Documentos
   else if (update.message.document) {
     const doc = update.message.document;
     payload.type = "document";
@@ -47,8 +47,7 @@ export const handleIncomingUpdate = async (update: any) => {
     payload.mimeType = doc.mime_type;
     payload.text = doc.file_name || "Documento recibido";
   }
-
-  // informacion de video
+  // Videos
   else if (update.message.video) {
     const v = update.message.video;
     payload.type = "video";
@@ -57,8 +56,7 @@ export const handleIncomingUpdate = async (update: any) => {
     payload.fileSize = v.file_size;
     payload.mimeType = v.mime_type;
   }
-
-  // informacion de audio
+  // Audio
   else if (update.message.audio) {
     const a = update.message.audio;
     payload.type = "audio";
@@ -67,8 +65,7 @@ export const handleIncomingUpdate = async (update: any) => {
     payload.fileSize = a.file_size;
     payload.mimeType = a.mime_type;
   }
-
-  // informacion de notas de voz
+  // Notas de voz
   else if (update.message.voice) {
     const v = update.message.voice;
     payload.type = "voice";
@@ -76,50 +73,92 @@ export const handleIncomingUpdate = async (update: any) => {
     payload.fileUniqueId = v.file_unique_id;
     payload.fileSize = v.file_size;
     payload.mimeType = v.mime_type;
-  }
-
+  } 
   else {
     console.log("Mensaje no manejado", update.message);
     return;
   }
 
-  // Si es archivo → obtener file_path y URL de descarga
+  // Archivos y descargar y subir a Cloudinary
   if (payload.fileId) {
-    const token = process.env.TELEGRAM_TOKEN!;
-    const res = await fetch(
-      `https://api.telegram.org/bot${token}/getFile?file_id=${payload.fileId}`
-    );
+    const token = process.env.TELEGRAM_BOT_TOKEN!;
+    const res = await fetch(`${TELEGRAM_API(token)}/getFile?file_id=${payload.fileId}`);
     const data = await res.json() as any;
-    console.log("url",data)
 
     if (data.ok) {
-      payload.filePath = data.result.file_path;
-      payload.fileUrl = `https://api.telegram.org/file/bot${token}/${data.result.file_path}`;
+      const filePath = data.result.file_path;
+      const fileRes = await fetch(`${TELEGRAM_API(token)}/file/bot${token}/${filePath}`);
+      const buffer = Buffer.from(await fileRes.arrayBuffer());
+
+      const extension = filePath.split(".").pop() || "file";
+      const cloudResult = await uploadFile(buffer, "telegram_files", `chat_${chatId}_${Date.now()}.${extension}`);
+      payload.publicUrl = cloudResult.secure_url;
     }
   }
 
   // Guardar en BD
-  console.log(payload)
   await telegramMessageRepository.save(payload);
 
-  // Emitir al frontend en tiempo real
-  io.emit("telegram_message", payload);
+  // Emitir al frontend
+  const msgDataForSocket = {
+    chatId: payload.chatId,
+    text: payload.text || payload.fileName || "Archivo recibido",
+    timestamp: payload.timestamp,
+    type: payload.type,
+    fileUrl: payload.publicUrl,
+    firstName: payload.firstName,
+    lastName: payload.lastName,
+    username: payload.username || undefined,
+  };
+
+  io.emit("telegram_message", msgDataForSocket);
 };
 
+// ----------------------------
 
-export const sendTextMessage = async (chatId: number | string, text: string, firstName: string, lastName: string, username: string) => {
+export const sendMessageToTelegram = async (params: {
+  chatId: number | string;
+  text?: string;
+  type?: "text" | "photo" | "document" | "video" | "audio" | "voice";
+  fileUrl?: string;
+  fileName?: string;
+  firstName?: string;
+  lastName?: string;
+  username?: string | null;
+}) => {
   const token = process.env.TELEGRAM_BOT_TOKEN!;
-  const url = `${TELEGRAM_API(token)}/sendMessage`;
+  const { chatId, text, type = "text", fileUrl, fileName, firstName, lastName, username } = params;
+
+  let url = `${TELEGRAM_API(token)}/sendMessage`;
+  const body: any = { chat_id: chatId };
+
+  if (type === "text") body.text = text;
+  else if (type === "photo") {
+    url = `${TELEGRAM_API(token)}/sendPhoto`;
+    body.photo = fileUrl;
+    if (text) body.caption = text;
+  } else if (type === "document") {
+    url = `${TELEGRAM_API(token)}/sendDocument`;
+    body.document = fileUrl;
+    if (text) body.caption = text;
+  } else if (type === "video") {
+    url = `${TELEGRAM_API(token)}/sendVideo`;
+    body.video = fileUrl;
+    if (text) body.caption = text;
+  } else if (type === "audio") {
+    url = `${TELEGRAM_API(token)}/sendAudio`;
+    body.audio = fileUrl;
+    if (text) body.caption = text;
+  } else if (type === "voice") {
+    url = `${TELEGRAM_API(token)}/sendVoice`;
+    body.voice = fileUrl;
+    if (text) body.caption = text;
+  }
 
   const response = await fetch(url, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text,
-    }),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {
@@ -127,29 +166,33 @@ export const sendTextMessage = async (chatId: number | string, text: string, fir
     throw new Error(`Telegram API error: ${error}`);
   }
 
-    const msgData = {
-        chatId,
-        text,
-        source: "konfex",
-        firstName,
-        lastName,
-        username,
-        timestamp: new Date().toISOString(),
-    };
+  // Guardar en BD
+  const msgData: TelegramMessage = {
+    chatId,
+    text: text || fileName || "Archivo enviado",
+    type,
+    fileUrl,
+    timestamp: new Date().toISOString(),
+    firstName,
+    lastName,
+    username: username || undefined,
+  };
+  await telegramMessageRepository.save(msgData);
 
-    console.log("Mensaje enviado al bot:", msgData);
-    await telegramMessageRepository.save(msgData);
+  // Emitir al frontend
+  io.emit("telegram_message", msgData);
 
   return response.json();
 };
 
+// ----------------------------
+
 export const associateUser = async (chatId: string | number, clienteId: number) => {
   return telegramMessageRepository.associateUserToChat(chatId, clienteId);
-}
+};
 
 export const getChatMessages = async (chatId: string | number) => {
   const messages = await telegramMessageRepository.findByChatId(chatId);
-  
   return messages.map(message => ({
     id: message.id,
     chatId: message.chatId,
@@ -165,12 +208,11 @@ export const getChatMessages = async (chatId: string | number) => {
     username: message.username,
     timestamp: message.timestamp,
   }));
-}
+};
 
 export const getChatsList = async () => {
   const allMessages = await telegramMessageRepository.findAll();
 
-  // Función para mostrar un mensaje representativo
   const getLastMessageText = (message: typeof allMessages[number]): string => {
     if (message.text) return message.text;
     switch (message.type) {
@@ -183,7 +225,6 @@ export const getChatsList = async () => {
     }
   };
 
-  // Agrupar por chatId, tomando el primer mensaje (más reciente) de cada chat
   const chatsMap = new Map<string, {
     chatId: string;
     firstName?: string | null;
@@ -201,7 +242,7 @@ export const getChatsList = async () => {
         firstName: message.firstName,
         lastName: message.lastName,
         username: message.username,
-        lastMessage: getLastMessageText(message), // aquí usamos la función
+        lastMessage: getLastMessageText(message),
         lastMessageSource: message.source,
         lastTimestamp: message.timestamp,
       });
@@ -228,11 +269,10 @@ export const getChatsList = async () => {
     return {
       chatId: chat.chatId,
       name,
-      lastMessage: chat.lastMessage, // siempre es string
+      lastMessage: chat.lastMessage,
       lastMessageSource: chat.lastMessageSource,
       timestamp: chat.lastTimestamp,
       hasBudget: false,
     };
   });
 };
-

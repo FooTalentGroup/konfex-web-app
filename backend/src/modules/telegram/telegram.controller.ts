@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { handleIncomingUpdate, getChatsList, getChatMessages } from "./telegram.service";
+import { handleIncomingUpdate, getChatsList, getChatMessages, sendMessageToTelegram } from "./telegram.service";
 import { controllerHandler } from "@/common/handlers";
 
 export const telegramWebhookController = async (req: Request, res: Response) => {
@@ -39,3 +39,28 @@ export const getChatMessagesController = controllerHandler(
   "Mensajes del chat obtenidos exitosamente",
   200
 );
+
+export const sendTelegramMessageController = async (req: Request, res: Response) => {
+  try {
+    const { chatId, text, type, fileUrl, fileName, firstName, lastName, username } = req.body;
+
+    if (!chatId || (!text && !fileUrl)) {
+      return res.status(400).json({ error: "chatId y text o fileUrl son requeridos" });
+    }
+
+    const result = await sendMessageToTelegram({
+      chatId,
+      text,
+      type,
+      fileUrl,
+      fileName,
+      firstName: firstName || "Konfex",
+      lastName: lastName || "Usuario",
+      username: username || null,
+    });
+
+    return res.json({ ok: true, message: "Mensaje enviado", telegramResponse: result });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
