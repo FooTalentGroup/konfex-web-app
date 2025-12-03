@@ -85,11 +85,12 @@ export const handleIncomingUpdate = async (update: any) => {
 
   // Si es archivo → obtener file_path y URL de descarga
   if (payload.fileId) {
-    const token = process.env.TELEGRAM_TOKENy;
+    const token = process.env.TELEGRAM_TOKEN;
     const res = await fetch(
       `https://api.telegram.org/bot${token}/getFile?file_id=${payload.fileId}`
     );
     const data = await res.json() as any;
+    console.log("url",data)
 
     if (data.ok) {
       payload.filePath = data.result.file_path;
