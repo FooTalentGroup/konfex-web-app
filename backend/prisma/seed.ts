@@ -5,6 +5,7 @@ import {
   PrismaClient,
   Role,
   EstadoPresupuesto,
+  EstadoPedido,
 } from "../generated/prisma/client";
 import bcrypt from "bcrypt";
 
@@ -254,9 +255,45 @@ async function main() {
     });
   }
 
-  // Obtener clientes y productos creados para las relaciones
+  // Mano de Obra
+  const manoDeObra = [
+    {
+      nombre: "Costurera Principal",
+      costoHora: 15000.0,
+    },
+    {
+      nombre: "Diseñador de Patrones",
+      costoHora: 20000.0,
+    },
+    {
+      nombre: "Cortador",
+      costoHora: 12000.0,
+    },
+    {
+      nombre: "Terminador",
+      costoHora: 10000.0,
+    },
+  ];
+
+  for (const mano of manoDeObra) {
+    try {
+      await prisma.manoDeObra.upsert({
+        where: { nombre: mano.nombre },
+        update: {},
+        create: mano,
+      });
+    } catch (error: any) {
+      if (error.code !== "P2002") {
+        throw error;
+      }
+    }
+  }
+
+  // Obtener clientes, productos y materiales creados para las relaciones
   const clientesCreados = await prisma.cliente.findMany();
   const productosCreados = await prisma.producto.findMany();
+  const materialesCreados = await prisma.material.findMany();
+  const manoDeObraCreada = await prisma.manoDeObra.findMany();
 
   // Presupuestos
   const presupuestos = [
