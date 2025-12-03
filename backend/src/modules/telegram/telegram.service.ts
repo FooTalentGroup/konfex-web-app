@@ -16,7 +16,12 @@ export const handleIncomingUpdate = async (update: any) => {
   const username = from.username || undefined;
   const timestamp = new Date().toISOString();
 
-  console.log(update.mensaje )
+  console.log(update.message )
+  console.log(chatId )
+  console.log(from )
+  console.log(firstName )
+  console.log(lastName )
+  console.log(timestamp )
 
   let payload: any = {
     chatId,
@@ -29,18 +34,18 @@ export const handleIncomingUpdate = async (update: any) => {
 
 
   // Determinar tipo de mensaje
-  if (update.message.text) {
+  if (update.message && update.message.text) {
     console.log("el mensaje es un texto")
     payload.type = "text";
     payload.text = update.message.text;
-  } else if (update.message.photo) {
+  } else if (update.message && update.message.photo) {
     console.log("el mensaje es una foto")
     const photo = update.message.photo.pop(); // mayor calidad
     payload.type = "photo";
     payload.fileId = photo.file_id;
     payload.fileUniqueId = photo.file_unique_id;
     payload.fileSize = photo.file_size;
-  } else if (update.message.document) {
+  } else if (update.message && update.message.document) {
     console.log("el mensaje es un documento")
     const doc = update.message.document;
     payload.type = "document";
@@ -49,7 +54,7 @@ export const handleIncomingUpdate = async (update: any) => {
     payload.fileSize = doc.file_size;
     payload.mimeType = doc.mime_type;
     payload.text = doc.file_name || "Documento recibido";
-  } else if (update.message.video) {
+  } else if (update.message && update.message.video) {
     console.log("el mensaje es un video")
     const v = update.message.video;
     payload.type = "video";
@@ -57,7 +62,7 @@ export const handleIncomingUpdate = async (update: any) => {
     payload.fileUniqueId = v.file_unique_id;
     payload.fileSize = v.file_size;
     payload.mimeType = v.mime_type;
-  } else if (update.message.audio) {
+  } else if (update.message && update.message.audio) {
     console.log("el mensaje es un audio")
     const a = update.message.audio;
     payload.type = "audio";
@@ -65,7 +70,7 @@ export const handleIncomingUpdate = async (update: any) => {
     payload.fileUniqueId = a.file_unique_id;
     payload.fileSize = a.file_size;
     payload.mimeType = a.mime_type;
-  } else if (update.message.voice) {
+  } else if (update.message && update.message.voice) {
     console.log("el mensaje es una nota de voz")
     const v = update.message.voice;
     payload.type = "voice";
