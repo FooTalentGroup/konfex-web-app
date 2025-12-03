@@ -14,7 +14,9 @@ export const handleIncomingUpdate = async (update: any) => {
   const firstName = from.first_name || "Nuevo";
   const lastName = from.last_name || "Cliente";
   const username = from.username || undefined;
-  const timestamp = new Date().toISOString(); // siempre string
+  const timestamp = new Date().toISOString();
+
+  console.log(update.mensaje )
 
   let payload: any = {
     chatId,
@@ -28,15 +30,18 @@ export const handleIncomingUpdate = async (update: any) => {
 
   // Determinar tipo de mensaje
   if (update.message.text) {
+    console.log("el mensaje es un texto")
     payload.type = "text";
     payload.text = update.message.text;
   } else if (update.message.photo) {
+    console.log("el mensaje es una foto")
     const photo = update.message.photo.pop(); // mayor calidad
     payload.type = "photo";
     payload.fileId = photo.file_id;
     payload.fileUniqueId = photo.file_unique_id;
     payload.fileSize = photo.file_size;
   } else if (update.message.document) {
+    console.log("el mensaje es un documento")
     const doc = update.message.document;
     payload.type = "document";
     payload.fileId = doc.file_id;
@@ -45,6 +50,7 @@ export const handleIncomingUpdate = async (update: any) => {
     payload.mimeType = doc.mime_type;
     payload.text = doc.file_name || "Documento recibido";
   } else if (update.message.video) {
+    console.log("el mensaje es un video")
     const v = update.message.video;
     payload.type = "video";
     payload.fileId = v.file_id;
@@ -52,6 +58,7 @@ export const handleIncomingUpdate = async (update: any) => {
     payload.fileSize = v.file_size;
     payload.mimeType = v.mime_type;
   } else if (update.message.audio) {
+    console.log("el mensaje es un audio")
     const a = update.message.audio;
     payload.type = "audio";
     payload.fileId = a.file_id;
@@ -59,6 +66,7 @@ export const handleIncomingUpdate = async (update: any) => {
     payload.fileSize = a.file_size;
     payload.mimeType = a.mime_type;
   } else if (update.message.voice) {
+    console.log("el mensaje es una nota de voz")
     const v = update.message.voice;
     payload.type = "voice";
     payload.fileId = v.file_id;
@@ -72,18 +80,21 @@ export const handleIncomingUpdate = async (update: any) => {
 
   // Subir archivos a Cloudinary si existe fileId
   if (payload.fileId) {
+    console.log("existe payload.fileId", payload.fileId)
     const token = process.env.TELEGRAM_BOT_TOKEN!;
     const res = await fetch(`${TELEGRAM_API(token)}/getFile?file_id=${payload.fileId}`);
     const data = await res.json() as any;
 
     if (data.ok) {
+    console.log("existe payload.fileId---data ok")
+
       const filePath = data.result.file_path;
       const fileRes = await fetch(`${TELEGRAM_API(token)}/file/bot${token}/${filePath}`);
       const buffer = Buffer.from(await fileRes.arrayBuffer());
       const extension = filePath.split(".").pop() || "file";
 
       const cloudResult = await uploadFile(buffer, "telegram_files", `chat_${chatId}_${Date.now()}.${extension}`);
-      payload.fileUrl = cloudResult.secure_url; // siempre fileUrl
+      payload.fileUrl = cloudResult.secure_url;
     }
   }
 
