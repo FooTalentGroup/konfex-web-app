@@ -22,7 +22,7 @@ export default function BudgetExtras() {
   const [name, setName] = useState("");
   const [qty, setQty] = useState(1);
   const [amount, setAmount] = useState("");
-  
+
   // Obtener shippingFee del formulario en lugar de estado local
   const shippingFee = useWatch({ control, name: "shippingFee" }) || "";
   const setShippingFee = (value: string) => {
@@ -40,9 +40,10 @@ export default function BudgetExtras() {
   };
 
   const extras = watch("extras") || [];
-  const shippingFeeValue = typeof shippingFee === 'number' 
-    ? shippingFee 
-    : Math.max(0, parseFloat(String(shippingFee || "0")) || 0);
+  const shippingFeeValue =
+    typeof shippingFee === "number"
+      ? shippingFee
+      : Math.max(0, parseFloat(String(shippingFee || "0")) || 0);
   const totalExtras = extras.reduce(
     (sum: number, item: { quantity: number; amount: number }) => {
       const itemAmount = Math.max(0, item.amount || 0);
@@ -75,7 +76,9 @@ export default function BudgetExtras() {
         <div className="relative group">
           <input
             type="number"
-            value={shippingFee}
+            value={
+              typeof shippingFee === "number" ? shippingFee : shippingFee || ""
+            }
             onChange={(e) => {
               const inputValue = e.target.value;
               // Permitir campo vacío o solo el signo menos para poder borrar

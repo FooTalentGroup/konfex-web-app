@@ -30,9 +30,12 @@ interface BudgetFormData {
 
 /**
  * Carga los datos de un presupuesto del backend al formato del formulario del frontend
+ * @param presupuesto - El presupuesto del backend
+ * @param gastosNegocioList - Lista de gastos de negocio para buscar el ID por porcentaje (opcional)
  */
 export function loadPresupuestoToForm(
-  presupuesto: PresupuestoResponseDto
+  presupuesto: PresupuestoResponseDto,
+  gastosNegocioList?: Array<{ id: number; porcentaje: number }>
 ): BudgetFormData {
   // Convertir fecha de ISO a formato DD/MM/YYYY
   const formatDate = (dateString: string | null): string => {
@@ -114,7 +117,10 @@ export function loadPresupuestoToForm(
     clientPhone: undefined, // No está disponible en el response
     deliveryDate: formatDate(presupuesto.fechaVencimiento),
     desiredProfit: presupuesto.margenGananciaPorcentaje,
-    gastosNegocioId: undefined, // Necesitaríamos el ID, pero solo tenemos el porcentaje
+    // Buscar gastosNegocioId basándose en el porcentaje si tenemos la lista
+    gastosNegocioId: gastosNegocioList 
+      ? gastosNegocioList.find(g => Math.abs(g.porcentaje - presupuesto.gastosIndirectosPorcentaje) < 0.01)?.id
+      : undefined,
     clienteId: presupuesto.clienteId || undefined,
     materials: Array.from(materialesMap.values()),
     extras,

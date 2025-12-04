@@ -9,11 +9,19 @@ import { useGastosNegocio } from '@/hooks/useGastosNegocio';
 import { mapFormDataToBackend } from '@/utils/presupuestoMapper';
 import { useToast } from '@/contexts/ToastContext'; 
 
-export default function BudgetSummaryHeader() {
+interface BudgetSummaryHeaderProps {
+  presupuestoId?: number;
+  isEditMode?: boolean;
+}
+
+export default function BudgetSummaryHeader({ 
+  presupuestoId, 
+  isEditMode = false 
+}: BudgetSummaryHeaderProps = {}) {
   const { control, getValues, watch } = useFormContext(); 
   const router = useRouter();
   const { gastosNegocio } = useGastosNegocio();
-  const { showSuccess, showError, showWarning } = useToast();
+  const { showSuccess, showError, showWarning, showInfo } = useToast();
   
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -132,21 +140,38 @@ export default function BudgetSummaryHeader() {
         selectedGastos
       );
 
-      // Crear presupuesto en el backend
-      showInfo("Creando presupuesto...");
-      const createdPresupuesto = await presupuestoService.create(payload);
+      // Crear o actualizar presupuesto en el backend
+      if (isEditMode && presupuestoId) {
+        showInfo("Actualizando presupuesto...");
+        const updatedPresupuesto = await presupuestoService.update(presupuestoId, payload);
 
-      console.log("✅ Presupuesto creado exitosamente:", createdPresupuesto);
-      
-      showSuccess(
-        `Presupuesto #${createdPresupuesto.numeroPresupuesto} creado exitosamente`,
-        4000
-      );
-      
-      // Redirigir a presupuestos después de un breve delay para que se vea el toast
-      setTimeout(() => {
-        router.push('/presupuestos');
-      }, 1500);
+        console.log("✅ Presupuesto actualizado exitosamente:", updatedPresupuesto);
+        
+        showSuccess(
+          `Presupuesto #${updatedPresupuesto.numeroPresupuesto} actualizado exitosamente`,
+          4000
+        );
+        
+        // Redirigir a presupuestos después de un breve delay
+        setTimeout(() => {
+          router.push('/presupuestos');
+        }, 1500);
+      } else {
+        showInfo("Creando presupuesto...");
+        const createdPresupuesto = await presupuestoService.create(payload);
+
+        console.log("✅ Presupuesto creado exitosamente:", createdPresupuesto);
+        
+        showSuccess(
+          `Presupuesto #${createdPresupuesto.numeroPresupuesto} creado exitosamente`,
+          4000
+        );
+        
+        // Redirigir a presupuestos después de un breve delay para que se vea el toast
+        setTimeout(() => {
+          router.push('/presupuestos');
+        }, 1500);
+      }
       setIsMenuOpen(false);
     } catch (error) {
       console.error("Error al crear presupuesto:", error);
