@@ -23,7 +23,7 @@ export default function CalculatorTabs({
           onClick={() =>
             onTabChange(tab.id as "details" | "materials" | "extras")
           }
-          className={`flex-1 py-3 text-sm font-bold transition-colors relative ${
+          className={`cursor-pointer flex-1 py-3 text-sm font-bold transition-colors relative ${
             activeTab === tab.id
               ? "text-[#8B709D]"
               : "text-gray-400 hover:text-gray-600"
