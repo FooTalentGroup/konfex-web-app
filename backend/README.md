@@ -35,7 +35,7 @@ Backend API REST para el sistema de gestión de EOS Indumentaria, construido con
 - **Runtime**: Node.js
 - **Framework**: Express.js 5.1.0
 - **Lenguaje**: TypeScript 5.9.3
-- **ORM**: Prisma 6.19.0
+- **ORM**: Prisma 7.0.1
 - **Base de Datos**: PostgreSQL
 - **Autenticación**: JWT (jsonwebtoken 9.0.2)
 - **Validación**: Zod 4.1.12

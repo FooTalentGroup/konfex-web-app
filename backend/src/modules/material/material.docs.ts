@@ -134,8 +134,47 @@ export const materialDocs = {
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/SuccessResponseMateriales",
-                },
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    statusCode: { type: "number" },
+                    message: { type: "string" },
+                    data: {
+                      type: "object",
+                      properties: {
+                        data: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                            properties: {
+                              id: { type: "number" },
+                              nombre: { type: "string" },
+                              url_imagen: { type: "string", nullable: true },
+                              categoria: { type: "string" },
+                              unidadMedida: { type: "string" },
+                              ancho: { type: "number", nullable: true },
+                              peso: { type: "number", nullable: true },
+                              colores: { type: "array", items: { type: "string" } },
+                              proveedor: { type: "string" },
+                              precio: { type: "number" },
+                              createdAt: { type: "string", format: "date-time" },
+                              updatedAt: { type: "string", format: "date-time" }
+                            }
+                          }
+                        },
+                        pagination: {
+                          type: "object",
+                          properties: {
+                            page: { type: "number" },
+                            limit: { type: "number" },
+                            total: { type: "number" },
+                            totalPages: { type: "number" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               },
             },
           },
@@ -179,8 +218,30 @@ export const materialDocs = {
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/SuccessResponseMaterial",
-                },
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    statusCode: { type: "number" },
+                    message: { type: "string" },
+                    data: {
+                      type: "object",
+                      properties: {
+                        id: { type: "number" },
+                        nombre: { type: "string" },
+                        url_imagen: { type: "string", nullable: true },
+                        categoria: { type: "string" },
+                        unidadMedida: { type: "string" },
+                        ancho: { type: "number", nullable: true },
+                        peso: { type: "number", nullable: true },
+                        colores: { type: "array", items: { type: "string" } },
+                        proveedor: { type: "string" },
+                        precio: { type: "number" },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" }
+                      }
+                    }
+                  }
+                }
               },
             },
           },
@@ -214,8 +275,30 @@ export const materialDocs = {
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/SuccessResponseMaterial",
-                },
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    statusCode: { type: "number" },
+                    message: { type: "string" },
+                    data: {
+                      type: "object",
+                      properties: {
+                        id: { type: "number" },
+                        nombre: { type: "string" },
+                        url_imagen: { type: "string", nullable: true },
+                        categoria: { type: "string" },
+                        unidadMedida: { type: "string" },
+                        ancho: { type: "number", nullable: true },
+                        peso: { type: "number", nullable: true },
+                        colores: { type: "array", items: { type: "string" } },
+                        proveedor: { type: "string" },
+                        precio: { type: "number" },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" }
+                      }
+                    }
+                  }
+                }
               },
             },
           },
@@ -258,8 +341,30 @@ export const materialDocs = {
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/SuccessResponseMaterial",
-                },
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    statusCode: { type: "number" },
+                    message: { type: "string" },
+                    data: {
+                      type: "object",
+                      properties: {
+                        id: { type: "number" },
+                        nombre: { type: "string" },
+                        url_imagen: { type: "string", nullable: true },
+                        categoria: { type: "string" },
+                        unidadMedida: { type: "string" },
+                        ancho: { type: "number", nullable: true },
+                        peso: { type: "number", nullable: true },
+                        colores: { type: "array", items: { type: "string" } },
+                        proveedor: { type: "string" },
+                        precio: { type: "number" },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" }
+                      }
+                    }
+                  }
+                }
               },
             },
           },
@@ -443,159 +548,6 @@ export const materialDocs = {
         },
       },
 
-      Material: {
-        type: "object",
-        properties: {
-          id: {
-            type: "number",
-            description: "ID único del material",
-            example: 1,
-          },
-          nombre: {
-            type: "string",
-            description: "Nombre del material",
-            example: "Algodón Premium 240g",
-          },
-          url_imagen: {
-            type: "string",
-            nullable: true,
-            description: "URL de la imagen del material",
-            example: "https://example.com/images/algodon-premium.jpg",
-          },
-          categoria: {
-            type: "string",
-            description: "Categoría del material",
-            example: "Tela",
-          },
-          unidadMedida: {
-            type: "string",
-            description:
-              "Unidad de medida del material (metros, unidades, paquetes, kg, etc.)",
-            example: "metros",
-          },
-          ancho: {
-            type: "number",
-            format: "float",
-            nullable: true,
-            description:
-              "Ancho del material en centímetros (opcional, solo para telas)",
-            example: 150,
-          },
-          peso: {
-            type: "number",
-            format: "float",
-            nullable: true,
-            description: "Peso del material en kilogramos (opcional)",
-            example: 2.5,
-          },
-          colores: {
-            type: "array",
-            items: { type: "string" },
-            description: "Lista de colores disponibles",
-            example: ["Blanco", "Negro", "Azul", "Rojo"],
-          },
-          proveedor: {
-            type: "string",
-            description: "Nombre del proveedor",
-            example: "Textil S.A.",
-          },
-          precio: {
-            type: "number",
-            format: "float",
-            description: "Precio unitario del material",
-            example: 350.5,
-          },
-          createdAt: {
-            type: "string",
-            format: "date-time",
-            description: "Fecha de creación",
-            example: "2024-01-15T10:30:00Z",
-          },
-          updatedAt: {
-            type: "string",
-            format: "date-time",
-            description: "Fecha de última actualización",
-            example: "2024-01-15T10:30:00Z",
-          },
-        },
-      },
-
-      MaterialPagination: {
-        type: "object",
-        properties: {
-          page: {
-            type: "number",
-            description: "Página actual",
-            example: 1,
-          },
-          limit: {
-            type: "number",
-            description: "Resultados por página",
-            example: 10,
-          },
-          total: {
-            type: "number",
-            description: "Total de materiales",
-            example: 25,
-          },
-          totalPages: {
-            type: "number",
-            description: "Total de páginas",
-            example: 3,
-          },
-        },
-      },
-
-      SuccessResponseMaterial: {
-        type: "object",
-        properties: {
-          success: {
-            type: "boolean",
-            example: true,
-          },
-          statusCode: {
-            type: "number",
-            example: 200,
-          },
-          message: {
-            type: "string",
-            example: "Material obtenido correctamente",
-          },
-          data: {
-            $ref: "#/components/schemas/Material",
-          },
-        },
-      },
-
-      SuccessResponseMateriales: {
-        type: "object",
-        properties: {
-          success: {
-            type: "boolean",
-            example: true,
-          },
-          statusCode: {
-            type: "number",
-            example: 200,
-          },
-          message: {
-            type: "string",
-            example: "Materiales obtenidos correctamente",
-          },
-          data: {
-            type: "object",
-            properties: {
-              data: {
-                type: "array",
-                items: { $ref: "#/components/schemas/Material" },
-              },
-              pagination: {
-                $ref: "#/components/schemas/MaterialPagination",
-              },
-            },
-          },
-        },
-      },
 
       ErrorResponse: {
         type: "object",

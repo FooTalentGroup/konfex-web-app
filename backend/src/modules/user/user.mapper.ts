@@ -1,6 +1,8 @@
-import type { User } from "@prisma/client";
-
-import type { UserSignInResponseDto, UserSignUpResponseDto } from "../auth/auth.types";
+import { User } from "../../../generated/prisma/client";
+import {
+  UserSignInResponseDto,
+  UserSignUpResponseDto,
+} from "../auth/auth.types";
 
 export const toUserSignUpResponseDto = (user: User): UserSignUpResponseDto => ({
   id: user.id,
@@ -12,7 +14,7 @@ export const toUserSignUpResponseDto = (user: User): UserSignUpResponseDto => ({
 export const toUserSignInResponseDto = (
   user: User,
   token: string,
-  refreshToken: string
+  refreshToken: string,
 ): UserSignInResponseDto => {
   return {
     user: {
