@@ -60,7 +60,7 @@ interface UpdatePresupuestoData {
 
 export const PresupuestoRepository = {
   create: async ({ data }: CreatePresupuestoData) => {
-    const { detalles, adicionales, clienteId, ...presupuestoData } = data;
+    const { detalles, adicionales, clienteId, costosIndirectos, ...presupuestoData } = data;
     return prisma.presupuesto.create({
       data: {
         ...presupuestoData,
@@ -139,7 +139,7 @@ export const PresupuestoRepository = {
   },
 
   update: async (id: number, { data }: UpdatePresupuestoData) => {
-    const { detalles, adicionales, clienteId, ...presupuestoData } = data;
+    const { detalles, adicionales, clienteId, costosIndirectos, ...presupuestoData } = data;
 
     // Si hay detalles definidos (incluso si es array vacío), eliminamos los existentes
     if (detalles !== undefined) {

@@ -1,13 +1,16 @@
 import "dotenv/config";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
-import {
-  PrismaClient,
-  Role,
-  EstadoPresupuesto,
-  EstadoPedido,
-} from "../generated/prisma/client";
-import bcrypt from "bcrypt";
+import { PrismaClient, Role, EstadoPresupuesto, EstadoPedido } from "../generated/prisma/client";
+
+// Importar repositorios
+import { clienteRepository } from "../src/modules/cliente/cliente.repository";
+import { productoRepository } from "../src/modules/producto/producto.repository";
+import { materialRepository } from "../src/modules/material/material.repository";
+import { gastosNegocioRepository } from "../src/modules/gastos-negocio/gastos-negocio.repository";
+import { impuestoGeneralRepository } from "../src/modules/impuesto-general/impuesto-general.repository";
+import { UserRepository } from "../src/modules/user/user.repository";
+import { PresupuestoRepository } from "../src/modules/presupuesto/presupuesto.repository";
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
@@ -24,7 +27,7 @@ const prisma = new PrismaClient({
 async function main() {
   console.log("Seeding database...");
 
-  // Clientes
+  console.log("Seeding Clientes...");
   const clientes = [
     {
       nombre: "Claudia Muñoz",
@@ -82,20 +85,48 @@ async function main() {
       instagramUser: "@ana_torres",
       notas: "Primer pedido online",
     },
+    // Nuevos clientes
+    {
+      nombre: "Laura Fernández",
+      telefono: "987667788",
+      email: "laura.fernandez@example.com",
+      origen: "WhatsApp",
+      instagramUser: "@laura_f",
+      notas: "Cliente frecuente, prefiere productos ecológicos",
+    },
+    {
+      nombre: "Roberto Silva",
+      telefono: "987990011",
+      email: "roberto.silva@example.com",
+      origen: "Referido",
+      instagramUser: "@roberto_s",
+      notas: "Empresario, compras corporativas",
+    },
+    {
+      nombre: "Carmen Vega",
+      telefono: "987112233",
+      email: "carmen.vega@example.com",
+      origen: "Instagram",
+      instagramUser: "@carmen_v",
+      notas: "Influencer, colaboraciones especiales",
+    },
   ];
 
   for (const cliente of clientes) {
     try {
-      await prisma.cliente.create({ data: cliente });
+      const existe = await clienteRepository.findByName(cliente.nombre);
+      if (!existe) {
+        await clienteRepository.create(cliente);
+        console.log(`  ✓ Cliente creado: ${cliente.nombre}`);
+      }
     } catch (error: any) {
-      // Ignorar errores de duplicados
       if (error.code !== "P2002") {
         throw error;
       }
     }
   }
 
-  // Productos
+  console.log("Seeding Productos...");
   const productos = [
     {
       nombre: "Pantalón Casual",
@@ -111,17 +142,59 @@ async function main() {
       tallas: ["XS", "S", "M", "L"],
       colores: ["Rojo", "Negro", "Blanco"],
     },
+    // Nuevos productos
+    {
+      nombre: "Chaqueta Deportiva",
+      descripcion: "Chaqueta transpirable para actividades físicas",
+      activo: true,
+      tallas: ["S", "M", "L", "XL", "XXL"],
+      colores: ["Negro", "Gris", "Azul Marino", "Rojo"],
+    },
+    {
+      nombre: "Vestido Casual",
+      descripcion: "Vestido cómodo para uso diario",
+      activo: true,
+      tallas: ["XS", "S", "M", "L", "XL"],
+      colores: ["Negro", "Blanco", "Rosa", "Azul", "Verde"],
+    },
+    {
+      nombre: "Pantalón Formal",
+      descripcion: "Pantalón elegante para ocasiones formales",
+      activo: true,
+      tallas: ["S", "M", "L", "XL"],
+      colores: ["Negro", "Gris Oscuro", "Azul Marino", "Beige"],
+    },
+    {
+      nombre: "Blusa de Oficina",
+      descripcion: "Blusa profesional para ambiente laboral",
+      activo: true,
+      tallas: ["XS", "S", "M", "L", "XL"],
+      colores: ["Blanco", "Negro", "Azul Claro", "Beige", "Rosa"],
+    },
+    {
+      nombre: "Shorts Deportivos",
+      descripcion: "Shorts cómodos para ejercicio",
+      activo: true,
+      tallas: ["S", "M", "L", "XL"],
+      colores: ["Negro", "Gris", "Azul", "Rojo", "Verde"],
+    },
   ];
 
   for (const producto of productos) {
-    await prisma.producto.upsert({
-      where: { nombre: producto.nombre },
-      update: {},
-      create: producto,
-    });
+    try {
+      const existe = await productoRepository.findByName(producto.nombre);
+      if (!existe) {
+        await productoRepository.create(producto);
+        console.log(`  ✓ Producto creado: ${producto.nombre}`);
+      }
+    } catch (error: any) {
+      if (error.code !== "P2002") {
+        throw error;
+      }
+    }
   }
 
-  // Materiales
+  console.log("Seeding Materiales...");
   const materiales = [
     {
       nombre: "Algodón Premium 240g",
@@ -211,20 +284,91 @@ async function main() {
       proveedor: "Textil S.A.",
       precio: 320.0,
     },
+    // Nuevos materiales
+    {
+      nombre: "Seda Natural",
+      url_imagen: null,
+      categoria: "Tela",
+      unidadMedida: "metros",
+      ancho: 140,
+      peso: 0.8,
+      colores: ["Blanco", "Beige", "Rosa", "Azul Claro"],
+      proveedor: "Telas Premium",
+      precio: 850.0,
+    },
+    {
+      nombre: "Lino Orgánico",
+      url_imagen: null,
+      categoria: "Tela",
+      unidadMedida: "metros",
+      ancho: 150,
+      peso: 1.5,
+      colores: ["Natural", "Beige", "Blanco", "Gris Claro"],
+      proveedor: "Eco Textiles",
+      precio: 520.0,
+    },
+    {
+      nombre: "Hilo de Poliéster 100/3",
+      url_imagen: null,
+      categoria: "Hilo",
+      unidadMedida: "carretes",
+      ancho: null,
+      peso: null,
+      colores: ["Blanco", "Negro", "Azul", "Rojo", "Verde", "Amarillo", "Rosa"],
+      proveedor: "Hilos y Más",
+      precio: 38.5,
+    },
+    {
+      nombre: "Cremalleras Nylon #8",
+      url_imagen: null,
+      categoria: "Accesorio",
+      unidadMedida: "unidades",
+      ancho: null,
+      peso: null,
+      colores: ["Negro", "Blanco", "Azul", "Rojo", "Verde"],
+      proveedor: "Accesorios Textiles",
+      precio: 15.0,
+    },
+    {
+      nombre: "Forro de Seda",
+      url_imagen: null,
+      categoria: "Forro",
+      unidadMedida: "metros",
+      ancho: 140,
+      peso: 0.6,
+      colores: ["Blanco", "Beige", "Rosa", "Azul Claro"],
+      proveedor: "Telas Premium",
+      precio: 420.0,
+    },
+    {
+      nombre: "Entretela Fusible",
+      url_imagen: null,
+      categoria: "Forro",
+      unidadMedida: "metros",
+      ancho: 90,
+      peso: 0.3,
+      colores: ["Blanco"],
+      proveedor: "Forros Industriales",
+      precio: 180.0,
+    },
   ];
 
   for (const material of materiales) {
     try {
-      await prisma.material.create({ data: material as any });
+      const materialesExistentes = await materialRepository.findAll();
+      const existe = materialesExistentes.find((m) => m.nombre === material.nombre);
+      if (!existe) {
+        await materialRepository.create(material as any);
+        console.log(`Material creado: ${material.nombre}`);
+      }
     } catch (error: any) {
-      // Ignorar errores de duplicados
       if (error.code !== "P2002") {
         throw error;
       }
     }
   }
 
-  // Usuarios
+  console.log("Seeding Usuarios...");
   const users = [
     {
       email: "mia@mail.com",
@@ -238,24 +382,36 @@ async function main() {
       password: "testQA1!",
       role: Role.ADMIN,
     },
+    // Nuevos usuarios
+    {
+      email: "admin@konfex.com",
+      name: "Administrador",
+      password: "Admin123!",
+      role: Role.ADMIN,
+    },
+    {
+      email: "usuario@konfex.com",
+      name: "Usuario Regular",
+      password: "User123!",
+      role: Role.USER,
+    },
   ];
 
   for (const user of users) {
-    const hashedPassword = await bcrypt.hash(user.password, 10);
-
-    await prisma.user.upsert({
-      where: { email: user.email },
-      update: {},
-      create: {
-        email: user.email,
-        name: user.name,
-        password: hashedPassword,
-        role: user.role,
-      },
-    });
+    try {
+      const existe = await UserRepository.findByEmail(user.email);
+      if (!existe) {
+        await UserRepository.create(user);
+        console.log(`Usuario creado: ${user.email}`);
+      }
+    } catch (error: any) {
+      if (error.code !== "P2002") {
+        throw error;
+      }
+    }
   }
 
-  // Mano de Obra
+  console.log("Seeding Mano de Obra...");
   const manoDeObra = [
     {
       nombre: "Costurera Principal",
@@ -273,6 +429,19 @@ async function main() {
       nombre: "Terminador",
       costoHora: 10000.0,
     },
+    // Nuevos roles
+    {
+      nombre: "Bordador",
+      costoHora: 18000.0,
+    },
+    {
+      nombre: "Planchador",
+      costoHora: 8000.0,
+    },
+    {
+      nombre: "Control de Calidad",
+      costoHora: 16000.0,
+    },
   ];
 
   for (const mano of manoDeObra) {
@@ -282,6 +451,7 @@ async function main() {
       });
       if (!existe) {
         await prisma.manoDeObra.create({ data: mano });
+        console.log(`Mano de obra creada: ${mano.nombre}`);
       }
     } catch (error: any) {
       if (error.code !== "P2002") {
@@ -290,7 +460,6 @@ async function main() {
     }
   }
 
-  // Impuesto General (solo uno activo)
   console.log("Seeding ImpuestoGeneral...");
   const impuestoGeneral = {
     nombre: "IVA",
@@ -298,9 +467,9 @@ async function main() {
   };
 
   try {
-    const existe = await prisma.impuestoGeneral.findFirst();
+    const existe = await impuestoGeneralRepository.findFirst();
     if (!existe) {
-      await prisma.impuestoGeneral.create({ data: impuestoGeneral });
+      await impuestoGeneralRepository.create(impuestoGeneral);
       console.log("ImpuestoGeneral creado:", impuestoGeneral);
     } else {
       console.log("ImpuestoGeneral ya existe, omitiendo...");
@@ -311,7 +480,6 @@ async function main() {
     }
   }
 
-  // Gastos de Negocio
   console.log("Seeding GastosNegocio...");
   const gastosNegocio = [
     {
@@ -330,12 +498,25 @@ async function main() {
       nombre: "Gastos Fijos",
       porcentaje: 8,
     },
+    // Nuevos gastos
+    {
+      nombre: "Gastos de Marketing",
+      porcentaje: 5,
+    },
+    {
+      nombre: "Gastos de Almacén",
+      porcentaje: 7,
+    },
   ];
 
   for (const gasto of gastosNegocio) {
     try {
-      await prisma.gastosNegocio.create({ data: gasto });
-      console.log("GastosNegocio creado:", gasto);
+      const existe = await gastosNegocioRepository.findAll();
+      const yaExiste = existe.some((g) => g.nombre === gasto.nombre);
+      if (!yaExiste) {
+        await gastosNegocioRepository.create(gasto);
+        console.log(`GastosNegocio creado: ${gasto.nombre}`);
+      }
     } catch (error: any) {
       if (error.code !== "P2002") {
         throw error;
@@ -343,22 +524,22 @@ async function main() {
     }
   }
 
-  // Obtener clientes, productos y materiales creados para las relaciones
-  const clientesCreados = await prisma.cliente.findMany();
-  const productosCreados = await prisma.producto.findMany();
-  const materialesCreados = await prisma.material.findMany();
+  console.log("Seeding Presupuestos...");
+  const clientesCreados = await clienteRepository.findAll();
+  const productosCreados = await productoRepository.findAll();
+  const materialesCreados = await materialRepository.findAll();
   const manoDeObraCreada = await prisma.manoDeObra.findMany();
+  const gastosNegocioCreados = await gastosNegocioRepository.findAll();
 
-  // Presupuestos
   const presupuestos = [
     {
       numeroPresupuesto: 1001,
       nombre: "Presupuesto Colección Verano 2024",
-      clienteId: clientesCreados[0]?.id || 1,
+      clienteId: clientesCreados[0]?.id || null,
       fechaVencimiento: new Date("2024-12-31"),
       estado: EstadoPresupuesto.ENVIADO,
       margenGananciaPorcentaje: 30.0,
-      gastosIndirectosPorcentaje: 15.0,
+      gastosNegocioId: gastosNegocioCreados[0]?.id || 1,
       totalCosto: 25000.0,
       ganancias: 8625.0,
       notas: "Presupuesto para colección de verano",
@@ -383,11 +564,11 @@ async function main() {
     {
       numeroPresupuesto: 1002,
       nombre: "Presupuesto Pedido Mayorista",
-      clienteId: clientesCreados[1]?.id || 2,
+      clienteId: clientesCreados[1]?.id || null,
       fechaVencimiento: new Date("2024-12-15"),
       estado: EstadoPresupuesto.ACEPTADO,
       margenGananciaPorcentaje: 25.0,
-      gastosIndirectosPorcentaje: 12.0,
+      gastosNegocioId: gastosNegocioCreados[1]?.id || 1,
       totalCosto: 18000.0,
       ganancias: 5040.0,
       notas: "Pedido mayorista",
@@ -404,11 +585,11 @@ async function main() {
     {
       numeroPresupuesto: 1003,
       nombre: "Presupuesto Revisión",
-      clienteId: clientesCreados[2]?.id || 3,
+      clienteId: clientesCreados[2]?.id || null,
       fechaVencimiento: new Date("2025-01-15"),
       estado: EstadoPresupuesto.BORRADOR,
       margenGananciaPorcentaje: 35.0,
-      gastosIndirectosPorcentaje: 18.0,
+      gastosNegocioId: gastosNegocioCreados[2]?.id || 1,
       totalCosto: 32000.0,
       ganancias: 13216.0,
       notas: "Presupuesto en revisión",
@@ -433,11 +614,11 @@ async function main() {
     {
       numeroPresupuesto: 1004,
       nombre: "Presupuesto Vencido",
-      clienteId: clientesCreados[3]?.id || 4,
+      clienteId: clientesCreados[3]?.id || null,
       fechaVencimiento: new Date("2024-11-30"),
       estado: EstadoPresupuesto.VENCIDO,
       margenGananciaPorcentaje: 28.0,
-      gastosIndirectosPorcentaje: 14.0,
+      gastosNegocioId: gastosNegocioCreados[3]?.id || 1,
       totalCosto: 15000.0,
       ganancias: 4788.0,
       notas: "Presupuesto vencido",
@@ -454,11 +635,11 @@ async function main() {
     {
       numeroPresupuesto: 1005,
       nombre: "Presupuesto Accesorios",
-      clienteId: clientesCreados[4]?.id || 5,
+      clienteId: clientesCreados[4]?.id || null,
       fechaVencimiento: new Date("2025-02-28"),
       estado: EstadoPresupuesto.ENVIADO,
       margenGananciaPorcentaje: 32.0,
-      gastosIndirectosPorcentaje: 16.0,
+      gastosNegocioId: gastosNegocioCreados[0]?.id || 1,
       totalCosto: 42000.0,
       ganancias: 15590.4,
       notas: "Presupuesto para accesorios",
@@ -487,86 +668,202 @@ async function main() {
         },
       ],
     },
+    // Nuevos presupuestos
+    {
+      numeroPresupuesto: 1006,
+      nombre: "Presupuesto Colección Formal",
+      clienteId: clientesCreados[7]?.id || null,
+      fechaVencimiento: new Date("2025-03-15"),
+      estado: EstadoPresupuesto.ENVIADO,
+      margenGananciaPorcentaje: 40.0,
+      gastosNegocioId: gastosNegocioCreados[0]?.id || 1,
+      totalCosto: 55000.0,
+      ganancias: 24750.0,
+      notas: "Presupuesto para línea formal empresarial",
+      detalles: [
+        {
+          productoId: productosCreados[4]?.id || 5,
+          descripcion: "Pantalón Formal - Varias tallas",
+          cantidad: 15,
+          costoUnitario: 3500.0,
+        },
+        {
+          productoId: productosCreados[5]?.id || 6,
+          descripcion: "Blusa de Oficina - Varias tallas",
+          cantidad: 20,
+          costoUnitario: 2800.0,
+        },
+      ],
+      adicionales: [
+        {
+          nombre: "Planchado profesional",
+          cantidad: 35,
+          monto: 500.0,
+          totalCosto: 17500.0,
+          observaciones: "Planchado especial para prendas formales",
+        },
+      ],
+    },
+    {
+      numeroPresupuesto: 1007,
+      nombre: "Presupuesto Rechazado",
+      clienteId: clientesCreados[5]?.id || null,
+      fechaVencimiento: new Date("2024-12-20"),
+      estado: EstadoPresupuesto.RECHAZADO,
+      margenGananciaPorcentaje: 30.0,
+      gastosNegocioId: gastosNegocioCreados[1]?.id || 1,
+      totalCosto: 22000.0,
+      ganancias: 7260.0,
+      notas: "Presupuesto rechazado por el cliente",
+      detalles: [
+        {
+          productoId: productosCreados[2]?.id || 3,
+          descripcion: "Chaqueta Deportiva - Talla L",
+          cantidad: 8,
+          costoUnitario: 2750.0,
+        },
+      ],
+      adicionales: [],
+    },
+    {
+      numeroPresupuesto: 1008,
+      nombre: "Presupuesto Gran Volumen",
+      clienteId: clientesCreados[8]?.id || null,
+      fechaVencimiento: new Date("2025-04-30"),
+      estado: EstadoPresupuesto.BORRADOR,
+      margenGananciaPorcentaje: 20.0,
+      gastosNegocioId: gastosNegocioCreados[2]?.id || 1,
+      totalCosto: 120000.0,
+      ganancias: 28800.0,
+      notas: "Pedido de gran volumen para distribuidor",
+      detalles: [
+        {
+          productoId: productosCreados[1]?.id || 2,
+          descripcion: "Camiseta Deportiva - Varias tallas",
+          cantidad: 50,
+          costoUnitario: 1800.0,
+        },
+        {
+          productoId: productosCreados[6]?.id || 7,
+          descripcion: "Shorts Deportivos - Varias tallas",
+          cantidad: 50,
+          costoUnitario: 1200.0,
+        },
+      ],
+      adicionales: [
+        {
+          nombre: "Descuento por volumen",
+          cantidad: 1,
+          monto: -5000.0,
+          totalCosto: -5000.0,
+          observaciones: "Descuento aplicado por volumen",
+        },
+      ],
+    },
   ];
 
   // Obtener el impuesto general para calcular IVA
-  const impuestoActivo = await prisma.impuestoGeneral.findFirst();
+  const impuestoActivo = await impuestoGeneralRepository.findFirst();
   const ivaPorcentaje = impuestoActivo?.porcentaje || 0;
 
   for (const presupuesto of presupuestos) {
-    const { detalles, adicionales, clienteId, ...presupuestoData } =
-      presupuesto;
+    const { detalles, adicionales, clienteId, gastosNegocioId, ...presupuestoData } = presupuesto;
 
-    // Calcular IVA y totalFinal
-    // Calcular costos indirectos desde el porcentaje
-    const costosIndirectos =
-      presupuestoData.totalCosto *
-      (presupuestoData.gastosIndirectosPorcentaje / 100);
-    const subtotal =
-      presupuestoData.totalCosto + costosIndirectos + presupuestoData.ganancias;
+    // Obtener el gasto de negocio para calcular costos indirectos
+    const gastoNegocio =
+      gastosNegocioCreados.find((g) => g.id === gastosNegocioId) || gastosNegocioCreados[0];
+    const gastosIndirectosPorcentaje = gastoNegocio?.porcentaje || 15;
+
+    // Calcular costos indirectos, IVA y totalFinal
+    const costosIndirectos = presupuestoData.totalCosto * (gastosIndirectosPorcentaje / 100);
+    const subtotal = presupuestoData.totalCosto + costosIndirectos + presupuestoData.ganancias;
     const iva = subtotal * (ivaPorcentaje / 100);
     const totalFinal = subtotal + iva;
 
-    await prisma.presupuesto.upsert({
-      where: { numeroPresupuesto: presupuesto.numeroPresupuesto },
-      update: {},
-      create: {
-        ...presupuestoData,
-        clienteId: clienteId ?? null,
-        iva,
-        totalFinal,
-        detalles: detalles
-          ? {
-              create: detalles.map((detalle) => ({
-                productoId: detalle.productoId,
-                descripcion: detalle.descripcion,
-                cantidad: detalle.cantidad,
-                costoUnitario: detalle.costoUnitario,
-              })),
-            }
-          : undefined,
-        adicionales: adicionales
-          ? {
-              create: adicionales.map((adicional) => ({
-                nombre: adicional.nombre,
-                cantidad: adicional.cantidad,
-                monto: adicional.monto,
-                totalCosto: adicional.totalCosto,
-                observaciones: adicional.observaciones,
-              })),
-            }
-          : undefined,
-      } as any,
-    });
+    try {
+      const existe = await prisma.presupuesto.findUnique({
+        where: { numeroPresupuesto: presupuesto.numeroPresupuesto },
+      });
+      if (!existe) {
+        await PresupuestoRepository.create({
+          data: {
+            ...presupuestoData,
+            clienteId: clienteId ?? null,
+            gastosNegocioId: gastosNegocioId || gastosNegocioCreados[0]?.id || 1,
+            costosIndirectos,
+            iva,
+            totalFinal,
+            detalles: detalles || [],
+            adicionales: adicionales || [],
+          },
+        });
+        console.log(`  ✓ Presupuesto creado: ${presupuesto.numeroPresupuesto}`);
+      }
+    } catch (error: any) {
+      if (error.code !== "P2002") {
+        throw error;
+      }
+    }
   }
 
-  // MaterialPorProducto - Relaciones entre productos y materiales
+  console.log("Seeding MaterialPorProducto...");
   if (productosCreados.length > 0 && materialesCreados.length > 0) {
     const materialPorProducto = [
       {
-        productoId: productosCreados[0]?.id || 1, // Pantalón Casual
-        materialId: materialesCreados[0]?.id || 1, // Algodón Premium
-        cantidad: 2.5, // metros
+        productoId: productosCreados[0]?.id || 1,
+        materialId: materialesCreados[0]?.id || 1,
+        cantidad: 2.5,
       },
       {
-        productoId: productosCreados[0]?.id || 1, // Pantalón Casual
-        materialId: materialesCreados[3]?.id || 4, // Hilo de Algodón
-        cantidad: 0.5, // carretes
+        productoId: productosCreados[0]?.id || 1,
+        materialId: materialesCreados[3]?.id || 4,
+        cantidad: 0.5,
       },
       {
-        productoId: productosCreados[0]?.id || 1, // Pantalón Casual
-        materialId: materialesCreados[4]?.id || 5, // Cierres Metálicos
-        cantidad: 1, // unidades
+        productoId: productosCreados[0]?.id || 1,
+        materialId: materialesCreados[4]?.id || 5,
+        cantidad: 1,
       },
       {
-        productoId: productosCreados[1]?.id || 2, // Camiseta Deportiva
-        materialId: materialesCreados[1]?.id || 2, // Poliéster Deportivo
-        cantidad: 1.5, // metros
+        productoId: productosCreados[1]?.id || 2,
+        materialId: materialesCreados[1]?.id || 2,
+        cantidad: 1.5,
       },
       {
-        productoId: productosCreados[1]?.id || 2, // Camiseta Deportiva
-        materialId: materialesCreados[3]?.id || 4, // Hilo de Algodón
-        cantidad: 0.3, // carretes
+        productoId: productosCreados[1]?.id || 2,
+        materialId: materialesCreados[3]?.id || 4,
+        cantidad: 0.3,
+      },
+      // Nuevas relaciones
+      {
+        productoId: productosCreados[2]?.id || 3,
+        materialId: materialesCreados[1]?.id || 2,
+        cantidad: 2.0,
+      },
+      {
+        productoId: productosCreados[2]?.id || 3,
+        materialId: materialesCreados[10]?.id || 11,
+        cantidad: 1,
+      },
+      {
+        productoId: productosCreados[3]?.id || 4,
+        materialId: materialesCreados[8]?.id || 9,
+        cantidad: 3.0,
+      },
+      {
+        productoId: productosCreados[3]?.id || 4,
+        materialId: materialesCreados[12]?.id || 13,
+        cantidad: 1.5,
+      },
+      {
+        productoId: productosCreados[4]?.id || 5,
+        materialId: materialesCreados[6]?.id || 7,
+        cantidad: 2.8,
+      },
+      {
+        productoId: productosCreados[4]?.id || 5,
+        materialId: materialesCreados[12]?.id || 13,
+        cantidad: 2.0,
       },
     ];
 
@@ -588,58 +885,84 @@ async function main() {
         }
       }
     }
+    console.log("  ✓ MaterialPorProducto creado");
   }
 
-  // ManoDeObraPorProducto - Relaciones entre productos y mano de obra
+  console.log("Seeding ManoDeObraPorProducto...");
   if (productosCreados.length > 0 && manoDeObraCreada.length > 0) {
     const manoDeObraPorProducto = [
       {
-        productoId: productosCreados[0]?.id || 1, // Pantalón Casual
-        manoDeObraId: manoDeObraCreada[1]?.id || 2, // Diseñador de Patrones
+        productoId: productosCreados[0]?.id || 1,
+        manoDeObraId: manoDeObraCreada[1]?.id || 2,
         cantidadHoras: 2.0,
         costoHora: 20000.0,
       },
       {
-        productoId: productosCreados[0]?.id || 1, // Pantalón Casual
-        manoDeObraId: manoDeObraCreada[2]?.id || 3, // Cortador
+        productoId: productosCreados[0]?.id || 1,
+        manoDeObraId: manoDeObraCreada[2]?.id || 3,
         cantidadHoras: 1.5,
         costoHora: 12000.0,
       },
       {
-        productoId: productosCreados[0]?.id || 1, // Pantalón Casual
-        manoDeObraId: manoDeObraCreada[0]?.id || 1, // Costurera Principal
+        productoId: productosCreados[0]?.id || 1,
+        manoDeObraId: manoDeObraCreada[0]?.id || 1,
         cantidadHoras: 4.0,
         costoHora: 15000.0,
       },
       {
-        productoId: productosCreados[0]?.id || 1, // Pantalón Casual
-        manoDeObraId: manoDeObraCreada[3]?.id || 4, // Terminador
+        productoId: productosCreados[0]?.id || 1,
+        manoDeObraId: manoDeObraCreada[3]?.id || 4,
         cantidadHoras: 1.0,
         costoHora: 10000.0,
       },
       {
-        productoId: productosCreados[1]?.id || 2, // Camiseta Deportiva
-        manoDeObraId: manoDeObraCreada[1]?.id || 2, // Diseñador de Patrones
+        productoId: productosCreados[1]?.id || 2,
+        manoDeObraId: manoDeObraCreada[1]?.id || 2,
         cantidadHoras: 1.5,
         costoHora: 20000.0,
       },
       {
-        productoId: productosCreados[1]?.id || 2, // Camiseta Deportiva
-        manoDeObraId: manoDeObraCreada[2]?.id || 3, // Cortador
+        productoId: productosCreados[1]?.id || 2,
+        manoDeObraId: manoDeObraCreada[2]?.id || 3,
         cantidadHoras: 1.0,
         costoHora: 12000.0,
       },
       {
-        productoId: productosCreados[1]?.id || 2, // Camiseta Deportiva
-        manoDeObraId: manoDeObraCreada[0]?.id || 1, // Costurera Principal
+        productoId: productosCreados[1]?.id || 2,
+        manoDeObraId: manoDeObraCreada[0]?.id || 1,
         cantidadHoras: 2.5,
         costoHora: 15000.0,
       },
       {
-        productoId: productosCreados[1]?.id || 2, // Camiseta Deportiva
-        manoDeObraId: manoDeObraCreada[3]?.id || 4, // Terminador
+        productoId: productosCreados[1]?.id || 2,
+        manoDeObraId: manoDeObraCreada[3]?.id || 4,
         cantidadHoras: 0.5,
         costoHora: 10000.0,
+      },
+      // Nuevas relaciones
+      {
+        productoId: productosCreados[3]?.id || 4,
+        manoDeObraId: manoDeObraCreada[1]?.id || 2,
+        cantidadHoras: 3.0,
+        costoHora: 20000.0,
+      },
+      {
+        productoId: productosCreados[3]?.id || 4,
+        manoDeObraId: manoDeObraCreada[4]?.id || 5,
+        cantidadHoras: 1.5,
+        costoHora: 18000.0,
+      },
+      {
+        productoId: productosCreados[4]?.id || 5,
+        manoDeObraId: manoDeObraCreada[1]?.id || 2,
+        cantidadHoras: 2.5,
+        costoHora: 20000.0,
+      },
+      {
+        productoId: productosCreados[4]?.id || 5,
+        manoDeObraId: manoDeObraCreada[5]?.id || 6,
+        cantidadHoras: 0.5,
+        costoHora: 8000.0,
       },
     ];
 
@@ -649,82 +972,80 @@ async function main() {
           data: relacion,
         });
       } catch (error: any) {
-        // Ignorar errores de duplicados
         if (error.code !== "P2002") {
           throw error;
         }
       }
     }
+    console.log("  ✓ ManoDeObraPorProducto creado");
   }
 
-  // Obtener presupuestos aceptados para crear pedidos
+  console.log("Seeding Pedidos...");
   const presupuestosAceptados = await prisma.presupuesto.findMany({
     where: { estado: EstadoPresupuesto.ACEPTADO },
     include: { detalles: true },
   });
 
-  // Pedidos - Solo para presupuestos aceptados
   for (const presupuesto of presupuestosAceptados) {
     if (!presupuesto.clienteId) continue;
 
     try {
-      const pedido = await prisma.pedido.upsert({
+      const existe = await prisma.pedido.findUnique({
         where: { presupuestoId: presupuesto.id },
-        update: {},
-        create: {
-          presupuestoId: presupuesto.id,
-          clienteId: presupuesto.clienteId,
-          estado: EstadoPedido.EN_PRODUCCION,
-          pagado: false,
-          fechaEntregaEstimada: new Date(
-            new Date().getTime() + 14 * 24 * 60 * 60 * 1000,
-          ), // 14 días desde ahora
-          detalles: {
-            create: presupuesto.detalles.map((detalle) => ({
-              productoId: detalle.productoId,
-              cantidad: detalle.cantidad,
-              talle: "M", // Talla por defecto
-              color: "Negro", // Color por defecto
-              costoUnitario: detalle.costoUnitario,
-              precioUnitario: detalle.costoUnitario * 1.4, // 40% de margen
-              subtotal: detalle.cantidad * detalle.costoUnitario * 1.4,
-            })),
-          },
-        },
-        include: { detalles: true },
       });
+      if (!existe) {
+        const pedido = await prisma.pedido.create({
+          data: {
+            presupuestoId: presupuesto.id,
+            clienteId: presupuesto.clienteId,
+            estado: EstadoPedido.EN_PRODUCCION,
+            pagado: false,
+            fechaEntregaEstimada: new Date(new Date().getTime() + 14 * 24 * 60 * 60 * 1000),
+            detalles: {
+              create: presupuesto.detalles.map((detalle) => ({
+                productoId: detalle.productoId,
+                cantidad: detalle.cantidad,
+                talle: "M",
+                color: "Negro",
+                costoUnitario: detalle.costoUnitario,
+                precioUnitario: detalle.costoUnitario * 1.4,
+                subtotal: detalle.cantidad * detalle.costoUnitario * 1.4,
+              })),
+            },
+          },
+          include: { detalles: true },
+        });
 
-      // ProduccionEtapa - Etapas de producción para los pedidos
-      const etapas = [
-        {
-          pedidoId: pedido.id,
-          etapa: "Corte",
-          fechaInicio: new Date(),
-          responsable: "Juan Pérez",
-        },
-        {
-          pedidoId: pedido.id,
-          etapa: "Confección",
-          // fechaInicio y responsable se omiten (serán null por defecto)
-        },
-        {
-          pedidoId: pedido.id,
-          etapa: "Terminación",
-          // fechaInicio y responsable se omiten (serán null por defecto)
-        },
-      ];
+        // ProduccionEtapa - Etapas de producción para los pedidos
+        const etapas = [
+          {
+            pedidoId: pedido.id,
+            etapa: "Corte",
+            fechaInicio: new Date(),
+            responsable: "Juan Pérez",
+          },
+          {
+            pedidoId: pedido.id,
+            etapa: "Confección",
+          },
+          {
+            pedidoId: pedido.id,
+            etapa: "Terminación",
+          },
+        ];
 
-      for (const etapa of etapas) {
-        try {
-          await prisma.produccionEtapa.create({
-            data: etapa,
-          });
-        } catch (error: any) {
-          // Ignorar errores de duplicados
-          if (error.code !== "P2002") {
-            throw error;
+        for (const etapa of etapas) {
+          try {
+            await prisma.produccionEtapa.create({
+              data: etapa,
+            });
+          } catch (error: any) {
+            if (error.code !== "P2002") {
+              throw error;
+            }
           }
         }
+        console.log(`  ✓ Pedido creado para presupuesto #${presupuesto.numeroPresupuesto}`);
       }
     } catch (error: any) {
       if (error.code !== "P2002") {
@@ -733,7 +1054,7 @@ async function main() {
     }
   }
 
-  // TelegramMessage - Mensajes de ejemplo
+  console.log("Seeding TelegramMessage...");
   const telegramMessages = [
     {
       chatId: "123456789",
@@ -743,7 +1064,7 @@ async function main() {
       username: "claudia_munoz",
       text: "Hola, me interesa ver el catálogo de productos",
       source: "telegram",
-      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 días atrás
+      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
     },
     {
       chatId: "123456789",
@@ -753,7 +1074,7 @@ async function main() {
       username: null,
       text: "¡Hola Claudia! Te envío nuestro catálogo completo",
       source: "konfex",
-      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 60000), // 1 minuto después
+      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 60000),
     },
     {
       chatId: "987654321",
@@ -763,7 +1084,7 @@ async function main() {
       username: "carlos_rojas",
       text: "Necesito un presupuesto para 50 unidades",
       source: "telegram",
-      timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 día atrás
+      timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
     },
     {
       chatId: "987654321",
@@ -773,7 +1094,7 @@ async function main() {
       username: null,
       text: "Perfecto Carlos, te preparo el presupuesto. ¿Qué productos necesitas?",
       source: "konfex",
-      timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 + 120000), // 2 minutos después
+      timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 + 120000),
     },
     {
       chatId: "555666777",
@@ -783,7 +1104,38 @@ async function main() {
       username: "maria_p",
       text: "¿Tienen tallas grandes disponibles?",
       source: "telegram",
-      timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000), // 3 horas atrás
+      timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000),
+    },
+    // Nuevos mensajes
+    {
+      chatId: "111222333",
+      clienteId: clientesCreados[7]?.id || null,
+      firstName: "Laura",
+      lastName: "Fernández",
+      username: "laura_f",
+      text: "Buenos días, estoy interesada en productos ecológicos",
+      source: "telegram",
+      timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
+    },
+    {
+      chatId: "111222333",
+      clienteId: null,
+      firstName: "Konfex",
+      lastName: "Bot",
+      username: null,
+      text: "Hola Laura, tenemos una línea de productos con materiales orgánicos. ¿Te interesa?",
+      source: "konfex",
+      timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000 + 90000),
+    },
+    {
+      chatId: "444555666",
+      clienteId: clientesCreados[8]?.id || null,
+      firstName: "Roberto",
+      lastName: "Silva",
+      username: "roberto_s",
+      text: "Necesito un presupuesto para uniformes corporativos",
+      source: "telegram",
+      timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000),
     },
   ];
 
@@ -793,14 +1145,14 @@ async function main() {
         data: message,
       });
     } catch (error: any) {
-      // Ignorar errores de duplicados
       if (error.code !== "P2002") {
         throw error;
       }
     }
   }
+  console.log("TelegramMessage creado");
 
-  console.log("Database seeded successfully");
+  console.log("Database seeded successfully!");
 }
 
 main()
