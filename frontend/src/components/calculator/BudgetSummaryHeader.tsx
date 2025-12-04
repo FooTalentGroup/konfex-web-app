@@ -20,6 +20,7 @@ export default function BudgetSummaryHeader() {
 
   const materials = useWatch({ control, name: 'materials' }) || [];
   const extras = useWatch({ control, name: 'extras' }) || [];
+  const shippingFee = useWatch({ control, name: 'shippingFee' }) || 0;
   const gastosNegocioId = useWatch({ control, name: 'gastosNegocioId' });
   const desiredProfit = useWatch({ control, name: 'desiredProfit' }) || 0;
   
@@ -34,7 +35,7 @@ export default function BudgetSummaryHeader() {
     return sum + ((item.quantity || 0) * (item.amount || 0));
   }, 0);
 
-  const directCost = totalMaterialsCost + totalExtrasCost;
+  const directCost = totalMaterialsCost + totalExtrasCost + (typeof shippingFee === 'number' ? shippingFee : parseFloat(shippingFee || "0") || 0);
   
   // Calcular costos indirectos y ganancias si tenemos gastosNegocioId
   const selectedGastosNegocio = gastosNegocio.find(g => g.id === gastosNegocioId);

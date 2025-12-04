@@ -40,7 +40,9 @@ export default function BudgetExtras() {
   };
 
   const extras = watch("extras") || [];
-  const shippingFeeValue = Math.max(0, parseFloat(shippingFee) || 0);
+  const shippingFeeValue = typeof shippingFee === 'number' 
+    ? shippingFee 
+    : Math.max(0, parseFloat(String(shippingFee || "0")) || 0);
   const totalExtras = extras.reduce(
     (sum: number, item: { quantity: number; amount: number }) => {
       const itemAmount = Math.max(0, item.amount || 0);
