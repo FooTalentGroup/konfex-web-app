@@ -1,10 +1,11 @@
 import { AppError } from "@/common/errors";
 import { productoRepository } from "./producto.repository";
-import { CreateProductoDto, UpdateProductoDto } from "./producto.schema";
+import { UpdateProductoDto } from "./producto.schema";
+import { CreateProductoDtoDB } from "./producto.types";
 
 export const productoService = {
   // Crear producto
-  create: async (data: CreateProductoDto) => {
+  create: async (data: CreateProductoDtoDB) => {
     // Validación de negocio: nombre único (si quieres controlar antes de Prisma)
     const exists = await productoRepository.findByName(data.nombre);
     if (exists) {

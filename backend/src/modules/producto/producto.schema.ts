@@ -2,7 +2,11 @@ import { z } from "zod";
 
 export const createProductoSchema = z.object({
   body: z.object({
-    codigo: z.string().trim().min(1, "El codigo no puede estar vacío"),
+    codigo: z
+      .string() 
+      .trim()
+      .min(1, "El código no puede estar vacío")
+      .transform(val => parseInt(val, 10)),
     nombre: z.string().trim().min(1, "El nombre no puede estar vacío"),
     descripcion: z.string().optional().nullable(),
     activo: z.boolean().optional().default(true),

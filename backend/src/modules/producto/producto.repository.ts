@@ -1,18 +1,12 @@
 import prisma from "../../config/prisma";
+import { CreateProductoDtoDB } from "./producto.types";
 
-export interface CreateProductoDto {
-  nombre: string;
-  descripcion?: string | null;
-  activo?: boolean;
-  tallas?: string[];
-  colores?: string[];
-}
 
 export const productoRepository = {
-  create: (data: CreateProductoDto) =>
+  create: (data: CreateProductoDtoDB) =>
     prisma.producto.create({ data }),
 
-  update: (id: number, data: Partial<CreateProductoDto>) =>
+  update: (id: number, data: Partial<CreateProductoDtoDB>) =>
     prisma.producto.update({ where: { id }, data }),
 
   findAll: () =>
@@ -21,9 +15,8 @@ export const productoRepository = {
   findById: (id: number) =>
     prisma.producto.findUnique({ where: { id } }),
 
-  /** 🔥 Nuevo método para validar productos duplicados */
   findByName: (nombre: string) =>
-    prisma.producto.findUnique({ where: { nombre } }),
+    prisma.producto.findFirst({ where: { nombre } }),
 
   delete: (id: number) =>
     prisma.producto.delete({ where: { id } }),
