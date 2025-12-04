@@ -9,7 +9,11 @@ interface BudgetDetailsProps {
 export default function BudgetDetails({
   source = "manual",
 }: BudgetDetailsProps) {
-  const { register, control } = useFormContext();
+  const {
+    register,
+    control,
+    formState: { errors },
+  } = useFormContext();
   const { gastosNegocio, loading: loadingGastos } = useGastosNegocio();
 
   return (
@@ -164,15 +168,37 @@ export default function BudgetDetails({
         </label>
         <div className="relative">
           <input
-            {...register("desiredProfit", { valueAsNumber: true })}
+            {...register("desiredProfit", {
+              valueAsNumber: true,
+              min: {
+                value: 0,
+                message: "La ganancia no puede ser negativa",
+              },
+              max: {
+                value: 100,
+                message: "La ganancia no puede ser mayor a 100%",
+              },
+            })}
             type="number"
+            min="0"
+            max="100"
+            step="0.01"
             placeholder="0-100"
-            className="w-full bg-white border border-[#D5A1F7] rounded-lg p-3 pr-8 text-sm text-gray-700 outline-none focus:border-[#B65CF2] focus:ring-1 focus:ring-[#B65CF2] placeholder:text-gray-400"
+            className={`w-full bg-white border rounded-lg p-3 pr-8 text-sm text-gray-700 outline-none focus:ring-1 placeholder:text-gray-400 ${
+              errors.desiredProfit
+                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                : "border-[#D5A1F7] focus:border-[#B65CF2] focus:ring-[#B65CF2]"
+            }`}
           />
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 text-sm font-medium pointer-events-none">
             %
           </span>
         </div>
+        {errors.desiredProfit && (
+          <p className="text-xs text-red-500 mt-1">
+            {errors.desiredProfit.message as string}
+          </p>
+        )}
         <p className="text-xs text-gray-500 mt-2 leading-relaxed">
           Este porcentaje se aplica para calcular el precio final de tu prenda.
         </p>

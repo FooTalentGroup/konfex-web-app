@@ -22,22 +22,46 @@ export const authDocs = {
             example: "test1234",
           },
         },
-        SignInRequest: {
-          type: "object",
-          required: ["email", "password"],
-          properties: {
-            email: { type: "string", format: "email", example: "test@example.com" },
-            password: { type: "string", minLength: 8, example: "Passw0rd123" },
+      },
+      SignInRequest: {
+        type: "object",
+        required: ["email", "password"],
+        properties: {
+          email: { type: "string", format: "email", example: "test@example.com" },
+          password: { type: "string", minLength: 8, example: "Passw0rd123" },
+        },
+      },
+      SignInResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          statusCode: { type: "number", example: 201 },
+          message: { type: "string", example: "Login exitoso" },
+          data: {
+            type: "object",
+            properties: {
+              token: { type: "string", example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." },
+              refreshToken: { type: "string", example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." },
+              user: {
+                type: "object",
+                properties: {
+                  id: { type: "number", example: 1 },
+                  email: { type: "string", example: "test@example.com" },
+                  name: { type: "string", nullable: true, example: "Miguel" },
+                  role: { type: "string", enum: ["USER", "ADMIN"], example: "USER" },
+                },
+              },
+            },
           },
         },
-        ErrorResponse: {
-          type: "object",
-          properties: {
-            success: { type: "boolean", example: false },
-            statusCode: { type: "integer", example: 400 },
-            message: { type: "string", example: "Datos inválidos" },
-            errors: { type: "array", items: { type: "string" } },
-          },
+      },
+      ErrorResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: false },
+          statusCode: { type: "integer", example: 400 },
+          message: { type: "string", example: "Datos inválidos" },
+          errors: { type: "array", items: { type: "string" } },
         },
       },
     },
@@ -55,33 +79,47 @@ export const authDocs = {
           content: {
             "application/json": { schema: { $ref: "#/components/schemas/SignUpRequest" } },
           },
-          responses: {
-            201: { 
-              description: "Usuario creado exitosamente", 
-              content: { 
-                "application/json": { 
-                  schema: {
-                    type: "object",
-                    properties: {
-                      success: { type: "boolean" },
-                      statusCode: { type: "number" },
-                      message: { type: "string" },
-                      data: {
-                        type: "object",
-                        properties: {
-                          id: { type: "number" },
-                          email: { type: "string" },
-                          name: { type: "string", nullable: true },
-                          role: { type: "string", enum: ["USER", "ADMIN"] }
-                        }
+        },
+        responses: {
+          201: { 
+            description: "Usuario creado exitosamente", 
+            content: { 
+              "application/json": { 
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    statusCode: { type: "number" },
+                    message: { type: "string" },
+                    data: {
+                      type: "object",
+                      properties: {
+                        id: { type: "number" },
+                        email: { type: "string" },
+                        name: { type: "string", nullable: true },
+                        role: { type: "string", enum: ["USER", "ADMIN"] }
                       }
                     }
                   }
-                } 
+                }
               } 
-            },
-            400: { description: "Error de validación", content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } } },
-            409: { description: "El usuario ya existe", content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } } },
+            } 
+          },
+          400: { 
+            description: "Error de validación", 
+            content: { 
+              "application/json": { 
+                schema: { $ref: "#/components/schemas/ErrorResponse" } 
+              } 
+            } 
+          },
+          409: { 
+            description: "El usuario ya existe", 
+            content: { 
+              "application/json": { 
+                schema: { $ref: "#/components/schemas/ErrorResponse" } 
+              } 
+            } 
           },
         },
       },
@@ -104,40 +142,21 @@ export const authDocs = {
               "application/json": { schema: { $ref: "#/components/schemas/SignInResponse" } },
             },
           },
-          responses: {
-            201: { 
-              description: "Login exitoso", 
-              content: { 
-                "application/json": { 
-                  schema: {
-                    type: "object",
-                    properties: {
-                      success: { type: "boolean" },
-                      statusCode: { type: "number" },
-                      message: { type: "string" },
-                      data: {
-                        type: "object",
-                        properties: {
-                          token: { type: "string" },
-                          refreshToken: { type: "string" },
-                          user: {
-                            type: "object",
-                            properties: {
-                              id: { type: "number" },
-                              email: { type: "string" },
-                              name: { type: "string", nullable: true },
-                              role: { type: "string", enum: ["USER", "ADMIN"] }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                } 
+          400: { 
+            description: "Datos inválidos", 
+            content: { 
+              "application/json": { 
+                schema: { $ref: "#/components/schemas/ErrorResponse" } 
               } 
-            },
-            400: { description: "Datos inválidos", content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } } },
-            401: { description: "Credenciales inválidas", content: { "application/json": { schema: { $ref: "#/components/schemas/ErrorResponse" } } } },
+            } 
+          },
+          401: { 
+            description: "Credenciales inválidas", 
+            content: { 
+              "application/json": { 
+                schema: { $ref: "#/components/schemas/ErrorResponse" } 
+              } 
+            } 
           },
         },
       },

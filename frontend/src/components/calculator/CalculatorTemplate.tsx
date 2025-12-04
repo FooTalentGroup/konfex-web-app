@@ -71,7 +71,7 @@ export default function CalculatorTemplate({
   const isEditMode = !!presupuestoId;
 
   // TODO: Esto es temporal para pruebas. Reemplazar con la lógica real del origen del presupuesto
-  const [budgetSource] = useState<"telegram" | "manual">("telegram");
+  const [budgetSource] = useState<"telegram" | "manual">("manual");
   const [isLoading, setIsLoading] = useState(isEditMode);
 
   const methods = useForm<CalculatorFormData>({
