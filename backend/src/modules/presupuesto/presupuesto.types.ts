@@ -14,6 +14,7 @@ export interface AdicionalResponseDto {
   cantidad: number;
   monto: number;
   totalCosto: number;
+  tarifaEnvio?: number | null;
   observaciones?: string | null;
   createdAt: string;
   updatedAt: string;

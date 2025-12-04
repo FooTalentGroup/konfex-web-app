@@ -38,6 +38,10 @@ export const adicionalSchema = z.object({
   totalCosto: z
     .number()
     .min(0, { message: "El total costo no puede ser negativo" }),
+  tarifaEnvio: z
+    .number()
+    .min(0, { message: "La tarifa de envío no puede ser negativa" })
+    .optional(),
   observaciones: z.string().optional(),
 });
 
@@ -64,10 +68,9 @@ export const createPresupuestoSchema = z.object({
       .min(0, "El margen debe ser >= 0")
       .max(100, "El margen debe ser <= 100"),
 
-    gastosIndirectosPorcentaje: z
+    gastosNegocioId: z
       .number()
-      .min(0, "Los gastos indirectos deben ser >= 0")
-      .max(100, "Los gastos indirectos deben ser <= 100"),
+      .min(1, { message: "gastosNegocioId debe ser mayor a 0" }),
 
     totalCosto: z
       .number()
@@ -108,7 +111,7 @@ export const updatePresupuestoSchema = z.object({
     estado: z.enum(estadoPresupuestoValues),
 
     margenGananciaPorcentaje: z.number().min(0).max(100),
-    gastosIndirectosPorcentaje: z.number().min(0).max(100),
+    gastosNegocioId: z.number().min(1),
 
     totalCosto: z.number().min(0),
     costosIndirectos: z.number().min(0),
@@ -141,7 +144,7 @@ export const partialUpdatePresupuestoSchema = z.object({
     estado: z.enum(estadoPresupuestoValues).optional(),
 
     margenGananciaPorcentaje: z.number().min(0).max(100).optional(),
-    gastosIndirectosPorcentaje: z.number().min(0).max(100).optional(),
+    gastosNegocioId: z.number().min(1).optional(),
 
     totalCosto: z.number().min(0).optional(),
     costosIndirectos: z.number().min(0).optional(),

@@ -4,7 +4,8 @@ export const presupuestoDocs = {
       get: {
         tags: ["Presupuestos"],
         summary: "Obtener todos los presupuestos",
-        description: "Retorna una lista de todos los presupuestos con sus detalles, cliente y pedido asociado",
+        description:
+          "Retorna una lista de todos los presupuestos con sus detalles, cliente y pedido asociado",
         responses: {
           200: {
             description: "Lista de presupuestos obtenida correctamente",
@@ -25,11 +26,24 @@ export const presupuestoDocs = {
                           numeroPresupuesto: { type: "number" },
                           nombre: { type: "string", nullable: true },
                           clienteId: { type: "number", nullable: true },
-                          fechaCreacion: { type: "string", format: "date-time" },
-                          fechaVencimiento: { type: "string", format: "date-time", nullable: true },
+                          fechaCreacion: {
+                            type: "string",
+                            format: "date-time",
+                          },
+                          fechaVencimiento: {
+                            type: "string",
+                            format: "date-time",
+                            nullable: true,
+                          },
                           estado: {
                             type: "string",
-                            enum: ["BORRADOR", "ENVIADO", "ACEPTADO", "RECHAZADO", "VENCIDO"]
+                            enum: [
+                              "BORRADOR",
+                              "ENVIADO",
+                              "ACEPTADO",
+                              "RECHAZADO",
+                              "VENCIDO",
+                            ],
                           },
                           margenGananciaPorcentaje: { type: "number" },
                           gastosIndirectosPorcentaje: { type: "number" },
@@ -46,9 +60,9 @@ export const presupuestoDocs = {
                                 productoId: { type: "number" },
                                 descripcion: { type: "string", nullable: true },
                                 cantidad: { type: "number" },
-                                costoUnitario: { type: "number" }
-                              }
-                            }
+                                costoUnitario: { type: "number" },
+                              },
+                            },
                           },
                           adicionales: {
                             type: "array",
@@ -60,11 +74,21 @@ export const presupuestoDocs = {
                                 cantidad: { type: "number" },
                                 monto: { type: "number" },
                                 totalCosto: { type: "number" },
-                                observaciones: { type: "string", nullable: true },
-                                createdAt: { type: "string", format: "date-time" },
-                                updatedAt: { type: "string", format: "date-time" }
-                              }
-                            }
+                                tarifaEnvio: { type: "number", nullable: true },
+                                observaciones: {
+                                  type: "string",
+                                  nullable: true,
+                                },
+                                createdAt: {
+                                  type: "string",
+                                  format: "date-time",
+                                },
+                                updatedAt: {
+                                  type: "string",
+                                  format: "date-time",
+                                },
+                              },
+                            },
                           },
                           cliente: {
                             type: "object",
@@ -72,26 +96,26 @@ export const presupuestoDocs = {
                             properties: {
                               id: { type: "number" },
                               nombre: { type: "string" },
-                              email: { type: "string", nullable: true }
-                            }
+                              email: { type: "string", nullable: true },
+                            },
                           },
                           pedido: {
                             type: "object",
                             nullable: true,
                             properties: {
                               id: { type: "number" },
-                              estado: { type: "string" }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+                              estado: { type: "string" },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
 
       post: {
@@ -109,7 +133,7 @@ export const presupuestoDocs = {
                 fechaVencimiento: "2024-12-31T00:00:00.000Z",
                 estado: "BORRADOR",
                 margenGananciaPorcentaje: 30.0,
-                gastosIndirectosPorcentaje: 15.0,
+                gastosNegocioId: 1,
                 totalCosto: 25000.0,
                 costosIndirectos: 3750.0,
                 ganancias: 8625.0,
@@ -119,8 +143,8 @@ export const presupuestoDocs = {
                     productoId: 1,
                     descripcion: "Pantalón Casual - Talla M",
                     cantidad: 5,
-                    costoUnitario: 5000.0
-                  }
+                    costoUnitario: 5000.0,
+                  },
                 ],
                 adicionales: [
                   {
@@ -128,12 +152,13 @@ export const presupuestoDocs = {
                     cantidad: 1,
                     monto: 5000.0,
                     totalCosto: 5000.0,
-                    observaciones: "Embalaje reforzado para envío"
-                  }
-                ]
-              }
-            }
-          }
+                    tarifaEnvio: 1500.0,
+                    observaciones: "Embalaje reforzado para envío",
+                  },
+                ],
+              },
+            },
+          },
         },
         responses: {
           201: {
@@ -154,10 +179,20 @@ export const presupuestoDocs = {
                         nombre: { type: "string", nullable: true },
                         clienteId: { type: "number", nullable: true },
                         fechaCreacion: { type: "string", format: "date-time" },
-                        fechaVencimiento: { type: "string", format: "date-time", nullable: true },
+                        fechaVencimiento: {
+                          type: "string",
+                          format: "date-time",
+                          nullable: true,
+                        },
                         estado: {
                           type: "string",
-                          enum: ["BORRADOR", "ENVIADO", "ACEPTADO", "RECHAZADO", "VENCIDO"]
+                          enum: [
+                            "BORRADOR",
+                            "ENVIADO",
+                            "ACEPTADO",
+                            "RECHAZADO",
+                            "VENCIDO",
+                          ],
                         },
                         margenGananciaPorcentaje: { type: "number" },
                         gastosIndirectosPorcentaje: { type: "number" },
@@ -174,9 +209,9 @@ export const presupuestoDocs = {
                               productoId: { type: "number" },
                               descripcion: { type: "string", nullable: true },
                               cantidad: { type: "number" },
-                              costoUnitario: { type: "number" }
-                            }
-                          }
+                              costoUnitario: { type: "number" },
+                            },
+                          },
                         },
                         adicionales: {
                           type: "array",
@@ -189,10 +224,16 @@ export const presupuestoDocs = {
                               monto: { type: "number" },
                               totalCosto: { type: "number" },
                               observaciones: { type: "string", nullable: true },
-                              createdAt: { type: "string", format: "date-time" },
-                              updatedAt: { type: "string", format: "date-time" }
-                            }
-                          }
+                              createdAt: {
+                                type: "string",
+                                format: "date-time",
+                              },
+                              updatedAt: {
+                                type: "string",
+                                format: "date-time",
+                              },
+                            },
+                          },
                         },
                         cliente: {
                           type: "object",
@@ -200,42 +241,42 @@ export const presupuestoDocs = {
                           properties: {
                             id: { type: "number" },
                             nombre: { type: "string" },
-                            email: { type: "string", nullable: true }
-                          }
+                            email: { type: "string", nullable: true },
+                          },
                         },
                         pedido: {
                           type: "object",
                           nullable: true,
                           properties: {
                             id: { type: "number" },
-                            estado: { type: "string" }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+                            estado: { type: "string" },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
           400: {
             description: "Error de validación",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/ErrorResponse" }
-              }
-            }
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
           },
           404: {
             description: "Cliente no encontrado",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
-        }
-      }
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
+          },
+        },
+      },
     },
 
     "/api/v1/presupuestos/next-number": {
@@ -257,16 +298,16 @@ export const presupuestoDocs = {
                     data: {
                       type: "object",
                       properties: {
-                        numeroPresupuesto: { type: "number", example: 1006 }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+                        numeroPresupuesto: { type: "number", example: 1006 },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     },
 
     "/api/v1/presupuestos/{id}": {
@@ -293,10 +334,20 @@ export const presupuestoDocs = {
                         nombre: { type: "string", nullable: true },
                         clienteId: { type: "number", nullable: true },
                         fechaCreacion: { type: "string", format: "date-time" },
-                        fechaVencimiento: { type: "string", format: "date-time", nullable: true },
+                        fechaVencimiento: {
+                          type: "string",
+                          format: "date-time",
+                          nullable: true,
+                        },
                         estado: {
                           type: "string",
-                          enum: ["BORRADOR", "ENVIADO", "ACEPTADO", "RECHAZADO", "VENCIDO"]
+                          enum: [
+                            "BORRADOR",
+                            "ENVIADO",
+                            "ACEPTADO",
+                            "RECHAZADO",
+                            "VENCIDO",
+                          ],
                         },
                         margenGananciaPorcentaje: { type: "number" },
                         gastosIndirectosPorcentaje: { type: "number" },
@@ -313,9 +364,9 @@ export const presupuestoDocs = {
                               productoId: { type: "number" },
                               descripcion: { type: "string", nullable: true },
                               cantidad: { type: "number" },
-                              costoUnitario: { type: "number" }
-                            }
-                          }
+                              costoUnitario: { type: "number" },
+                            },
+                          },
                         },
                         adicionales: {
                           type: "array",
@@ -328,10 +379,16 @@ export const presupuestoDocs = {
                               monto: { type: "number" },
                               totalCosto: { type: "number" },
                               observaciones: { type: "string", nullable: true },
-                              createdAt: { type: "string", format: "date-time" },
-                              updatedAt: { type: "string", format: "date-time" }
-                            }
-                          }
+                              createdAt: {
+                                type: "string",
+                                format: "date-time",
+                              },
+                              updatedAt: {
+                                type: "string",
+                                format: "date-time",
+                              },
+                            },
+                          },
                         },
                         cliente: {
                           type: "object",
@@ -339,33 +396,33 @@ export const presupuestoDocs = {
                           properties: {
                             id: { type: "number" },
                             nombre: { type: "string" },
-                            email: { type: "string", nullable: true }
-                          }
+                            email: { type: "string", nullable: true },
+                          },
                         },
                         pedido: {
                           type: "object",
                           nullable: true,
                           properties: {
                             id: { type: "number" },
-                            estado: { type: "string" }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+                            estado: { type: "string" },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
           404: {
             description: "Presupuesto no encontrado",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
-        }
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
+          },
+        },
       },
 
       put: {
@@ -384,7 +441,7 @@ export const presupuestoDocs = {
                 fechaVencimiento: "2024-12-31T00:00:00.000Z",
                 estado: "ENVIADO",
                 margenGananciaPorcentaje: 35.0,
-                gastosIndirectosPorcentaje: 18.0,
+                gastosNegocioId: 2,
                 totalCosto: 28000.0,
                 costosIndirectos: 5040.0,
                 ganancias: 11564.0,
@@ -394,13 +451,13 @@ export const presupuestoDocs = {
                     productoId: 1,
                     descripcion: "Pantalón Casual - Talla L",
                     cantidad: 6,
-                    costoUnitario: 5500.0
-                  }
+                    costoUnitario: 5500.0,
+                  },
                 ],
-                adicionales: []
-              }
-            }
-          }
+                adicionales: [],
+              },
+            },
+          },
         },
         responses: {
           200: {
@@ -421,10 +478,20 @@ export const presupuestoDocs = {
                         nombre: { type: "string", nullable: true },
                         clienteId: { type: "number", nullable: true },
                         fechaCreacion: { type: "string", format: "date-time" },
-                        fechaVencimiento: { type: "string", format: "date-time", nullable: true },
+                        fechaVencimiento: {
+                          type: "string",
+                          format: "date-time",
+                          nullable: true,
+                        },
                         estado: {
                           type: "string",
-                          enum: ["BORRADOR", "ENVIADO", "ACEPTADO", "RECHAZADO", "VENCIDO"]
+                          enum: [
+                            "BORRADOR",
+                            "ENVIADO",
+                            "ACEPTADO",
+                            "RECHAZADO",
+                            "VENCIDO",
+                          ],
                         },
                         margenGananciaPorcentaje: { type: "number" },
                         gastosIndirectosPorcentaje: { type: "number" },
@@ -441,9 +508,9 @@ export const presupuestoDocs = {
                               productoId: { type: "number" },
                               descripcion: { type: "string", nullable: true },
                               cantidad: { type: "number" },
-                              costoUnitario: { type: "number" }
-                            }
-                          }
+                              costoUnitario: { type: "number" },
+                            },
+                          },
                         },
                         adicionales: {
                           type: "array",
@@ -456,10 +523,16 @@ export const presupuestoDocs = {
                               monto: { type: "number" },
                               totalCosto: { type: "number" },
                               observaciones: { type: "string", nullable: true },
-                              createdAt: { type: "string", format: "date-time" },
-                              updatedAt: { type: "string", format: "date-time" }
-                            }
-                          }
+                              createdAt: {
+                                type: "string",
+                                format: "date-time",
+                              },
+                              updatedAt: {
+                                type: "string",
+                                format: "date-time",
+                              },
+                            },
+                          },
                         },
                         cliente: {
                           type: "object",
@@ -467,33 +540,33 @@ export const presupuestoDocs = {
                           properties: {
                             id: { type: "number" },
                             nombre: { type: "string" },
-                            email: { type: "string", nullable: true }
-                          }
+                            email: { type: "string", nullable: true },
+                          },
                         },
                         pedido: {
                           type: "object",
                           nullable: true,
                           properties: {
                             id: { type: "number" },
-                            estado: { type: "string" }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+                            estado: { type: "string" },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
           404: {
             description: "Presupuesto no encontrado",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
-        }
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
+          },
+        },
       },
 
       patch: {
@@ -504,13 +577,15 @@ export const presupuestoDocs = {
         requestBody: {
           content: {
             "application/json": {
-              schema: { $ref: "#/components/schemas/PartialUpdatePresupuestoDto" },
+              schema: {
+                $ref: "#/components/schemas/PartialUpdatePresupuestoDto",
+              },
               example: {
                 estado: "ACEPTADO",
-                notas: "Cliente aceptó el presupuesto"
-              }
-            }
-          }
+                notas: "Cliente aceptó el presupuesto",
+              },
+            },
+          },
         },
         responses: {
           200: {
@@ -531,10 +606,20 @@ export const presupuestoDocs = {
                         nombre: { type: "string", nullable: true },
                         clienteId: { type: "number", nullable: true },
                         fechaCreacion: { type: "string", format: "date-time" },
-                        fechaVencimiento: { type: "string", format: "date-time", nullable: true },
+                        fechaVencimiento: {
+                          type: "string",
+                          format: "date-time",
+                          nullable: true,
+                        },
                         estado: {
                           type: "string",
-                          enum: ["BORRADOR", "ENVIADO", "ACEPTADO", "RECHAZADO", "VENCIDO"]
+                          enum: [
+                            "BORRADOR",
+                            "ENVIADO",
+                            "ACEPTADO",
+                            "RECHAZADO",
+                            "VENCIDO",
+                          ],
                         },
                         margenGananciaPorcentaje: { type: "number" },
                         gastosIndirectosPorcentaje: { type: "number" },
@@ -551,9 +636,9 @@ export const presupuestoDocs = {
                               productoId: { type: "number" },
                               descripcion: { type: "string", nullable: true },
                               cantidad: { type: "number" },
-                              costoUnitario: { type: "number" }
-                            }
-                          }
+                              costoUnitario: { type: "number" },
+                            },
+                          },
                         },
                         adicionales: {
                           type: "array",
@@ -566,10 +651,16 @@ export const presupuestoDocs = {
                               monto: { type: "number" },
                               totalCosto: { type: "number" },
                               observaciones: { type: "string", nullable: true },
-                              createdAt: { type: "string", format: "date-time" },
-                              updatedAt: { type: "string", format: "date-time" }
-                            }
-                          }
+                              createdAt: {
+                                type: "string",
+                                format: "date-time",
+                              },
+                              updatedAt: {
+                                type: "string",
+                                format: "date-time",
+                              },
+                            },
+                          },
                         },
                         cliente: {
                           type: "object",
@@ -577,33 +668,33 @@ export const presupuestoDocs = {
                           properties: {
                             id: { type: "number" },
                             nombre: { type: "string" },
-                            email: { type: "string", nullable: true }
-                          }
+                            email: { type: "string", nullable: true },
+                          },
                         },
                         pedido: {
                           type: "object",
                           nullable: true,
                           properties: {
                             id: { type: "number" },
-                            estado: { type: "string" }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+                            estado: { type: "string" },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
           404: {
             description: "Presupuesto no encontrado",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
-        }
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
+          },
+        },
       },
 
       delete: {
@@ -624,25 +715,25 @@ export const presupuestoDocs = {
                     data: {
                       type: "object",
                       properties: {
-                        id: { type: "number" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+                        id: { type: "number" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
           404: {
             description: "Presupuesto no encontrado",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
-        }
-      }
-    }
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
+          },
+        },
+      },
+    },
   },
 
   components: {
@@ -654,24 +745,24 @@ export const presupuestoDocs = {
           productoId: {
             type: "number",
             minimum: 1,
-            description: "ID del producto"
+            description: "ID del producto",
           },
           descripcion: {
             type: "string",
             nullable: true,
-            description: "Descripción del detalle"
+            description: "Descripción del detalle",
           },
           cantidad: {
             type: "number",
             minimum: 1,
-            description: "Cantidad de productos"
+            description: "Cantidad de productos",
           },
           costoUnitario: {
             type: "number",
             minimum: 0,
-            description: "Costo unitario del producto"
-          }
-        }
+            description: "Costo unitario del producto",
+          },
+        },
       },
 
       AdicionalDto: {
@@ -680,100 +771,112 @@ export const presupuestoDocs = {
         properties: {
           nombre: {
             type: "string",
-            description: "Nombre del producto o material adicional"
+            description: "Nombre del producto o material adicional",
           },
           cantidad: {
             type: "number",
             minimum: 1,
-            description: "Cantidad"
+            description: "Cantidad",
           },
           monto: {
             type: "number",
             minimum: 0,
-            description: "Monto unitario"
+            description: "Monto unitario",
           },
           totalCosto: {
             type: "number",
             minimum: 0,
-            description: "Costo total del adicional"
+            description: "Costo total del adicional",
+          },
+          tarifaEnvio: {
+            type: "number",
+            minimum: 0,
+            nullable: true,
+            description: "Tarifa de envío (opcional)",
           },
           observaciones: {
             type: "string",
             nullable: true,
-            description: "Observaciones adicionales"
-          }
-        }
+            description: "Observaciones adicionales",
+          },
+        },
       },
 
       CreatePresupuestoDto: {
         type: "object",
-        required: ["estado", "margenGananciaPorcentaje", "gastosIndirectosPorcentaje", "totalCosto", "costosIndirectos", "ganancias"],
+        required: [
+          "estado",
+          "margenGananciaPorcentaje",
+          "gastosNegocioId",
+          "totalCosto",
+          "costosIndirectos",
+          "ganancias",
+        ],
         properties: {
           nombre: {
             type: "string",
             nullable: true,
-            description: "Nombre del presupuesto"
+            description: "Nombre del presupuesto",
           },
           clienteId: {
             type: "number",
             nullable: true,
             minimum: 1,
-            description: "ID del cliente (opcional)"
+            description: "ID del cliente (opcional)",
           },
           fechaVencimiento: {
             type: "string",
             format: "date-time",
             nullable: true,
-            description: "Fecha de vencimiento del presupuesto"
+            description: "Fecha de vencimiento del presupuesto",
           },
           estado: {
             type: "string",
             enum: ["BORRADOR", "ENVIADO", "ACEPTADO", "RECHAZADO", "VENCIDO"],
-            description: "Estado del presupuesto"
+            description: "Estado del presupuesto",
           },
           margenGananciaPorcentaje: {
             type: "number",
             minimum: 0,
             maximum: 100,
-            description: "Porcentaje de margen de ganancia"
+            description: "Porcentaje de margen de ganancia",
           },
-          gastosIndirectosPorcentaje: {
+          gastosNegocioId: {
             type: "number",
-            minimum: 0,
-            maximum: 100,
-            description: "Porcentaje de gastos indirectos"
+            minimum: 1,
+            description: "ID del gasto de negocio asociado (requerido)",
           },
           totalCosto: {
             type: "number",
             minimum: 0,
-            description: "Costo total del presupuesto"
+            description: "Costo total del presupuesto",
           },
           costosIndirectos: {
             type: "number",
             minimum: 0,
-            description: "Costos indirectos calculados"
+            description: "Costos indirectos calculados",
           },
           ganancias: {
             type: "number",
             minimum: 0,
-            description: "Ganancias calculadas"
+            description: "Ganancias calculadas",
           },
           notas: {
             type: "string",
             nullable: true,
-            description: "Notas adicionales"
+            description: "Notas adicionales",
           },
           detalles: {
             type: "array",
             items: { $ref: "#/components/schemas/PresupuestoDetalleDto" },
-            description: "Lista de detalles del presupuesto (opcional)"
+            description: "Lista de detalles del presupuesto (opcional)",
           },
           adicionales: {
             type: "array",
             items: { $ref: "#/components/schemas/AdicionalDto" },
-            description: "Lista de costos adicionales (opcional)"
-          }
-        }
+            description: "Lista de costos adicionales (opcional)",
+          },
+        },
       },
 
       UpdatePresupuestoDto: {
@@ -781,57 +884,56 @@ export const presupuestoDocs = {
         properties: {
           nombre: {
             type: "string",
-            nullable: true
+            nullable: true,
           },
           clienteId: {
             type: "number",
             nullable: true,
-            minimum: 1
+            minimum: 1,
           },
           fechaVencimiento: {
             type: "string",
             format: "date-time",
-            nullable: true
+            nullable: true,
           },
           estado: {
             type: "string",
-            enum: ["BORRADOR", "ENVIADO", "ACEPTADO", "RECHAZADO", "VENCIDO"]
+            enum: ["BORRADOR", "ENVIADO", "ACEPTADO", "RECHAZADO", "VENCIDO"],
           },
           margenGananciaPorcentaje: {
             type: "number",
             minimum: 0,
-            maximum: 100
+            maximum: 100,
           },
-          gastosIndirectosPorcentaje: {
+          gastosNegocioId: {
             type: "number",
-            minimum: 0,
-            maximum: 100
+            minimum: 1,
           },
           totalCosto: {
             type: "number",
-            minimum: 0
+            minimum: 0,
           },
           costosIndirectos: {
             type: "number",
-            minimum: 0
+            minimum: 0,
           },
           ganancias: {
             type: "number",
-            minimum: 0
+            minimum: 0,
           },
           notas: {
             type: "string",
-            nullable: true
+            nullable: true,
           },
           detalles: {
             type: "array",
-            items: { $ref: "#/components/schemas/PresupuestoDetalleDto" }
+            items: { $ref: "#/components/schemas/PresupuestoDetalleDto" },
           },
           adicionales: {
             type: "array",
-            items: { $ref: "#/components/schemas/AdicionalDto" }
-          }
-        }
+            items: { $ref: "#/components/schemas/AdicionalDto" },
+          },
+        },
       },
 
       PartialUpdatePresupuestoDto: {
@@ -839,57 +941,56 @@ export const presupuestoDocs = {
         properties: {
           nombre: {
             type: "string",
-            nullable: true
+            nullable: true,
           },
           clienteId: {
             type: "number",
             nullable: true,
-            minimum: 1
+            minimum: 1,
           },
           fechaVencimiento: {
             type: "string",
             format: "date-time",
-            nullable: true
+            nullable: true,
           },
           estado: {
             type: "string",
-            enum: ["BORRADOR", "ENVIADO", "ACEPTADO", "RECHAZADO", "VENCIDO"]
+            enum: ["BORRADOR", "ENVIADO", "ACEPTADO", "RECHAZADO", "VENCIDO"],
           },
           margenGananciaPorcentaje: {
             type: "number",
             minimum: 0,
-            maximum: 100
+            maximum: 100,
           },
-          gastosIndirectosPorcentaje: {
+          gastosNegocioId: {
             type: "number",
-            minimum: 0,
-            maximum: 100
+            minimum: 1,
           },
           totalCosto: {
             type: "number",
-            minimum: 0
+            minimum: 0,
           },
           costosIndirectos: {
             type: "number",
-            minimum: 0
+            minimum: 0,
           },
           ganancias: {
             type: "number",
-            minimum: 0
+            minimum: 0,
           },
           notas: {
             type: "string",
-            nullable: true
+            nullable: true,
           },
           detalles: {
             type: "array",
-            items: { $ref: "#/components/schemas/PresupuestoDetalleDto" }
+            items: { $ref: "#/components/schemas/PresupuestoDetalleDto" },
           },
           adicionales: {
             type: "array",
-            items: { $ref: "#/components/schemas/AdicionalDto" }
-          }
-        }
+            items: { $ref: "#/components/schemas/AdicionalDto" },
+          },
+        },
       },
 
       ErrorResponse: {
@@ -902,11 +1003,11 @@ export const presupuestoDocs = {
             oneOf: [
               { type: "array", items: { type: "string" } },
               { type: "object" },
-              { type: "null" }
-            ]
-          }
-        }
-      }
+              { type: "null" },
+            ],
+          },
+        },
+      },
     },
 
     parameters: {
@@ -916,8 +1017,8 @@ export const presupuestoDocs = {
         required: true,
         schema: { type: "number" },
         description: "ID del presupuesto",
-        example: 1
-      }
-    }
-  }
+        example: 1,
+      },
+    },
+  },
 };

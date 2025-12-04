@@ -114,9 +114,8 @@ model Presupuesto {
   fechaVencimiento           DateTime?
   estado                     EstadoPresupuesto
   margenGananciaPorcentaje   Float
-  gastosIndirectosPorcentaje Float
   totalCosto                 Float
-  gastosNegocioId            Int?
+  gastosNegocioId            Int
   ganancias                  Float
   iva                        Float                @default(0)
   totalFinal                 Float                @default(0)
@@ -125,7 +124,7 @@ model Presupuesto {
   updatedAt                  DateTime             @updatedAt
   pedido                     Pedido?
   cliente                    Cliente?             @relation(fields: [clienteId], references: [id], onDelete: Restrict)
-  gastosNegocio              GastosNegocio?       @relation(fields: [gastosNegocioId], references: [id], onDelete: SetNull)
+  gastosNegocio              GastosNegocio        @relation(fields: [gastosNegocioId], references: [id], onDelete: Restrict)
   detalles                   PresupuestoDetalle[]
   adicionales                Adicional[]
 }
@@ -150,6 +149,7 @@ model Adicional {
   cantidad      Int
   monto         Float
   totalCosto    Float
+  tarifaEnvio   Float?      @default(0)
   observaciones String?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
