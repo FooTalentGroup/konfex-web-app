@@ -20,6 +20,39 @@ interface CalculatorTemplateProps {
   presupuestoId?: number;
 }
 
+interface MaterialVariant {
+  size: string;
+  quantity: number;
+}
+
+interface Material {
+  productoId?: number;
+  name: string;
+  unitPrice: number;
+  variants: MaterialVariant[];
+}
+
+interface Extra {
+  name: string;
+  quantity: number;
+  amount: number;
+}
+
+interface CalculatorFormData {
+  title: string;
+  clientName: string;
+  clientEmail?: string;
+  clientPhone?: string;
+  deliveryDate: string;
+  desiredProfit: number;
+  gastosNegocioId?: number;
+  clienteId?: number;
+  materials: Material[];
+  extras: Extra[];
+  observations?: string;
+  shippingFee?: number;
+}
+
 export default function CalculatorTemplate({
   presupuestoId: propPresupuestoId,
 }: CalculatorTemplateProps = {}) {
@@ -41,7 +74,7 @@ export default function CalculatorTemplate({
   const [budgetSource] = useState<"telegram" | "manual">("telegram");
   const [isLoading, setIsLoading] = useState(isEditMode);
 
-  const methods = useForm({
+  const methods = useForm<CalculatorFormData>({
     defaultValues: {
       title: "",
       clientName: "",
@@ -49,12 +82,12 @@ export default function CalculatorTemplate({
       clientPhone: "",
       deliveryDate: "",
       desiredProfit: 0,
-      gastosNegocioId: undefined as number | undefined,
-      clienteId: undefined as number | undefined,
-      materials: [],
-      extras: [],
+      gastosNegocioId: undefined,
+      clienteId: undefined,
+      materials: [] as Material[],
+      extras: [] as Extra[],
       observations: "",
-      shippingFee: 0,
+      shippingFee: undefined,
     },
     mode: "onChange",
   });
