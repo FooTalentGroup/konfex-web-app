@@ -1,4 +1,4 @@
-import prisma from "@/config/prisma";
+import prisma from "../../config/prisma";
 
 export const telegramMessageRepository = {
   save: async (data: {
@@ -19,7 +19,7 @@ export const telegramMessageRepository = {
     mimeType?: string;
     fileSize?: number;
   }) => {
-    // @ts-ignore
+    console.log("creando un mensaje")
     return prisma.telegramMessage.create({
       data: {
         chatId: String(data.chatId),
@@ -43,7 +43,6 @@ export const telegramMessageRepository = {
   },
 
   findByChatId: async (chatId: string | number) => {
-    // @ts-ignore
     return prisma.telegramMessage.findMany({ 
       where: { chatId: String(chatId) },
       orderBy: { timestamp: 'asc' }
@@ -51,14 +50,12 @@ export const telegramMessageRepository = {
   },
 
   findAll: async () => {
-    // @ts-ignore
     return prisma.telegramMessage.findMany({
       orderBy: { timestamp: "desc" },
     });
   },
 
   associateUserToChat: async (chatId: string | number, clienteId: number) => {
-    // @ts-ignore
     return prisma.telegramMessage.updateMany({
       where: { chatId: String(chatId) },
       data: { clienteId },
