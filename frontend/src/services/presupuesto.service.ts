@@ -13,6 +13,7 @@ export interface CreatePresupuestoDto {
   costosIndirectos: number;
   ganancias: number;
   notas?: string;
+  origen?: "telegram" | "manual";
   detalles?: Array<{
     productoId: number;
     descripcion?: string;

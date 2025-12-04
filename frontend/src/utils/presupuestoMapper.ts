@@ -122,7 +122,8 @@ function calculateGanancias(
  */
 export function mapFormDataToBackend(
   formData: BudgetFormData,
-  gastosNegocio: GastosNegocio
+  gastosNegocio: GastosNegocio,
+  origen: "telegram" | "manual" = "manual"
 ): CreatePresupuestoDto {
   // Validar que tenga gastosNegocioId
   if (!formData.gastosNegocioId && !gastosNegocio) {
@@ -187,6 +188,7 @@ export function mapFormDataToBackend(
     costosIndirectos,
     ganancias,
     notas: formData.observations || undefined,
+    origen,
     detalles: detalles.length > 0 ? detalles : undefined,
     adicionales: adicionales.length > 0 ? adicionales : undefined,
   };

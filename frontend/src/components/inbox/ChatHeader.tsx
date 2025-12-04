@@ -88,7 +88,13 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ contact }) => {
         </div>
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-3 sm:gap-4">
+        <button
+          onClick={() => router.push(`/calculator?origen=telegram&chatId=${contact.chatId}`)}
+          className="hover:opacity-80 transition-opacity font-lato text-sm font-bold leading-[131%] tracking-normal text-[#770FBD] underline flex items-center gap-2 sm:gap-3"
+        >
+          Crear presupuesto →
+        </button>
         <button
           onClick={() => {}}
           className="hover:opacity-80 transition-opacity font-lato text-sm font-bold leading-[131%] tracking-normal text-[#770FBD] underline flex items-center gap-2 sm:gap-3"

@@ -70,8 +70,14 @@ export default function CalculatorTemplate({
   const presupuestoId = propPresupuestoId || presupuestoIdFromUrl;
   const isEditMode = !!presupuestoId;
 
-  // TODO: Esto es temporal para pruebas. Reemplazar con la lógica real del origen del presupuesto
-  const [budgetSource] = useState<"telegram" | "manual">("manual");
+  // Detectar origen desde URL params (para presupuestos nuevos desde Telegram)
+  const origenFromUrl = searchParams?.get("origen") as
+    | "telegram"
+    | "manual"
+    | null;
+  const [budgetSource, setBudgetSource] = useState<"telegram" | "manual">(
+    origenFromUrl || "manual"
+  );
   const [isLoading, setIsLoading] = useState(isEditMode);
 
   const methods = useForm<CalculatorFormData>({
@@ -103,6 +109,9 @@ export default function CalculatorTemplate({
           showInfo("Cargando presupuesto...");
           const presupuesto = await presupuestoService.getById(presupuestoId);
           const formData = loadPresupuestoToForm(presupuesto, gastosNegocio);
+
+          // Establecer el origen del presupuesto
+          setBudgetSource(presupuesto.origen || "manual");
 
           // Resetear el formulario con los datos cargados
           methods.reset(formData);
@@ -139,6 +148,7 @@ export default function CalculatorTemplate({
         <BudgetSummaryHeader
           presupuestoId={presupuestoId}
           isEditMode={isEditMode}
+          origen={budgetSource}
         />
 
         <div className="-mt-6 relative z-10 shadow-xl rounded-t-[30px] bg-white overflow-hidden">

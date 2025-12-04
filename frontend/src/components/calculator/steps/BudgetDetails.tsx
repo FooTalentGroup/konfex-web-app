@@ -1,6 +1,7 @@
 import { useFormContext, Controller } from "react-hook-form";
-import { Calendar, Hand, Send, ChevronDown } from "lucide-react";
+import { Hand, Send, ChevronDown } from "lucide-react";
 import { useGastosNegocio } from "@/hooks/useGastosNegocio";
+import DatePicker from "@/components/common/DatePicker";
 
 interface BudgetDetailsProps {
   source?: "telegram" | "manual";
@@ -98,18 +99,27 @@ export default function BudgetDetails({
           <label className="block text-sm font-bold text-gray-700 mb-1.5">
             Fecha entrega<span className="text-[#8B709D]">*</span>
           </label>
-          <div className="relative">
-            <input
-              {...register("deliveryDate")}
-              type="text"
-              placeholder="DD/MM/YYYY"
-              className="w-full bg-white border border-[#D5A1F7] rounded-lg p-3 pr-10 text-sm text-gray-700 outline-none focus:border-[#B65CF2] focus:ring-1 focus:ring-[#B65CF2] placeholder:text-gray-400"
-            />
-            <Calendar
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-              size={18}
-            />
-          </div>
+          <Controller
+            control={control}
+            name="deliveryDate"
+            rules={{ required: "La fecha de entrega es requerida" }}
+            render={({ field, fieldState }) => (
+              <div>
+                <DatePicker
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                  placeholder="DD/MM/YYYY"
+                  error={!!fieldState.error}
+                  minDate={new Date()}
+                />
+                {fieldState.error && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {fieldState.error.message}
+                  </p>
+                )}
+              </div>
+            )}
+          />
         </div>
       </div>
 

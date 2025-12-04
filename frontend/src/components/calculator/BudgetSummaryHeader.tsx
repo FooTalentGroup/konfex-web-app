@@ -12,6 +12,7 @@ import { useToast } from "@/contexts/ToastContext";
 interface BudgetSummaryHeaderProps {
   presupuestoId?: number;
   isEditMode?: boolean;
+  origen?: "telegram" | "manual";
 }
 
 interface MaterialVariant {
@@ -35,6 +36,7 @@ interface Extra {
 export default function BudgetSummaryHeader({
   presupuestoId,
   isEditMode = false,
+  origen = "manual",
 }: BudgetSummaryHeaderProps = {}) {
   const { control, getValues, watch } = useFormContext();
   const router = useRouter();
@@ -177,7 +179,8 @@ export default function BudgetSummaryHeader({
           materials: (currentBudgetData.materials || []) as Material[],
           extras: (currentBudgetData.extras || []) as Extra[],
         } as Parameters<typeof mapFormDataToBackend>[0],
-        selectedGastos
+        selectedGastos,
+        origen
       );
 
       // Crear o actualizar presupuesto en el backend
