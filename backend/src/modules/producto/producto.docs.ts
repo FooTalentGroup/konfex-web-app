@@ -1,34 +1,33 @@
 export const productoDocs = {
-    paths: {
-      "/api/v1/productos": {
-        get: {
-          tags: ["Productos"],
-          summary: "Obtener todos los productos",
-          responses: {
-            200: {
-              description: "Productos obtenidos correctamente",
-              content: {
-                "application/json": {
-                  schema: {
-                    type: "object",
-                    properties: {
-                      success: { type: "boolean" },
-                      statusCode: { type: "number" },
-                      message: { type: "string" },
-                      data: {
-                        type: "array",
-                        items: {
-                          type: "object",
-                          properties: {
-                            id: { type: "number" },
-                            nombre: { type: "string" },
-                            descripcion: { type: "string", nullable: true },
-                            activo: { type: "boolean" },
-                            tallas: { type: "array", items: { type: "string" } },
-                            colores: { type: "array", items: { type: "string" } },
-                            createdAt: { type: "string", format: "date-time" },
-                            updatedAt: { type: "string", format: "date-time" }
-                          }
+  paths: {
+    "/api/v1/productos": {
+      get: {
+        tags: ["Productos"],
+        summary: "Obtener todos los productos",
+        responses: {
+          200: {
+            description: "Productos obtenidos correctamente",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    statusCode: { type: "number" },
+                    message: { type: "string" },
+                    data: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          id: { type: "number" },
+                          nombre: { type: "string" },
+                          descripcion: { type: "string", nullable: true },
+                          activo: { type: "boolean" },
+                          tallas: { type: "array", items: { type: "string" } },
+                          colores: { type: "array", items: { type: "string" } },
+                          createdAt: { type: "string", format: "date-time" },
+                          updatedAt: { type: "string", format: "date-time" }
                         }
                       }
                     }
@@ -37,7 +36,7 @@ export const productoDocs = {
               }
             }
           }
-        },
+        }
       },
 
       post: {
@@ -63,9 +62,29 @@ export const productoDocs = {
             description: "Producto creado exitosamente",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/SuccessResponseProducto" },
-              },
-            },
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    statusCode: { type: "number" },
+                    message: { type: "string" },
+                    data: {
+                      type: "object",
+                      properties: {
+                        id: { type: "number" },
+                        nombre: { type: "string" },
+                        descripcion: { type: "string", nullable: true },
+                        activo: { type: "boolean" },
+                        tallas: { type: "array", items: { type: "string" } },
+                        colores: { type: "array", items: { type: "string" } },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           400: {
             description: "Error de validación o duplicado",
@@ -79,36 +98,6 @@ export const productoDocs = {
                   errors: null,
                 },
               },
-            },
-          },
-          responses: {
-            201: {
-              description: "Producto creado exitosamente",
-              content: {
-                "application/json": {
-                  schema: {
-                    type: "object",
-                    properties: {
-                      success: { type: "boolean" },
-                      statusCode: { type: "number" },
-                      message: { type: "string" },
-                      data: {
-                        type: "object",
-                        properties: {
-                          id: { type: "number" },
-                          nombre: { type: "string" },
-                          descripcion: { type: "string", nullable: true },
-                          activo: { type: "boolean" },
-                          tallas: { type: "array", items: { type: "string" } },
-                          colores: { type: "array", items: { type: "string" } },
-                          createdAt: { type: "string", format: "date-time" },
-                          updatedAt: { type: "string", format: "date-time" }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
             },
           },
           404: {
@@ -126,40 +115,61 @@ export const productoDocs = {
           },
         },
       },
-  
-      "/api/v1/productos/{id}": {
-        get: {
-          tags: ["Productos"],
-          summary: "Obtener producto por ID",
-          parameters: [{ $ref: "#/components/parameters/ProductoId" }],
-          responses: {
-            200: {
-              description: "Producto obtenido correctamente",
-              content: {
-                "application/json": {
-                  schema: {
-                    type: "object",
-                    properties: {
-                      success: { type: "boolean" },
-                      statusCode: { type: "number" },
-                      message: { type: "string" },
-                      data: {
-                        type: "object",
-                        properties: {
-                          id: { type: "number" },
-                          nombre: { type: "string" },
-                          descripcion: { type: "string", nullable: true },
-                          activo: { type: "boolean" },
-                          tallas: { type: "array", items: { type: "string" } },
-                          colores: { type: "array", items: { type: "string" } },
-                          createdAt: { type: "string", format: "date-time" },
-                          updatedAt: { type: "string", format: "date-time" }
-                        }
+    },
+
+    "/api/v1/productos/{id}": {
+      get: {
+        tags: ["Productos"],
+        summary: "Obtener producto por ID",
+        parameters: [{ $ref: "#/components/parameters/ProductoId" }],
+        responses: {
+          200: {
+            description: "Producto obtenido correctamente",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    statusCode: { type: "number" },
+                    message: { type: "string" },
+                    data: {
+                      type: "object",
+                      properties: {
+                        id: { type: "number" },
+                        nombre: { type: "string" },
+                        descripcion: { type: "string", nullable: true },
+                        activo: { type: "boolean" },
+                        tallas: { type: "array", items: { type: "string" } },
+                        colores: { type: "array", items: { type: "string" } },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" }
                       }
                     }
                   }
                 }
               }
+            }
+          },
+          404: {
+            description: "Producto no encontrado",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
+          },
+        },
+      },
+
+      put: {
+        tags: ["Productos"],
+        summary: "Actualizar un producto",
+        parameters: [{ $ref: "#/components/parameters/ProductoId" }],
+        requestBody: {
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/UpdateProductoDto" },
             },
           },
         },
@@ -168,38 +178,36 @@ export const productoDocs = {
             description: "Producto actualizado correctamente",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/SuccessResponseProducto" },
-              },
-            },
-          },
-          responses: {
-            200: {
-              description: "Producto actualizado correctamente",
-              content: {
-                "application/json": {
-                  schema: {
-                    type: "object",
-                    properties: {
-                      success: { type: "boolean" },
-                      statusCode: { type: "number" },
-                      message: { type: "string" },
-                      data: {
-                        type: "object",
-                        properties: {
-                          id: { type: "number" },
-                          nombre: { type: "string" },
-                          descripcion: { type: "string", nullable: true },
-                          activo: { type: "boolean" },
-                          tallas: { type: "array", items: { type: "string" } },
-                          colores: { type: "array", items: { type: "string" } },
-                          createdAt: { type: "string", format: "date-time" },
-                          updatedAt: { type: "string", format: "date-time" }
-                        }
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    statusCode: { type: "number" },
+                    message: { type: "string" },
+                    data: {
+                      type: "object",
+                      properties: {
+                        id: { type: "number" },
+                        nombre: { type: "string" },
+                        descripcion: { type: "string", nullable: true },
+                        activo: { type: "boolean" },
+                        tallas: { type: "array", items: { type: "string" } },
+                        colores: { type: "array", items: { type: "string" } },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" }
                       }
                     }
                   }
                 }
               }
+            }
+          },
+          404: {
+            description: "Producto no encontrado",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
             },
           },
         },
@@ -247,22 +255,6 @@ export const productoDocs = {
           tallas: { type: "array", items: { type: "string" } },
           colores: { type: "array", items: { type: "string" } },
         },
-  
-        ErrorResponse: {
-          type: "object",
-          properties: {
-            success: { type: "boolean", default: false },
-            statusCode: { type: "number" },
-            message: { type: "string" },
-            errors: {
-              oneOf: [
-                { type: "array", items: { type: "string" } },
-                { type: "object" },
-                { type: "null" }
-              ]
-            }
-          }
-        }
       },
 
       ErrorResponse: {
