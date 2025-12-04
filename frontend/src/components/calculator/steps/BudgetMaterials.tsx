@@ -223,29 +223,29 @@ export default function BudgetMaterials() {
         {tempVariants.length > 0 && (
           <div className="mb-5">
             <p className="text-xs font-bold text-gray-700 mb-2 ml-1">
-              Lista de tallas agregadas
+              Lista de tallas agregadas:
             </p>
             <div className="space-y-2">
               {tempVariants.map((v, i) => (
                 <div
                   key={i}
-                  className="flex justify-between items-center bg-[#F3F0F5] p-3 rounded-xl text-sm"
+                  className="flex justify-between items-center bg-[#F3F0F5] p-3 rounded-xl text-sm border border-black"
                 >
-                  <div className="flex gap-4">
-                    <span className="font-medium text-gray-700">
-                      Talla: {v.size}
-                    </span>
-                    <span className="font-medium text-gray-700">
+                  <span className="font-medium text-gray-700">
+                    Talla: {v.size}
+                  </span>
+                  <div className="flex gap-4 items-center ">
+                    <span className="font-medium  text-gray-700">
                       Cantidad: {v.quantity}
                     </span>
+                    <button
+                      type="button"
+                      onClick={() => removeVariant(i)}
+                      className="bg-[#F3F0F5] hover:bg-gray-200 rounded p-1.5 text-gray-400 hover:text-red-500 transition-colors"
+                    >
+                      <Trash2 size={16} />
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => removeVariant(i)}
-                    className="text-gray-400 hover:text-red-500 transition-colors p-1"
-                  >
-                    <Trash2 size={16} />
-                  </button>
                 </div>
               ))}
             </div>
@@ -267,7 +267,7 @@ export default function BudgetMaterials() {
       <div className="space-y-3">
         {fields.length > 0 && (
           <p className="text-xs font-bold text-gray-700 mb-2 ml-1">
-            Lista de prendas agregadas
+            Lista de prendas agregadas:
           </p>
         )}
         {fields.map((field, index) => {
@@ -275,24 +275,26 @@ export default function BudgetMaterials() {
           return (
             <div
               key={field.id}
-              className="bg-[#F3F0F5] p-4 rounded-xl flex justify-between items-start text-sm border border-transparent hover:border-gray-200 transition-colors"
+              className="bg-[#F3F0F5] p-4 rounded-xl flex justify-between items-center text-sm border border-black"
             >
-              <div className="flex flex-col gap-2 flex-1">
-                <span className="font-bold text-gray-800 text-base">
-                  {material.name}
-                </span>
-                <div className="text-gray-600 text-sm flex flex-col gap-1">
-                  {material.variants?.map((v: MaterialVariant, i: number) => (
-                    <span key={i}>
-                      {v.size}, {v.quantity} uds.
-                    </span>
-                  ))}
-                </div>
+              <span className="font-bold text-gray-800 text-base shrink-0">
+                {material.name}
+              </span>
+              <div className="text-gray-600 text-sm flex flex-col gap-1">
+                {material.variants?.map((v: MaterialVariant, i: number) => (
+                  <span key={i}>{v.size}</span>
+                ))}
+              </div>
+
+              <div className="text-gray-600 text-sm flex flex-col gap-1">
+                {material.variants?.map((v: MaterialVariant, i: number) => (
+                  <span key={i}>{v.quantity} uds.</span>
+                ))}
               </div>
 
               <button
                 onClick={() => remove(index)}
-                className="text-gray-400 hover:text-red-500 transition-colors mt-0.5 p-1 hover:bg-white rounded-full shrink-0 ml-3"
+                className="bg-[#F3F0F5] hover:bg-gray-200 rounded p-1.5 text-gray-400 hover:text-red-500 transition-colors shrink-0"
               >
                 <Trash2 size={18} />
               </button>
