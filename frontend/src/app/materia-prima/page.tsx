@@ -20,15 +20,23 @@ export default function MateriaPrimaPage() {
   const router = useRouter();
   const {
     searchQuery,
-    selectedCategory,
     handleSearch,
-    handleCategoryToggle,
     handleAddMaterial,
   } = useMaterials();
-  const { fileInputRef, handleFileSelect, isModalOpen, handleCloseModal, handleRetry, handleUploadPDF, uploadInfo, uploadState } = usePDFUpload();
+  const {
+    fileInputRef,
+    handleFileSelect,
+    isModalOpen,
+    handleCloseModal,
+    handleRetry,
+    handleUploadPDF,
+    uploadInfo,
+    uploadState
+  } = usePDFUpload();
 
-  const handleTelaClick = () => {
-    router.push('/materia-prima/tela');
+  // Función genérica para navegar a cualquier categoría
+  const handleCategoryClick = (categoria: string) => {
+    router.push(`/materia-prima/${categoria}`);
   };
 
   if (!mounted) {
@@ -51,7 +59,7 @@ export default function MateriaPrimaPage() {
         onChange={handleFileSelect}
         className="hidden"
       />
-      
+
       <div className="flex-1 flex flex-col">
         <div className="w-full px-3 sm:px-4 md:px-6 py-3 sm:py-4 bg-[#9D86AC]">
           <SearchBar
@@ -76,17 +84,17 @@ export default function MateriaPrimaPage() {
                 <CategoryButton
                   label="Tela"
                   iconPath="/imageTela.png"
-                  onClick={handleTelaClick}
+                  onClick={() => handleCategoryClick('tela')}
                 />
                 <CategoryButton
                   label="Botones"
                   iconPath="/botones.png"
-                  onClick={() => handleCategoryToggle('botones')}
+                  onClick={() => handleCategoryClick('botones')}
                 />
                 <CategoryButton
                   label="Hilos"
                   iconPath="/hilos.png"
-                  onClick={() => handleCategoryToggle('hilos')}
+                  onClick={() => handleCategoryClick('hilos')}
                 />
                 <CategoryButton
                   label="Agregar material"
@@ -100,8 +108,6 @@ export default function MateriaPrimaPage() {
                   <UploadButton onClick={handleUploadPDF} className="w-full" />
                 </div>
               </div>
-
-              
             </div>
           </div>
         </main>
