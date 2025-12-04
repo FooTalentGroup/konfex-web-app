@@ -21,11 +21,29 @@ export default function GarmentAutocomplete({
 }: GarmentAutocompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const [resultados, setResultados] = useState<Producto[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const { searchProductos, loading } = useProductos();
-  const resultados = value.trim() ? searchProductos(value) : [];
+
+  // Efecto para buscar cuando cambia el valor
+  useEffect(() => {
+    const performSearch = async () => {
+      if (value.trim().length >= 2) {
+        const results = await searchProductos(value);
+        setResultados(results);
+        if (results.length > 0) {
+          setIsOpen(true);
+        }
+      } else {
+        setResultados([]);
+        setIsOpen(false);
+      }
+    };
+
+    performSearch();
+  }, [value, searchProductos]);
 
   // Cerrar dropdown al hacer click fuera
   useEffect(() => {
@@ -93,7 +111,7 @@ export default function GarmentAutocomplete({
   };
 
   const handleInputFocus = () => {
-    if (value.trim() && resultados.length > 0) {
+    if (value.trim().length >= 2 && resultados.length > 0) {
       setIsOpen(true);
     }
   };

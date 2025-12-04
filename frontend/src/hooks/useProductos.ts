@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { apiClient } from "@/config/apiClient";
 
 export interface Producto {
@@ -21,43 +21,53 @@ interface ApiResponse {
 
 export function useProductos() {
   const [productos, setProductos] = useState<Producto[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    const fetchProductos = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await apiClient<ApiResponse>("/productos");
-        
-        // Solo productos activos
-        const productosActivos = response.data.filter((p) => p.activo);
-        setProductos(productosActivos);
-      } catch (err) {
-        console.error("Error loading productos", err);
-        setError("Error al cargar productos");
-        setProductos([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const searchProductos = useCallback(async (query: string): Promise<Producto[]> => {
+    // Limpiar timeout anterior
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
 
-    fetchProductos();
-  }, []);
-
-  const searchProductos = (query: string): Producto[] => {
-    if (!query.trim()) {
+    // Si el query está vacío, retornar array vacío
+    if (!query || query.trim().length < 2) {
       return [];
     }
 
-    const searchTerm = query.toLowerCase().trim();
-    return productos.filter(
-      (producto) =>
-        producto.nombre.toLowerCase().includes(searchTerm) ||
-        producto.descripcion?.toLowerCase().includes(searchTerm)
-    );
-  };
+    return new Promise((resolve) => {
+      // Debounce: esperar 300ms antes de hacer la búsqueda
+      searchTimeoutRef.current = setTimeout(async () => {
+        try {
+          setLoading(true);
+          setError(null);
+          
+          const searchQuery = encodeURIComponent(query.trim());
+          const response = await apiClient<ApiResponse>(
+            `/productos/search?search=${searchQuery}&limit=10`
+          );
+          
+          resolve(response.data || []);
+        } catch (err) {
+          console.error("Error searching productos", err);
+          setError("Error al buscar productos");
+          resolve([]);
+        } finally {
+          setLoading(false);
+        }
+      }, 300);
+    });
+  }, []);
+
+  // Limpiar timeout al desmontar
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return {
     productos,
