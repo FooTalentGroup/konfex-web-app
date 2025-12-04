@@ -1,15 +1,18 @@
-import React from 'react';
+import React from "react";
 
 interface CalculatorTabsProps {
-  activeTab: 'details' | 'materials' | 'extras';
-  onTabChange: (tab: 'details' | 'materials' | 'extras') => void;
+  activeTab: "details" | "materials" | "extras";
+  onTabChange: (tab: "details" | "materials" | "extras") => void;
 }
 
-export default function CalculatorTabs({ activeTab, onTabChange }: CalculatorTabsProps) {
+export default function CalculatorTabs({
+  activeTab,
+  onTabChange,
+}: CalculatorTabsProps) {
   const tabs = [
-    { id: 'details', label: 'Detalle' },
-    { id: 'materials', label: 'Materiales' },
-    { id: 'extras', label: 'Adicional' },
+    { id: "details", label: "Info" },
+    { id: "materials", label: "Detalle" },
+    { id: "extras", label: "Adicional" },
   ];
 
   return (
@@ -17,11 +20,13 @@ export default function CalculatorTabs({ activeTab, onTabChange }: CalculatorTab
       {tabs.map((tab) => (
         <button
           key={tab.id}
-          onClick={() => onTabChange(tab.id as any)}
+          onClick={() =>
+            onTabChange(tab.id as "details" | "materials" | "extras")
+          }
           className={`flex-1 py-3 text-sm font-bold transition-colors relative ${
             activeTab === tab.id
-              ? 'text-[#8B709D]'
-              : 'text-gray-400 hover:text-gray-600'
+              ? "text-[#8B709D]"
+              : "text-gray-400 hover:text-gray-600"
           }`}
         >
           {tab.label}
