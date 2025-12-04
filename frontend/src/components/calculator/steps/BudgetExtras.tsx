@@ -100,7 +100,12 @@ export default function BudgetExtras() {
               <button
                 type="button"
                 onClick={() => setQty(Math.max(1, qty - 1))}
-                className="p-2 text-gray-500 hover:text-gray-800 hover:bg-white rounded-lg transition-all"
+                disabled={qty <= 1}
+                className={`p-2 rounded-lg transition-all ${
+                  qty <= 1
+                    ? "text-gray-300 cursor-not-allowed"
+                    : "text-gray-500 hover:text-gray-800 hover:bg-white"
+                }`}
               >
                 <Minus size={16} />
               </button>
@@ -108,12 +113,23 @@ export default function BudgetExtras() {
                 type="number"
                 value={qty}
                 onChange={(e) => {
-                  const val = parseInt(e.target.value) || 0;
-                  setQty(Math.max(1, val));
+                  const val = parseInt(e.target.value);
+                  if (isNaN(val) || val < 1) {
+                    setQty(1);
+                  } else {
+                    setQty(val);
+                  }
+                }}
+                onBlur={(e) => {
+                  const val = parseInt(e.target.value);
+                  if (isNaN(val) || val < 1) {
+                    setQty(1);
+                  }
                 }}
                 placeholder="00"
                 className="w-12 bg-transparent text-center text-sm outline-none font-bold text-gray-800 placeholder:text-gray-400"
                 min="1"
+                step="1"
               />
               <button
                 type="button"

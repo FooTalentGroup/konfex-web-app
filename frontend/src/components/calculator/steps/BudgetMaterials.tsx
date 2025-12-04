@@ -35,7 +35,7 @@ export default function BudgetMaterials() {
   const [currentQty, setCurrentQty] = useState(1);
 
   const addVariant = () => {
-    if (currentQty > 0) {
+    if (currentQty >= 1) {
       // Check if size already exists
       const existingIndex = tempVariants.findIndex(
         (v) => v.size === currentSize
@@ -64,7 +64,7 @@ export default function BudgetMaterials() {
     const finalName = tempName.trim() || "Prenda nueva";
     const finalVariants = [...tempVariants];
 
-    if (finalVariants.length === 0 && currentQty > 0) {
+    if (finalVariants.length === 0 && currentQty >= 1) {
       finalVariants.push({ size: currentSize, quantity: currentQty });
     }
 
@@ -79,7 +79,7 @@ export default function BudgetMaterials() {
     setTempName("");
     setTempPrice("35000");
     setTempVariants([]);
-    setCurrentQty(12);
+    setCurrentQty(1);
     setCurrentSize("M");
   };
 
@@ -183,15 +183,35 @@ export default function BudgetMaterials() {
               <button
                 type="button"
                 onClick={() => setCurrentQty(Math.max(1, currentQty - 1))}
-                className="p-2 text-gray-500 hover:text-gray-800 hover:bg-white rounded-lg transition-all"
+                disabled={currentQty <= 1}
+                className={`p-2 rounded-lg transition-all ${
+                  currentQty <= 1
+                    ? "text-gray-300 cursor-not-allowed"
+                    : "text-gray-500 hover:text-gray-800 hover:bg-white"
+                }`}
               >
                 <Minus size={16} />
               </button>
               <input
                 type="number"
                 value={currentQty}
-                onChange={(e) => setCurrentQty(parseInt(e.target.value) || 0)}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value);
+                  if (isNaN(val) || val < 1) {
+                    setCurrentQty(1);
+                  } else {
+                    setCurrentQty(val);
+                  }
+                }}
+                onBlur={(e) => {
+                  const val = parseInt(e.target.value);
+                  if (isNaN(val) || val < 1) {
+                    setCurrentQty(1);
+                  }
+                }}
                 className="w-12 bg-transparent text-center text-sm outline-none font-bold text-gray-800"
+                min="1"
+                step="1"
               />
               <button
                 type="button"
