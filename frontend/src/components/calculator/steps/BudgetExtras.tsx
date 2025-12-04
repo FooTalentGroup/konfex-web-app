@@ -25,7 +25,7 @@ export default function BudgetExtras() {
 
   const handleAddExtra = () => {
     if (!name.trim()) return;
-    const finalAmount = parseFloat(amount) || 0;
+    const finalAmount = Math.max(0, parseFloat(amount) || 0);
     append({ name: name, quantity: qty, amount: finalAmount });
     setName("");
     setQty(1);
@@ -33,10 +33,11 @@ export default function BudgetExtras() {
   };
 
   const extras = watch("extras") || [];
-  const shippingFeeValue = parseFloat(shippingFee) || 0;
+  const shippingFeeValue = Math.max(0, parseFloat(shippingFee) || 0);
   const totalExtras = extras.reduce(
     (sum: number, item: { quantity: number; amount: number }) => {
-      return sum + item.quantity * item.amount;
+      const itemAmount = Math.max(0, item.amount || 0);
+      return sum + item.quantity * itemAmount;
     },
     0
   );
@@ -66,9 +67,34 @@ export default function BudgetExtras() {
           <input
             type="number"
             value={shippingFee}
-            onChange={(e) => setShippingFee(e.target.value)}
+            onChange={(e) => {
+              const inputValue = e.target.value;
+              // Permitir campo vacío o solo el signo menos para poder borrar
+              if (inputValue === "" || inputValue === "-") {
+                // No permitir que se escriba el signo menos solo
+                if (inputValue === "-") {
+                  return;
+                }
+                setShippingFee("");
+              } else {
+                const val = parseFloat(inputValue);
+                // Solo permitir valores válidos >= 0
+                if (!isNaN(val) && val >= 0) {
+                  setShippingFee(inputValue);
+                }
+                // Si es negativo o inválido, no actualizar
+              }
+            }}
+            onBlur={(e) => {
+              const val = parseFloat(e.target.value);
+              if (isNaN(val) || val < 0) {
+                setShippingFee("");
+              }
+            }}
             placeholder="000.000"
             className="w-full bg-white border border-gray-200 rounded-xl p-3.5 pr-8 text-sm outline-none font-bold text-gray-800 text-right shadow-sm focus:border-[#8B709D] focus:ring-2 focus:ring-[#8B709D]/10 transition-all placeholder:font-normal"
+            min="0"
+            step="0.01"
           />
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold group-focus-within:text-[#8B709D] transition-colors">
             $
@@ -149,9 +175,34 @@ export default function BudgetExtras() {
               <input
                 type="number"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => {
+                  const inputValue = e.target.value;
+                  // Permitir campo vacío para poder borrar
+                  if (inputValue === "" || inputValue === "-") {
+                    // No permitir que se escriba el signo menos solo
+                    if (inputValue === "-") {
+                      return;
+                    }
+                    setAmount("");
+                  } else {
+                    const val = parseFloat(inputValue);
+                    // Solo permitir valores válidos >= 0
+                    if (!isNaN(val) && val >= 0) {
+                      setAmount(inputValue);
+                    }
+                    // Si es negativo o inválido, no actualizar
+                  }
+                }}
+                onBlur={(e) => {
+                  const val = parseFloat(e.target.value);
+                  if (isNaN(val) || val < 0) {
+                    setAmount("");
+                  }
+                }}
                 placeholder="000.000"
                 className="w-full bg-white border border-gray-200 rounded-xl p-3.5 pr-8 text-sm outline-none font-bold text-gray-800 text-right shadow-sm focus:border-[#8B709D] focus:ring-2 focus:ring-[#8B709D]/10 transition-all placeholder:font-normal"
+                min="0"
+                step="0.01"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold group-focus-within:text-[#8B709D] transition-colors">
                 $
