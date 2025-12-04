@@ -27,6 +27,8 @@ export default function CalculatorTemplate() {
       clientPhone: "",
       deliveryDate: "",
       desiredProfit: 0,
+      gastosNegocioId: undefined as number | undefined,
+      clienteId: undefined as number | undefined,
       materials: [],
       extras: [],
       observations: "",

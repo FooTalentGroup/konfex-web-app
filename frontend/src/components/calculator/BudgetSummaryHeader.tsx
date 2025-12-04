@@ -2,21 +2,26 @@ import React, { useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { MoreVertical, FileDown, FolderInput, Send, X } from 'lucide-react';
-import NavigationTabs from '../ui/NavigationTabs'; 
+import NavigationTabs from '../ui/NavigationTabs';
+import { presupuestoService } from '@/services/presupuesto.service';
+import { clienteService } from '@/services/cliente.service';
+import { useGastosNegocio } from '@/hooks/useGastosNegocio';
+import { mapFormDataToBackend } from '@/utils/presupuestoMapper'; 
 
 export default function BudgetSummaryHeader() {
   const { control, getValues, watch } = useFormContext(); 
   const router = useRouter();
+  const { gastosNegocio } = useGastosNegocio();
   
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const [isSaving, setIsSaving] = useState(false);
 
   const materials = useWatch({ control, name: 'materials' }) || [];
   const extras = useWatch({ control, name: 'extras' }) || [];
+  const gastosNegocioId = useWatch({ control, name: 'gastosNegocioId' });
+  const desiredProfit = useWatch({ control, name: 'desiredProfit' }) || 0;
   
- 
   const formData = watch(); 
-
 
   const totalMaterialsCost = materials.reduce((sum: number, item: any) => {
     const totalQty = item.variants?.reduce((qSum: number, v: any) => qSum + (v.quantity || 0), 0) || 0;
@@ -28,52 +33,103 @@ export default function BudgetSummaryHeader() {
   }, 0);
 
   const directCost = totalMaterialsCost + totalExtrasCost;
-  const indirectCosts = 0; 
-  const profit = 0; 
+  
+  // Calcular costos indirectos y ganancias si tenemos gastosNegocioId
+  const selectedGastosNegocio = gastosNegocio.find(g => g.id === gastosNegocioId);
+  const indirectCosts = selectedGastosNegocio 
+    ? (directCost * selectedGastosNegocio.porcentaje) / 100 
+    : 0;
+  const profit = (directCost * desiredProfit) / 100;
   const grandTotal = directCost + indirectCosts + profit;
 
 
-  const handleSendToBudgets = () => {
+  const handleSendToBudgets = async () => {
+    try {
+      setIsSaving(true);
+      const currentBudgetData = getValues();
 
-    const currentBudgetData = getValues();
+      // Validaciones básicas
+      if (!currentBudgetData.title?.trim()) {
+        alert("❌ Por favor ingresa un título para el presupuesto");
+        setIsMenuOpen(false);
+        return;
+      }
 
+      if (!currentBudgetData.clientName?.trim()) {
+        alert("❌ Por favor ingresa el nombre del cliente");
+        setIsMenuOpen(false);
+        return;
+      }
 
-    const budgetPayload = {
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-      clientInfo: {
-        name: currentBudgetData.clientName,
-        email: currentBudgetData.clientEmail,
-        phone: currentBudgetData.clientPhone,
-        deliveryDate: currentBudgetData.deliveryDate,
-      },
-      projectTitle: currentBudgetData.title,
-      items: {
-        materials: materials,
-        extras: extras,
-      },
-      financials: {
-        totalMaterials: totalMaterialsCost,
-        totalExtras: totalExtrasCost,
-        indirectCosts: indirectCosts,
-        profit: profit,
-        grandTotal: grandTotal,
-      },
-      observations: currentBudgetData.observations
-    };
+      if (!gastosNegocioId) {
+        alert("❌ Por favor selecciona los gastos de negocio");
+        setIsMenuOpen(false);
+        return;
+      }
 
-    //  Simular envío
-    console.log("🚀 Enviando datos a la ventana de Presupuestos:", budgetPayload);
-    
-    // localStorage para persistencia temporal entre pantallas
-    const existingBudgets = JSON.parse(localStorage.getItem('konfex_budgets') || '[]');
-    localStorage.setItem('konfex_budgets', JSON.stringify([...existingBudgets, budgetPayload]));
+      if (materials.length === 0) {
+        alert("❌ Por favor agrega al menos un material/prenda");
+        setIsMenuOpen(false);
+        return;
+      }
 
-    alert("✅ Presupuesto enviado a la sección de Presupuestos (Simulado)");
-    
-    // Redirigir a  presupuestos
-    router.push('/presupuestos');
-    setIsMenuOpen(false);
+      // Obtener o crear cliente
+      let clienteId = currentBudgetData.clienteId;
+      if (!clienteId) {
+        try {
+          const cliente = await clienteService.findOrCreate(
+            currentBudgetData.clientName,
+            {
+              email: currentBudgetData.clientEmail,
+              telefono: currentBudgetData.clientPhone,
+            }
+          );
+          clienteId = cliente.id;
+          // Guardar el clienteId en el formulario para futuras referencias
+          // (esto requeriría setValue del form, pero por ahora solo lo usamos para el payload)
+        } catch (error) {
+          console.error("Error al obtener/crear cliente:", error);
+          alert("❌ Error al procesar el cliente. Por favor intenta nuevamente.");
+          setIsMenuOpen(false);
+          return;
+        }
+      }
+
+      // Obtener gastos de negocio seleccionados
+      const selectedGastos = gastosNegocio.find(g => g.id === gastosNegocioId);
+      if (!selectedGastos) {
+        alert("❌ Error: No se encontraron los gastos de negocio seleccionados");
+        setIsMenuOpen(false);
+        return;
+      }
+
+      // Mapear datos del formulario al formato del backend
+      const payload = mapFormDataToBackend(
+        {
+          ...currentBudgetData,
+          clienteId,
+          gastosNegocioId,
+        },
+        selectedGastos
+      );
+
+      // Crear presupuesto en el backend
+      const createdPresupuesto = await presupuestoService.create(payload);
+
+      console.log("✅ Presupuesto creado exitosamente:", createdPresupuesto);
+      
+      alert(`✅ Presupuesto #${createdPresupuesto.numeroPresupuesto} creado exitosamente`);
+      
+      // Redirigir a presupuestos
+      router.push('/presupuestos');
+      setIsMenuOpen(false);
+    } catch (error) {
+      console.error("Error al crear presupuesto:", error);
+      const errorMessage = error instanceof Error ? error.message : "Error desconocido al crear presupuesto";
+      alert(`❌ Error: ${errorMessage}`);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleDownloadPDF = () => {
@@ -121,9 +177,17 @@ export default function BudgetSummaryHeader() {
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setIsMenuOpen(false)}/>
                   <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl ring-1 ring-black/5 p-2 z-50 text-left animate-in fade-in zoom-in-95 duration-200 origin-top-right">
-                    <button onClick={handleSendToBudgets} className="flex items-center gap-3 w-full p-3 hover:bg-[#F4E7FD] rounded-lg text-sm text-gray-700 transition-colors font-medium group">
-                      <div className="p-2 bg-[#F3F0F5] text-[#8B709D] rounded-lg group-hover:bg-white group-hover:shadow-sm transition-all"><FolderInput size={18} /></div>
-                      <span>Guardar en Presupuestos</span>
+                    <button 
+                      onClick={handleSendToBudgets} 
+                      disabled={isSaving}
+                      className={`flex items-center gap-3 w-full p-3 hover:bg-[#F4E7FD] rounded-lg text-sm text-gray-700 transition-colors font-medium group ${
+                        isSaving ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
+                    >
+                      <div className="p-2 bg-[#F3F0F5] text-[#8B709D] rounded-lg group-hover:bg-white group-hover:shadow-sm transition-all">
+                        <FolderInput size={18} />
+                      </div>
+                      <span>{isSaving ? 'Guardando...' : 'Guardar en Presupuestos'}</span>
                     </button>
                     <button onClick={handleDownloadPDF} className="flex items-center gap-3 w-full p-3 hover:bg-[#F4E7FD] rounded-lg text-sm text-gray-700 transition-colors font-medium mt-1 group">
                       <div className="p-2 bg-[#F3F0F5] text-[#8B709D] rounded-lg group-hover:bg-white group-hover:shadow-sm transition-all"><FileDown size={18} /></div>
@@ -155,7 +219,7 @@ export default function BudgetSummaryHeader() {
 
       {/* VISTA DE IMPRESIÓN PDF */}
       {/* Esta sección está oculta en pantalla (hidden) y solo aparece al imprimir (print:block) */}
-      <div className="hidden print:block fixed inset-0 bg-white z-[9999] p-8 text-black font-lato overflow-y-auto">
+      <div className="hidden print:block fixed inset-0 bg-white z-9999 p-8 text-black font-lato overflow-y-auto">
           
 
           <div className="flex justify-between items-end border-b-2 border-[#8B709D] pb-4 mb-8">

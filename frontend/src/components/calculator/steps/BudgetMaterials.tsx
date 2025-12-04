@@ -12,6 +12,7 @@ interface MaterialVariant {
 }
 
 interface Material {
+  productoId?: number;
   name: string;
   unitPrice: number;
   variants: MaterialVariant[];
@@ -26,6 +27,9 @@ export default function BudgetMaterials() {
   });
 
   const [tempName, setTempName] = useState("");
+  const [tempProductoId, setTempProductoId] = useState<number | undefined>(
+    undefined
+  );
   const [tempPrice, setTempPrice] = useState("35000");
   const [tempVariants, setTempVariants] = useState<
     { size: string; quantity: number }[]
@@ -70,13 +74,22 @@ export default function BudgetMaterials() {
 
     if (!tempPrice || finalVariants.length === 0) return;
 
+    // Validar que tenga productoId si se seleccionó desde el autocomplete
+    if (!tempProductoId && tempName.trim()) {
+      console.warn(
+        "⚠️ Material agregado sin productoId. Se recomienda seleccionar desde el autocomplete."
+      );
+    }
+
     append({
+      productoId: tempProductoId,
       name: finalName,
       unitPrice: parseFloat(tempPrice) || 0,
       variants: finalVariants,
     });
 
     setTempName("");
+    setTempProductoId(undefined);
     setTempPrice("35000");
     setTempVariants([]);
     setCurrentQty(1);
@@ -117,6 +130,9 @@ export default function BudgetMaterials() {
             value={tempName}
             onChange={setTempName}
             onSelect={(producto: Producto) => {
+              // Guardar el productoId y nombre
+              setTempName(producto.nombre);
+              setTempProductoId(producto.id);
               // Si el producto tiene tallas disponibles, podemos pre-seleccionar la primera
               if (producto.tallas && producto.tallas.length > 0) {
                 setCurrentSize(producto.tallas[0]);
