@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { Trash2, Plus, Minus, ChevronDown } from "lucide-react";
 import CircularAddButton from "@/components/common/CircularAddButton";
+import GarmentAutocomplete from "../GarmentAutocomplete";
+import type { Producto } from "@/hooks/useProductos";
 
 interface MaterialVariant {
   size: string;
@@ -116,19 +118,18 @@ export default function BudgetMaterials() {
           <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">
             Nombre prenda
           </label>
-          <div className="relative">
-            <input
-              type="text"
-              value={tempName}
-              onChange={(e) => setTempName(e.target.value)}
-              placeholder="Ej.: Blusa manga larga - azul"
-              className="w-full bg-[#F3F0F5] rounded-xl p-3.5 pr-10 text-sm outline-none text-gray-800 placeholder:text-gray-400 border border-transparent focus:border-gray-200 transition-colors"
-            />
-            <ChevronDown
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-              size={18}
-            />
-          </div>
+          <GarmentAutocomplete
+            value={tempName}
+            onChange={setTempName}
+            onSelect={(producto: Producto) => {
+              // Si el producto tiene tallas disponibles, podemos pre-seleccionar la primera
+              if (producto.tallas && producto.tallas.length > 0) {
+                setCurrentSize(producto.tallas[0]);
+              }
+              // Aquí podrías cargar el precio desde colecciones si está disponible
+            }}
+            placeholder="Ej.: Blusa manga larga - azul"
+          />
         </div>
 
         {/* Precio unitario section */}
@@ -166,7 +167,7 @@ export default function BudgetMaterials() {
               <select
                 value={currentSize}
                 onChange={(e) => setCurrentSize(e.target.value)}
-                className="w-full bg-[#F3F0F5] rounded-xl p-3 text-sm appearance-none outline-none text-gray-700 font-medium cursor-pointer"
+                className="w-full bg-[#F3F0F5] rounded-xl p-3 text-sm appearance-none outline-none text-gray-700 font-medium cursor-pointer border border-black"
               >
                 <option value="S">S</option>
                 <option value="M">M</option>
@@ -183,7 +184,7 @@ export default function BudgetMaterials() {
             <label className="block text-xs font-bold text-gray-700 mb-1.5 ml-1">
               Cantidad
             </label>
-            <div className="flex items-center bg-[#F3F0F5] rounded-xl p-1 justify-between">
+            <div className="flex items-center bg-[#F3F0F5] rounded-xl p-1 justify-between border border-black">
               <button
                 type="button"
                 onClick={() => setCurrentQty(Math.max(1, currentQty - 1))}
