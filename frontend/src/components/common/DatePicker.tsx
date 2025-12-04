@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface DatePickerProps {
@@ -43,23 +44,104 @@ export default function DatePicker({
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const containerRef = useRef<HTMLDivElement>(null);
+  const [calendarPosition, setCalendarPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
+  const [mounted, setMounted] = useState(false);
 
-  // Cerrar el calendario al hacer clic fuera
+  // Calcular posición del calendario cuando se abre
+  useEffect(() => {
+    if (isOpen && containerRef.current && mounted) {
+      const rect = containerRef.current.getBoundingClientRect();
+      
+      const calendarHeight = 350; // Altura aproximada del calendario
+      const calendarWidth = 300;
+      const spacing = 8; // Espacio entre el input y el calendario
+      const padding = 10; // Padding mínimo desde los bordes
+      
+      // Calcular posición horizontal
+      let left = rect.left;
+      const windowWidth = window.innerWidth;
+      
+      // Ajustar horizontalmente para que no se salga de la pantalla
+      if (left + calendarWidth > windowWidth - padding) {
+        left = windowWidth - calendarWidth - padding;
+      }
+      if (left < padding) {
+        left = padding;
+      }
+      
+      // Calcular posición vertical
+      let top = rect.bottom + spacing;
+      const windowHeight = window.innerHeight;
+      const spaceBelow = windowHeight - rect.bottom;
+      const spaceAbove = rect.top;
+      
+      // Si no hay espacio abajo, intentar mostrar arriba
+      if (spaceBelow < calendarHeight + spacing) {
+        if (spaceAbove > calendarHeight + spacing) {
+          // Hay espacio arriba, mostrar arriba
+          top = rect.top - calendarHeight - spacing;
+        } else {
+          // No hay espacio ni arriba ni abajo, centrar verticalmente
+          top = Math.max(
+            padding,
+            (windowHeight - calendarHeight) / 2
+          );
+        }
+      }
+      
+      // Asegurar que no se salga por arriba
+      if (top < padding) {
+        top = padding;
+      }
+      
+      // Asegurar que no se salga por abajo
+      if (top + calendarHeight > windowHeight - padding) {
+        top = windowHeight - calendarHeight - padding;
+      }
+      
+      setCalendarPosition({ top, left });
+    }
+  }, [isOpen, mounted]);
+
+  // Cerrar el calendario al hacer clic fuera o al hacer scroll
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
+      const target = event.target as Node;
       if (
         containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
+        !containerRef.current.contains(target) &&
+        !(target as Element).closest('[data-calendar-popup]')
       ) {
         setIsOpen(false);
       }
     }
 
+    function handleScroll() {
+      setIsOpen(false);
+    }
+
     if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+      // Usar setTimeout para evitar que el clic que abre el calendario lo cierre inmediatamente
+      setTimeout(() => {
+        document.addEventListener("mousedown", handleClickOutside);
+      }, 0);
+      window.addEventListener("scroll", handleScroll, true);
+      window.addEventListener("resize", handleScroll);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+        window.removeEventListener("scroll", handleScroll, true);
+        window.removeEventListener("resize", handleScroll);
+      };
     }
   }, [isOpen]);
+
+  // Verificar que el componente esté montado (para el portal)
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Sincronizar el mes/año actual con la fecha seleccionada
   useEffect(() => {
@@ -214,92 +296,107 @@ export default function DatePicker({
         />
       </div>
 
-      {isOpen && !disabled && (
-        <div className="absolute z-50 mt-2 bg-white rounded-lg shadow-xl border border-[#D5A1F7] p-4 min-w-[300px]">
-          {/* Header del calendario */}
-          <div className="flex items-center justify-between mb-4">
-            <button
-              onClick={handlePrevMonth}
-              className="p-1 hover:bg-gray-100 rounded transition-colors"
-              type="button"
-            >
-              <ChevronLeft size={20} className="text-gray-600" />
-            </button>
-            <div className="text-sm font-bold text-gray-800">
-              {MONTHS[currentMonth]} {currentYear}
-            </div>
-            <button
-              onClick={handleNextMonth}
-              className="p-1 hover:bg-gray-100 rounded transition-colors"
-              type="button"
-            >
-              <ChevronRight size={20} className="text-gray-600" />
-            </button>
-          </div>
-
-          {/* Días de la semana */}
-          <div className="grid grid-cols-7 gap-1 mb-2">
-            {WEEKDAYS.map((day) => (
-              <div
-                key={day}
-                className="text-xs font-semibold text-gray-500 text-center py-2"
+      {mounted &&
+        isOpen &&
+        !disabled &&
+        calendarPosition &&
+        createPortal(
+          <div
+            data-calendar-popup
+            className="fixed bg-white rounded-lg shadow-2xl border border-[#D5A1F7] p-4 min-w-[300px]"
+            style={{
+              top: `${calendarPosition.top}px`,
+              left: `${calendarPosition.left}px`,
+              zIndex: 10000,
+            }}
+          >
+            {/* Header del calendario */}
+            <div className="flex items-center justify-between mb-4">
+              <button
+                onClick={handlePrevMonth}
+                className="p-1 hover:bg-gray-100 rounded transition-colors"
+                type="button"
               >
-                {day}
+                <ChevronLeft size={20} className="text-gray-600" />
+              </button>
+              <div className="text-sm font-bold text-gray-800">
+                {MONTHS[currentMonth]} {currentYear}
               </div>
-            ))}
-          </div>
+              <button
+                onClick={handleNextMonth}
+                className="p-1 hover:bg-gray-100 rounded transition-colors"
+                type="button"
+              >
+                <ChevronRight size={20} className="text-gray-600" />
+              </button>
+            </div>
 
-          {/* Días del calendario */}
-          <div className="grid grid-cols-7 gap-1">
-            {days.map((day, index) => {
-              if (day === null) {
-                return <div key={`empty-${index}`} className="aspect-square" />;
-              }
-
-              const disabled = isDateDisabled(day);
-              const selected = isDateSelected(day);
-              const today = isToday(day);
-
-              return (
-                <button
-                  key={`day-${day}`}
-                  onClick={() => !disabled && handleDateSelect(day)}
-                  disabled={disabled}
-                  type="button"
-                  className={`
-                    aspect-square flex items-center justify-center text-sm rounded transition-colors
-                    ${
-                      disabled
-                        ? "text-gray-300 cursor-not-allowed"
-                        : selected
-                        ? "bg-[#B65CF2] text-white font-semibold"
-                        : today
-                        ? "bg-[#E9D5FF] text-[#B65CF2] font-semibold"
-                        : "text-gray-700 hover:bg-[#F3F0F5]"
-                    }
-                  `}
+            {/* Días de la semana */}
+            <div className="grid grid-cols-7 gap-1 mb-2">
+              {WEEKDAYS.map((day) => (
+                <div
+                  key={day}
+                  className="text-xs font-semibold text-gray-500 text-center py-2"
                 >
                   {day}
-                </button>
-              );
-            })}
-          </div>
+                </div>
+              ))}
+            </div>
 
-          {/* Botón para limpiar fecha */}
-          {value && (
-            <button
-              onClick={() => {
-                onChange("");
-                setIsOpen(false);
-              }}
-              type="button"
-              className="mt-3 w-full text-xs text-gray-500 hover:text-gray-700 py-1"
-            >
-              Limpiar fecha
-            </button>
-          )}
-        </div>
-      )}
+            {/* Días del calendario */}
+            <div className="grid grid-cols-7 gap-1">
+              {days.map((day, index) => {
+                if (day === null) {
+                  return (
+                    <div key={`empty-${index}`} className="aspect-square" />
+                  );
+                }
+
+                const disabled = isDateDisabled(day);
+                const selected = isDateSelected(day);
+                const today = isToday(day);
+
+                return (
+                  <button
+                    key={`day-${day}`}
+                    onClick={() => !disabled && handleDateSelect(day)}
+                    disabled={disabled}
+                    type="button"
+                    className={`
+                      aspect-square flex items-center justify-center text-sm rounded transition-colors
+                      ${
+                        disabled
+                          ? "text-gray-300 cursor-not-allowed"
+                          : selected
+                          ? "bg-[#B65CF2] text-white font-semibold"
+                          : today
+                          ? "bg-[#E9D5FF] text-[#B65CF2] font-semibold"
+                          : "text-gray-700 hover:bg-[#F3F0F5]"
+                      }
+                    `}
+                  >
+                    {day}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Botón para limpiar fecha */}
+            {value && (
+              <button
+                onClick={() => {
+                  onChange("");
+                  setIsOpen(false);
+                }}
+                type="button"
+                className="mt-3 w-full text-xs text-gray-500 hover:text-gray-700 py-1"
+              >
+                Limpiar fecha
+              </button>
+            )}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
