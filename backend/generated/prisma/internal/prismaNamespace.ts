@@ -1752,6 +1752,7 @@ export const PresupuestoScalarFieldEnum = {
   iva: 'iva',
   totalFinal: 'totalFinal',
   notas: 'notas',
+  origen: 'origen',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

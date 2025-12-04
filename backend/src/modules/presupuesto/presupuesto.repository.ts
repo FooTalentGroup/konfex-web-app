@@ -32,6 +32,7 @@ interface CreatePresupuestoData {
     iva?: number;
     totalFinal?: number;
     notas?: string | null;
+    origen?: string;
     detalles?: PresupuestoDetalleInput[];
     adicionales?: AdicionalInput[];
   };
@@ -51,6 +52,7 @@ interface UpdatePresupuestoData {
     iva?: number;
     totalFinal?: number;
     notas?: string | null;
+    origen?: string;
     detalles?: PresupuestoDetalleInput[];
     adicionales?: AdicionalInput[];
   };

@@ -121,6 +121,7 @@ model Presupuesto {
   iva                        Float                @default(0)
   totalFinal                 Float                @default(0)
   notas                      String?
+  origen                     String               @default("manual") // "telegram" | "manual"
   createdAt                  DateTime             @default(now())
   updatedAt                  DateTime             @updatedAt
   pedido                     Pedido?

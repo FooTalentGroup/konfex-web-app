@@ -1,24 +1,20 @@
 // presupuesto.service.ts
 import { AppError } from "@/common/errors";
-import prisma from "../../config/prisma";
 
+import prisma from "../../config/prisma";
+import { gastosNegocioService } from "../gastos-negocio/gastos-negocio.service";
+import { impuestoGeneralService } from "../impuesto-general/impuesto-general.service";
 import { PresupuestoRepository } from "./presupuesto.repository";
 import type {
   CreatePresupuestoRequestDto,
   PartialUpdatePresupuestoRequestDto,
   UpdatePresupuestoRequestDto,
 } from "./presupuesto.schema";
-import {
-  applyGastosYMargen,
-  applyIVA,
-  calcTotalCostoFromDetalles,
-} from "./utils";
-import { impuestoGeneralService } from "../impuesto-general/impuesto-general.service";
-import { gastosNegocioService } from "../gastos-negocio/gastos-negocio.service";
+import { applyGastosYMargen, applyIVA, calcTotalCostoFromDetalles } from "./utils";
 
 /**
  * Helper function: Crea un pedido automáticamente cuando un presupuesto se aprueba
- * 
+ *
  * Mejoras implementadas:
  * 1. Calcula precioUnitario usando totalFinal del presupuesto (proporcional)
  * 3. Agrega logs detallados para auditoría
@@ -29,22 +25,25 @@ async function createPedidoFromPresupuesto(
   presupuesto: {
     clienteId: number | null;
     fechaVencimiento: Date | null;
-  },
+  }
 ) {
   const startTime = Date.now();
-  
+
   // Log de inicio
-  console.log(`[PEDIDO_AUTO] Iniciando creación automática de pedido para presupuesto #${presupuestoId}`, {
-    timestamp: new Date().toISOString(),
-    presupuestoId,
-    clienteId: presupuesto.clienteId,
-  });
+  console.log(
+    `[PEDIDO_AUTO] Iniciando creación automática de pedido para presupuesto #${presupuestoId}`,
+    {
+      timestamp: new Date().toISOString(),
+      presupuestoId,
+      clienteId: presupuesto.clienteId,
+    }
+  );
 
   // Validar que tenga clienteId (requerido para pedido)
   if (!presupuesto.clienteId) {
     const error = new AppError(
       "No se puede crear un pedido sin cliente asociado al presupuesto",
-      400,
+      400
     );
     console.error(`[PEDIDO_AUTO] Error de validación para presupuesto #${presupuestoId}:`, {
       error: error.message,
@@ -80,10 +79,7 @@ async function createPedidoFromPresupuesto(
   });
 
   if (!presupuestoCompleto) {
-    const error = new AppError(
-      "Presupuesto no encontrado",
-      404,
-    );
+    const error = new AppError("Presupuesto no encontrado", 404);
     console.error(`[PEDIDO_AUTO] Error: Presupuesto #${presupuestoId} no encontrado`);
     throw error;
   }
@@ -92,10 +88,7 @@ async function createPedidoFromPresupuesto(
   const detallesPresupuesto = presupuestoCompleto.detalles || [];
 
   if (detallesPresupuesto.length === 0) {
-    const error = new AppError(
-      "No se puede crear un pedido sin detalles en el presupuesto",
-      400,
-    );
+    const error = new AppError("No se puede crear un pedido sin detalles en el presupuesto", 400);
     console.error(`[PEDIDO_AUTO] Error: Presupuesto #${presupuestoId} sin detalles`);
     throw error;
   }
@@ -103,7 +96,7 @@ async function createPedidoFromPresupuesto(
   // Calcular el total de costo de todos los detalles (suma base)
   const totalCostoDetalles = detallesPresupuesto.reduce(
     (sum, detalle) => sum + detalle.cantidad * detalle.costoUnitario,
-    0,
+    0
   );
 
   // Calcular el precio unitario proporcional basado en totalFinal
@@ -240,7 +233,9 @@ export const PresupuestoService = {
         gastosNegocio: true,
       },
     });
-    if (!presupuesto) throw new AppError("Presupuesto no encontrado", 404);
+    if (!presupuesto) {
+      throw new AppError("Presupuesto no encontrado", 404);
+    }
     return presupuesto;
   },
 
@@ -259,32 +254,50 @@ export const PresupuestoService = {
       notas,
       detalles,
       adicionales,
+      origen: origenFromPayload = "manual",
     } = payload;
+
+    // Detectar origen automáticamente si no se especificó explícitamente
+    let origen = origenFromPayload;
+
+    // Si el origen no se especificó y hay un cliente asociado,
+    // verificar si el cliente tiene mensajes de Telegram
+    if (origen === "manual" && clienteId) {
+      const clienteConTelegram = await prisma.cliente.findUnique({
+        where: { id: clienteId },
+        include: {
+          telegramMessages: {
+            take: 1, // Solo necesitamos saber si existe al menos uno
+            where: {
+              source: "telegram",
+            },
+          },
+        },
+      });
+
+      // Si el cliente tiene mensajes de Telegram, el presupuesto es de origen Telegram
+      if (clienteConTelegram?.telegramMessages && clienteConTelegram.telegramMessages.length > 0) {
+        origen = "telegram";
+        console.log(
+          `[PRESUPUESTO] Origen detectado automáticamente como "telegram" para cliente #${clienteId}`
+        );
+      }
+    }
 
     // Obtener el porcentaje de gastosNegocio
     const gastosNegocio = await gastosNegocioService.getById(gastosNegocioId);
     const gastosIndirectosPorcentaje = gastosNegocio.porcentaje;
 
-    let totalCosto =
-      typeof totalCostoFromClient === "number" ? totalCostoFromClient : 0;
+    let totalCosto = typeof totalCostoFromClient === "number" ? totalCostoFromClient : 0;
     let costosIndirectos =
-      typeof costosIndirectosFromClient === "number"
-        ? costosIndirectosFromClient
-        : 0;
-    let ganancias =
-      typeof gananciasFromClient === "number" ? gananciasFromClient : 0;
+      typeof costosIndirectosFromClient === "number" ? costosIndirectosFromClient : 0;
+    let ganancias = typeof gananciasFromClient === "number" ? gananciasFromClient : 0;
 
     // Si vienen detalles, calculamos totales desde los detalles
     if (Array.isArray(detalles) && detalles.length > 0) {
       totalCosto = calcTotalCostoFromDetalles(detalles);
-      const {
-        costosIndirectos: costosCalculados,
-        ganancias: gananciasCalculadas,
-      } = applyGastosYMargen(
-        totalCosto,
-        gastosIndirectosPorcentaje,
-        margenGananciaPorcentaje,
-      );
+      const { costosIndirectos: costosCalculados, ganancias: gananciasCalculadas } =
+        applyGastosYMargen(totalCosto, gastosIndirectosPorcentaje, margenGananciaPorcentaje);
       costosIndirectos = costosCalculados;
       ganancias = gananciasCalculadas;
     }
@@ -298,11 +311,13 @@ export const PresupuestoService = {
       const subtotal = totalCosto + costosIndirectos + ganancias;
       const { iva: ivaCalculado, totalFinal: totalFinalCalculado } = applyIVA(
         subtotal,
-        impuestoActivo.porcentaje,
+        impuestoActivo.porcentaje
       );
       iva = ivaCalculado;
       totalFinal = totalFinalCalculado;
-    } catch (error) {}
+    } catch {
+      // Si no hay impuesto general configurado, iva y totalFinal quedan en 0 y subtotal respectivamente
+    }
     const numeroPresupuesto = await PresupuestoService.getNextNumero();
 
     const created = await PresupuestoRepository.create({
@@ -310,9 +325,7 @@ export const PresupuestoService = {
         numeroPresupuesto,
         nombre: nombre ?? null,
         clienteId: clienteId ?? null,
-        fechaVencimiento: fechaVencimiento
-          ? new Date(fechaVencimiento)
-          : undefined,
+        fechaVencimiento: fechaVencimiento ? new Date(fechaVencimiento) : undefined,
         estado,
         margenGananciaPorcentaje,
         gastosNegocioId,
@@ -322,6 +335,7 @@ export const PresupuestoService = {
         iva,
         totalFinal,
         notas,
+        origen,
         detalles,
         adicionales,
       },
@@ -330,12 +344,15 @@ export const PresupuestoService = {
     // Si el presupuesto se crea directamente como ACEPTADO, crear el pedido automáticamente
     if (estado === "ACEPTADO" && created.clienteId) {
       try {
-        console.log(`[PRESUPUESTO] Presupuesto #${created.numeroPresupuesto} creado como ACEPTADO, creando pedido automáticamente`, {
-          presupuestoId: created.id,
-          numeroPresupuesto: created.numeroPresupuesto,
-          clienteId: created.clienteId,
-          totalFinal: created.totalFinal,
-        });
+        console.log(
+          `[PRESUPUESTO] Presupuesto #${created.numeroPresupuesto} creado como ACEPTADO, creando pedido automáticamente`,
+          {
+            presupuestoId: created.id,
+            numeroPresupuesto: created.numeroPresupuesto,
+            clienteId: created.clienteId,
+            totalFinal: created.totalFinal,
+          }
+        );
         await createPedidoFromPresupuesto(created.id, {
           clienteId: created.clienteId,
           fechaVencimiento: created.fechaVencimiento,
@@ -350,7 +367,7 @@ export const PresupuestoService = {
             error: error instanceof Error ? error.message : String(error),
             stack: error instanceof Error ? error.stack : undefined,
             timestamp: new Date().toISOString(),
-          },
+          }
         );
       }
     }
@@ -363,13 +380,16 @@ export const PresupuestoService = {
     const existing = await PresupuestoRepository.findById(id, {
       include: { pedido: true, gastosNegocio: true },
     });
-    if (!existing) throw new AppError("Presupuesto no encontrado", 404);
+    if (!existing) {
+      throw new AppError("Presupuesto no encontrado", 404);
+    }
 
-    if (existing.pedido)
+    if (existing.pedido) {
       throw new AppError(
         "No se puede modificar un presupuesto que ya tiene un pedido asociado",
-        400,
+        400
       );
+    }
 
     const {
       nombre,
@@ -384,36 +404,26 @@ export const PresupuestoService = {
       notas,
       detalles,
       adicionales,
+      origen,
     } = payload;
 
     // Obtener el porcentaje de gastosNegocio (usar el nuevo si viene, sino el existente)
     const gastosNegocioIdToUse = gastosNegocioId ?? existing.gastosNegocioId;
-    const gastosNegocio =
-      await gastosNegocioService.getById(gastosNegocioIdToUse);
+    const gastosNegocio = await gastosNegocioService.getById(gastosNegocioIdToUse);
     const gastosIndirectosPorcentaje = gastosNegocio.porcentaje;
 
     // Totales se inicializan en base a lo enviado por el cliente
-    let totalCosto =
-      typeof totalCostoFromClient === "number" ? totalCostoFromClient : 0;
+    let totalCosto = typeof totalCostoFromClient === "number" ? totalCostoFromClient : 0;
     let costosIndirectos =
-      typeof costosIndirectosFromClient === "number"
-        ? costosIndirectosFromClient
-        : 0;
-    let ganancias =
-      typeof gananciasFromClient === "number" ? gananciasFromClient : 0;
+      typeof costosIndirectosFromClient === "number" ? costosIndirectosFromClient : 0;
+    let ganancias = typeof gananciasFromClient === "number" ? gananciasFromClient : 0;
 
     // Si vienen detalles, recalculamos todo (regla de negocio)
     if (Array.isArray(detalles) && detalles.length > 0) {
       totalCosto = calcTotalCostoFromDetalles(detalles);
 
-      const {
-        costosIndirectos: costosCalculados,
-        ganancias: gananciasCalculadas,
-      } = applyGastosYMargen(
-        totalCosto,
-        gastosIndirectosPorcentaje,
-        margenGananciaPorcentaje,
-      );
+      const { costosIndirectos: costosCalculados, ganancias: gananciasCalculadas } =
+        applyGastosYMargen(totalCosto, gastosIndirectosPorcentaje, margenGananciaPorcentaje);
 
       costosIndirectos = costosCalculados;
       ganancias = gananciasCalculadas;
@@ -427,20 +437,20 @@ export const PresupuestoService = {
       const subtotal = totalCosto + costosIndirectos + ganancias;
       const { iva: ivaCalculado, totalFinal: totalFinalCalculado } = applyIVA(
         subtotal,
-        impuestoActivo.porcentaje,
+        impuestoActivo.porcentaje
       );
       iva = ivaCalculado;
       totalFinal = totalFinalCalculado;
-    } catch (error) {}
+    } catch {
+      // Si no hay impuesto general configurado, iva y totalFinal quedan en 0 y subtotal respectivamente
+    }
 
     // Actualizar en DB
     const updated = await PresupuestoRepository.update(id, {
       data: {
         nombre: nombre ?? null,
         clienteId: clienteId ?? null,
-        fechaVencimiento: fechaVencimiento
-          ? new Date(fechaVencimiento)
-          : undefined,
+        fechaVencimiento: fechaVencimiento ? new Date(fechaVencimiento) : undefined,
         estado,
         margenGananciaPorcentaje,
         gastosNegocioId: gastosNegocioIdToUse,
@@ -450,6 +460,7 @@ export const PresupuestoService = {
         iva,
         totalFinal,
         notas,
+        origen: origen ?? existing.origen,
         detalles,
         adicionales,
       },
@@ -457,20 +468,21 @@ export const PresupuestoService = {
 
     // Si el estado cambió a ACEPTADO y no tiene pedido asociado, crear el pedido automáticamente
     const estadoCambioAceptado =
-      estado === "ACEPTADO" &&
-      existing.estado !== "ACEPTADO" &&
-      !existing.pedido;
+      estado === "ACEPTADO" && existing.estado !== "ACEPTADO" && !existing.pedido;
 
     if (estadoCambioAceptado && updated.clienteId) {
       try {
-        console.log(`[PRESUPUESTO] Estado cambiado a ACEPTADO para presupuesto #${updated.numeroPresupuesto}, creando pedido automáticamente`, {
-          presupuestoId: updated.id,
-          numeroPresupuesto: updated.numeroPresupuesto,
-          estadoAnterior: existing.estado,
-          estadoNuevo: estado,
-          clienteId: updated.clienteId,
-          totalFinal: updated.totalFinal,
-        });
+        console.log(
+          `[PRESUPUESTO] Estado cambiado a ACEPTADO para presupuesto #${updated.numeroPresupuesto}, creando pedido automáticamente`,
+          {
+            presupuestoId: updated.id,
+            numeroPresupuesto: updated.numeroPresupuesto,
+            estadoAnterior: existing.estado,
+            estadoNuevo: estado,
+            clienteId: updated.clienteId,
+            totalFinal: updated.totalFinal,
+          }
+        );
         await createPedidoFromPresupuesto(updated.id, {
           clienteId: updated.clienteId,
           fechaVencimiento: updated.fechaVencimiento,
@@ -485,7 +497,7 @@ export const PresupuestoService = {
             error: error instanceof Error ? error.message : String(error),
             stack: error instanceof Error ? error.stack : undefined,
             timestamp: new Date().toISOString(),
-          },
+          }
         );
       }
     }
@@ -494,56 +506,48 @@ export const PresupuestoService = {
   },
 
   // Actualiza parcialmente un presupuesto - solo la informacion que recibe
-  partialUpdate: async (
-    id: number,
-    payload: PartialUpdatePresupuestoRequestDto,
-  ) => {
+  partialUpdate: async (id: number, payload: PartialUpdatePresupuestoRequestDto) => {
     const existing = await PresupuestoRepository.findById(id, {
       include: { pedido: true, gastosNegocio: true },
     });
-    if (!existing) throw new AppError("Presupuesto no encontrado", 404);
+    if (!existing) {
+      throw new AppError("Presupuesto no encontrado", 404);
+    }
 
-    if (existing.pedido)
+    if (existing.pedido) {
       throw new AppError(
         "No se puede modificar un presupuesto que ya tiene un pedido asociado",
-        400,
+        400
       );
+    }
 
     // Obtener el porcentaje de gastosNegocio (usar el nuevo si viene, sino el existente)
-    const gastosNegocioIdToUse =
-      payload.gastosNegocioId ?? existing.gastosNegocioId;
-    const gastosNegocio = await gastosNegocioService.getById(
-      gastosNegocioIdToUse as number,
-    );
+    const gastosNegocioIdToUse = payload.gastosNegocioId ?? existing.gastosNegocioId;
+    const gastosNegocio = await gastosNegocioService.getById(gastosNegocioIdToUse);
     const gastosIndirectosPorcentaje = gastosNegocio.porcentaje;
 
     // Merge valores actuales con payload para cálculos
-    const merged = {
-      margenGananciaPorcentaje:
-        payload.margenGananciaPorcentaje ?? existing.margenGananciaPorcentaje,
-      gastosIndirectosPorcentaje,
-      detalles: payload.detalles ?? existing.detalles,
-      totalCosto: payload.totalCosto ?? existing.totalCosto,
-      costosIndirectos: payload.costosIndirectos ?? existing.costosIndirectos,
-      ganancias: payload.ganancias ?? existing.ganancias,
-    } as any;
+    const margenGananciaPorcentaje =
+      payload.margenGananciaPorcentaje ?? existing.margenGananciaPorcentaje;
+    const totalCostoFromMerged =
+      typeof payload.totalCosto === "number" ? payload.totalCosto : Number(existing.totalCosto);
+    const costosIndirectosFromMerged =
+      typeof payload.costosIndirectos === "number"
+        ? payload.costosIndirectos
+        : Number(existing.costosIndirectos);
+    const gananciasFromMerged =
+      typeof payload.ganancias === "number" ? payload.ganancias : Number(existing.ganancias);
 
-    let totalCosto = merged.totalCosto;
-    let costosIndirectos = merged.costosIndirectos;
-    let ganancias = merged.ganancias;
+    let totalCosto: number = totalCostoFromMerged;
+    let costosIndirectos: number = costosIndirectosFromMerged;
+    let ganancias: number = gananciasFromMerged;
 
     // recalcular totales
     if (payload.detalles !== undefined) {
       if (Array.isArray(payload.detalles) && payload.detalles.length > 0) {
         totalCosto = calcTotalCostoFromDetalles(payload.detalles);
-        const {
-          costosIndirectos: costosCalculados,
-          ganancias: gananciasCalculadas,
-        } = applyGastosYMargen(
-          totalCosto,
-          merged.gastosIndirectosPorcentaje,
-          merged.margenGananciaPorcentaje,
-        );
+        const { costosIndirectos: costosCalculados, ganancias: gananciasCalculadas } =
+          applyGastosYMargen(totalCosto, gastosIndirectosPorcentaje, margenGananciaPorcentaje);
         costosIndirectos = costosCalculados;
         ganancias = gananciasCalculadas;
       } else {
@@ -563,15 +567,22 @@ export const PresupuestoService = {
       const subtotal = totalCosto + costosIndirectos + ganancias;
       const { iva: ivaCalculado, totalFinal: totalFinalCalculado } = applyIVA(
         subtotal,
-        impuestoActivo.porcentaje,
+        Number(impuestoActivo.porcentaje)
       );
       iva = ivaCalculado;
       totalFinal = totalFinalCalculado;
-    } catch (error) {
+    } catch {
       // Si no hay impuesto general configurado, iva y totalFinal quedan en 0 y subtotal respectivamente
     }
 
-    const updateData: any = {
+    const updateData: Partial<UpdatePresupuestoRequestDto> & {
+      gastosNegocioId: number;
+      totalCosto: number;
+      costosIndirectos: number;
+      ganancias: number;
+      iva: number;
+      totalFinal: number;
+    } = {
       ...payload,
       gastosNegocioId: gastosNegocioIdToUse,
       totalCosto,
@@ -587,38 +598,38 @@ export const PresupuestoService = {
     }
 
     // Convertir fechaVencimiento si viene como string
+    let fechaVencimientoDate: Date | undefined = undefined;
     if (payload.fechaVencimiento !== undefined) {
-      updateData.fechaVencimiento = payload.fechaVencimiento
+      fechaVencimientoDate = payload.fechaVencimiento
         ? new Date(payload.fechaVencimiento)
-        : null;
+        : undefined;
     }
 
     const updated = await PresupuestoRepository.update(id, {
       data: {
         ...updateData,
-        fechaVencimiento: updateData.fechaVencimiento
-          ? new Date(updateData.fechaVencimiento)
-          : undefined,
+        fechaVencimiento: fechaVencimientoDate,
       },
     });
 
     // Si el estado cambió a ACEPTADO y no tiene pedido asociado, crear el pedido automáticamente
     const estadoCambioAceptado =
-      payload.estado === "ACEPTADO" &&
-      existing.estado !== "ACEPTADO" &&
-      !existing.pedido;
+      payload.estado === "ACEPTADO" && existing.estado !== "ACEPTADO" && !existing.pedido;
 
     if (estadoCambioAceptado && updated.clienteId) {
       try {
-        console.log(`[PRESUPUESTO] Estado cambiado a ACEPTADO (PATCH) para presupuesto #${updated.numeroPresupuesto}, creando pedido automáticamente`, {
-          presupuestoId: updated.id,
-          numeroPresupuesto: updated.numeroPresupuesto,
-          estadoAnterior: existing.estado,
-          estadoNuevo: payload.estado,
-          clienteId: updated.clienteId,
-          totalFinal: updated.totalFinal,
-          metodo: "partialUpdate",
-        });
+        console.log(
+          `[PRESUPUESTO] Estado cambiado a ACEPTADO (PATCH) para presupuesto #${updated.numeroPresupuesto}, creando pedido automáticamente`,
+          {
+            presupuestoId: updated.id,
+            numeroPresupuesto: updated.numeroPresupuesto,
+            estadoAnterior: existing.estado,
+            estadoNuevo: payload.estado,
+            clienteId: updated.clienteId,
+            totalFinal: updated.totalFinal,
+            metodo: "partialUpdate",
+          }
+        );
         await createPedidoFromPresupuesto(updated.id, {
           clienteId: updated.clienteId,
           fechaVencimiento: updated.fechaVencimiento,
@@ -633,7 +644,7 @@ export const PresupuestoService = {
             error: error instanceof Error ? error.message : String(error),
             stack: error instanceof Error ? error.stack : undefined,
             timestamp: new Date().toISOString(),
-          },
+          }
         );
       }
     }
@@ -652,11 +663,12 @@ export const PresupuestoService = {
     }
 
     // Si hay pedido asociado, podríamos evitar borrado (regla opcional)
-    if (existing.pedido)
+    if (existing.pedido) {
       throw new AppError(
         "No se puede eliminar un presupuesto que ya tiene un pedido asociado",
-        400,
+        400
       );
+    }
 
     await PresupuestoRepository.delete(id);
     return true;

@@ -75,6 +75,8 @@ export const createPresupuestoSchema = z.object({
 
     notas: z.string().optional(),
 
+    origen: z.enum(["telegram", "manual"]).optional().default("manual"),
+
     detalles: z.array(presupuestoDetalleSchema).optional(),
     adicionales: z.array(adicionalSchema).optional(),
   }),
@@ -104,6 +106,8 @@ export const updatePresupuestoSchema = z.object({
 
     notas: z.string().optional(),
 
+    origen: z.enum(["telegram", "manual"]).optional(),
+
     detalles: z.array(presupuestoDetalleSchema).optional(),
     adicionales: z.array(adicionalSchema).optional(),
   }),
@@ -132,6 +136,8 @@ export const partialUpdatePresupuestoSchema = z.object({
     ganancias: z.number().min(0).optional(),
 
     notas: z.string().optional(),
+
+    origen: z.enum(["telegram", "manual"]).optional(),
 
     detalles: z.array(presupuestoDetalleSchema).optional(),
     adicionales: z.array(adicionalSchema).optional(),
