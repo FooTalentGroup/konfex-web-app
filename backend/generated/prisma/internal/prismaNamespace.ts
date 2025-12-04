@@ -1746,7 +1746,6 @@ export const PresupuestoScalarFieldEnum = {
   fechaVencimiento: 'fechaVencimiento',
   estado: 'estado',
   margenGananciaPorcentaje: 'margenGananciaPorcentaje',
-  gastosIndirectosPorcentaje: 'gastosIndirectosPorcentaje',
   totalCosto: 'totalCosto',
   gastosNegocioId: 'gastosNegocioId',
   ganancias: 'ganancias',
@@ -1779,6 +1778,7 @@ export const AdicionalScalarFieldEnum = {
   cantidad: 'cantidad',
   monto: 'monto',
   totalCosto: 'totalCosto',
+  tarifaEnvio: 'tarifaEnvio',
   observaciones: 'observaciones',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

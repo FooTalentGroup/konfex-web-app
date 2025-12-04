@@ -325,9 +325,9 @@ export type GastosNegocioUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type GastosNegocioNullableScalarRelationFilter = {
-  is?: Prisma.GastosNegocioWhereInput | null
-  isNot?: Prisma.GastosNegocioWhereInput | null
+export type GastosNegocioScalarRelationFilter = {
+  is?: Prisma.GastosNegocioWhereInput
+  isNot?: Prisma.GastosNegocioWhereInput
 }
 
 export type GastosNegocioCountOrderByAggregateInput = {
@@ -370,12 +370,10 @@ export type GastosNegocioCreateNestedOneWithoutPresupuestosInput = {
   connect?: Prisma.GastosNegocioWhereUniqueInput
 }
 
-export type GastosNegocioUpdateOneWithoutPresupuestosNestedInput = {
+export type GastosNegocioUpdateOneRequiredWithoutPresupuestosNestedInput = {
   create?: Prisma.XOR<Prisma.GastosNegocioCreateWithoutPresupuestosInput, Prisma.GastosNegocioUncheckedCreateWithoutPresupuestosInput>
   connectOrCreate?: Prisma.GastosNegocioCreateOrConnectWithoutPresupuestosInput
   upsert?: Prisma.GastosNegocioUpsertWithoutPresupuestosInput
-  disconnect?: Prisma.GastosNegocioWhereInput | boolean
-  delete?: Prisma.GastosNegocioWhereInput | boolean
   connect?: Prisma.GastosNegocioWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.GastosNegocioUpdateToOneWithWhereWithoutPresupuestosInput, Prisma.GastosNegocioUpdateWithoutPresupuestosInput>, Prisma.GastosNegocioUncheckedUpdateWithoutPresupuestosInput>
 }

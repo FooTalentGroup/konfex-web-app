@@ -32,6 +32,7 @@ export type AdicionalAvgAggregateOutputType = {
   cantidad: number | null
   monto: number | null
   totalCosto: number | null
+  tarifaEnvio: number | null
 }
 
 export type AdicionalSumAggregateOutputType = {
@@ -40,6 +41,7 @@ export type AdicionalSumAggregateOutputType = {
   cantidad: number | null
   monto: number | null
   totalCosto: number | null
+  tarifaEnvio: number | null
 }
 
 export type AdicionalMinAggregateOutputType = {
@@ -49,6 +51,7 @@ export type AdicionalMinAggregateOutputType = {
   cantidad: number | null
   monto: number | null
   totalCosto: number | null
+  tarifaEnvio: number | null
   observaciones: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -61,6 +64,7 @@ export type AdicionalMaxAggregateOutputType = {
   cantidad: number | null
   monto: number | null
   totalCosto: number | null
+  tarifaEnvio: number | null
   observaciones: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -73,6 +77,7 @@ export type AdicionalCountAggregateOutputType = {
   cantidad: number
   monto: number
   totalCosto: number
+  tarifaEnvio: number
   observaciones: number
   createdAt: number
   updatedAt: number
@@ -86,6 +91,7 @@ export type AdicionalAvgAggregateInputType = {
   cantidad?: true
   monto?: true
   totalCosto?: true
+  tarifaEnvio?: true
 }
 
 export type AdicionalSumAggregateInputType = {
@@ -94,6 +100,7 @@ export type AdicionalSumAggregateInputType = {
   cantidad?: true
   monto?: true
   totalCosto?: true
+  tarifaEnvio?: true
 }
 
 export type AdicionalMinAggregateInputType = {
@@ -103,6 +110,7 @@ export type AdicionalMinAggregateInputType = {
   cantidad?: true
   monto?: true
   totalCosto?: true
+  tarifaEnvio?: true
   observaciones?: true
   createdAt?: true
   updatedAt?: true
@@ -115,6 +123,7 @@ export type AdicionalMaxAggregateInputType = {
   cantidad?: true
   monto?: true
   totalCosto?: true
+  tarifaEnvio?: true
   observaciones?: true
   createdAt?: true
   updatedAt?: true
@@ -127,6 +136,7 @@ export type AdicionalCountAggregateInputType = {
   cantidad?: true
   monto?: true
   totalCosto?: true
+  tarifaEnvio?: true
   observaciones?: true
   createdAt?: true
   updatedAt?: true
@@ -226,6 +236,7 @@ export type AdicionalGroupByOutputType = {
   cantidad: number
   monto: number
   totalCosto: number
+  tarifaEnvio: number | null
   observaciones: string | null
   createdAt: Date
   updatedAt: Date
@@ -261,6 +272,7 @@ export type AdicionalWhereInput = {
   cantidad?: Prisma.IntFilter<"Adicional"> | number
   monto?: Prisma.FloatFilter<"Adicional"> | number
   totalCosto?: Prisma.FloatFilter<"Adicional"> | number
+  tarifaEnvio?: Prisma.FloatNullableFilter<"Adicional"> | number | null
   observaciones?: Prisma.StringNullableFilter<"Adicional"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Adicional"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Adicional"> | Date | string
@@ -274,6 +286,7 @@ export type AdicionalOrderByWithRelationInput = {
   cantidad?: Prisma.SortOrder
   monto?: Prisma.SortOrder
   totalCosto?: Prisma.SortOrder
+  tarifaEnvio?: Prisma.SortOrderInput | Prisma.SortOrder
   observaciones?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -290,6 +303,7 @@ export type AdicionalWhereUniqueInput = Prisma.AtLeast<{
   cantidad?: Prisma.IntFilter<"Adicional"> | number
   monto?: Prisma.FloatFilter<"Adicional"> | number
   totalCosto?: Prisma.FloatFilter<"Adicional"> | number
+  tarifaEnvio?: Prisma.FloatNullableFilter<"Adicional"> | number | null
   observaciones?: Prisma.StringNullableFilter<"Adicional"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Adicional"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Adicional"> | Date | string
@@ -303,6 +317,7 @@ export type AdicionalOrderByWithAggregationInput = {
   cantidad?: Prisma.SortOrder
   monto?: Prisma.SortOrder
   totalCosto?: Prisma.SortOrder
+  tarifaEnvio?: Prisma.SortOrderInput | Prisma.SortOrder
   observaciones?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -323,6 +338,7 @@ export type AdicionalScalarWhereWithAggregatesInput = {
   cantidad?: Prisma.IntWithAggregatesFilter<"Adicional"> | number
   monto?: Prisma.FloatWithAggregatesFilter<"Adicional"> | number
   totalCosto?: Prisma.FloatWithAggregatesFilter<"Adicional"> | number
+  tarifaEnvio?: Prisma.FloatNullableWithAggregatesFilter<"Adicional"> | number | null
   observaciones?: Prisma.StringNullableWithAggregatesFilter<"Adicional"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Adicional"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Adicional"> | Date | string
@@ -333,6 +349,7 @@ export type AdicionalCreateInput = {
   cantidad: number
   monto: number
   totalCosto: number
+  tarifaEnvio?: number | null
   observaciones?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -346,6 +363,7 @@ export type AdicionalUncheckedCreateInput = {
   cantidad: number
   monto: number
   totalCosto: number
+  tarifaEnvio?: number | null
   observaciones?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -356,6 +374,7 @@ export type AdicionalUpdateInput = {
   cantidad?: Prisma.IntFieldUpdateOperationsInput | number
   monto?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
+  tarifaEnvio?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   observaciones?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -369,6 +388,7 @@ export type AdicionalUncheckedUpdateInput = {
   cantidad?: Prisma.IntFieldUpdateOperationsInput | number
   monto?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
+  tarifaEnvio?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   observaciones?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -381,6 +401,7 @@ export type AdicionalCreateManyInput = {
   cantidad: number
   monto: number
   totalCosto: number
+  tarifaEnvio?: number | null
   observaciones?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -391,6 +412,7 @@ export type AdicionalUpdateManyMutationInput = {
   cantidad?: Prisma.IntFieldUpdateOperationsInput | number
   monto?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
+  tarifaEnvio?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   observaciones?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -403,6 +425,7 @@ export type AdicionalUncheckedUpdateManyInput = {
   cantidad?: Prisma.IntFieldUpdateOperationsInput | number
   monto?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
+  tarifaEnvio?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   observaciones?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -425,6 +448,7 @@ export type AdicionalCountOrderByAggregateInput = {
   cantidad?: Prisma.SortOrder
   monto?: Prisma.SortOrder
   totalCosto?: Prisma.SortOrder
+  tarifaEnvio?: Prisma.SortOrder
   observaciones?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -436,6 +460,7 @@ export type AdicionalAvgOrderByAggregateInput = {
   cantidad?: Prisma.SortOrder
   monto?: Prisma.SortOrder
   totalCosto?: Prisma.SortOrder
+  tarifaEnvio?: Prisma.SortOrder
 }
 
 export type AdicionalMaxOrderByAggregateInput = {
@@ -445,6 +470,7 @@ export type AdicionalMaxOrderByAggregateInput = {
   cantidad?: Prisma.SortOrder
   monto?: Prisma.SortOrder
   totalCosto?: Prisma.SortOrder
+  tarifaEnvio?: Prisma.SortOrder
   observaciones?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -457,6 +483,7 @@ export type AdicionalMinOrderByAggregateInput = {
   cantidad?: Prisma.SortOrder
   monto?: Prisma.SortOrder
   totalCosto?: Prisma.SortOrder
+  tarifaEnvio?: Prisma.SortOrder
   observaciones?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -468,6 +495,7 @@ export type AdicionalSumOrderByAggregateInput = {
   cantidad?: Prisma.SortOrder
   monto?: Prisma.SortOrder
   totalCosto?: Prisma.SortOrder
+  tarifaEnvio?: Prisma.SortOrder
 }
 
 export type AdicionalCreateNestedManyWithoutPresupuestoInput = {
@@ -517,6 +545,7 @@ export type AdicionalCreateWithoutPresupuestoInput = {
   cantidad: number
   monto: number
   totalCosto: number
+  tarifaEnvio?: number | null
   observaciones?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -528,6 +557,7 @@ export type AdicionalUncheckedCreateWithoutPresupuestoInput = {
   cantidad: number
   monto: number
   totalCosto: number
+  tarifaEnvio?: number | null
   observaciones?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -569,6 +599,7 @@ export type AdicionalScalarWhereInput = {
   cantidad?: Prisma.IntFilter<"Adicional"> | number
   monto?: Prisma.FloatFilter<"Adicional"> | number
   totalCosto?: Prisma.FloatFilter<"Adicional"> | number
+  tarifaEnvio?: Prisma.FloatNullableFilter<"Adicional"> | number | null
   observaciones?: Prisma.StringNullableFilter<"Adicional"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Adicional"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Adicional"> | Date | string
@@ -580,6 +611,7 @@ export type AdicionalCreateManyPresupuestoInput = {
   cantidad: number
   monto: number
   totalCosto: number
+  tarifaEnvio?: number | null
   observaciones?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -590,6 +622,7 @@ export type AdicionalUpdateWithoutPresupuestoInput = {
   cantidad?: Prisma.IntFieldUpdateOperationsInput | number
   monto?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
+  tarifaEnvio?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   observaciones?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -601,6 +634,7 @@ export type AdicionalUncheckedUpdateWithoutPresupuestoInput = {
   cantidad?: Prisma.IntFieldUpdateOperationsInput | number
   monto?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
+  tarifaEnvio?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   observaciones?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -612,6 +646,7 @@ export type AdicionalUncheckedUpdateManyWithoutPresupuestoInput = {
   cantidad?: Prisma.IntFieldUpdateOperationsInput | number
   monto?: Prisma.FloatFieldUpdateOperationsInput | number
   totalCosto?: Prisma.FloatFieldUpdateOperationsInput | number
+  tarifaEnvio?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   observaciones?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -626,6 +661,7 @@ export type AdicionalSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   cantidad?: boolean
   monto?: boolean
   totalCosto?: boolean
+  tarifaEnvio?: boolean
   observaciones?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -639,6 +675,7 @@ export type AdicionalSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   cantidad?: boolean
   monto?: boolean
   totalCosto?: boolean
+  tarifaEnvio?: boolean
   observaciones?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -652,6 +689,7 @@ export type AdicionalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   cantidad?: boolean
   monto?: boolean
   totalCosto?: boolean
+  tarifaEnvio?: boolean
   observaciones?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -665,12 +703,13 @@ export type AdicionalSelectScalar = {
   cantidad?: boolean
   monto?: boolean
   totalCosto?: boolean
+  tarifaEnvio?: boolean
   observaciones?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type AdicionalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "presupuestoId" | "nombre" | "cantidad" | "monto" | "totalCosto" | "observaciones" | "createdAt" | "updatedAt", ExtArgs["result"]["adicional"]>
+export type AdicionalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "presupuestoId" | "nombre" | "cantidad" | "monto" | "totalCosto" | "tarifaEnvio" | "observaciones" | "createdAt" | "updatedAt", ExtArgs["result"]["adicional"]>
 export type AdicionalInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   presupuesto?: boolean | Prisma.PresupuestoDefaultArgs<ExtArgs>
 }
@@ -693,6 +732,7 @@ export type $AdicionalPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     cantidad: number
     monto: number
     totalCosto: number
+    tarifaEnvio: number | null
     observaciones: string | null
     createdAt: Date
     updatedAt: Date
@@ -1126,6 +1166,7 @@ export interface AdicionalFieldRefs {
   readonly cantidad: Prisma.FieldRef<"Adicional", 'Int'>
   readonly monto: Prisma.FieldRef<"Adicional", 'Float'>
   readonly totalCosto: Prisma.FieldRef<"Adicional", 'Float'>
+  readonly tarifaEnvio: Prisma.FieldRef<"Adicional", 'Float'>
   readonly observaciones: Prisma.FieldRef<"Adicional", 'String'>
   readonly createdAt: Prisma.FieldRef<"Adicional", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Adicional", 'DateTime'>
