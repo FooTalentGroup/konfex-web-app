@@ -29,6 +29,7 @@ interface BudgetFormData {
   observations?: string;
   gastosNegocioId?: number;
   clienteId?: number;
+  shippingFee?: number;
 }
 
 interface GastosNegocio {
@@ -146,13 +147,29 @@ export function mapFormDataToBackend(
   });
 
   // Mapear extras a adicionales
-  const adicionales = formData.extras.map((extra) => ({
+  // Si hay shippingFee, agregarlo al primer adicional o crear uno especial
+  const shippingFeeValue = formData.shippingFee || 0;
+  const adicionales = formData.extras.map((extra, index) => ({
     nombre: extra.name,
     cantidad: extra.quantity,
     monto: extra.amount,
     totalCosto: extra.quantity * extra.amount,
+    // Agregar tarifaEnvio solo al primer adicional si hay shippingFee
+    tarifaEnvio: index === 0 && shippingFeeValue > 0 ? shippingFeeValue : undefined,
     observaciones: formData.observations || undefined,
   }));
+
+  // Si hay shippingFee pero no hay extras, crear un adicional especial para la tarifa de envío
+  if (shippingFeeValue > 0 && formData.extras.length === 0) {
+    adicionales.push({
+      nombre: "Tarifa de envío",
+      cantidad: 1,
+      monto: shippingFeeValue,
+      totalCosto: shippingFeeValue,
+      tarifaEnvio: shippingFeeValue,
+      observaciones: formData.observations || undefined,
+    });
+  }
 
   // Calcular totales
   const totalCosto = calculateTotalCosto(detalles, adicionales);

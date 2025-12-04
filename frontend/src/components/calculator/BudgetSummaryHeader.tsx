@@ -6,12 +6,14 @@ import NavigationTabs from '../ui/NavigationTabs';
 import { presupuestoService } from '@/services/presupuesto.service';
 import { clienteService } from '@/services/cliente.service';
 import { useGastosNegocio } from '@/hooks/useGastosNegocio';
-import { mapFormDataToBackend } from '@/utils/presupuestoMapper'; 
+import { mapFormDataToBackend } from '@/utils/presupuestoMapper';
+import { useToast } from '@/contexts/ToastContext'; 
 
 export default function BudgetSummaryHeader() {
   const { control, getValues, watch } = useFormContext(); 
   const router = useRouter();
   const { gastosNegocio } = useGastosNegocio();
+  const { showSuccess, showError, showWarning } = useToast();
   
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -50,25 +52,37 @@ export default function BudgetSummaryHeader() {
 
       // Validaciones básicas
       if (!currentBudgetData.title?.trim()) {
-        alert("❌ Por favor ingresa un título para el presupuesto");
+        showError("Por favor ingresa un título para el presupuesto");
         setIsMenuOpen(false);
         return;
       }
 
       if (!currentBudgetData.clientName?.trim()) {
-        alert("❌ Por favor ingresa el nombre del cliente");
+        showError("Por favor ingresa el nombre del cliente");
         setIsMenuOpen(false);
         return;
       }
 
       if (!gastosNegocioId) {
-        alert("❌ Por favor selecciona los gastos de negocio");
+        showError("Por favor selecciona los gastos de negocio");
         setIsMenuOpen(false);
         return;
       }
 
       if (materials.length === 0) {
-        alert("❌ Por favor agrega al menos un material/prenda");
+        showError("Por favor agrega al menos un material/prenda");
+        setIsMenuOpen(false);
+        return;
+      }
+
+      // Validar que todos los materiales tengan productoId
+      const materialesSinProductoId = materials.filter((m: any) => !m.productoId);
+      if (materialesSinProductoId.length > 0) {
+        const nombres = materialesSinProductoId.map((m: any) => m.name).join(", ");
+        showError(
+          `Los siguientes materiales no tienen producto asociado. Por favor selecciónalos desde el autocomplete: ${nombres}`,
+          5000
+        );
         setIsMenuOpen(false);
         return;
       }
@@ -77,6 +91,7 @@ export default function BudgetSummaryHeader() {
       let clienteId = currentBudgetData.clienteId;
       if (!clienteId) {
         try {
+          showInfo("Buscando cliente...");
           const cliente = await clienteService.findOrCreate(
             currentBudgetData.clientName,
             {
@@ -89,7 +104,10 @@ export default function BudgetSummaryHeader() {
           // (esto requeriría setValue del form, pero por ahora solo lo usamos para el payload)
         } catch (error) {
           console.error("Error al obtener/crear cliente:", error);
-          alert("❌ Error al procesar el cliente. Por favor intenta nuevamente.");
+          const errorMessage = error instanceof Error 
+            ? error.message 
+            : "Error al procesar el cliente. Por favor intenta nuevamente.";
+          showError(errorMessage);
           setIsMenuOpen(false);
           return;
         }
@@ -98,7 +116,7 @@ export default function BudgetSummaryHeader() {
       // Obtener gastos de negocio seleccionados
       const selectedGastos = gastosNegocio.find(g => g.id === gastosNegocioId);
       if (!selectedGastos) {
-        alert("❌ Error: No se encontraron los gastos de negocio seleccionados");
+        showError("No se encontraron los gastos de negocio seleccionados. Por favor recarga la página.");
         setIsMenuOpen(false);
         return;
       }
@@ -114,19 +132,49 @@ export default function BudgetSummaryHeader() {
       );
 
       // Crear presupuesto en el backend
+      showInfo("Creando presupuesto...");
       const createdPresupuesto = await presupuestoService.create(payload);
 
       console.log("✅ Presupuesto creado exitosamente:", createdPresupuesto);
       
-      alert(`✅ Presupuesto #${createdPresupuesto.numeroPresupuesto} creado exitosamente`);
+      showSuccess(
+        `Presupuesto #${createdPresupuesto.numeroPresupuesto} creado exitosamente`,
+        4000
+      );
       
-      // Redirigir a presupuestos
-      router.push('/presupuestos');
+      // Redirigir a presupuestos después de un breve delay para que se vea el toast
+      setTimeout(() => {
+        router.push('/presupuestos');
+      }, 1500);
       setIsMenuOpen(false);
     } catch (error) {
       console.error("Error al crear presupuesto:", error);
-      const errorMessage = error instanceof Error ? error.message : "Error desconocido al crear presupuesto";
-      alert(`❌ Error: ${errorMessage}`);
+      
+      // Mejorar mensajes de error específicos
+      let errorMessage = "Error desconocido al crear presupuesto";
+      
+      if (error instanceof Error) {
+        const message = error.message;
+        
+        // Mensajes específicos según el tipo de error
+        if (message.includes("productoId")) {
+          errorMessage = "Uno o más materiales no tienen producto asociado. Por favor selecciónalos desde el autocomplete.";
+        } else if (message.includes("cliente")) {
+          errorMessage = "Error al procesar el cliente. Verifica que el nombre sea válido.";
+        } else if (message.includes("gastosNegocioId")) {
+          errorMessage = "Error con los gastos de negocio. Por favor selecciona uno válido.";
+        } else if (message.includes("API 400") || message.includes("validación")) {
+          errorMessage = "Los datos ingresados no son válidos. Por favor revisa el formulario.";
+        } else if (message.includes("API 404")) {
+          errorMessage = "No se pudo conectar con el servidor. Verifica que el backend esté corriendo.";
+        } else if (message.includes("API 500")) {
+          errorMessage = "Error interno del servidor. Por favor intenta nuevamente más tarde.";
+        } else {
+          errorMessage = message;
+        }
+      }
+      
+      showError(errorMessage, 5000);
     } finally {
       setIsSaving(false);
     }

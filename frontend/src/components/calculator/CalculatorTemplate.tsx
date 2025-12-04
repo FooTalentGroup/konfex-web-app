@@ -32,6 +32,7 @@ export default function CalculatorTemplate() {
       materials: [],
       extras: [],
       observations: "",
+      shippingFee: 0,
     },
     mode: "onChange",
   });

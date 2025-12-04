@@ -65,5 +65,53 @@ export const presupuestoService = {
 
     return response.data;
   },
+
+  update: async (id: number, data: CreatePresupuestoDto): Promise<PresupuestoResponseDto> => {
+    const response = await apiClient<ApiResponse<PresupuestoResponseDto>>(
+      `/presupuestos/${id}`,
+      {
+        method: 'PUT',
+        body: data,
+      }
+    );
+
+    if (!response.success || !response.data) {
+      throw new Error(response.message || 'Error al actualizar presupuesto');
+    }
+
+    return response.data;
+  },
+
+  partialUpdate: async (
+    id: number,
+    data: Partial<CreatePresupuestoDto>
+  ): Promise<PresupuestoResponseDto> => {
+    const response = await apiClient<ApiResponse<PresupuestoResponseDto>>(
+      `/presupuestos/${id}`,
+      {
+        method: 'PATCH',
+        body: data,
+      }
+    );
+
+    if (!response.success || !response.data) {
+      throw new Error(response.message || 'Error al actualizar presupuesto');
+    }
+
+    return response.data;
+  },
+
+  delete: async (id: number): Promise<void> => {
+    const response = await apiClient<ApiResponse<null>>(
+      `/presupuestos/${id}`,
+      {
+        method: 'DELETE',
+      }
+    );
+
+    if (!response.success) {
+      throw new Error(response.message || 'Error al eliminar presupuesto');
+    }
+  },
 };
 

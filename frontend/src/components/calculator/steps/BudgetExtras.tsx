@@ -3,6 +3,7 @@ import { useFormContext, useFieldArray } from "react-hook-form";
 import { Trash2, Plus, Minus } from "lucide-react";
 import CircularAddButton from "@/components/common/CircularAddButton";
 import BudgetTotalBadge from "../BudgetTotalBadge";
+import { useWatch } from "react-hook-form";
 
 interface Extra {
   name: string;
@@ -11,7 +12,7 @@ interface Extra {
 }
 
 export default function BudgetExtras() {
-  const { control, watch, register } = useFormContext();
+  const { control, watch, register, setValue } = useFormContext();
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -21,7 +22,13 @@ export default function BudgetExtras() {
   const [name, setName] = useState("");
   const [qty, setQty] = useState(1);
   const [amount, setAmount] = useState("");
-  const [shippingFee, setShippingFee] = useState("");
+  
+  // Obtener shippingFee del formulario en lugar de estado local
+  const shippingFee = useWatch({ control, name: "shippingFee" }) || "";
+  const setShippingFee = (value: string) => {
+    const numValue = parseFloat(value) || 0;
+    setValue("shippingFee", numValue, { shouldValidate: true });
+  };
 
   const handleAddExtra = () => {
     if (!name.trim()) return;
@@ -75,7 +82,7 @@ export default function BudgetExtras() {
                 if (inputValue === "-") {
                   return;
                 }
-                setShippingFee("");
+                setShippingFee("0");
               } else {
                 const val = parseFloat(inputValue);
                 // Solo permitir valores válidos >= 0
@@ -88,7 +95,7 @@ export default function BudgetExtras() {
             onBlur={(e) => {
               const val = parseFloat(e.target.value);
               if (isNaN(val) || val < 0) {
-                setShippingFee("");
+                setShippingFee("0");
               }
             }}
             placeholder="000.000"
