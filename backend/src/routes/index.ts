@@ -7,6 +7,7 @@ import { productoRoutes } from "@/modules/producto/producto.routes";
 import telegramRoutes from "@/modules/telegram/telegram.routes";
 import { gastosNegocioRoutes } from "@/modules/gastos-negocio";
 import { impuestoGeneralRoutes } from "@/modules/impuesto-general";
+import { coleccionRoutes } from "@/modules/colecciones";
 
 const router: Router = Router();
 
@@ -15,6 +16,7 @@ router.use("/presupuestos", presupuestoRoutes);
 router.use("/clientes", clienteRoutes);
 router.use("/materiales", materialRoutes);
 router.use("/productos", productoRoutes);
+router.use("/colecciones", coleccionRoutes);
 router.use("/gastos-negocio", gastosNegocioRoutes);
 router.use("/impuesto-general", impuestoGeneralRoutes);
 router.use("/telegram", telegramRoutes);

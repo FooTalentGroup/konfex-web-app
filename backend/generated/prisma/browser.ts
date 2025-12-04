@@ -28,6 +28,11 @@ export type User = Prisma.UserModel
  */
 export type Cliente = Prisma.ClienteModel
 /**
+ * Model Coleccion
+ * 
+ */
+export type Coleccion = Prisma.ColeccionModel
+/**
  * Model Producto
  * 
  */

@@ -53,6 +53,7 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Cliente: 'Cliente',
+  Coleccion: 'Coleccion',
   Producto: 'Producto',
   Material: 'Material',
   ManoDeObra: 'ManoDeObra',
@@ -114,13 +115,32 @@ export const ClienteScalarFieldEnum = {
 export type ClienteScalarFieldEnum = (typeof ClienteScalarFieldEnum)[keyof typeof ClienteScalarFieldEnum]
 
 
+export const ColeccionScalarFieldEnum = {
+  id: 'id',
+  codigo: 'codigo',
+  nombre: 'nombre',
+  imagen: 'imagen',
+  icono: 'icono',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ColeccionScalarFieldEnum = (typeof ColeccionScalarFieldEnum)[keyof typeof ColeccionScalarFieldEnum]
+
+
 export const ProductoScalarFieldEnum = {
   id: 'id',
+  codigo: 'codigo',
   nombre: 'nombre',
   descripcion: 'descripcion',
   activo: 'activo',
+  imagen: 'imagen',
   tallas: 'tallas',
   colores: 'colores',
+  mermaCantidad: 'mermaCantidad',
+  mermaUnidad: 'mermaUnidad',
+  mermaPrecio: 'mermaPrecio',
+  coleccionId: 'coleccionId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -172,7 +192,6 @@ export const ManoDeObraPorProductoScalarFieldEnum = {
   productoId: 'productoId',
   manoDeObraId: 'manoDeObraId',
   cantidadHoras: 'cantidadHoras',
-  costoHora: 'costoHora',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
