@@ -13,6 +13,7 @@ interface AdicionalInput {
   cantidad: number;
   monto: number;
   totalCosto: number;
+  tarifaEnvio?: number | null;
   observaciones?: string | null;
 }
 
@@ -24,10 +25,12 @@ interface CreatePresupuestoData {
     fechaVencimiento?: Date | null;
     estado: EstadoPresupuesto;
     margenGananciaPorcentaje: number;
-    gastosIndirectosPorcentaje: number;
+    gastosNegocioId: number;
     totalCosto: number;
     costosIndirectos: number;
     ganancias: number;
+    iva?: number;
+    totalFinal?: number;
     notas?: string | null;
     detalles?: PresupuestoDetalleInput[];
     adicionales?: AdicionalInput[];
@@ -41,10 +44,12 @@ interface UpdatePresupuestoData {
     fechaVencimiento?: Date | null;
     estado?: EstadoPresupuesto;
     margenGananciaPorcentaje?: number;
-    gastosIndirectosPorcentaje?: number;
+    gastosNegocioId?: number;
     totalCosto?: number;
     costosIndirectos?: number;
     ganancias?: number;
+    iva?: number;
+    totalFinal?: number;
     notas?: string | null;
     detalles?: PresupuestoDetalleInput[];
     adicionales?: AdicionalInput[];
@@ -75,6 +80,7 @@ export const PresupuestoRepository = {
                 cantidad: adicional.cantidad,
                 monto: adicional.monto,
                 totalCosto: adicional.totalCosto,
+                tarifaEnvio: adicional.tarifaEnvio ?? null,
                 observaciones: adicional.observaciones,
               })),
             }
@@ -85,6 +91,7 @@ export const PresupuestoRepository = {
         adicionales: true,
         cliente: true,
         pedido: true,
+        gastosNegocio: true,
       },
     });
   },
@@ -103,6 +110,7 @@ export const PresupuestoRepository = {
         adicionales: true,
         cliente: true,
         pedido: true,
+        gastosNegocio: true,
         ...params?.include,
       },
     });
@@ -122,6 +130,7 @@ export const PresupuestoRepository = {
         adicionales: true,
         cliente: true,
         pedido: true,
+        gastosNegocio: true,
         ...options?.include,
       },
     });
@@ -170,6 +179,7 @@ export const PresupuestoRepository = {
                   cantidad: adicional.cantidad,
                   monto: adicional.monto,
                   totalCosto: adicional.totalCosto,
+                  tarifaEnvio: adicional.tarifaEnvio ?? null,
                   observaciones: adicional.observaciones,
                 })),
               }
@@ -190,6 +200,7 @@ export const PresupuestoRepository = {
         adicionales: true,
         cliente: true,
         pedido: true,
+        gastosNegocio: true,
       },
     });
   },

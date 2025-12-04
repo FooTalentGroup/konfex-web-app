@@ -12,6 +12,7 @@ import {
   calcTotalCostoFromDetalles,
 } from "./utils";
 import { impuestoGeneralService } from "../impuesto-general/impuesto-general.service";
+import { gastosNegocioService } from "../gastos-negocio/gastos-negocio.service";
 
 export const PresupuestoService = {
   // Trae el número del siguiente presupuesto a generar
@@ -34,6 +35,7 @@ export const PresupuestoService = {
         cliente: true,
         pedido: true,
         detalles: true,
+        gastosNegocio: true,
       },
     });
 
@@ -43,7 +45,7 @@ export const PresupuestoService = {
   //trae un presupuesto por su id
   getById: async (id: number) => {
     const presupuesto = await PresupuestoRepository.findById(id, {
-      include: { cliente: true, detalles: true, pedido: true },
+      include: { cliente: true, detalles: true, pedido: true, gastosNegocio: true },
     });
     if (!presupuesto) throw new AppError("Presupuesto no encontrado", 404);
     return presupuesto;
@@ -57,7 +59,7 @@ export const PresupuestoService = {
       fechaVencimiento,
       estado,
       margenGananciaPorcentaje,
-      gastosIndirectosPorcentaje,
+      gastosNegocioId,
       totalCosto: totalCostoFromClient,
       costosIndirectos: costosIndirectosFromClient,
       ganancias: gananciasFromClient,
@@ -65,6 +67,10 @@ export const PresupuestoService = {
       detalles,
       adicionales,
     } = payload;
+
+    // Obtener el porcentaje de gastosNegocio
+    const gastosNegocio = await gastosNegocioService.getById(gastosNegocioId);
+    const gastosIndirectosPorcentaje = gastosNegocio.porcentaje;
 
     let totalCosto =
       typeof totalCostoFromClient === "number" ? totalCostoFromClient : 0;
@@ -116,7 +122,7 @@ export const PresupuestoService = {
           : undefined,
         estado,
         margenGananciaPorcentaje,
-        gastosIndirectosPorcentaje,
+        gastosNegocioId,
         totalCosto,
         costosIndirectos,
         ganancias,
@@ -134,7 +140,7 @@ export const PresupuestoService = {
   // Actualiza un presupuesto - todo el modelo
   update: async (id: number, payload: UpdatePresupuestoRequestDto) => {
     const existing = await PresupuestoRepository.findById(id, {
-      include: { pedido: true },
+      include: { pedido: true, gastosNegocio: true },
     });
     if (!existing) throw new AppError("Presupuesto no encontrado", 404);
 
@@ -150,7 +156,7 @@ export const PresupuestoService = {
       fechaVencimiento,
       estado,
       margenGananciaPorcentaje,
-      gastosIndirectosPorcentaje,
+      gastosNegocioId,
       totalCosto: totalCostoFromClient,
       costosIndirectos: costosIndirectosFromClient,
       ganancias: gananciasFromClient,
@@ -158,6 +164,11 @@ export const PresupuestoService = {
       detalles,
       adicionales,
     } = payload;
+
+    // Obtener el porcentaje de gastosNegocio (usar el nuevo si viene, sino el existente)
+    const gastosNegocioIdToUse = gastosNegocioId ?? existing.gastosNegocioId;
+    const gastosNegocio = await gastosNegocioService.getById(gastosNegocioIdToUse);
+    const gastosIndirectosPorcentaje = gastosNegocio.porcentaje;
 
     // Totales se inicializan en base a lo enviado por el cliente
     let totalCosto =
@@ -210,7 +221,7 @@ export const PresupuestoService = {
           : undefined,
         estado,
         margenGananciaPorcentaje,
-        gastosIndirectosPorcentaje,
+        gastosNegocioId: gastosNegocioIdToUse,
         totalCosto,
         costosIndirectos,
         ganancias,
@@ -231,7 +242,7 @@ export const PresupuestoService = {
     payload: PartialUpdatePresupuestoRequestDto,
   ) => {
     const existing = await PresupuestoRepository.findById(id, {
-      include: { pedido: true },
+      include: { pedido: true, gastosNegocio: true },
     });
     if (!existing) throw new AppError("Presupuesto no encontrado", 404);
 
@@ -241,13 +252,16 @@ export const PresupuestoService = {
         400,
       );
 
+    // Obtener el porcentaje de gastosNegocio (usar el nuevo si viene, sino el existente)
+    const gastosNegocioIdToUse = payload.gastosNegocioId ?? existing.gastosNegocioId;
+    const gastosNegocio = await gastosNegocioService.getById(gastosNegocioIdToUse);
+    const gastosIndirectosPorcentaje = gastosNegocio.porcentaje;
+
     // Merge valores actuales con payload para cálculos
     const merged = {
       margenGananciaPorcentaje:
         payload.margenGananciaPorcentaje ?? existing.margenGananciaPorcentaje,
-      gastosIndirectosPorcentaje:
-        payload.gastosIndirectosPorcentaje ??
-        existing.gastosIndirectosPorcentaje,
+      gastosIndirectosPorcentaje,
       detalles: payload.detalles ?? existing.detalles,
       totalCosto: payload.totalCosto ?? existing.totalCosto,
       costosIndirectos: payload.costosIndirectos ?? existing.costosIndirectos,
@@ -299,6 +313,7 @@ export const PresupuestoService = {
 
     const updateData: any = {
       ...payload,
+      gastosNegocioId: gastosNegocioIdToUse,
       totalCosto,
       costosIndirectos,
       ganancias,

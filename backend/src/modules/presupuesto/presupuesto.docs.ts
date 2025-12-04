@@ -60,6 +60,7 @@ export const presupuestoDocs = {
                                 cantidad: { type: "number" },
                                 monto: { type: "number" },
                                 totalCosto: { type: "number" },
+                                tarifaEnvio: { type: "number", nullable: true },
                                 observaciones: { type: "string", nullable: true },
                                 createdAt: { type: "string", format: "date-time" },
                                 updatedAt: { type: "string", format: "date-time" }
@@ -109,7 +110,7 @@ export const presupuestoDocs = {
                 fechaVencimiento: "2024-12-31T00:00:00.000Z",
                 estado: "BORRADOR",
                 margenGananciaPorcentaje: 30.0,
-                gastosIndirectosPorcentaje: 15.0,
+                gastosNegocioId: 1,
                 totalCosto: 25000.0,
                 costosIndirectos: 3750.0,
                 ganancias: 8625.0,
@@ -128,6 +129,7 @@ export const presupuestoDocs = {
                     cantidad: 1,
                     monto: 5000.0,
                     totalCosto: 5000.0,
+                    tarifaEnvio: 1500.0,
                     observaciones: "Embalaje reforzado para envío"
                   }
                 ]
@@ -384,7 +386,7 @@ export const presupuestoDocs = {
                 fechaVencimiento: "2024-12-31T00:00:00.000Z",
                 estado: "ENVIADO",
                 margenGananciaPorcentaje: 35.0,
-                gastosIndirectosPorcentaje: 18.0,
+                gastosNegocioId: 2,
                 totalCosto: 28000.0,
                 costosIndirectos: 5040.0,
                 ganancias: 11564.0,
@@ -697,6 +699,12 @@ export const presupuestoDocs = {
             minimum: 0,
             description: "Costo total del adicional"
           },
+          tarifaEnvio: {
+            type: "number",
+            minimum: 0,
+            nullable: true,
+            description: "Tarifa de envío (opcional)"
+          },
           observaciones: {
             type: "string",
             nullable: true,
@@ -707,7 +715,7 @@ export const presupuestoDocs = {
 
       CreatePresupuestoDto: {
         type: "object",
-        required: ["estado", "margenGananciaPorcentaje", "gastosIndirectosPorcentaje", "totalCosto", "costosIndirectos", "ganancias"],
+        required: ["estado", "margenGananciaPorcentaje", "gastosNegocioId", "totalCosto", "costosIndirectos", "ganancias"],
         properties: {
           nombre: {
             type: "string",
@@ -737,11 +745,10 @@ export const presupuestoDocs = {
             maximum: 100,
             description: "Porcentaje de margen de ganancia"
           },
-          gastosIndirectosPorcentaje: {
+          gastosNegocioId: {
             type: "number",
-            minimum: 0,
-            maximum: 100,
-            description: "Porcentaje de gastos indirectos"
+            minimum: 1,
+            description: "ID del gasto de negocio asociado (requerido)"
           },
           totalCosto: {
             type: "number",
@@ -802,10 +809,9 @@ export const presupuestoDocs = {
             minimum: 0,
             maximum: 100
           },
-          gastosIndirectosPorcentaje: {
+          gastosNegocioId: {
             type: "number",
-            minimum: 0,
-            maximum: 100
+            minimum: 1
           },
           totalCosto: {
             type: "number",
@@ -860,10 +866,9 @@ export const presupuestoDocs = {
             minimum: 0,
             maximum: 100
           },
-          gastosIndirectosPorcentaje: {
+          gastosNegocioId: {
             type: "number",
-            minimum: 0,
-            maximum: 100
+            minimum: 1
           },
           totalCosto: {
             type: "number",
