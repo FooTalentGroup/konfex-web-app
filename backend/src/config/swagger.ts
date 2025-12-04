@@ -9,6 +9,7 @@ import { presupuestoDocs } from "../modules/presupuesto";
 import { telegramDocs } from "../modules/telegram";
 import { gastosNegocioDocs } from "../modules/gastos-negocio";
 import { impuestoGeneralDocs } from "../modules/impuesto-general";
+import { productoDocs } from "../modules/producto";
 
 const options = {
   definition: {
