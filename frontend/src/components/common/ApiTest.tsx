@@ -10,7 +10,7 @@ export default function ApiTest() {
   useEffect(() => {
     const testConnection = async () => {
       try {
-        const url = API_CONFIG.getApiUrl('/api/v1/health');
+        const url = API_CONFIG.getApiUrl('/health');
         const response = await fetch(url, {
           method: 'GET',
           headers: {
