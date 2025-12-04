@@ -18,6 +18,11 @@ import { gastosNegocioService } from "../gastos-negocio/gastos-negocio.service";
 
 /**
  * Helper function: Crea un pedido automáticamente cuando un presupuesto se aprueba
+ * 
+ * Mejoras implementadas:
+ * 1. Calcula precioUnitario usando totalFinal del presupuesto (proporcional)
+ * 3. Agrega logs detallados para auditoría
+ * 4. Genera notificaciones estructuradas para sistemas externos
  */
 async function createPedidoFromPresupuesto(
   presupuestoId: number,
@@ -26,35 +31,94 @@ async function createPedidoFromPresupuesto(
     fechaVencimiento: Date | null;
   },
 ) {
+  const startTime = Date.now();
+  
+  // Log de inicio
+  console.log(`[PEDIDO_AUTO] Iniciando creación automática de pedido para presupuesto #${presupuestoId}`, {
+    timestamp: new Date().toISOString(),
+    presupuestoId,
+    clienteId: presupuesto.clienteId,
+  });
+
   // Validar que tenga clienteId (requerido para pedido)
   if (!presupuesto.clienteId) {
-    throw new AppError(
+    const error = new AppError(
       "No se puede crear un pedido sin cliente asociado al presupuesto",
       400,
     );
+    console.error(`[PEDIDO_AUTO] Error de validación para presupuesto #${presupuestoId}:`, {
+      error: error.message,
+      presupuestoId,
+    });
+    throw error;
   }
 
   // Verificar que no exista ya un pedido para este presupuesto
   const existingPedido = await prisma.pedido.findUnique({
     where: { presupuestoId },
+    include: { cliente: true },
   });
 
   if (existingPedido) {
     // Si ya existe, no hacer nada (idempotencia)
+    console.log(`[PEDIDO_AUTO] Pedido ya existe para presupuesto #${presupuestoId}`, {
+      pedidoId: existingPedido.id,
+      presupuestoId,
+      estado: existingPedido.estado,
+    });
     return existingPedido;
   }
 
-  // Obtener los detalles del presupuesto
-  const detallesPresupuesto = await prisma.presupuestoDetalle.findMany({
-    where: { presupuestoId },
+  // Obtener el presupuesto completo con totalFinal para calcular precios
+  const presupuestoCompleto = await prisma.presupuesto.findUnique({
+    where: { id: presupuestoId },
+    include: {
+      cliente: true,
+      detalles: true,
+      adicionales: true,
+    },
   });
 
+  if (!presupuestoCompleto) {
+    const error = new AppError(
+      "Presupuesto no encontrado",
+      404,
+    );
+    console.error(`[PEDIDO_AUTO] Error: Presupuesto #${presupuestoId} no encontrado`);
+    throw error;
+  }
+
+  // Obtener los detalles del presupuesto
+  const detallesPresupuesto = presupuestoCompleto.detalles || [];
+
   if (detallesPresupuesto.length === 0) {
-    throw new AppError(
+    const error = new AppError(
       "No se puede crear un pedido sin detalles en el presupuesto",
       400,
     );
+    console.error(`[PEDIDO_AUTO] Error: Presupuesto #${presupuestoId} sin detalles`);
+    throw error;
   }
+
+  // Calcular el total de costo de todos los detalles (suma base)
+  const totalCostoDetalles = detallesPresupuesto.reduce(
+    (sum, detalle) => sum + detalle.cantidad * detalle.costoUnitario,
+    0,
+  );
+
+  // Calcular el precio unitario proporcional basado en totalFinal
+  // Si totalCostoDetalles es 0, usar costoUnitario como fallback
+  const factorPrecio =
+    totalCostoDetalles > 0 && presupuestoCompleto.totalFinal > 0
+      ? presupuestoCompleto.totalFinal / totalCostoDetalles
+      : 1;
+
+  console.log(`[PEDIDO_AUTO] Cálculo de precios para presupuesto #${presupuestoId}`, {
+    totalCostoDetalles,
+    totalFinalPresupuesto: presupuestoCompleto.totalFinal,
+    factorPrecio: factorPrecio.toFixed(4),
+    cantidadDetalles: detallesPresupuesto.length,
+  });
 
   // Crear el pedido con sus detalles
   const pedido = await prisma.pedido.create({
@@ -65,25 +129,75 @@ async function createPedidoFromPresupuesto(
       fechaEntregaEstimada: presupuesto.fechaVencimiento || null,
       pagado: false,
       detalles: {
-        create: detallesPresupuesto.map((detalle) => ({
-          productoId: detalle.productoId,
-          cantidad: detalle.cantidad,
-          costoUnitario: detalle.costoUnitario,
-          // El precio unitario del pedido es el costo unitario + margen (usamos el costo como base)
-          // En el futuro se podría calcular con el totalFinal del presupuesto
-          precioUnitario: detalle.costoUnitario,
-          subtotal: detalle.cantidad * detalle.costoUnitario,
-          // talle y color podrían venir de otra fuente o ser null por ahora
-          talle: null,
-          color: null,
-        })),
+        create: detallesPresupuesto.map((detalle) => {
+          // Calcular precio unitario proporcional al totalFinal
+          const precioUnitario = detalle.costoUnitario * factorPrecio;
+          const subtotal = detalle.cantidad * precioUnitario;
+
+          return {
+            productoId: detalle.productoId,
+            cantidad: detalle.cantidad,
+            costoUnitario: detalle.costoUnitario,
+            precioUnitario: Math.round(precioUnitario * 100) / 100, // Redondear a 2 decimales
+            subtotal: Math.round(subtotal * 100) / 100, // Redondear a 2 decimales
+            // talle y color podrían venir de otra fuente o ser null por ahora
+            talle: null,
+            color: null,
+          };
+        }),
       },
     },
     include: {
       detalles: true,
       cliente: true,
+      presupuesto: {
+        select: {
+          numeroPresupuesto: true,
+          nombre: true,
+          totalFinal: true,
+        },
+      },
     },
   });
+
+  const duration = Date.now() - startTime;
+  const totalPedido = pedido.detalles.reduce((sum, d) => sum + d.subtotal, 0);
+
+  // Log detallado de éxito con información completa
+  console.log(`[PEDIDO_AUTO] ✅ Pedido creado exitosamente`, {
+    pedidoId: pedido.id,
+    presupuestoId: pedido.presupuestoId,
+    numeroPresupuesto: pedido.presupuesto?.numeroPresupuesto,
+    clienteId: pedido.clienteId,
+    clienteNombre: pedido.cliente?.nombre || "N/A",
+    estado: pedido.estado,
+    cantidadDetalles: pedido.detalles.length,
+    totalPedido: totalPedido.toFixed(2),
+    totalPresupuesto: presupuestoCompleto.totalFinal.toFixed(2),
+    fechaEntregaEstimada: pedido.fechaEntregaEstimada?.toISOString() || null,
+    duracionMs: duration,
+    timestamp: new Date().toISOString(),
+  });
+
+  // Notificación estructurada (puede ser consumida por sistemas externos)
+  const notificacion = {
+    tipo: "PEDIDO_CREADO_AUTOMATICAMENTE",
+    nivel: "INFO",
+    mensaje: `Pedido #${pedido.id} creado automáticamente desde presupuesto #${pedido.presupuesto?.numeroPresupuesto}`,
+    datos: {
+      pedidoId: pedido.id,
+      presupuestoId: pedido.presupuestoId,
+      numeroPresupuesto: pedido.presupuesto?.numeroPresupuesto,
+      clienteId: pedido.clienteId,
+      clienteNombre: pedido.cliente?.nombre,
+      total: totalPedido,
+      fechaCreacion: pedido.createdAt.toISOString(),
+    },
+    timestamp: new Date().toISOString(),
+  };
+
+  // Log de notificación (en producción podría enviarse a un sistema de notificaciones)
+  console.log(`[NOTIFICACION] ${notificacion.tipo}`, notificacion);
 
   return pedido;
 }
@@ -216,6 +330,12 @@ export const PresupuestoService = {
     // Si el presupuesto se crea directamente como ACEPTADO, crear el pedido automáticamente
     if (estado === "ACEPTADO" && created.clienteId) {
       try {
+        console.log(`[PRESUPUESTO] Presupuesto #${created.numeroPresupuesto} creado como ACEPTADO, creando pedido automáticamente`, {
+          presupuestoId: created.id,
+          numeroPresupuesto: created.numeroPresupuesto,
+          clienteId: created.clienteId,
+          totalFinal: created.totalFinal,
+        });
         await createPedidoFromPresupuesto(created.id, {
           clienteId: created.clienteId,
           fechaVencimiento: created.fechaVencimiento,
@@ -223,8 +343,14 @@ export const PresupuestoService = {
       } catch (error) {
         // Si falla la creación del pedido, loguear pero no fallar la creación del presupuesto
         console.error(
-          "Error al crear pedido automáticamente desde presupuesto:",
-          error,
+          `[PRESUPUESTO] Error al crear pedido automáticamente desde presupuesto #${created.numeroPresupuesto}:`,
+          {
+            presupuestoId: created.id,
+            numeroPresupuesto: created.numeroPresupuesto,
+            error: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined,
+            timestamp: new Date().toISOString(),
+          },
         );
       }
     }
@@ -337,6 +463,14 @@ export const PresupuestoService = {
 
     if (estadoCambioAceptado && updated.clienteId) {
       try {
+        console.log(`[PRESUPUESTO] Estado cambiado a ACEPTADO para presupuesto #${updated.numeroPresupuesto}, creando pedido automáticamente`, {
+          presupuestoId: updated.id,
+          numeroPresupuesto: updated.numeroPresupuesto,
+          estadoAnterior: existing.estado,
+          estadoNuevo: estado,
+          clienteId: updated.clienteId,
+          totalFinal: updated.totalFinal,
+        });
         await createPedidoFromPresupuesto(updated.id, {
           clienteId: updated.clienteId,
           fechaVencimiento: updated.fechaVencimiento,
@@ -344,8 +478,14 @@ export const PresupuestoService = {
       } catch (error) {
         // Si falla la creación del pedido, loguear pero no fallar la actualización del presupuesto
         console.error(
-          "Error al crear pedido automáticamente desde presupuesto:",
-          error,
+          `[PRESUPUESTO] Error al crear pedido automáticamente desde presupuesto #${updated.numeroPresupuesto}:`,
+          {
+            presupuestoId: updated.id,
+            numeroPresupuesto: updated.numeroPresupuesto,
+            error: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined,
+            timestamp: new Date().toISOString(),
+          },
         );
       }
     }
@@ -470,6 +610,15 @@ export const PresupuestoService = {
 
     if (estadoCambioAceptado && updated.clienteId) {
       try {
+        console.log(`[PRESUPUESTO] Estado cambiado a ACEPTADO (PATCH) para presupuesto #${updated.numeroPresupuesto}, creando pedido automáticamente`, {
+          presupuestoId: updated.id,
+          numeroPresupuesto: updated.numeroPresupuesto,
+          estadoAnterior: existing.estado,
+          estadoNuevo: payload.estado,
+          clienteId: updated.clienteId,
+          totalFinal: updated.totalFinal,
+          metodo: "partialUpdate",
+        });
         await createPedidoFromPresupuesto(updated.id, {
           clienteId: updated.clienteId,
           fechaVencimiento: updated.fechaVencimiento,
@@ -477,8 +626,14 @@ export const PresupuestoService = {
       } catch (error) {
         // Si falla la creación del pedido, loguear pero no fallar la actualización del presupuesto
         console.error(
-          "Error al crear pedido automáticamente desde presupuesto:",
-          error,
+          `[PRESUPUESTO] Error al crear pedido automáticamente desde presupuesto #${updated.numeroPresupuesto} (PATCH):`,
+          {
+            presupuestoId: updated.id,
+            numeroPresupuesto: updated.numeroPresupuesto,
+            error: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined,
+            timestamp: new Date().toISOString(),
+          },
         );
       }
     }
