@@ -1,5 +1,6 @@
 // presupuesto.service.ts
 import { AppError } from "@/common/errors";
+import prisma from "../../config/prisma";
 
 import { PresupuestoRepository } from "./presupuesto.repository";
 import type {
@@ -14,6 +15,78 @@ import {
 } from "./utils";
 import { impuestoGeneralService } from "../impuesto-general/impuesto-general.service";
 import { gastosNegocioService } from "../gastos-negocio/gastos-negocio.service";
+
+/**
+ * Helper function: Crea un pedido automáticamente cuando un presupuesto se aprueba
+ */
+async function createPedidoFromPresupuesto(
+  presupuestoId: number,
+  presupuesto: {
+    clienteId: number | null;
+    fechaVencimiento: Date | null;
+  },
+) {
+  // Validar que tenga clienteId (requerido para pedido)
+  if (!presupuesto.clienteId) {
+    throw new AppError(
+      "No se puede crear un pedido sin cliente asociado al presupuesto",
+      400,
+    );
+  }
+
+  // Verificar que no exista ya un pedido para este presupuesto
+  const existingPedido = await prisma.pedido.findUnique({
+    where: { presupuestoId },
+  });
+
+  if (existingPedido) {
+    // Si ya existe, no hacer nada (idempotencia)
+    return existingPedido;
+  }
+
+  // Obtener los detalles del presupuesto
+  const detallesPresupuesto = await prisma.presupuestoDetalle.findMany({
+    where: { presupuestoId },
+  });
+
+  if (detallesPresupuesto.length === 0) {
+    throw new AppError(
+      "No se puede crear un pedido sin detalles en el presupuesto",
+      400,
+    );
+  }
+
+  // Crear el pedido con sus detalles
+  const pedido = await prisma.pedido.create({
+    data: {
+      presupuestoId,
+      clienteId: presupuesto.clienteId,
+      estado: "PENDIENTE",
+      fechaEntregaEstimada: presupuesto.fechaVencimiento || null,
+      pagado: false,
+      detalles: {
+        create: detallesPresupuesto.map((detalle) => ({
+          productoId: detalle.productoId,
+          cantidad: detalle.cantidad,
+          costoUnitario: detalle.costoUnitario,
+          // El precio unitario del pedido es el costo unitario + margen (usamos el costo como base)
+          // En el futuro se podría calcular con el totalFinal del presupuesto
+          precioUnitario: detalle.costoUnitario,
+          subtotal: detalle.cantidad * detalle.costoUnitario,
+          // talle y color podrían venir de otra fuente o ser null por ahora
+          talle: null,
+          color: null,
+        })),
+      },
+    },
+    include: {
+      detalles: true,
+      cliente: true,
+    },
+  });
+
+  return pedido;
+}
 
 export const PresupuestoService = {
   // Trae el número del siguiente presupuesto a generar
@@ -140,6 +213,22 @@ export const PresupuestoService = {
       },
     });
 
+    // Si el presupuesto se crea directamente como ACEPTADO, crear el pedido automáticamente
+    if (estado === "ACEPTADO" && created.clienteId) {
+      try {
+        await createPedidoFromPresupuesto(created.id, {
+          clienteId: created.clienteId,
+          fechaVencimiento: created.fechaVencimiento,
+        });
+      } catch (error) {
+        // Si falla la creación del pedido, loguear pero no fallar la creación del presupuesto
+        console.error(
+          "Error al crear pedido automáticamente desde presupuesto:",
+          error,
+        );
+      }
+    }
+
     return created;
   },
 
@@ -239,6 +328,27 @@ export const PresupuestoService = {
         adicionales,
       },
     });
+
+    // Si el estado cambió a ACEPTADO y no tiene pedido asociado, crear el pedido automáticamente
+    const estadoCambioAceptado =
+      estado === "ACEPTADO" &&
+      existing.estado !== "ACEPTADO" &&
+      !existing.pedido;
+
+    if (estadoCambioAceptado && updated.clienteId) {
+      try {
+        await createPedidoFromPresupuesto(updated.id, {
+          clienteId: updated.clienteId,
+          fechaVencimiento: updated.fechaVencimiento,
+        });
+      } catch (error) {
+        // Si falla la creación del pedido, loguear pero no fallar la actualización del presupuesto
+        console.error(
+          "Error al crear pedido automáticamente desde presupuesto:",
+          error,
+        );
+      }
+    }
 
     return updated;
   },
@@ -351,6 +461,27 @@ export const PresupuestoService = {
           : undefined,
       },
     });
+
+    // Si el estado cambió a ACEPTADO y no tiene pedido asociado, crear el pedido automáticamente
+    const estadoCambioAceptado =
+      payload.estado === "ACEPTADO" &&
+      existing.estado !== "ACEPTADO" &&
+      !existing.pedido;
+
+    if (estadoCambioAceptado && updated.clienteId) {
+      try {
+        await createPedidoFromPresupuesto(updated.id, {
+          clienteId: updated.clienteId,
+          fechaVencimiento: updated.fechaVencimiento,
+        });
+      } catch (error) {
+        // Si falla la creación del pedido, loguear pero no fallar la actualización del presupuesto
+        console.error(
+          "Error al crear pedido automáticamente desde presupuesto:",
+          error,
+        );
+      }
+    }
 
     return updated;
   },
