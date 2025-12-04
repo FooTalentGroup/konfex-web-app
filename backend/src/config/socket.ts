@@ -1,8 +1,29 @@
 import { Server as HttpServer } from "http";
 import { Server } from "socket.io";
-import {sendMessageToTelegram} from "@modules/telegram/telegram.service";
-import { ClientToServerEvents, KonfexMessage, ServerToClientEvents } from "@/modules/telegram/telegram.types";
+import {sendTextMessage} from "@modules/telegram/telegram.service";
 
+export interface TelegramMessage {
+  chatId: number;
+  text: string;
+  timestamp: string;
+}
+
+export interface KonfexMessage {
+    chatId: number;
+    text: string;
+    timestamp: string;
+    firstName: string;
+    lastName: string;
+    username: string;
+}
+
+export interface ServerToClientEvents {
+  telegram_message: (msg: TelegramMessage) => void;
+}
+
+export interface ClientToServerEvents {
+    konfex_send_message: (data: KonfexMessage) => void;
+}
 
 export let io: Server<ClientToServerEvents, ServerToClientEvents>;
 
@@ -19,12 +40,8 @@ export const initSocket = (server: HttpServer) => {
 
   io.on("connection", (socket) => {
     console.log("🔌 Frontend conectado via WebSocket", socket.id);
-    socket.on("konfex_send_message", async (msg: KonfexMessage) => {
-      try {
-        await sendMessageToTelegram(msg);
-      } catch (err) {
-        console.error("Error enviando mensaje desde WebSocket:", err);
-      }
-    });
+      socket.on("konfex_send_message", async ({ chatId, text, firstName, lastName, username}) => {
+        await sendTextMessage(chatId, text, firstName, lastName, username);
+      });
   });
 };
