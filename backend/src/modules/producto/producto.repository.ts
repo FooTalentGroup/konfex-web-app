@@ -21,5 +21,19 @@ export const productoRepository = {
   /** 🔥 Nuevo método para validar productos duplicados */
   findByName: (nombre: string) => prisma.producto.findUnique({ where: { nombre } }),
 
+  /** Búsqueda de productos por nombre o descripción */
+  search: (query: string, limit: number = 10) =>
+    prisma.producto.findMany({
+      where: {
+        activo: true,
+        OR: [
+          { nombre: { contains: query, mode: "insensitive" } },
+          { descripcion: { contains: query, mode: "insensitive" } },
+        ],
+      },
+      take: limit,
+      orderBy: { nombre: "asc" },
+    }),
+
   delete: (id: number) => prisma.producto.delete({ where: { id } }),
 };

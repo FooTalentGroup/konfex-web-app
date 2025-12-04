@@ -17,6 +17,23 @@ export const getAllProductosController = controllerHandler(async () => {
   return await productoService.getAll();
 }, "Productos obtenidos correctamente");
 
+export const searchProductosController = controllerHandler(
+  async (req: Request) => {
+    const query = (req.validatedQuery || req.query) as
+      | { search?: string; limit?: number }
+      | undefined;
+    const searchQuery = query?.search || "";
+    const limit = query?.limit || 10;
+
+    if (!searchQuery || searchQuery.trim().length === 0) {
+      return [];
+    }
+
+    return await productoService.search(searchQuery, limit);
+  },
+  "Búsqueda de productos realizada correctamente"
+);
+
 export const getProductoByIdController = controllerHandler(async (req: Request) => {
   const id = Number(req.params.id);
   return await productoService.getById(id);
