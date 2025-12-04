@@ -3,6 +3,7 @@ import { useFormContext, useFieldArray } from "react-hook-form";
 import { Trash2, Plus, Minus, ChevronDown } from "lucide-react";
 import CircularAddButton from "@/components/common/CircularAddButton";
 import GarmentAutocomplete from "../GarmentAutocomplete";
+import BudgetTotalBadge from "../BudgetTotalBadge";
 import type { Producto } from "@/hooks/useProductos";
 
 interface MaterialVariant {
@@ -31,7 +32,7 @@ export default function BudgetMaterials() {
   >([]);
 
   const [currentSize, setCurrentSize] = useState("M");
-  const [currentQty, setCurrentQty] = useState(12);
+  const [currentQty, setCurrentQty] = useState(1);
 
   const addVariant = () => {
     if (currentQty > 0) {
@@ -97,13 +98,7 @@ export default function BudgetMaterials() {
       {/* Total detalle header */}
       <div className="flex justify-between items-center mb-4 px-1">
         <span className="font-bold text-gray-900 text-base">Total detalle</span>
-        <span className="font-bold text-[#8B709D] text-lg">
-          ${" "}
-          {totalMaterials.toLocaleString("es-AR", {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-          })}
-        </span>
+        <BudgetTotalBadge amount={totalMaterials} />
       </div>
 
       {/* Instruction text */}
