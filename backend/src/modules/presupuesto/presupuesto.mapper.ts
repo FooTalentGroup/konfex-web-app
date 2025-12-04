@@ -49,7 +49,9 @@ export const toPresupuestoResponseDto = (
   },
 ): PresupuestoResponseDto => {
   if (!presupuesto.gastosNegocio) {
-    throw new Error("gastosNegocio es requerido para calcular costosIndirectos");
+    throw new Error(
+      "gastosNegocio es requerido para calcular costosIndirectos",
+    );
   }
 
   const costosIndirectos =
