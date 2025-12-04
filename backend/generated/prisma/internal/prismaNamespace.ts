@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.0.1
- * Query Engine version: f09f2815f091dbba658cdcd2264306d88bb5bda6
+ * Prisma Client JS version: 7.1.0
+ * Query Engine version: ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.0.1",
-  engine: "f09f2815f091dbba658cdcd2264306d88bb5bda6"
+  client: "7.1.0",
+  engine: "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba"
 }
 
 /**
@@ -386,6 +386,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   User: 'User',
   Cliente: 'Cliente',
+  Coleccion: 'Coleccion',
   Producto: 'Producto',
   Material: 'Material',
   ManoDeObra: 'ManoDeObra',
@@ -415,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "cliente" | "producto" | "material" | "manoDeObra" | "materialPorProducto" | "manoDeObraPorProducto" | "presupuesto" | "presupuestoDetalle" | "adicional" | "gastosNegocio" | "impuestoGeneral" | "pedido" | "pedidoDetalle" | "produccionEtapa" | "telegramMessage"
+    modelProps: "user" | "cliente" | "coleccion" | "producto" | "material" | "manoDeObra" | "materialPorProducto" | "manoDeObraPorProducto" | "presupuesto" | "presupuestoDetalle" | "adicional" | "gastosNegocio" | "impuestoGeneral" | "pedido" | "pedidoDetalle" | "produccionEtapa" | "telegramMessage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -564,6 +565,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ClienteCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ClienteCountAggregateOutputType> | number
+        }
+      }
+    }
+    Coleccion: {
+      payload: Prisma.$ColeccionPayload<ExtArgs>
+      fields: Prisma.ColeccionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ColeccionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColeccionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ColeccionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColeccionPayload>
+        }
+        findFirst: {
+          args: Prisma.ColeccionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColeccionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ColeccionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColeccionPayload>
+        }
+        findMany: {
+          args: Prisma.ColeccionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColeccionPayload>[]
+        }
+        create: {
+          args: Prisma.ColeccionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColeccionPayload>
+        }
+        createMany: {
+          args: Prisma.ColeccionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ColeccionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColeccionPayload>[]
+        }
+        delete: {
+          args: Prisma.ColeccionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColeccionPayload>
+        }
+        update: {
+          args: Prisma.ColeccionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColeccionPayload>
+        }
+        deleteMany: {
+          args: Prisma.ColeccionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ColeccionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ColeccionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColeccionPayload>[]
+        }
+        upsert: {
+          args: Prisma.ColeccionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ColeccionPayload>
+        }
+        aggregate: {
+          args: Prisma.ColeccionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateColeccion>
+        }
+        groupBy: {
+          args: Prisma.ColeccionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ColeccionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ColeccionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ColeccionCountAggregateOutputType> | number
         }
       }
     }
@@ -1671,13 +1746,32 @@ export const ClienteScalarFieldEnum = {
 export type ClienteScalarFieldEnum = (typeof ClienteScalarFieldEnum)[keyof typeof ClienteScalarFieldEnum]
 
 
+export const ColeccionScalarFieldEnum = {
+  id: 'id',
+  codigo: 'codigo',
+  nombre: 'nombre',
+  imagen: 'imagen',
+  icono: 'icono',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ColeccionScalarFieldEnum = (typeof ColeccionScalarFieldEnum)[keyof typeof ColeccionScalarFieldEnum]
+
+
 export const ProductoScalarFieldEnum = {
   id: 'id',
+  codigo: 'codigo',
   nombre: 'nombre',
   descripcion: 'descripcion',
   activo: 'activo',
+  imagen: 'imagen',
   tallas: 'tallas',
   colores: 'colores',
+  mermaCantidad: 'mermaCantidad',
+  mermaUnidad: 'mermaUnidad',
+  mermaPrecio: 'mermaPrecio',
+  coleccionId: 'coleccionId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1729,7 +1823,6 @@ export const ManoDeObraPorProductoScalarFieldEnum = {
   productoId: 'productoId',
   manoDeObraId: 'manoDeObraId',
   cantidadHoras: 'cantidadHoras',
-  costoHora: 'costoHora',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2057,7 +2150,7 @@ export type PrismaClientOptions = ({
    *  { emit: 'stdout', level: 'error' }
    * 
    * ```
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
+   * Read more in our [docs](https://pris.ly/d/logging).
    */
   log?: (LogLevel | LogDefinition)[]
   /**
@@ -2085,10 +2178,27 @@ export type PrismaClientOptions = ({
    * ```
    */
   omit?: GlobalOmitConfig
+  /**
+   * SQL commenter plugins that add metadata to SQL queries as comments.
+   * Comments follow the sqlcommenter format: https://google.github.io/sqlcommenter/
+   * 
+   * @example
+   * ```
+   * const prisma = new PrismaClient({
+   *   adapter,
+   *   comments: [
+   *     traceContext(),
+   *     queryInsights(),
+   *   ],
+   * })
+   * ```
+   */
+  comments?: runtime.SqlCommenterPlugin[]
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   cliente?: Prisma.ClienteOmit
+  coleccion?: Prisma.ColeccionOmit
   producto?: Prisma.ProductoOmit
   material?: Prisma.MaterialOmit
   manoDeObra?: Prisma.ManoDeObraOmit
