@@ -190,6 +190,17 @@ export const getChatMessages = async (chatId: string | number) => {
 export const getChatsList = async () => {
   // Obtener todos los mensajes ordenados por timestamp descendente
   const allMessages = await telegramMessageRepository.findAll();
+  const getLastMessageText = (msg: typeof allMessages[number]): string => {
+    if (msg.text) return msg.text;
+    switch (msg.type) {
+      case "photo": return "Foto";
+      case "video": return "Video";
+      case "audio": return "Audio";
+      case "document": return "Documento";
+      case "voice": return "Nota de voz";
+      default: return "Mensaje sin contenido";
+    }
+  };
   
   // Agrupar por chatId, tomando el primer mensaje (más reciente) de cada chat
   const chatsMap = new Map<string, {
@@ -210,7 +221,7 @@ export const getChatsList = async () => {
         lastName: message.lastName,
         username: message.username,
         // modificar para recibir el ultimo mensaje
-        lastMessage: message.text || "",
+        lastMessage: getLastMessageText(message),
         lastMessageSource: message.source,
         lastTimestamp: message.timestamp,
       });

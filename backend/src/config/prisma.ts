@@ -5,6 +5,7 @@ import { PrismaClient } from "../../generated/prisma/client";
 
 const adapter = () => {
   const databaseUrl = process.env.DATABASE_URL;
+  console.log("base de datos", databaseUrl)
 
   if (!databaseUrl) {
     throw new Error(
