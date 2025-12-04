@@ -236,8 +236,8 @@ async function main() {
 
   // Colecciones
   const colecciones = [
-    { nombre: "Verano 2026", imagen: "https://example.com/verano.jpg", icono: "Sun", codigo:1 },
-    { nombre: "Invierno 2026", imagen: "https://example.com/invierno.jpg", icono: "CloudSnow", codigo: 2 },
+    { nombre: "Verano 2026", imagen: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/post-instagram-primavera-nueva-colecci%C3%B3n-design-template-59d147b6a8afea754918bd73c268e55d_screen.jpg?ts=1614790769", icono: "Sun", codigo:1 },
+    { nombre: "Invierno 2026", imagen: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/post-instagram-primavera-nueva-colecci%C3%B3n-design-template-59d147b6a8afea754918bd73c268e55d_screen.jpg?ts=1614790769", icono: "CloudSnow", codigo: 2 },
   ];
 
   for (const coleccion of colecciones) {
@@ -254,7 +254,7 @@ async function main() {
       nombre: "Camiseta Básica",
       descripcion: "Camiseta de algodón unisex",
       activo: true,
-      imagen: "https://example.com/camiseta1.jpg",
+      imagen: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/post-instagram-primavera-nueva-colecci%C3%B3n-design-template-59d147b6a8afea754918bd73c268e55d_screen.jpg?ts=1614790769",
       coleccionId: 1,
       tallas: ["S", "M", "L"],
       colores: ["Blanco", "Negro"],
@@ -279,7 +279,7 @@ async function main() {
       nombre: "Pantalón Casual",
       descripcion: "Pantalón cómodo para uso diario",
       activo: true,
-      imagen: "https://example.com/pantalon1.jpg",
+      imagen: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/post-instagram-primavera-nueva-colecci%C3%B3n-design-template-59d147b6a8afea754918bd73c268e55d_screen.jpg?ts=1614790769",
       coleccionId: 1,
       tallas: ["30", "32", "34"],
       colores: ["Azul", "Negro"],
@@ -301,7 +301,7 @@ async function main() {
       nombre: "Chaqueta Ligera",
       descripcion: "Chaqueta ligera para primavera",
       activo: true,
-      imagen: "https://example.com/chaqueta1.jpg",
+      imagen: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/post-instagram-primavera-nueva-colecci%C3%B3n-design-template-59d147b6a8afea754918bd73c268e55d_screen.jpg?ts=1614790769",
       coleccionId: 1,
       tallas: ["S", "M", "L"],
       colores: ["Verde", "Negro"],
@@ -325,7 +325,7 @@ async function main() {
       nombre: "Camiseta Básica Verano",
       descripcion: "Camiseta ligera para verano",
       activo: true,
-      imagen: "https://example.com/camiseta2.jpg",
+      imagen: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/post-instagram-primavera-nueva-colecci%C3%B3n-design-template-59d147b6a8afea754918bd73c268e55d_screen.jpg?ts=1614790769",
       coleccionId: 2,
       tallas: ["S", "M", "L"],
       colores: ["Amarillo", "Blanco"],
