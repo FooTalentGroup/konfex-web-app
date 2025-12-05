@@ -60,13 +60,17 @@ export const useAuth = () => {
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('user');
       window.dispatchEvent(new Event('userUpdated'));
-      router.push('/login');
+      router.push('/');
     }
   };
 
   useEffect(() => {
     if (mounted && !user) {
-      router.push('/login');
+      // Solo redirigir si no estamos ya en la página principal (login)
+      const currentPath = window.location.pathname;
+      if (currentPath !== '/') {
+        router.push('/');
+      }
     }
   }, [mounted, user, router]);
 
