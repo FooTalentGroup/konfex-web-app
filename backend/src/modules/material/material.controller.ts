@@ -19,7 +19,7 @@ export const createMaterialController = controllerHandler(
 export const getAllMaterialsController = controllerHandler(async (req: Request) => {
   // Usar validatedQuery si está disponible (datos validados y transformados)
   // sino usar req.query directamente
-  const filters = (req.validatedQuery || req.query) as MaterialQueryDto | undefined;
+  const filters = (req.validatedQuery as MaterialQueryDto | undefined) || undefined;
   const materiales = await materialService.getAll(filters);
   return materiales;
 }, "Materiales obtenidos correctamente");

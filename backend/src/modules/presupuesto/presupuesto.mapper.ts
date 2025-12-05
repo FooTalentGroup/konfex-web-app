@@ -12,6 +12,7 @@ import type {
   PresupuestoDetalleResponseDto,
   PresupuestoListItemDto,
   AdicionalResponseDto,
+  PresupuestoResponseDto,
 } from "./presupuesto.types";
 
 export const toPresupuestoDetalleResponseDto = (

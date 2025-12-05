@@ -38,6 +38,7 @@ export const updateMaterialWithIdSchema = z.object({
 
 // Validar parámetros de ruta (ID)
 export const materialIdSchema = z.object({
+  body: z.object({}),
   params: z.object({
     id: z.string().regex(/^\d+$/, "El ID debe ser un número entero").transform(Number),
   }),
@@ -45,6 +46,7 @@ export const materialIdSchema = z.object({
 
 // Query params (filtros)
 export const materialQuerySchema = z.object({
+  body: z.object({}),
   query: z.object({
     categoria: z.string().optional(),
     color: z.string().optional(),

@@ -313,6 +313,7 @@ export type TelegramMessageWhereInput = {
   source?: Prisma.StringFilter<"TelegramMessage"> | string
   timestamp?: Prisma.DateTimeFilter<"TelegramMessage"> | Date | string
   cliente?: Prisma.XOR<Prisma.ClienteNullableScalarRelationFilter, Prisma.ClienteWhereInput> | null
+  readBy?: Prisma.MessageReadListRelationFilter
 }
 
 export type TelegramMessageOrderByWithRelationInput = {
@@ -333,6 +334,7 @@ export type TelegramMessageOrderByWithRelationInput = {
   source?: Prisma.SortOrder
   timestamp?: Prisma.SortOrder
   cliente?: Prisma.ClienteOrderByWithRelationInput
+  readBy?: Prisma.MessageReadOrderByRelationAggregateInput
 }
 
 export type TelegramMessageWhereUniqueInput = Prisma.AtLeast<{
@@ -356,6 +358,7 @@ export type TelegramMessageWhereUniqueInput = Prisma.AtLeast<{
   source?: Prisma.StringFilter<"TelegramMessage"> | string
   timestamp?: Prisma.DateTimeFilter<"TelegramMessage"> | Date | string
   cliente?: Prisma.XOR<Prisma.ClienteNullableScalarRelationFilter, Prisma.ClienteWhereInput> | null
+  readBy?: Prisma.MessageReadListRelationFilter
 }, "id">
 
 export type TelegramMessageOrderByWithAggregationInput = {
@@ -420,6 +423,7 @@ export type TelegramMessageCreateInput = {
   source?: string
   timestamp?: Date | string
   cliente?: Prisma.ClienteCreateNestedOneWithoutTelegramMessagesInput
+  readBy?: Prisma.MessageReadCreateNestedManyWithoutMessageInput
 }
 
 export type TelegramMessageUncheckedCreateInput = {
@@ -439,6 +443,7 @@ export type TelegramMessageUncheckedCreateInput = {
   fileSize?: number | null
   source?: string
   timestamp?: Date | string
+  readBy?: Prisma.MessageReadUncheckedCreateNestedManyWithoutMessageInput
 }
 
 export type TelegramMessageUpdateInput = {
@@ -457,6 +462,7 @@ export type TelegramMessageUpdateInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   timestamp?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cliente?: Prisma.ClienteUpdateOneWithoutTelegramMessagesNestedInput
+  readBy?: Prisma.MessageReadUpdateManyWithoutMessageNestedInput
 }
 
 export type TelegramMessageUncheckedUpdateInput = {
@@ -476,6 +482,7 @@ export type TelegramMessageUncheckedUpdateInput = {
   fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   timestamp?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  readBy?: Prisma.MessageReadUncheckedUpdateManyWithoutMessageNestedInput
 }
 
 export type TelegramMessageCreateManyInput = {
@@ -612,6 +619,11 @@ export type TelegramMessageSumOrderByAggregateInput = {
   fileSize?: Prisma.SortOrder
 }
 
+export type TelegramMessageScalarRelationFilter = {
+  is?: Prisma.TelegramMessageWhereInput
+  isNot?: Prisma.TelegramMessageWhereInput
+}
+
 export type TelegramMessageCreateNestedManyWithoutClienteInput = {
   create?: Prisma.XOR<Prisma.TelegramMessageCreateWithoutClienteInput, Prisma.TelegramMessageUncheckedCreateWithoutClienteInput> | Prisma.TelegramMessageCreateWithoutClienteInput[] | Prisma.TelegramMessageUncheckedCreateWithoutClienteInput[]
   connectOrCreate?: Prisma.TelegramMessageCreateOrConnectWithoutClienteInput | Prisma.TelegramMessageCreateOrConnectWithoutClienteInput[]
@@ -654,6 +666,20 @@ export type TelegramMessageUncheckedUpdateManyWithoutClienteNestedInput = {
   deleteMany?: Prisma.TelegramMessageScalarWhereInput | Prisma.TelegramMessageScalarWhereInput[]
 }
 
+export type TelegramMessageCreateNestedOneWithoutReadByInput = {
+  create?: Prisma.XOR<Prisma.TelegramMessageCreateWithoutReadByInput, Prisma.TelegramMessageUncheckedCreateWithoutReadByInput>
+  connectOrCreate?: Prisma.TelegramMessageCreateOrConnectWithoutReadByInput
+  connect?: Prisma.TelegramMessageWhereUniqueInput
+}
+
+export type TelegramMessageUpdateOneRequiredWithoutReadByNestedInput = {
+  create?: Prisma.XOR<Prisma.TelegramMessageCreateWithoutReadByInput, Prisma.TelegramMessageUncheckedCreateWithoutReadByInput>
+  connectOrCreate?: Prisma.TelegramMessageCreateOrConnectWithoutReadByInput
+  upsert?: Prisma.TelegramMessageUpsertWithoutReadByInput
+  connect?: Prisma.TelegramMessageWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TelegramMessageUpdateToOneWithWhereWithoutReadByInput, Prisma.TelegramMessageUpdateWithoutReadByInput>, Prisma.TelegramMessageUncheckedUpdateWithoutReadByInput>
+}
+
 export type TelegramMessageCreateWithoutClienteInput = {
   chatId: string
   firstName?: string | null
@@ -669,6 +695,7 @@ export type TelegramMessageCreateWithoutClienteInput = {
   fileSize?: number | null
   source?: string
   timestamp?: Date | string
+  readBy?: Prisma.MessageReadCreateNestedManyWithoutMessageInput
 }
 
 export type TelegramMessageUncheckedCreateWithoutClienteInput = {
@@ -687,6 +714,7 @@ export type TelegramMessageUncheckedCreateWithoutClienteInput = {
   fileSize?: number | null
   source?: string
   timestamp?: Date | string
+  readBy?: Prisma.MessageReadUncheckedCreateNestedManyWithoutMessageInput
 }
 
 export type TelegramMessageCreateOrConnectWithoutClienteInput = {
@@ -737,6 +765,96 @@ export type TelegramMessageScalarWhereInput = {
   timestamp?: Prisma.DateTimeFilter<"TelegramMessage"> | Date | string
 }
 
+export type TelegramMessageCreateWithoutReadByInput = {
+  chatId: string
+  firstName?: string | null
+  lastName?: string | null
+  username?: string | null
+  text?: string | null
+  type?: string | null
+  fileId?: string | null
+  fileUniqueId?: string | null
+  filePath?: string | null
+  fileUrl?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
+  source?: string
+  timestamp?: Date | string
+  cliente?: Prisma.ClienteCreateNestedOneWithoutTelegramMessagesInput
+}
+
+export type TelegramMessageUncheckedCreateWithoutReadByInput = {
+  id?: number
+  chatId: string
+  clienteId?: number | null
+  firstName?: string | null
+  lastName?: string | null
+  username?: string | null
+  text?: string | null
+  type?: string | null
+  fileId?: string | null
+  fileUniqueId?: string | null
+  filePath?: string | null
+  fileUrl?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
+  source?: string
+  timestamp?: Date | string
+}
+
+export type TelegramMessageCreateOrConnectWithoutReadByInput = {
+  where: Prisma.TelegramMessageWhereUniqueInput
+  create: Prisma.XOR<Prisma.TelegramMessageCreateWithoutReadByInput, Prisma.TelegramMessageUncheckedCreateWithoutReadByInput>
+}
+
+export type TelegramMessageUpsertWithoutReadByInput = {
+  update: Prisma.XOR<Prisma.TelegramMessageUpdateWithoutReadByInput, Prisma.TelegramMessageUncheckedUpdateWithoutReadByInput>
+  create: Prisma.XOR<Prisma.TelegramMessageCreateWithoutReadByInput, Prisma.TelegramMessageUncheckedCreateWithoutReadByInput>
+  where?: Prisma.TelegramMessageWhereInput
+}
+
+export type TelegramMessageUpdateToOneWithWhereWithoutReadByInput = {
+  where?: Prisma.TelegramMessageWhereInput
+  data: Prisma.XOR<Prisma.TelegramMessageUpdateWithoutReadByInput, Prisma.TelegramMessageUncheckedUpdateWithoutReadByInput>
+}
+
+export type TelegramMessageUpdateWithoutReadByInput = {
+  chatId?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  text?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUniqueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  timestamp?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cliente?: Prisma.ClienteUpdateOneWithoutTelegramMessagesNestedInput
+}
+
+export type TelegramMessageUncheckedUpdateWithoutReadByInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  chatId?: Prisma.StringFieldUpdateOperationsInput | string
+  clienteId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  text?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUniqueId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  timestamp?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type TelegramMessageCreateManyClienteInput = {
   id?: number
   chatId: string
@@ -770,6 +888,7 @@ export type TelegramMessageUpdateWithoutClienteInput = {
   fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   timestamp?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  readBy?: Prisma.MessageReadUpdateManyWithoutMessageNestedInput
 }
 
 export type TelegramMessageUncheckedUpdateWithoutClienteInput = {
@@ -788,6 +907,7 @@ export type TelegramMessageUncheckedUpdateWithoutClienteInput = {
   fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   timestamp?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  readBy?: Prisma.MessageReadUncheckedUpdateManyWithoutMessageNestedInput
 }
 
 export type TelegramMessageUncheckedUpdateManyWithoutClienteInput = {
@@ -809,6 +929,35 @@ export type TelegramMessageUncheckedUpdateManyWithoutClienteInput = {
 }
 
 
+/**
+ * Count Type TelegramMessageCountOutputType
+ */
+
+export type TelegramMessageCountOutputType = {
+  readBy: number
+}
+
+export type TelegramMessageCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  readBy?: boolean | TelegramMessageCountOutputTypeCountReadByArgs
+}
+
+/**
+ * TelegramMessageCountOutputType without action
+ */
+export type TelegramMessageCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TelegramMessageCountOutputType
+   */
+  select?: Prisma.TelegramMessageCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * TelegramMessageCountOutputType without action
+ */
+export type TelegramMessageCountOutputTypeCountReadByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MessageReadWhereInput
+}
+
 
 export type TelegramMessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -828,6 +977,8 @@ export type TelegramMessageSelect<ExtArgs extends runtime.Types.Extensions.Inter
   source?: boolean
   timestamp?: boolean
   cliente?: boolean | Prisma.TelegramMessage$clienteArgs<ExtArgs>
+  readBy?: boolean | Prisma.TelegramMessage$readByArgs<ExtArgs>
+  _count?: boolean | Prisma.TelegramMessageCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["telegramMessage"]>
 
 export type TelegramMessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -892,6 +1043,8 @@ export type TelegramMessageSelectScalar = {
 export type TelegramMessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "chatId" | "clienteId" | "firstName" | "lastName" | "username" | "text" | "type" | "fileId" | "fileUniqueId" | "filePath" | "fileUrl" | "mimeType" | "fileSize" | "source" | "timestamp", ExtArgs["result"]["telegramMessage"]>
 export type TelegramMessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cliente?: boolean | Prisma.TelegramMessage$clienteArgs<ExtArgs>
+  readBy?: boolean | Prisma.TelegramMessage$readByArgs<ExtArgs>
+  _count?: boolean | Prisma.TelegramMessageCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TelegramMessageIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cliente?: boolean | Prisma.TelegramMessage$clienteArgs<ExtArgs>
@@ -904,6 +1057,7 @@ export type $TelegramMessagePayload<ExtArgs extends runtime.Types.Extensions.Int
   name: "TelegramMessage"
   objects: {
     cliente: Prisma.$ClientePayload<ExtArgs> | null
+    readBy: Prisma.$MessageReadPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1317,6 +1471,7 @@ readonly fields: TelegramMessageFieldRefs;
 export interface Prisma__TelegramMessageClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   cliente<T extends Prisma.TelegramMessage$clienteArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TelegramMessage$clienteArgs<ExtArgs>>): Prisma.Prisma__ClienteClient<runtime.Types.Result.GetResult<Prisma.$ClientePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  readBy<T extends Prisma.TelegramMessage$readByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TelegramMessage$readByArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessageReadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1774,6 +1929,30 @@ export type TelegramMessage$clienteArgs<ExtArgs extends runtime.Types.Extensions
    */
   include?: Prisma.ClienteInclude<ExtArgs> | null
   where?: Prisma.ClienteWhereInput
+}
+
+/**
+ * TelegramMessage.readBy
+ */
+export type TelegramMessage$readByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MessageRead
+   */
+  select?: Prisma.MessageReadSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MessageRead
+   */
+  omit?: Prisma.MessageReadOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MessageReadInclude<ExtArgs> | null
+  where?: Prisma.MessageReadWhereInput
+  orderBy?: Prisma.MessageReadOrderByWithRelationInput | Prisma.MessageReadOrderByWithRelationInput[]
+  cursor?: Prisma.MessageReadWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MessageReadScalarFieldEnum | Prisma.MessageReadScalarFieldEnum[]
 }
 
 /**
