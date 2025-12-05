@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Send, X, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { useOrderCard } from "@/hooks/useOrderCard";
+import { pedidoService } from "@/services/pedido.service";
 
 interface OrderCardProps {
   id: string;
@@ -13,8 +14,9 @@ interface OrderCardProps {
   garmentType: string;
   price: number;
   status: "pagado" | "deposito";
-  operativoStatus?: "presupuesto" | "en compra" | "en produccion" | "entregado";
+  operativoStatus?: "no visto" | "en compra" | "en produccion" | "entregado";
   telegramChatId?: string;
+  pedidoId: number;
 }
 
 export default function OrderCard({
@@ -24,8 +26,9 @@ export default function OrderCard({
   deliveryDate,
   price,
   status,
-  operativoStatus = "presupuesto",
+  operativoStatus = "no visto",
   telegramChatId,
+  pedidoId,
 }: OrderCardProps) {
   const [isPaymentDropdownOpen, setIsPaymentDropdownOpen] = useState(false);
   const [isOperativoDropdownOpen, setIsOperativoDropdownOpen] = useState(false);
@@ -35,9 +38,62 @@ export default function OrderCard({
     "pagado" | "deposito"
   >(status);
   const [currentOperativoStatus, setCurrentOperativoStatus] = useState<
-    "presupuesto" | "en compra" | "en produccion" | "entregado"
+    "no visto" | "en compra" | "en produccion" | "entregado"
   >(operativoStatus);
   const [isSelected, setIsSelected] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  // Función para mapear estado del frontend al backend
+  const mapOperativoStatusToBackend = (
+    status: "no visto" | "en compra" | "en produccion" | "entregado"
+  ): "NO_VISTO" | "EN_COMPRA" | "EN_PRODUCCION" | "ENTREGADO" => {
+    switch (status) {
+      case "no visto":
+        return "NO_VISTO";
+      case "en compra":
+        return "EN_COMPRA";
+      case "en produccion":
+        return "EN_PRODUCCION";
+      case "entregado":
+        return "ENTREGADO";
+      default:
+        return "NO_VISTO";
+    }
+  };
+
+  // Función para actualizar el estado operativo
+  const handleOperativoStatusChange = async (
+    newStatus: "no visto" | "en compra" | "en produccion" | "entregado"
+  ) => {
+    try {
+      setIsUpdating(true);
+      const backendEstado = mapOperativoStatusToBackend(newStatus);
+      await pedidoService.update(pedidoId, { estado: backendEstado });
+      setCurrentOperativoStatus(newStatus);
+      setIsOperativoDropdownOpen(false);
+    } catch (error) {
+      console.error("Error al actualizar estado operativo:", error);
+      alert("Error al actualizar el estado. Por favor, intenta nuevamente.");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  // Función para actualizar el estado de pago
+  const handlePaymentStatusChange = async (newStatus: "pagado" | "deposito") => {
+    try {
+      setIsUpdating(true);
+      const pagado = newStatus === "pagado";
+      await pedidoService.update(pedidoId, { pagado });
+      setCurrentPaymentStatus(newStatus);
+      setIsPaymentDropdownOpen(false);
+    } catch (error) {
+      console.error("Error al actualizar estado de pago:", error);
+      alert("Error al actualizar el estado de pago. Por favor, intenta nuevamente.");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   const {
     showMessageInput,
@@ -182,10 +238,10 @@ export default function OrderCard({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setCurrentPaymentStatus("pagado");
-                  setIsPaymentDropdownOpen(false);
+                  handlePaymentStatusChange("pagado");
                 }}
-                className="w-full flex items-center gap-2 h-[34px] rounded-t-[12px] px-3 py-2 font-[var(--font-lato),sans-serif] text-[12px] leading-[131%] tracking-[0%] bg-[#ECF9F1] text-[#319B5F] hover:bg-[#D1F2E0]"
+                disabled={isUpdating}
+                className="w-full flex items-center gap-2 h-[34px] rounded-t-[12px] px-3 py-2 font-[var(--font-lato),sans-serif] text-[12px] leading-[131%] tracking-[0%] bg-[#ECF9F1] text-[#319B5F] hover:bg-[#D1F2E0] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Image
                   src="/checkPedidos.png"
@@ -201,10 +257,10 @@ export default function OrderCard({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setCurrentPaymentStatus("deposito");
-                  setIsPaymentDropdownOpen(false);
+                  handlePaymentStatusChange("deposito");
                 }}
-                className="w-full flex items-center gap-2 h-[34px] rounded-b-[12px] px-3 py-2 font-[var(--font-lato),sans-serif] text-xs leading-[131%] tracking-[0%] bg-[#FDF5E7] text-[#BD7D0F] hover:bg-[#FEF3C7]"
+                disabled={isUpdating}
+                className="w-full flex items-center gap-2 h-[34px] rounded-b-[12px] px-3 py-2 font-[var(--font-lato),sans-serif] text-xs leading-[131%] tracking-[0%] bg-[#FDF5E7] text-[#BD7D0F] hover:bg-[#FEF3C7] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Image
                   src="/deposito.png"
@@ -299,17 +355,17 @@ export default function OrderCard({
                 }}
                 className="flex items-center whitespace-nowrap bg-[#8B68FD] text-[#FEFCFF] font-lato font-normal text-[12px] leading-[131%] tracking-normal rounded-xl h-[26px] px-3 gap-2 w-[140px]"
               >
-                {currentOperativoStatus === "presupuesto" && (
+                {currentOperativoStatus === "no visto" && (
                   <>
                     <Image
                       src="/iconoPresupuesto.png"
-                      alt="Presupuesto"
+                      alt="No visto"
                       width={18}
                       height={18}
                       className="w-[18px] h-[18px] object-contain shrink-0 filter:brightness(0) invert(1)"
                     />
                     <span className="text-[12px] leading-[131%] text-[#FEFCFF]">
-                      Presupuesto
+                      No visto
                     </span>
                   </>
                 )}
@@ -362,29 +418,29 @@ export default function OrderCard({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setCurrentOperativoStatus("presupuesto");
-                      setIsOperativoDropdownOpen(false);
+                      handleOperativoStatusChange("no visto");
                     }}
-                    className="w-full flex items-center gap-2 h-[30px] px-3 text-left bg-[#D8CDFE] hover:bg-[#CFC4FD] text-[#6A5379] rounded-t-[12px] font-lato text-[11px] leading-[131%] border-b border-[#B59DF9]"
+                    disabled={isUpdating}
+                    className="w-full flex items-center gap-2 h-[30px] px-3 text-left bg-[#D8CDFE] hover:bg-[#CFC4FD] text-[#6A5379] rounded-t-[12px] font-lato text-[11px] leading-[131%] border-b border-[#B59DF9] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Image
                       src="/iconoPresupuesto.png"
-                      alt="Presupuesto"
+                      alt="No visto"
                       width={18}
                       height={18}
                       className="w-[18px] h-[18px] object-contain filter:brightness(0) saturate(100%) invert(33%) sepia(15%) saturate(458%) hue-rotate(252deg) brightness(95%) contrast(86%)"
                     />
                     <span className="text-[11px] font-lato leading-[131%]">
-                      Presupuesto
+                      No visto
                     </span>
                   </button>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setCurrentOperativoStatus("en compra");
-                      setIsOperativoDropdownOpen(false);
+                      handleOperativoStatusChange("en compra");
                     }}
-                    className="w-full flex items-center gap-2 h-[30px] px-3 text-left bg-[#D8CDFE] hover:bg-[#CFC4FD] text-[#6A5379] font-lato text-[11px] leading-[131%] border-b border-[#B59DF9]"
+                    disabled={isUpdating}
+                    className="w-full flex items-center gap-2 h-[30px] px-3 text-left bg-[#D8CDFE] hover:bg-[#CFC4FD] text-[#6A5379] font-lato text-[11px] leading-[131%] border-b border-[#B59DF9] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Image
                       src="/iconoCompra.png"
@@ -400,10 +456,10 @@ export default function OrderCard({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setCurrentOperativoStatus("en produccion");
-                      setIsOperativoDropdownOpen(false);
+                      handleOperativoStatusChange("en produccion");
                     }}
-                    className="w-full flex items-center gap-2 h-[30px] px-3 text-left bg-[#D8CDFE] hover:bg-[#CFC4FD] text-[#6A5379] font-lato text-[11px] leading-[131%] border-b border-[#B59DF9]"
+                    disabled={isUpdating}
+                    className="w-full flex items-center gap-2 h-[30px] px-3 text-left bg-[#D8CDFE] hover:bg-[#CFC4FD] text-[#6A5379] font-lato text-[11px] leading-[131%] border-b border-[#B59DF9] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Image
                       src="/iconoProduccion.png"
@@ -419,10 +475,10 @@ export default function OrderCard({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setCurrentOperativoStatus("entregado");
-                      setIsOperativoDropdownOpen(false);
+                      handleOperativoStatusChange("entregado");
                     }}
-                    className="w-full flex items-center gap-2 h-[30px] px-3 text-left bg-[#D8CDFE] hover:bg-[#CFC4FD] text-[#6A5379] rounded-b-[12px] font-lato text-[11px] leading-[131%]"
+                    disabled={isUpdating}
+                    className="w-full flex items-center gap-2 h-[30px] px-3 text-left bg-[#D8CDFE] hover:bg-[#CFC4FD] text-[#6A5379] rounded-b-[12px] font-lato text-[11px] leading-[131%] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Image
                       src="/iconoEntregado.png"

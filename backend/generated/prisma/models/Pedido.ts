@@ -343,7 +343,7 @@ export type PedidoScalarWhereWithAggregatesInput = {
 
 export type PedidoCreateInput = {
   fechaCreacion?: Date | string
-  estado: $Enums.EstadoPedido
+  estado?: $Enums.EstadoPedido
   pagado?: boolean
   fechaEntregaEstimada?: Date | string | null
   fechaEntregaReal?: Date | string | null
@@ -360,7 +360,7 @@ export type PedidoUncheckedCreateInput = {
   presupuestoId: number
   clienteId: number
   fechaCreacion?: Date | string
-  estado: $Enums.EstadoPedido
+  estado?: $Enums.EstadoPedido
   pagado?: boolean
   fechaEntregaEstimada?: Date | string | null
   fechaEntregaReal?: Date | string | null
@@ -404,7 +404,7 @@ export type PedidoCreateManyInput = {
   presupuestoId: number
   clienteId: number
   fechaCreacion?: Date | string
-  estado: $Enums.EstadoPedido
+  estado?: $Enums.EstadoPedido
   pagado?: boolean
   fechaEntregaEstimada?: Date | string | null
   fechaEntregaReal?: Date | string | null
@@ -614,7 +614,7 @@ export type PedidoUpdateOneRequiredWithoutEtapasNestedInput = {
 
 export type PedidoCreateWithoutClienteInput = {
   fechaCreacion?: Date | string
-  estado: $Enums.EstadoPedido
+  estado?: $Enums.EstadoPedido
   pagado?: boolean
   fechaEntregaEstimada?: Date | string | null
   fechaEntregaReal?: Date | string | null
@@ -629,7 +629,7 @@ export type PedidoUncheckedCreateWithoutClienteInput = {
   id?: number
   presupuestoId: number
   fechaCreacion?: Date | string
-  estado: $Enums.EstadoPedido
+  estado?: $Enums.EstadoPedido
   pagado?: boolean
   fechaEntregaEstimada?: Date | string | null
   fechaEntregaReal?: Date | string | null
@@ -683,7 +683,7 @@ export type PedidoScalarWhereInput = {
 
 export type PedidoCreateWithoutPresupuestoInput = {
   fechaCreacion?: Date | string
-  estado: $Enums.EstadoPedido
+  estado?: $Enums.EstadoPedido
   pagado?: boolean
   fechaEntregaEstimada?: Date | string | null
   fechaEntregaReal?: Date | string | null
@@ -698,7 +698,7 @@ export type PedidoUncheckedCreateWithoutPresupuestoInput = {
   id?: number
   clienteId: number
   fechaCreacion?: Date | string
-  estado: $Enums.EstadoPedido
+  estado?: $Enums.EstadoPedido
   pagado?: boolean
   fechaEntregaEstimada?: Date | string | null
   fechaEntregaReal?: Date | string | null
@@ -753,7 +753,7 @@ export type PedidoUncheckedUpdateWithoutPresupuestoInput = {
 
 export type PedidoCreateWithoutDetallesInput = {
   fechaCreacion?: Date | string
-  estado: $Enums.EstadoPedido
+  estado?: $Enums.EstadoPedido
   pagado?: boolean
   fechaEntregaEstimada?: Date | string | null
   fechaEntregaReal?: Date | string | null
@@ -769,7 +769,7 @@ export type PedidoUncheckedCreateWithoutDetallesInput = {
   presupuestoId: number
   clienteId: number
   fechaCreacion?: Date | string
-  estado: $Enums.EstadoPedido
+  estado?: $Enums.EstadoPedido
   pagado?: boolean
   fechaEntregaEstimada?: Date | string | null
   fechaEntregaReal?: Date | string | null
@@ -823,7 +823,7 @@ export type PedidoUncheckedUpdateWithoutDetallesInput = {
 
 export type PedidoCreateWithoutEtapasInput = {
   fechaCreacion?: Date | string
-  estado: $Enums.EstadoPedido
+  estado?: $Enums.EstadoPedido
   pagado?: boolean
   fechaEntregaEstimada?: Date | string | null
   fechaEntregaReal?: Date | string | null
@@ -839,7 +839,7 @@ export type PedidoUncheckedCreateWithoutEtapasInput = {
   presupuestoId: number
   clienteId: number
   fechaCreacion?: Date | string
-  estado: $Enums.EstadoPedido
+  estado?: $Enums.EstadoPedido
   pagado?: boolean
   fechaEntregaEstimada?: Date | string | null
   fechaEntregaReal?: Date | string | null
@@ -895,7 +895,7 @@ export type PedidoCreateManyClienteInput = {
   id?: number
   presupuestoId: number
   fechaCreacion?: Date | string
-  estado: $Enums.EstadoPedido
+  estado?: $Enums.EstadoPedido
   pagado?: boolean
   fechaEntregaEstimada?: Date | string | null
   fechaEntregaReal?: Date | string | null
