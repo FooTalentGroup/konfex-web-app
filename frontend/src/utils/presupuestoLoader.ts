@@ -1,4 +1,5 @@
 import { PresupuestoResponseDto } from "@/types/presupuesto.types";
+import { formatDateShort } from "./dateUtils";
 
 interface Material {
   productoId?: number;
@@ -37,21 +38,6 @@ export function loadPresupuestoToForm(
   presupuesto: PresupuestoResponseDto,
   gastosNegocioList?: Array<{ id: number; porcentaje: number }>
 ): BudgetFormData {
-  // Convertir fecha de ISO a formato DD/MM/YYYY
-  const formatDate = (dateString: string | null): string => {
-    if (!dateString) return "";
-    try {
-      const date = new Date(dateString);
-      const day = date.getDate().toString().padStart(2, "0");
-      const month = (date.getMonth() + 1).toString().padStart(2, "0");
-      const year = date.getFullYear();
-      return `${day}/${month}/${year}`;
-    } catch {
-      return dateString;
-    }
-  };
-
-  // Agrupar detalles por producto para crear materiales con variants
   const materialesMap = new Map<
     number,
     {
@@ -66,7 +52,6 @@ export function loadPresupuestoToForm(
     const productoId = detalle.productoId;
 
     if (!materialesMap.has(productoId)) {
-      // Extraer nombre base del producto desde la descripción
       // Formato esperado: "Nombre - Talla X"
       const descripcion = detalle.descripcion || "";
       const match = descripcion.match(/^(.+?)\s*-\s*Talla\s+(.+)$/);
@@ -84,10 +69,9 @@ export function loadPresupuestoToForm(
 
     const material = materialesMap.get(productoId)!;
 
-    // Extraer talla de la descripción
     const descripcion = detalle.descripcion || "";
     const match = descripcion.match(/Talla\s+(\w+)/);
-    const size = match ? match[1] : "M"; // Default a M si no se encuentra
+    const size = match ? match[1] : "M";
 
     material.variants.push({
       size,
@@ -95,17 +79,14 @@ export function loadPresupuestoToForm(
     });
   });
 
-  // Convertir adicionales a extras
   const extras: Extra[] = [];
   let shippingFee = 0;
 
   presupuesto.adicionales?.forEach((adicional) => {
-    // Si tiene tarifaEnvio, guardarla por separado
     if (adicional.tarifaEnvio && adicional.tarifaEnvio > 0) {
       shippingFee = adicional.tarifaEnvio;
     }
 
-    // Agregar como extra (excluyendo el que es solo tarifa de envío)
     if (
       adicional.nombre.toLowerCase() !== "tarifa de envío" ||
       adicional.cantidad > 1 ||
@@ -123,10 +104,9 @@ export function loadPresupuestoToForm(
     title: "",
     clientName: presupuesto.cliente?.nombre || "",
     clientEmail: presupuesto.cliente?.email || undefined,
-    clientPhone: undefined, // No está disponible en el response
-    deliveryDate: formatDate(presupuesto.fechaVencimiento),
+    clientPhone: undefined,
+    deliveryDate: formatDateShort(presupuesto.fechaVencimiento),
     desiredProfit: presupuesto.margenGananciaPorcentaje,
-    // Buscar gastosNegocioId basándose en el porcentaje si tenemos la lista
     gastosNegocioId: gastosNegocioList
       ? gastosNegocioList.find(
           (g) =>

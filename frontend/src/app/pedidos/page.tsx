@@ -1,13 +1,15 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import OrderCard from '@/components/orders/OrderCard';
-import Header from '@/components/common/Header';
-import Footer from '@/components/common/Footer';
-import Sidebar from '@/components/common/Sidebar';
-import PageHeader from '@/components/common/PageHeader';
-import { useAuth } from '@/hooks/useAuth';
-import { useSidebar } from '@/hooks/useSidebar';
+import { useState, useEffect } from "react";
+import OrderCard from "@/components/orders/OrderCard";
+import Header from "@/components/common/Header";
+import Footer from "@/components/common/Footer";
+import Sidebar from "@/components/common/Sidebar";
+import PageHeader from "@/components/common/PageHeader";
+import { useAuth } from "@/hooks/useAuth";
+import { useSidebar } from "@/hooks/useSidebar";
+import { pedidoService, type Pedido } from "@/services/pedido.service";
+import { formatDateShort } from "@/utils/dateUtils";
 
 export interface Order {
   id: string;
@@ -16,66 +18,83 @@ export interface Order {
   deliveryDate: string;
   garmentType: string;
   price: number;
-  status: 'pagado' | 'deposito';
-  operativoStatus?: 'presupuesto' | 'en compra' | 'en produccion' | 'entregado';
+  status: "pagado" | "deposito";
+  operativoStatus?: "no visto" | "en compra" | "en produccion" | "entregado";
   telegramChatId?: string;
+  pedidoId: number; // Necesario para actualizar el pedido
 }
 
-const MOCK_API_RESPONSE: Order[] = [
-  {
-    id: '1234569',
-    name: 'Ana Julieta',
-    orderDate: '00/00/00',
-    deliveryDate: '00/00/00',
-    garmentType: 'Blusa manga larga',
-    price: 0,
-    status: 'pagado',
-    operativoStatus: 'entregado',
-    telegramChatId: '1585032016',
-  },
-  {
-    id: '1254307',
-    name: 'Ana Julieta',
-    orderDate: '00/00/00',
-    deliveryDate: '00/00/00',
-    garmentType: 'Blusa manga larga',
-    price: 0,
-    status: 'deposito',
-    operativoStatus: 'en produccion',
-    telegramChatId: '1585032016',
-  },
-  {
-    id: '1234568',
-    name: 'Ana Julieta',
-    orderDate: '00/00/00',
-    deliveryDate: '00/00/00',
-    garmentType: 'Blusa manga larga',
-    price: 0,
-    status: 'pagado',
-    operativoStatus: 'en produccion',
-    telegramChatId: '1585032016',
+// Función para mapear el estado del backend al estado operativo del frontend
+const mapEstadoToOperativoStatus = (
+  estado: Pedido["estado"]
+): "no visto" | "en compra" | "en produccion" | "entregado" => {
+  switch (estado) {
+    case "NO_VISTO":
+      return "no visto";
+    case "EN_COMPRA":
+      return "en compra";
+    case "EN_PRODUCCION":
+      return "en produccion";
+    case "ENTREGADO":
+      return "entregado";
+    default:
+      return "no visto";
   }
-];
+};
+
+// Función para mapear Pedido del backend a Order del frontend
+const mapPedidoToOrder = (pedido: Pedido): Order => {
+  const garmentType =
+    pedido.detalles.length > 0
+      ? pedido.detalles[0].producto.nombre
+      : pedido.presupuesto.nombre || "Sin especificar";
+
+  return {
+    id: pedido.id.toString(),
+    name: pedido.cliente.nombre,
+    orderDate: formatDateShort(pedido.fechaCreacion),
+    deliveryDate: formatDateShort(pedido.fechaEntregaEstimada),
+    garmentType,
+    price: pedido.presupuesto.totalFinal,
+    status: pedido.pagado ? "pagado" : "deposito",
+    operativoStatus: mapEstadoToOperativoStatus(pedido.estado),
+    telegramChatId: pedido.telegramChatId || undefined,
+    pedidoId: pedido.id,
+  };
+};
 
 export default function PedidosPage() {
   const { user, mounted } = useAuth();
   const { isOpen, open, close } = useSidebar();
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setOrders(MOCK_API_RESPONSE);
-      setIsLoading(false);
-    }, 500);
+    const fetchPedidos = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const pedidos = await pedidoService.getAll();
+        const mappedOrders = pedidos.map(mapPedidoToOrder);
+        setOrders(mappedOrders);
+      } catch (err) {
+        console.error("Error al cargar pedidos:", err);
+        setError("Error al cargar los pedidos. Por favor, intenta nuevamente.");
+        setOrders([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    return () => clearTimeout(timer);
+    fetchPedidos();
   }, []);
 
-  const filteredOrders = orders.filter(order => 
-    order.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    order.id.includes(searchTerm)
+  const filteredOrders = orders.filter(
+    (order) =>
+      order.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.id.includes(searchTerm)
   );
 
   if (!mounted) {
@@ -90,7 +109,7 @@ export default function PedidosPage() {
     <div className="min-h-screen flex flex-col bg-[#9D86AC]">
       <Header onMenuClick={open} />
       <Sidebar isOpen={isOpen} onClose={close} />
-      
+
       <div className="flex-1 flex flex-col">
         <PageHeader
           title="Pedidos"
@@ -105,15 +124,25 @@ export default function PedidosPage() {
           <div className="w-full max-w-lg mx-auto pt-4 sm:pt-6">
             {isLoading && (
               <div className="text-center py-12">
-                <p 
+                <p
                   className="text-gray-500 text-sm"
-                  style={{ fontFamily: 'var(--font-lato), sans-serif' }}
+                  style={{ fontFamily: "var(--font-lato), sans-serif" }}
                 >
                   Cargando pedidos...
                 </p>
               </div>
             )}
-            {!isLoading && (
+            {!isLoading && error && (
+              <div className="text-center py-12">
+                <p
+                  className="text-red-500 text-sm"
+                  style={{ fontFamily: "var(--font-lato), sans-serif" }}
+                >
+                  {error}
+                </p>
+              </div>
+            )}
+            {!isLoading && !error && (
               <>
                 {filteredOrders.length > 0 ? (
                   <div className="space-y-0">
@@ -123,11 +152,13 @@ export default function PedidosPage() {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <p 
+                    <p
                       className="text-gray-500 text-sm"
-                      style={{ fontFamily: 'var(--font-lato), sans-serif' }}
+                      style={{ fontFamily: "var(--font-lato), sans-serif" }}
                     >
-                      No se encontraron pedidos con ese nombre.
+                      {searchTerm
+                        ? "No se encontraron pedidos con ese nombre."
+                        : "No hay pedidos disponibles."}
                     </p>
                   </div>
                 )}

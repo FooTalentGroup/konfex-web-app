@@ -21,11 +21,10 @@ export type EstadoPresupuesto = (typeof EstadoPresupuesto)[keyof typeof EstadoPr
 
 
 export const EstadoPedido = {
-  PENDIENTE: 'PENDIENTE',
+  NO_VISTO: 'NO_VISTO',
+  EN_COMPRA: 'EN_COMPRA',
   EN_PRODUCCION: 'EN_PRODUCCION',
-  LISTO: 'LISTO',
-  ENTREGADO: 'ENTREGADO',
-  CANCELADO: 'CANCELADO'
+  ENTREGADO: 'ENTREGADO'
 } as const
 
 export type EstadoPedido = (typeof EstadoPedido)[keyof typeof EstadoPedido]
