@@ -3,6 +3,8 @@ import { Router } from "express";
 import {
   getChatMessagesController,
   getChatsController,
+  getClienteDataFromChatController,
+  markChatAsReadController,
   telegramWebhookController,
 } from "./telegram.controller";
 import { sendTextMessage } from "./telegram.service";
@@ -14,6 +16,10 @@ telegramRoutes.post("/webhook", telegramWebhookController);
 telegramRoutes.get("/chats", getChatsController);
 
 telegramRoutes.get("/chats/:chatId/messages", getChatMessagesController);
+
+telegramRoutes.post("/chats/:chatId/messages/read", markChatAsReadController);
+
+telegramRoutes.get("/chats/:chatId/cliente", getClienteDataFromChatController);
 
 telegramRoutes.post("/send", async (req, res) => {
   try {
@@ -45,6 +51,5 @@ telegramRoutes.post("/send", async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 });
-
 
 export default telegramRoutes;
