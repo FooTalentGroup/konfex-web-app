@@ -5,7 +5,7 @@ export const createMaterialSchema = z.object({
   body: z.object({
     nombre: z.string().min(1, "El nombre es obligatorio").max(255),
     url_imagen: z.string().optional().nullable(),
-    categoria: z.string().min(1, "La categoría es obligatoria"),
+    categoriaId: z.number().int().positive("La categoría es obligatoria"),
     unidadMedida: z.string().min(1, "La unidad de medida es obligatoria"),
     ancho: z
       .number()
@@ -48,7 +48,12 @@ export const materialIdSchema = z.object({
 export const materialQuerySchema = z.object({
   body: z.object({}),
   query: z.object({
-    categoria: z.string().optional(),
+    categoriaId: z
+      .string()
+      .regex(/^\d+$/)
+      .optional()
+      .transform((val) => (val ? parseInt(val) : undefined)),
+    categoria: z.string().optional(), // Para buscar por nombre de categoría
     color: z.string().optional(),
     precioMin: z
       .string()
@@ -92,7 +97,7 @@ export const materialQuerySchema = z.object({
       .regex(/^\d+$/)
       .optional()
       .transform((val) => (val ? parseInt(val) : 10)),
-    sortBy: z.enum(["nombre", "precio", "peso", "ancho", "categoria", "createdAt"]).optional(),
+    sortBy: z.enum(["nombre", "precio", "peso", "ancho", "createdAt"]).optional(),
     sortOrder: z.enum(["asc", "desc"]).optional().default("desc"),
   }),
 });

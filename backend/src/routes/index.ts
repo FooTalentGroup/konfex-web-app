@@ -56,6 +56,7 @@ router.get(
 router.use("/auth", authRoutes);
 router.use("/presupuestos", presupuestoRoutes);
 router.use("/clientes", clienteRoutes);
+router.use("/categorias", categoriaRoutes);
 router.use("/materiales", materialRoutes);
 router.use("/productos", productoRoutes);
 router.use("/colecciones", coleccionRoutes);
