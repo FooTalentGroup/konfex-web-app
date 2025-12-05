@@ -3,6 +3,7 @@ import { Socket } from 'socket.io-client';
 import { ChatItemProps } from '@/components/inbox/ChatItem';
 import { apiClient } from '@/config/apiClient';
 import { getSocket } from '@/services/socket.service';
+import { useAuth } from './useAuth';
 
 export type FilterType = 'todos' | 'no-leidos' | 'leidos';
 
@@ -13,6 +14,7 @@ interface TelegramChatResponse {
   lastMessageSource: string;
   timestamp: Date | string;
   hasBudget: boolean;
+  unreadCount?: number;
 }
 
 interface ApiResponse {
@@ -39,60 +41,77 @@ export function useChatList() {
   const [activeFilter, setActiveFilter] = useState<FilterType>('todos');
   const socketRef = useRef<Socket | null>(null);
   const chatsMapRef = useRef<Map<string, ChatItemProps>>(new Map());
+  const { user } = useAuth();
+
+  const fetchChats = async () => {
+    setIsLoading(true);
+    try {
+      const url = user?.id 
+        ? `/telegram/chats?userId=${user.id}`
+        : '/telegram/chats';
+      const response = await apiClient<ApiResponse>(url);
+      
+      // El endpoint devuelve { success, statusCode, message, data }
+      const chatsData = response.data || [];
+      
+      const chatsList: ChatItemProps[] = chatsData.map((chat) => {
+        // Agregar prefijo "Tu: " si el mensaje fue enviado desde konfex
+        const message = chat.lastMessageSource === 'konfex' 
+          ? `Tu:  ${chat.lastMessage || ''}`
+          : chat.lastMessage || '';
+        
+        const chatItem: ChatItemProps = {
+          id: Number(chat.chatId) || 0,
+          avatar: '/imagenChat.png',
+          name: chat.name || `Chat ${chat.chatId}`,
+          message,
+          time: chat.timestamp
+            ? new Date(chat.timestamp).toLocaleTimeString('es-ES', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+              })
+            : new Date().toLocaleTimeString('es-ES', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+              }),
+          hasBudget: chat.hasBudget || false,
+          unreadCount: chat.unreadCount || 0,
+        };
+        
+        return chatItem;
+      });
+      
+      // Inicializar el mapa de chats
+      chatsMapRef.current.clear();
+      chatsList.forEach(chat => {
+        chatsMapRef.current.set(String(chat.id), chat);
+      });
+      
+      setChats(chatsList);
+    } catch (error) {
+      console.error('Error al obtener los chats:', error);
+      // En caso de error, mantener el array vacío
+      setChats([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchChats = async () => {
-      setIsLoading(true);
-      try {
-        const response = await apiClient<ApiResponse>('/telegram/chats');
-        
-        // El endpoint devuelve { success, statusCode, message, data }
-        const chatsData = response.data || [];
-        
-        const chatsList: ChatItemProps[] = chatsData.map((chat) => {
-          // Agregar prefijo "Tu: " si el mensaje fue enviado desde konfex
-          const message = chat.lastMessageSource === 'konfex' 
-            ? `Tu:  ${chat.lastMessage || ''}`
-            : chat.lastMessage || '';
-          
-          const chatItem: ChatItemProps = {
-            id: Number(chat.chatId) || 0,
-            avatar: '/imagenChat.png',
-            name: chat.name || `Chat ${chat.chatId}`,
-            message,
-            time: chat.timestamp
-              ? new Date(chat.timestamp).toLocaleTimeString('es-ES', { 
-                  hour: '2-digit', 
-                  minute: '2-digit' 
-                })
-              : new Date().toLocaleTimeString('es-ES', { 
-                  hour: '2-digit', 
-                  minute: '2-digit' 
-                }),
-            hasBudget: chat.hasBudget || false,
-          };
-          
-          return chatItem;
-        });
-        
-        // Inicializar el mapa de chats
-        chatsMapRef.current.clear();
-        chatsList.forEach(chat => {
-          chatsMapRef.current.set(String(chat.id), chat);
-        });
-        
-        setChats(chatsList);
-      } catch (error) {
-        console.error('Error al obtener los chats:', error);
-        // En caso de error, mantener el array vacío
-        setChats([]);
-      } finally {
-        setIsLoading(false);
-      }
+    fetchChats();
+  }, [user?.id]);
+
+  // Escuchar evento cuando se marca un chat como leído
+  useEffect(() => {
+    const handleChatRead = () => {
+      fetchChats();
     };
 
-    fetchChats();
-  }, []);
+    window.addEventListener('chatRead', handleChatRead);
+    return () => {
+      window.removeEventListener('chatRead', handleChatRead);
+    };
+  }, [user?.id]);
 
   // Función para crear un ChatItem desde datos de mensaje
   const createChatItemFromMessage = (messageData: TelegramMessageData, existingChat?: ChatItemProps): ChatItemProps => {
@@ -116,6 +135,7 @@ export function useChatList() {
       message,
       time,
       hasBudget: existingChat?.hasBudget || false,
+      unreadCount: existingChat?.unreadCount || 0,
     };
   };
 
@@ -222,9 +242,9 @@ export function useChatList() {
     }
 
     if (activeFilter === 'no-leidos') {
-      filtered = filtered.filter((chat) => !chat.hasBudget);
+      filtered = filtered.filter((chat) => (chat.unreadCount || 0) > 0);
     } else if (activeFilter === 'leidos') {
-      filtered = filtered.filter((chat) => chat.hasBudget);
+      filtered = filtered.filter((chat) => (chat.unreadCount || 0) === 0);
     }
 
     return filtered;

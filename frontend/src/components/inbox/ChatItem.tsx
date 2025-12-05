@@ -10,6 +10,7 @@ export interface ChatItemProps {
   message: string;
   time: string;
   hasBudget?: boolean;
+  unreadCount?: number;
   onClick?: () => void;
 }
 
@@ -19,6 +20,7 @@ const ChatItem: FC<ChatItemProps> = ({
   message,
   time,
   hasBudget = false,
+  unreadCount = 0,
   onClick,
 }) => {
 
@@ -78,9 +80,16 @@ const ChatItem: FC<ChatItemProps> = ({
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1 gap-2">
-          <span className="font-lato text-sm sm:text-base font-bold leading-[131%] tracking-normal text-black truncate">
-            {name}
-          </span>
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            <span className="font-lato text-sm sm:text-base font-bold leading-[131%] tracking-normal text-black truncate">
+              {name}
+            </span>
+            {unreadCount > 0 && (
+              <span className="flex-shrink-0 bg-[#B65CF2] text-white text-xs font-bold rounded-full min-w-[20px] h-5 px-2 flex items-center justify-center">
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-1 flex-shrink-0">
             <Image
               src="/reloj.png"

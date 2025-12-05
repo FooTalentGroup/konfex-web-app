@@ -29,12 +29,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
   const menuItems: MenuItem[] = [
     {
-      id: 'home',
-      label: 'Home',
-      iconPath: '/home.png',
-      path: '/',
-    },
-    {
       id: 'inbox',
       label: 'Inbox',
       iconPath: '/inbox.png',

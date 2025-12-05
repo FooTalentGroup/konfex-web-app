@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Socket } from 'socket.io-client';
 import { getSocket } from '@/services/socket.service';
 import { apiClient } from '@/config/apiClient';
+import { useAuth } from './useAuth';
 
 export interface ChatMessage {
   id: number;
@@ -37,6 +38,7 @@ export const useChat = (chatId: string) => {
   const [isLoading, setIsLoading] = useState(true);
   const [messageText, setMessageText] = useState('');
   const socketRef = useRef<Socket | null>(null);
+  const { user } = useAuth();
 
   // Obtener mensajes históricos y datos del contacto
   useEffect(() => {
@@ -103,6 +105,20 @@ export const useChat = (chatId: string) => {
         });
 
         setMessages(formattedMessages);
+
+        // Marcar mensajes como leídos cuando se cargan
+        if (user?.id) {
+          try {
+            await apiClient(`/telegram/chats/${chatId}/messages/read`, {
+              method: 'POST',
+              body: JSON.stringify({ userId: user.id }),
+            });
+            // Disparar evento para actualizar la lista de chats
+            window.dispatchEvent(new Event('chatRead'));
+          } catch (error) {
+            console.error('Error al marcar mensajes como leídos:', error);
+          }
+        }
       } catch (error) {
         console.error('Error al obtener mensajes del chat:', error);
         // En caso de error, usar valores por defecto
