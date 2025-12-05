@@ -30,26 +30,32 @@ const ProductionTabForm: React.FC<ProductionTabFormProps> = ({ form }) => {
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
-                    <CustomInput
-                        id="laborRate"
-                        label="Tarifa salarial ($/hora)"
-                        type="number"
-                        register={register('laborRate', { required: 'La tarifa salarial es requerida', valueAsNumber: true })}
-                        error={errors.laborRate?.message}
-                        placeholder="000.000"
-                        className="bg-white"
-                        unit="$"
-                    />
+                    <div className='flex flex-col gap-1'>
+                        <CustomInput
+                            id="laborRate"
+                            label="Tarifa salarial ($/hora)"
+                            type="number"
+                            register={register('laborRate', { required: 'La tarifa salarial es requerida', valueAsNumber: true })}
+                            error={errors.laborRate?.message}
+                            placeholder="000.000"
+                            className="bg-white"
+                            unit="$"
+                        />
+                        <span className="text-xs text-primary-500">Costo por hora del trabajo</span>
+                    </div>
 
-                    <CounterInputCustom
-                        id="laborHours"
-                        label="Cantidad"
-                        value={laborHours}
-                        setValue={(value) => setValue('laborHours', value)}
-                        min={0}
-                        max={999}
-                        step={1}
-                    />
+                    <div className='flex flex-col gap-6'>
+                        <CounterInputCustom
+                            id="laborHours"
+                            label="Cantidad"
+                            value={laborHours}
+                            setValue={(value) => setValue('laborHours', value)}
+                            min={0}
+                            max={999}
+                            step={1}
+                        />
+                        <span className="text-xs text-primary-500">Horas estimadas</span>
+                    </div>
                 </div>
             </div>
 
