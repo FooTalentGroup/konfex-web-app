@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { Paperclip } from 'lucide-react';
 import { ChatMessage as ChatMessageType } from '@/hooks/useChat';
 
 interface ChatMessageProps {
@@ -39,9 +40,42 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
             message.isSent ? 'bg-[#8B709D] text-white' : 'bg-[#E6E1EA] text-black'
           }`}
         >
-          <p className="text-xs sm:text-sm font-lato font-normal leading-[131%] tracking-normal wrap-break-word whitespace-normal block w-full">
-            {message.text}
-          </p>
+          {message.type === 'photo' && message.fileUrl && (
+            <a
+              href={message.fileUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="block mb-2"
+            >
+              <Image
+                src={message.fileUrl}
+                alt="Foto"
+                width={320}
+                height={320}
+                className="rounded-xl max-h-[260px] w-auto h-auto object-contain"
+              />
+            </a>
+          )}
+
+          {message.type === 'document' && message.fileUrl && (
+            <a
+              href={message.fileUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 mb-1 w-full bg-white/70 text-[#4B5563] rounded-lg px-2 py-1 border border-[#C8B6D8]"
+            >
+              <Paperclip size={14} className="text-[#8B709D]" />
+              <span className="text-xs sm:text-sm font-lato font-normal leading-[131%] break-all">
+                {message.filePath?.split('/').pop() || 'Archivo'}
+              </span>
+            </a>
+          )}
+
+          {message.text && (
+            <p className="text-xs sm:text-sm font-lato font-normal leading-[131%] tracking-normal wrap-break-word whitespace-normal block w-full">
+              {message.text}
+            </p>
+          )}
         </div>
         <span className="mt-0.5 sm:mt-1 px-1 text-[10px] sm:text-xs font-lato font-normal leading-[131%] tracking-normal text-[#666666]">
           {message.time}

@@ -5,11 +5,17 @@ import { apiClient } from '@/config/apiClient';
 
 export interface ChatMessage {
   id: number;
-  text: string;
+  text?: string | null;
   time: string;
   date?: string; // Fecha completa para separadores de día
   isSent: boolean;
   senderAvatar?: string;
+  // Soporte multimedia
+  type?: 'text' | 'photo' | 'document';
+  fileUrl?: string | null;
+  mimeType?: string | null;
+  filePath?: string | null;
+  fileSize?: number | null;
 }
 
 export interface ChatContact {
@@ -22,12 +28,20 @@ export interface ChatContact {
 
 export interface TelegramMessage {
   chatId: string | number;
-  text: string;
+  text?: string | null;
   source: string;
   firstName?: string;
   lastName?: string;
   username?: string;
   timestamp: string;
+  // multimedia
+  type?: 'text' | 'photo' | 'document';
+  fileUrl?: string | null;
+  filePath?: string | null;
+  fileId?: string | null;
+  fileUniqueId?: string | null;
+  mimeType?: string | null;
+  fileSize?: number | null;
 }
 
 export const useChat = (chatId: string) => {
@@ -50,12 +64,19 @@ export const useChat = (chatId: string) => {
           data: Array<{
             id: number;
             chatId: string;
-            text: string;
+            text?: string | null;
             source: string;
             firstName?: string | null;
             lastName?: string | null;
             username?: string | null;
             timestamp: string;
+            type?: 'text' | 'photo' | 'document';
+            fileUrl?: string | null;
+            filePath?: string | null;
+            fileId?: string | null;
+            fileUniqueId?: string | null;
+            mimeType?: string | null;
+            fileSize?: number | null;
           }>;
         }>(`/telegram/chats/${chatId}/messages`);
 
@@ -97,6 +118,11 @@ export const useChat = (chatId: string) => {
             }),
             isSent,
             senderAvatar: '/perfil.png',
+            type: msg.type || 'text',
+            fileUrl: msg.fileUrl ?? null,
+            filePath: msg.filePath ?? null,
+            mimeType: msg.mimeType ?? null,
+            fileSize: msg.fileSize ?? null,
           };
         });
 
@@ -139,11 +165,6 @@ export const useChat = (chatId: string) => {
 
       console.log('✅ Mensaje aceptado para este chat');
 
-      if (!telegramMessage.text || telegramMessage.text.trim() === '') {
-        console.warn('⚠️ Mensaje sin texto, ignorado');
-        return;
-      }
-
       const messageDate = new Date(telegramMessage.timestamp);
       
       if (isNaN(messageDate.getTime())) {
@@ -154,7 +175,7 @@ export const useChat = (chatId: string) => {
       const messageId = messageDate.getTime() + Math.random();
       const newMessage: ChatMessage = {
         id: messageId,
-        text: telegramMessage.text.trim(),
+        text: telegramMessage.text?.trim() || null,
         time: messageDate.toLocaleTimeString('es-ES', {
           hour: '2-digit',
           minute: '2-digit',
@@ -166,6 +187,11 @@ export const useChat = (chatId: string) => {
         }),
         isSent: false,
         senderAvatar: '/perfil.png',
+        type: telegramMessage.type || (telegramMessage.text ? 'text' : undefined),
+        fileUrl: telegramMessage.fileUrl ?? null,
+        filePath: telegramMessage.filePath ?? null,
+        mimeType: telegramMessage.mimeType ?? null,
+        fileSize: telegramMessage.fileSize ?? null,
       };
 
       setMessages((prevMessages) => {
@@ -181,7 +207,7 @@ export const useChat = (chatId: string) => {
         
         console.log('➕ Nuevo mensaje agregado:', {
           id: newMessage.id,
-          text: newMessage.text.substring(0, 50) + (newMessage.text.length > 50 ? '...' : ''),
+          text: newMessage.text?.substring(0, 50) + (newMessage.text?.length || 0 > 50 ? '...' : ''),
           time: newMessage.time,
         });
         
