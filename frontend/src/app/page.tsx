@@ -96,28 +96,6 @@ const LoginPage: React.FC = () => {
               error={errors.contraseña?.message}
             />
 
-            <div className="flex justify-end w-full">
-              <a
-                href="#"
-                className="hover:opacity-80 underline w-full max-w-[390px]"
-                style={{
-                  minHeight: '21px',
-                  fontFamily: 'var(--font-lato), sans-serif',
-                  fontWeight: 400,
-                  fontSize: 'clamp(14px, 3.5vw, 16px)',
-                  lineHeight: '131%',
-                  letterSpacing: '0%',
-                  color: errors.contraseña ? '#D9537A' : '#1A151E',
-                  textAlign: 'right',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'flex-end',
-                }}
-              >
-                Recuperar contraseña
-              </a>
-            </div>
-
             {error && (
               <div className="w-full max-w-[390px] mt-2 p-3 rounded-lg bg-red-50 border border-red-200">
                 <p className="text-sm text-[#D9537A] text-center">{error}</p>
