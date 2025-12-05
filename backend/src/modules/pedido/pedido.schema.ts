@@ -1,11 +1,10 @@
 import { z } from "zod";
 
 const estadoPedidoEnum = z.enum([
-  "PENDIENTE",
+  "NO_VISTO",
+  "EN_COMPRA",
   "EN_PRODUCCION",
-  "LISTO",
   "ENTREGADO",
-  "CANCELADO",
 ]);
 
 export const updatePedidoSchema = z.object({

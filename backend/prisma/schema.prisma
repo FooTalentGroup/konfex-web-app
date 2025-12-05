@@ -219,7 +219,7 @@ model Pedido {
   presupuestoId        Int               @unique
   clienteId            Int
   fechaCreacion        DateTime          @default(now())
-  estado               EstadoPedido
+  estado               EstadoPedido      @default(NO_VISTO)
   pagado               Boolean           @default(false)
   fechaEntregaEstimada DateTime?
   fechaEntregaReal     DateTime?
@@ -308,11 +308,10 @@ enum EstadoPresupuesto {
 }
 
 enum EstadoPedido {
-  PENDIENTE
+  NO_VISTO
+  EN_COMPRA
   EN_PRODUCCION
-  LISTO
   ENTREGADO
-  CANCELADO
 }
 
 enum Role {
