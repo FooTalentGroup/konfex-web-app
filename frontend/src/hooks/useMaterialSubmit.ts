@@ -38,7 +38,6 @@ export function useMaterialSubmit(options?: UseMaterialSubmitOptions) {
             colores: coloresArray,
             proveedor: formData.supplier,
             precio: formData.totalPrice,
-            stock: 100,
         }
     }
 

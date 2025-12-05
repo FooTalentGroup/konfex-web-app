@@ -5,7 +5,7 @@ const textOnlyRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s,-]+$/
 export const GarmentSchema = z.object({
 
     image: z
-        .string()
+        .string({ error: 'La imagen es requerida' })
         .min(1, 'La imagen es requerida'),
 
     id: z.string().optional(),
@@ -58,3 +58,28 @@ export const GarmentSchema = z.object({
 
 
 export type GarmentFormData = z.infer<typeof GarmentSchema>;
+
+export interface CreateGarmentPayload {
+  nombre: string;
+  descripcion?: string;
+  activo: boolean;
+  tallas: string[];
+  colores: string[];
+
+  rawMaterials: RawMaterial[];
+
+  laborRate: number;
+  laborHours: number;
+  wasteMaterial: number;
+  wasteUnit: string;
+  wastePrice: number;
+}
+
+export interface RawMaterial {
+  id: string;
+  type: string;
+  name: string;
+  consumption: number;
+  unit: string;
+  price: number;
+}
