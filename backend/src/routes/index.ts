@@ -10,6 +10,7 @@ import { coleccionRoutes } from "@/modules/colecciones";
 import { gastosNegocioRoutes } from "@/modules/gastos-negocio";
 import { impuestoGeneralRoutes } from "@/modules/impuesto-general";
 import { materialRoutes } from "@/modules/material/material.routes";
+import { pedidoRoutes } from "@/modules/pedido";
 import { productoRoutes } from "@/modules/producto/producto.routes";
 import telegramRoutes from "@/modules/telegram/telegram.routes";
 
@@ -59,6 +60,7 @@ router.use("/productos", productoRoutes);
 router.use("/colecciones", coleccionRoutes);
 router.use("/gastos-negocio", gastosNegocioRoutes);
 router.use("/impuesto-general", impuestoGeneralRoutes);
+router.use("/pedidos", pedidoRoutes);
 router.use("/telegram", telegramRoutes);
 
 export default router;
