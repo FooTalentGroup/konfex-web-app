@@ -157,11 +157,40 @@ async function main() {
     }
   }
 
+  const categoriasNombres = ["Tela", "Hilo", "Accesorio", "Forro"];
+  const categoriasMap: Record<string, number> = {};
+
+  for (const nombreCategoria of categoriasNombres) {
+    try {
+      const categoriaExistente = await prisma.categoria.findUnique({
+        where: { nombre: nombreCategoria },
+      });
+      if (categoriaExistente) {
+        categoriasMap[nombreCategoria] = categoriaExistente.id;
+      } else {
+        const nuevaCategoria = await prisma.categoria.create({
+          data: { nombre: nombreCategoria },
+        });
+        categoriasMap[nombreCategoria] = nuevaCategoria.id;
+      }
+    } catch (error: any) {
+      if (error.code !== "P2002") {
+        throw error;
+      }
+      const categoriaExistente = await prisma.categoria.findUnique({
+        where: { nombre: nombreCategoria },
+      });
+      if (categoriaExistente) {
+        categoriasMap[nombreCategoria] = categoriaExistente.id;
+      }
+    }
+  }
+
   const materiales = [
     {
       nombre: "Algodón Premium 240g",
       url_imagen: null,
-      categoria: "Tela",
+      categoriaId: categoriasMap["Tela"],
       unidadMedida: "metros",
       ancho: 150,
       peso: 2.5,
@@ -172,7 +201,7 @@ async function main() {
     {
       nombre: "Poliéster Deportivo",
       url_imagen: null,
-      categoria: "Tela",
+      categoriaId: categoriasMap["Tela"],
       unidadMedida: "metros",
       ancho: 140,
       peso: 1.8,
@@ -183,7 +212,7 @@ async function main() {
     {
       nombre: "Lycra Elástica",
       url_imagen: null,
-      categoria: "Tela",
+      categoriaId: categoriasMap["Tela"],
       unidadMedida: "metros",
       ancho: 160,
       peso: 1.2,
@@ -194,7 +223,7 @@ async function main() {
     {
       nombre: "Hilo de Algodón 40/2",
       url_imagen: null,
-      categoria: "Hilo",
+      categoriaId: categoriasMap["Hilo"],
       unidadMedida: "carretes",
       ancho: null,
       peso: null,
@@ -205,7 +234,7 @@ async function main() {
     {
       nombre: "Cierres Metálicos #5",
       url_imagen: null,
-      categoria: "Accesorio",
+      categoriaId: categoriasMap["Accesorio"],
       unidadMedida: "unidades",
       ancho: null,
       peso: null,
@@ -216,7 +245,7 @@ async function main() {
     {
       nombre: "Botones de Madera 15mm",
       url_imagen: null,
-      categoria: "Accesorio",
+      categoriaId: categoriasMap["Accesorio"],
       unidadMedida: "unidades",
       ancho: null,
       peso: null,
@@ -227,7 +256,7 @@ async function main() {
     {
       nombre: "Jean Denim 12oz",
       url_imagen: null,
-      categoria: "Tela",
+      categoriaId: categoriasMap["Tela"],
       unidadMedida: "metros",
       ancho: 150,
       peso: 3.0,
@@ -238,7 +267,7 @@ async function main() {
     {
       nombre: "Forro Polar 200g",
       url_imagen: null,
-      categoria: "Tela",
+      categoriaId: categoriasMap["Tela"],
       unidadMedida: "metros",
       ancho: 150,
       peso: 2.0,
@@ -250,7 +279,7 @@ async function main() {
     {
       nombre: "Seda Natural",
       url_imagen: null,
-      categoria: "Tela",
+      categoriaId: categoriasMap["Tela"],
       unidadMedida: "metros",
       ancho: 140,
       peso: 0.8,
@@ -261,7 +290,7 @@ async function main() {
     {
       nombre: "Lino Orgánico",
       url_imagen: null,
-      categoria: "Tela",
+      categoriaId: categoriasMap["Tela"],
       unidadMedida: "metros",
       ancho: 150,
       peso: 1.5,
@@ -272,7 +301,7 @@ async function main() {
     {
       nombre: "Hilo de Poliéster 100/3",
       url_imagen: null,
-      categoria: "Hilo",
+      categoriaId: categoriasMap["Hilo"],
       unidadMedida: "carretes",
       ancho: null,
       peso: null,
@@ -283,7 +312,7 @@ async function main() {
     {
       nombre: "Cremalleras Nylon #8",
       url_imagen: null,
-      categoria: "Accesorio",
+      categoriaId: categoriasMap["Accesorio"],
       unidadMedida: "unidades",
       ancho: null,
       peso: null,
@@ -294,7 +323,7 @@ async function main() {
     {
       nombre: "Forro de Seda",
       url_imagen: null,
-      categoria: "Forro",
+      categoriaId: categoriasMap["Forro"],
       unidadMedida: "metros",
       ancho: 140,
       peso: 0.6,
@@ -305,7 +334,7 @@ async function main() {
     {
       nombre: "Entretela Fusible",
       url_imagen: null,
-      categoria: "Forro",
+      categoriaId: categoriasMap["Forro"],
       unidadMedida: "metros",
       ancho: 90,
       peso: 0.3,
@@ -527,9 +556,9 @@ async function main() {
 
   const users = [
     {
-      email: "mia@mail.com",
+      email: "test@example.com",
       name: "testQA",
-      password: "030914Km$",
+      password: "test1234",
       role: Role.ADMIN,
     },
     {

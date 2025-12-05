@@ -2,15 +2,29 @@ import prisma from "../../config/prisma";
 import type { CreateMaterialDto, MaterialQueryDto } from "./material.schema";
 
 export const materialRepository = {
-  create: (data: CreateMaterialDto) => prisma.material.create({ data: data as any }),
+  create: (data: CreateMaterialDto) => prisma.material.create({ 
+    data: data as any,
+    include: { categoria: true }
+  }),
   update: (id: number, data: Partial<CreateMaterialDto>) =>
-    prisma.material.update({ where: { id }, data }),
+    prisma.material.update({ 
+      where: { id }, 
+      data,
+      include: { categoria: true }
+    }),
   findAll: (filters?: MaterialQueryDto) => {
     const where: any = {};
 
-    // Filtro por categoria
+    // Filtro por categoriaId
+    if (filters?.categoriaId) {
+      where.categoriaId = filters.categoriaId;
+    }
+
+    // Filtro por nombre de categoría (buscar en la relación)
     if (filters?.categoria) {
-      where.categoria = { equals: filters.categoria, mode: "insensitive" };
+      where.categoria = {
+        nombre: { equals: filters.categoria, mode: "insensitive" }
+      };
     }
 
     // Filtro por color
@@ -64,7 +78,7 @@ export const materialRepository = {
       // Búsqueda en campos de texto
       orConditions.push(
         { nombre: { contains: consulta, mode: "insensitive" } },
-        { categoria: { contains: consulta, mode: "insensitive" } },
+        { categoria: { nombre: { contains: consulta, mode: "insensitive" } } },
         { proveedor: { contains: consulta, mode: "insensitive" } },
         { unidadMedida: { contains: consulta, mode: "insensitive" } }
       );
@@ -147,13 +161,24 @@ export const materialRepository = {
       orderBy,
       skip,
       take: limit,
+      include: {
+        categoria: true,
+      },
     });
   },
   count: (filters?: MaterialQueryDto) => {
     const where: any = {};
 
+    // Filtro por categoriaId
+    if (filters?.categoriaId) {
+      where.categoriaId = filters.categoriaId;
+    }
+
+    // Filtro por nombre de categoría (buscar en la relación)
     if (filters?.categoria) {
-      where.categoria = { equals: filters.categoria, mode: "insensitive" };
+      where.categoria = {
+        nombre: { equals: filters.categoria, mode: "insensitive" }
+      };
     }
     if (filters?.color) {
       where.colores = { has: filters.color };
@@ -197,7 +222,7 @@ export const materialRepository = {
       // Búsqueda en campos de texto
       orConditions.push(
         { nombre: { contains: consulta, mode: "insensitive" } },
-        { categoria: { contains: consulta, mode: "insensitive" } },
+        { categoria: { nombre: { contains: consulta, mode: "insensitive" } } },
         { proveedor: { contains: consulta, mode: "insensitive" } },
         { unidadMedida: { contains: consulta, mode: "insensitive" } }
       );
@@ -264,6 +289,11 @@ export const materialRepository = {
 
     return prisma.material.count({ where });
   },
-  findById: (id: number) => prisma.material.findUnique({ where: { id } }),
+  findById: (id: number) => prisma.material.findUnique({ 
+    where: { id },
+    include: {
+      categoria: true,
+    },
+  }),
   delete: (id: number) => prisma.material.delete({ where: { id } }),
 };

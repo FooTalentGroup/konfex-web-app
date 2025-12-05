@@ -3,6 +3,7 @@ import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 
 import { authDocs } from "../modules/auth";
+import { categoriaDocs } from "../modules/categoria";
 import { materialDocs } from "../modules/material";
 import { clienteDocs } from "../modules/cliente";
 import { presupuestoDocs } from "../modules/presupuesto";
@@ -25,6 +26,7 @@ const options = {
       schemas: {
         ...productoDocs.components.schemas,
         ...authDocs.components.schemas,
+        ...categoriaDocs.components.schemas,
         ...materialDocs.components.schemas,
         ...clienteDocs.components.schemas,
         ...presupuestoDocs.components.schemas,
@@ -36,6 +38,7 @@ const options = {
       parameters: {
         ...productoDocs.components.parameters,
         ...authDocs.components.parameters,
+        ...categoriaDocs.components.parameters,
         ...materialDocs.components.parameters,
         ...clienteDocs.components.parameters,
         ...presupuestoDocs.components.parameters,
@@ -49,6 +52,7 @@ const options = {
     paths: {
       ...productoDocs.paths,
       ...authDocs.paths,
+      ...categoriaDocs.paths,
       ...materialDocs.paths,
       ...clienteDocs.paths,
       ...presupuestoDocs.paths,

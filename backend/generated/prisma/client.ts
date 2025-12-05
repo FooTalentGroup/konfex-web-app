@@ -58,6 +58,11 @@ export type Coleccion = Prisma.ColeccionModel
  */
 export type Producto = Prisma.ProductoModel
 /**
+ * Model Categoria
+ * 
+ */
+export type Categoria = Prisma.CategoriaModel
+/**
  * Model Material
  * 
  */

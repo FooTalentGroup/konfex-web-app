@@ -55,6 +55,7 @@ export const ModelName = {
   Cliente: 'Cliente',
   Coleccion: 'Coleccion',
   Producto: 'Producto',
+  Categoria: 'Categoria',
   Material: 'Material',
   ManoDeObra: 'ManoDeObra',
   MaterialPorProducto: 'MaterialPorProducto',
@@ -149,11 +150,21 @@ export const ProductoScalarFieldEnum = {
 export type ProductoScalarFieldEnum = (typeof ProductoScalarFieldEnum)[keyof typeof ProductoScalarFieldEnum]
 
 
+export const CategoriaScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CategoriaScalarFieldEnum = (typeof CategoriaScalarFieldEnum)[keyof typeof CategoriaScalarFieldEnum]
+
+
 export const MaterialScalarFieldEnum = {
   id: 'id',
   nombre: 'nombre',
   url_imagen: 'url_imagen',
-  categoria: 'categoria',
+  categoriaId: 'categoriaId',
   unidadMedida: 'unidadMedida',
   ancho: 'ancho',
   peso: 'peso',
