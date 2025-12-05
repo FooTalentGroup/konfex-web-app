@@ -28,13 +28,21 @@ export const updatePedidoController = controllerHandler(
     const data: UpdatePedidoDto = req.body;
     
     // Convertir fechas de string a Date si vienen
-    const updateData: any = { ...data };
-    if (data.fechaEntregaEstimada) {
-      updateData.fechaEntregaEstimada = new Date(data.fechaEntregaEstimada);
-    }
-    if (data.fechaEntregaReal) {
-      updateData.fechaEntregaReal = new Date(data.fechaEntregaReal);
-    }
+    const updateData: {
+      estado?: "PENDIENTE" | "EN_PRODUCCION" | "LISTO" | "ENTREGADO" | "CANCELADO";
+      pagado?: boolean;
+      fechaEntregaEstimada?: Date | null;
+      fechaEntregaReal?: Date | null;
+    } = {
+      ...(data.estado && { estado: data.estado }),
+      ...(data.pagado !== undefined && { pagado: data.pagado }),
+      ...(data.fechaEntregaEstimada !== undefined && {
+        fechaEntregaEstimada: data.fechaEntregaEstimada ? new Date(data.fechaEntregaEstimada) : null,
+      }),
+      ...(data.fechaEntregaReal !== undefined && {
+        fechaEntregaReal: data.fechaEntregaReal ? new Date(data.fechaEntregaReal) : null,
+      }),
+    };
     
     return await pedidoService.update(id, updateData);
   },
