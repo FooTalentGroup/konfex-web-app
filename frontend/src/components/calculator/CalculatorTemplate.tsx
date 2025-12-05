@@ -7,6 +7,7 @@ import { presupuestoService } from "@/services/presupuesto.service";
 import { loadPresupuestoToForm } from "@/utils/presupuestoLoader";
 import { useToast } from "@/contexts/ToastContext";
 import { useGastosNegocio } from "@/hooks/useGastosNegocio";
+import { apiClient } from "@/config/apiClient";
 
 // Componentes internos
 import CalculatorTabs from "./CalculatorTabs";
@@ -75,6 +76,7 @@ export default function CalculatorTemplate({
     | "telegram"
     | "manual"
     | null;
+  const chatIdFromUrl = searchParams?.get("chatId");
   const [budgetSource, setBudgetSource] = useState<"telegram" | "manual">(
     origenFromUrl || "manual"
   );
@@ -116,6 +118,52 @@ export default function CalculatorTemplate({
       }
     }
   }, [gastosNegocio, isEditMode, methods]);
+
+  // Cargar datos del cliente desde Telegram si origen=telegram y hay chatId
+  useEffect(() => {
+    if (!isEditMode && budgetSource === "telegram" && chatIdFromUrl && gastosNegocio.length > 0) {
+      const loadClienteData = async () => {
+        try {
+          setIsLoading(true);
+          const response = await apiClient<{
+            success: boolean;
+            statusCode: number;
+            message: string;
+            data: {
+              clienteId: number | null;
+              nombre: string | null;
+              email: string | null;
+              telefono: string | null;
+            } | null;
+          }>(`/telegram/chats/${chatIdFromUrl}/cliente`);
+
+          if (response.data) {
+            const clienteData = response.data;
+            // Pre-llenar los campos del formulario con los datos del cliente
+            if (clienteData.nombre) {
+              methods.setValue("clientName", clienteData.nombre, { shouldValidate: false });
+            }
+            if (clienteData.email) {
+              methods.setValue("clientEmail", clienteData.email, { shouldValidate: false });
+            }
+            if (clienteData.telefono) {
+              methods.setValue("clientPhone", clienteData.telefono, { shouldValidate: false });
+            }
+            if (clienteData.clienteId) {
+              methods.setValue("clienteId", clienteData.clienteId, { shouldValidate: false });
+            }
+          }
+        } catch (error) {
+          console.error("Error al cargar datos del cliente desde Telegram:", error);
+          // No mostrar error al usuario, simplemente continuar sin pre-llenar
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      loadClienteData();
+    }
+  }, [isEditMode, budgetSource, chatIdFromUrl, gastosNegocio.length, methods]);
 
   // Cargar datos del presupuesto si estamos en modo edición
   useEffect(() => {
