@@ -75,3 +75,9 @@ body {
     opacity: 0;
   }
 }
+
+[data-rmiz-ghost] {
+  pointer-events: none;
+  position: absolute;
+  display: none !important;
+}

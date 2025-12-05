@@ -2,6 +2,8 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Zoom from 'react-medium-image-zoom';
+import 'react-medium-image-zoom/dist/styles.css';
 import { Paperclip } from 'lucide-react';
 import { ChatMessage as ChatMessageType } from '@/hooks/useChat';
 
@@ -17,7 +19,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       }`}
     >
       {!message.isSent && (
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           <Image
             src={message.senderAvatar || "/perfil.png"}
             alt="Sender"
@@ -32,7 +34,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         className={`flex flex-col ${
           message.isSent 
             ? 'items-end ml-auto max-w-[75%] sm:max-w-[70%] md:max-w-[65%] lg:max-w-[60%] xl:max-w-[55%] 2xl:max-w-[50%]' 
-            : 'items-start max-w-[250px] sm:max-w-[220px] md:max-w-[200px]'
+            : 'items-start max-w-[75%] sm:max-w-[70%] md:max-w-[65%] lg:max-w-[60%] xl:max-w-[55%] 2xl:max-w-[50%]'
         }`}
       >
         <div
@@ -41,20 +43,18 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           }`}
         >
           {message.type === 'photo' && message.fileUrl && (
-            <a
-              href={message.fileUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="block mb-2"
-            >
-              <Image
-                src={message.fileUrl}
-                alt="Foto"
-                width={320}
-                height={320}
-                className="rounded-xl max-h-[260px] w-auto h-auto object-contain"
-              />
-            </a>
+            <div className="block mb-2">
+              <Zoom zoomMargin={24}>
+                <Image
+                  src={message.fileUrl}
+                  alt="Foto"
+                  width={840}
+                  height={840}
+                  className="rounded-xl max-h-[260px] max-w-full w-auto h-auto object-contain cursor-zoom-in"
+                  unoptimized={false}
+                />
+              </Zoom>
+            </div>
           )}
 
           {message.type === 'document' && message.fileUrl && (
