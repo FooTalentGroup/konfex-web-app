@@ -118,7 +118,7 @@ async function createPedidoFromPresupuesto(
     data: {
       presupuestoId,
       clienteId: presupuesto.clienteId,
-      estado: "PENDIENTE",
+      estado: "NO_VISTO", // Estado predeterminado cuando pasa de presupuesto a pedido
       fechaEntregaEstimada: presupuesto.fechaVencimiento || null,
       pagado: false,
       detalles: {

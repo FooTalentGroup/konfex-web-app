@@ -29,7 +29,7 @@ export const updatePedidoController = controllerHandler(
     
     // Convertir fechas de string a Date si vienen
     const updateData: {
-      estado?: "PENDIENTE" | "EN_PRODUCCION" | "LISTO" | "ENTREGADO" | "CANCELADO";
+      estado?: "NO_VISTO" | "EN_COMPRA" | "EN_PRODUCCION" | "ENTREGADO";
       pagado?: boolean;
       fechaEntregaEstimada?: Date | null;
       fechaEntregaReal?: Date | null;

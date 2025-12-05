@@ -1090,7 +1090,7 @@ async function main() {
           data: {
             presupuestoId: presupuesto.id,
             clienteId: presupuesto.clienteId,
-            estado: EstadoPedido.EN_PRODUCCION,
+            estado: EstadoPedido.NO_VISTO,
             pagado: false,
             fechaEntregaEstimada: new Date(new Date().getTime() + 14 * 24 * 60 * 60 * 1000),
             detalles: {
