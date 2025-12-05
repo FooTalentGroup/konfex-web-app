@@ -22,7 +22,7 @@ export interface Pedido {
   presupuestoId: number;
   clienteId: number;
   fechaCreacion: string;
-  estado: 'PENDIENTE' | 'EN_PRODUCCION' | 'LISTO' | 'ENTREGADO' | 'CANCELADO';
+  estado: 'NO_VISTO' | 'EN_COMPRA' | 'EN_PRODUCCION' | 'ENTREGADO';
   pagado: boolean;
   fechaEntregaEstimada?: string | null;
   fechaEntregaReal?: string | null;
