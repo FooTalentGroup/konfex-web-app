@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// ✅ Schemas de validación
 export const createClienteSchema = z.object({
   body: z.object({
     nombre: z

@@ -1,6 +1,8 @@
 import { AppError } from "@/common/errors";
+
 import { productoRepository } from "./producto.repository";
-import { CreateProductoDto, UpdateProductoDto } from "./producto.schema";
+import type { CreateProductoDto, UpdateProductoDto } from "./producto.schema";
+import type { CreateProductoDtoDB } from "./producto.types";
 
 export const productoService = {
   // Crear producto
@@ -11,7 +13,18 @@ export const productoService = {
       throw new AppError("El producto ya existe", 409);
     }
 
-    return productoRepository.create(data);
+    // Mapear CreateProductoDto a CreateProductoDtoDB
+    const dataDB: CreateProductoDtoDB = {
+      codigo: data.codigo,
+      nombre: data.nombre,
+      descripcion: data.descripcion,
+      activo: data.activo,
+      coleccionId: data.coleccionId,
+      tallas: data.tallas,
+      colores: data.colores,
+    };
+
+    return productoRepository.create(dataDB);
   },
 
   // Obtener todos
@@ -30,6 +43,18 @@ export const productoService = {
     }
 
     return producto;
+  },
+
+  // Buscar productos
+  search: async (query: string, limit: number = 10) => {
+    const trimmedQuery = query.trim();
+    
+    // Si el query está vacío o es muy corto, retornar array vacío
+    if (trimmedQuery.length < 2) {
+      return [];
+    }
+
+    return productoRepository.search(trimmedQuery, limit);
   },
 
   // Actualizar

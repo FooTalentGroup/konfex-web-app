@@ -1,7 +1,7 @@
-import swaggerUi from "swagger-ui-express";
+import type { Express } from "express";
 import swaggerJsdoc from "swagger-jsdoc";
-import { Express } from "express";
-import { productoDocs } from "../modules/producto";
+import swaggerUi from "swagger-ui-express";
+
 import { authDocs } from "../modules/auth";
 import { materialDocs } from "../modules/material";
 import { clienteDocs } from "../modules/cliente";
@@ -9,6 +9,7 @@ import { presupuestoDocs } from "../modules/presupuesto";
 import { telegramDocs } from "../modules/telegram";
 import { gastosNegocioDocs } from "../modules/gastos-negocio";
 import { impuestoGeneralDocs } from "../modules/impuesto-general";
+import { productoDocs } from "../modules/producto";
 
 const options = {
   definition: {

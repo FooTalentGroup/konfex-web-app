@@ -1,5 +1,5 @@
 import prisma from "../../config/prisma";
-import { EstadoPresupuesto } from "./presupuesto.schema";
+import type { EstadoPresupuesto } from "./presupuesto.schema";
 
 interface PresupuestoDetalleInput {
   productoId: number;
@@ -32,6 +32,7 @@ interface CreatePresupuestoData {
     iva?: number;
     totalFinal?: number;
     notas?: string | null;
+    origen?: string;
     detalles?: PresupuestoDetalleInput[];
     adicionales?: AdicionalInput[];
   };
@@ -51,6 +52,7 @@ interface UpdatePresupuestoData {
     iva?: number;
     totalFinal?: number;
     notas?: string | null;
+    origen?: string;
     detalles?: PresupuestoDetalleInput[];
     adicionales?: AdicionalInput[];
   };
@@ -58,7 +60,7 @@ interface UpdatePresupuestoData {
 
 export const PresupuestoRepository = {
   create: async ({ data }: CreatePresupuestoData) => {
-    const { detalles, adicionales, clienteId, ...presupuestoData } = data;
+    const { detalles, adicionales, clienteId, costosIndirectos, ...presupuestoData } = data;
     return prisma.presupuesto.create({
       data: {
         ...presupuestoData,
@@ -137,7 +139,7 @@ export const PresupuestoRepository = {
   },
 
   update: async (id: number, { data }: UpdatePresupuestoData) => {
-    const { detalles, adicionales, clienteId, ...presupuestoData } = data;
+    const { detalles, adicionales, clienteId, costosIndirectos, ...presupuestoData } = data;
 
     // Si hay detalles definidos (incluso si es array vacío), eliminamos los existentes
     if (detalles !== undefined) {

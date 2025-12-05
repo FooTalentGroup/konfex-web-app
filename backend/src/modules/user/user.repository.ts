@@ -1,6 +1,7 @@
-import { CreateUserPayload } from "./users.types";
 import bcrypt from "bcrypt";
+
 import prisma from "../../config/prisma";
+import type { CreateUserPayload } from "./users.types";
 
 export const UserRepository = {
   create: async ({ email, name, role, password }: CreateUserPayload) => {

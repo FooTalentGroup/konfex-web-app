@@ -7,13 +7,12 @@ import {
   GastosNegocio,
 } from "../../../generated/prisma/client";
 
-import {
-  PresupuestoResponseDto,
+import type { EstadoPresupuesto } from "./presupuesto.schema";
+import type {
   PresupuestoDetalleResponseDto,
   PresupuestoListItemDto,
   AdicionalResponseDto,
 } from "./presupuesto.types";
-import { EstadoPresupuesto } from "./presupuesto.schema";
 
 export const toPresupuestoDetalleResponseDto = (
   detalle: PresupuestoDetalle,

@@ -122,7 +122,13 @@ export const handleIncomingUpdate = async (update: any) => {
   }
 };
 
-export const sendTextMessage = async (chatId: number | string, text: string, firstName: string, lastName: string, username: string) => {
+export const sendTextMessage = async (
+  chatId: number | string,
+  text: string,
+  firstName: string,
+  lastName: string,
+  username: string
+) => {
   const token = process.env.TELEGRAM_BOT_TOKEN!;
   const url = `${TELEGRAM_API(token)}/sendMessage`;
 
@@ -142,24 +148,24 @@ export const sendTextMessage = async (chatId: number | string, text: string, fir
     throw new Error(`Telegram API error: ${error}`);
   }
 
-    const msgData = {
-        chatId,
-        text,
-        source: "konfex",
-        firstName,
-        lastName,
-        username,
-        timestamp: new Date().toISOString(),
-    };
+  const msgData = {
+    chatId,
+    text,
+    source: "konfex",
+    firstName,
+    lastName,
+    username,
+    timestamp: new Date().toISOString(),
+  };
 
-    console.log("Mensaje enviado al bot:", msgData);
-    await telegramMessageRepository.save(msgData);
+  console.log("Mensaje enviado al bot:", msgData);
+  await telegramMessageRepository.save(msgData);
 
   return response.json();
 };
 
-export const associateUser = async (chatId: string | number, userId: number) => {
-  return telegramMessageRepository.associateUserToChat(chatId, userId);
+export const associateUser = async (chatId: string | number, clienteId: number) => {
+  return telegramMessageRepository.associateUserToChat(chatId, clienteId);
 }
 
 export const getChatMessages = async (chatId: string | number) => {
@@ -203,15 +209,18 @@ export const getChatsList = async () => {
   };
   
   // Agrupar por chatId, tomando el primer mensaje (más reciente) de cada chat
-  const chatsMap = new Map<string, {
-    chatId: string;
-    firstName?: string | null;
-    lastName?: string | null;
-    username?: string | null;
-    lastMessage: string;
-    lastMessageSource: string;
-    lastTimestamp: Date;
-  }>();
+  const chatsMap = new Map<
+    string,
+    {
+      chatId: string;
+      firstName?: string | null;
+      lastName?: string | null;
+      username?: string | null;
+      lastMessage: string;
+      lastMessageSource: string;
+      lastTimestamp: Date;
+    }
+  >();
 
   for (const message of allMessages) {
     if (!chatsMap.has(message.chatId)) {
@@ -232,7 +241,7 @@ export const getChatsList = async () => {
   const chats = Array.from(chatsMap.values()).sort((a, b) => {
     return b.lastTimestamp.getTime() - a.lastTimestamp.getTime();
   });
-  
+
   // Para cada chat, obtener el nombre del usuario con source "telegram"
   // Si no existe, usar el último mensaje con source "telegram" para obtener el nombre
   return await Promise.all(
@@ -240,7 +249,7 @@ export const getChatsList = async () => {
       // Buscar el último mensaje con source "telegram" para obtener el nombre del usuario
       const telegramMessage = allMessages.find(
         (msg: { chatId: string; source: string }) =>
-          msg.chatId === chat.chatId && msg.source === "telegram",
+          msg.chatId === chat.chatId && msg.source === "telegram"
       );
 
       // Usar el nombre del mensaje de telegram si existe, sino usar el del último mensaje
@@ -261,6 +270,6 @@ export const getChatsList = async () => {
         timestamp: chat.lastTimestamp,
         hasBudget: false,
       };
-    }),
+    })
   );
 }

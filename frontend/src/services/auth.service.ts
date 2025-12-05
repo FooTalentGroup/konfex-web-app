@@ -51,5 +51,30 @@ export const authService = {
       throw new Error('Error de conexión con el servidor');
     }
   },
+
+  signOut: async (): Promise<void> => {
+    const url = API_CONFIG.getApiUrl('/auth/sign-out');
+    
+    try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        credentials: 'include',
+      });
+
+      // Incluso si la respuesta no es exitosa, continuamos con el logout del lado del cliente
+      if (!response.ok) {
+        console.warn('Error al cerrar sesión en el servidor, pero continuando con el logout local');
+      }
+    } catch (error) {
+      // En caso de error, aún continuamos con el logout del lado del cliente
+      console.warn('Error al comunicarse con el servidor durante logout:', error);
+    }
+  },
 };
 

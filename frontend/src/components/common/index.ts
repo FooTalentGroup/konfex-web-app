@@ -5,7 +5,7 @@ export * from './autoCompleteSelect';
 export * from './BackNavigationBar';
 export * from './BudgetCard';
 export * from './Button';
-export * from './CalculatorTemplate';
+export * from '../calculator/CalculatorTemplate';
 export * from './CategoryButton';
 export * from './CollectionButton';
 export * from './CollectionCard';

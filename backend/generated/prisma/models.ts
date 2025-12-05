@@ -10,6 +10,7 @@
  */
 export type * from './models/User'
 export type * from './models/Cliente'
+export type * from './models/Coleccion'
 export type * from './models/Producto'
 export type * from './models/Material'
 export type * from './models/ManoDeObra'

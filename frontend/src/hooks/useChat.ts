@@ -20,6 +20,7 @@ export interface ChatMessage {
 
 export interface ChatContact {
   id: number;
+  chatId: string;
   nombre: string;
   avatar?: string;
   plataforma: 'telegram';
@@ -91,6 +92,7 @@ export const useChat = (chatId: string) => {
 
         const basicContact: ChatContact = {
           id: parseInt(chatId) || 0,
+          chatId: chatId,
           nombre: contactName,
           avatar: '/perfil.png',
           plataforma: 'telegram',
@@ -132,6 +134,7 @@ export const useChat = (chatId: string) => {
         // En caso de error, usar valores por defecto
         const basicContact: ChatContact = {
           id: parseInt(chatId) || 0,
+          chatId: chatId,
           nombre: `Chat ${chatId}`,
           avatar: '/perfil.png',
           plataforma: 'telegram',

@@ -65,6 +65,7 @@ export type PresupuestoMinAggregateOutputType = {
   iva: number | null
   totalFinal: number | null
   notas: string | null
+  origen: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -84,6 +85,7 @@ export type PresupuestoMaxAggregateOutputType = {
   iva: number | null
   totalFinal: number | null
   notas: string | null
+  origen: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -103,6 +105,7 @@ export type PresupuestoCountAggregateOutputType = {
   iva: number
   totalFinal: number
   notas: number
+  origen: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -148,6 +151,7 @@ export type PresupuestoMinAggregateInputType = {
   iva?: true
   totalFinal?: true
   notas?: true
+  origen?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -167,6 +171,7 @@ export type PresupuestoMaxAggregateInputType = {
   iva?: true
   totalFinal?: true
   notas?: true
+  origen?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -186,6 +191,7 @@ export type PresupuestoCountAggregateInputType = {
   iva?: true
   totalFinal?: true
   notas?: true
+  origen?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -292,6 +298,7 @@ export type PresupuestoGroupByOutputType = {
   iva: number
   totalFinal: number
   notas: string | null
+  origen: string
   createdAt: Date
   updatedAt: Date
   _count: PresupuestoCountAggregateOutputType | null
@@ -334,6 +341,7 @@ export type PresupuestoWhereInput = {
   iva?: Prisma.FloatFilter<"Presupuesto"> | number
   totalFinal?: Prisma.FloatFilter<"Presupuesto"> | number
   notas?: Prisma.StringNullableFilter<"Presupuesto"> | string | null
+  origen?: Prisma.StringFilter<"Presupuesto"> | string
   createdAt?: Prisma.DateTimeFilter<"Presupuesto"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Presupuesto"> | Date | string
   pedido?: Prisma.XOR<Prisma.PedidoNullableScalarRelationFilter, Prisma.PedidoWhereInput> | null
@@ -358,6 +366,7 @@ export type PresupuestoOrderByWithRelationInput = {
   iva?: Prisma.SortOrder
   totalFinal?: Prisma.SortOrder
   notas?: Prisma.SortOrderInput | Prisma.SortOrder
+  origen?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   pedido?: Prisma.PedidoOrderByWithRelationInput
@@ -385,6 +394,7 @@ export type PresupuestoWhereUniqueInput = Prisma.AtLeast<{
   iva?: Prisma.FloatFilter<"Presupuesto"> | number
   totalFinal?: Prisma.FloatFilter<"Presupuesto"> | number
   notas?: Prisma.StringNullableFilter<"Presupuesto"> | string | null
+  origen?: Prisma.StringFilter<"Presupuesto"> | string
   createdAt?: Prisma.DateTimeFilter<"Presupuesto"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Presupuesto"> | Date | string
   pedido?: Prisma.XOR<Prisma.PedidoNullableScalarRelationFilter, Prisma.PedidoWhereInput> | null
@@ -409,6 +419,7 @@ export type PresupuestoOrderByWithAggregationInput = {
   iva?: Prisma.SortOrder
   totalFinal?: Prisma.SortOrder
   notas?: Prisma.SortOrderInput | Prisma.SortOrder
+  origen?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PresupuestoCountOrderByAggregateInput
@@ -436,6 +447,7 @@ export type PresupuestoScalarWhereWithAggregatesInput = {
   iva?: Prisma.FloatWithAggregatesFilter<"Presupuesto"> | number
   totalFinal?: Prisma.FloatWithAggregatesFilter<"Presupuesto"> | number
   notas?: Prisma.StringNullableWithAggregatesFilter<"Presupuesto"> | string | null
+  origen?: Prisma.StringWithAggregatesFilter<"Presupuesto"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Presupuesto"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Presupuesto"> | Date | string
 }
@@ -452,6 +464,7 @@ export type PresupuestoCreateInput = {
   iva?: number
   totalFinal?: number
   notas?: string | null
+  origen?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   pedido?: Prisma.PedidoCreateNestedOneWithoutPresupuestoInput
@@ -476,6 +489,7 @@ export type PresupuestoUncheckedCreateInput = {
   iva?: number
   totalFinal?: number
   notas?: string | null
+  origen?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   pedido?: Prisma.PedidoUncheckedCreateNestedOneWithoutPresupuestoInput
@@ -495,6 +509,7 @@ export type PresupuestoUpdateInput = {
   iva?: Prisma.FloatFieldUpdateOperationsInput | number
   totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  origen?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedido?: Prisma.PedidoUpdateOneWithoutPresupuestoNestedInput
@@ -519,6 +534,7 @@ export type PresupuestoUncheckedUpdateInput = {
   iva?: Prisma.FloatFieldUpdateOperationsInput | number
   totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  origen?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedido?: Prisma.PedidoUncheckedUpdateOneWithoutPresupuestoNestedInput
@@ -541,6 +557,7 @@ export type PresupuestoCreateManyInput = {
   iva?: number
   totalFinal?: number
   notas?: string | null
+  origen?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -557,6 +574,7 @@ export type PresupuestoUpdateManyMutationInput = {
   iva?: Prisma.FloatFieldUpdateOperationsInput | number
   totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  origen?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -576,6 +594,7 @@ export type PresupuestoUncheckedUpdateManyInput = {
   iva?: Prisma.FloatFieldUpdateOperationsInput | number
   totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  origen?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -605,6 +624,7 @@ export type PresupuestoCountOrderByAggregateInput = {
   iva?: Prisma.SortOrder
   totalFinal?: Prisma.SortOrder
   notas?: Prisma.SortOrder
+  origen?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -636,6 +656,7 @@ export type PresupuestoMaxOrderByAggregateInput = {
   iva?: Prisma.SortOrder
   totalFinal?: Prisma.SortOrder
   notas?: Prisma.SortOrder
+  origen?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -655,6 +676,7 @@ export type PresupuestoMinOrderByAggregateInput = {
   iva?: Prisma.SortOrder
   totalFinal?: Prisma.SortOrder
   notas?: Prisma.SortOrder
+  origen?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -830,6 +852,7 @@ export type PresupuestoCreateWithoutClienteInput = {
   iva?: number
   totalFinal?: number
   notas?: string | null
+  origen?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   pedido?: Prisma.PedidoCreateNestedOneWithoutPresupuestoInput
@@ -852,6 +875,7 @@ export type PresupuestoUncheckedCreateWithoutClienteInput = {
   iva?: number
   totalFinal?: number
   notas?: string | null
+  origen?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   pedido?: Prisma.PedidoUncheckedCreateNestedOneWithoutPresupuestoInput
@@ -903,6 +927,7 @@ export type PresupuestoScalarWhereInput = {
   iva?: Prisma.FloatFilter<"Presupuesto"> | number
   totalFinal?: Prisma.FloatFilter<"Presupuesto"> | number
   notas?: Prisma.StringNullableFilter<"Presupuesto"> | string | null
+  origen?: Prisma.StringFilter<"Presupuesto"> | string
   createdAt?: Prisma.DateTimeFilter<"Presupuesto"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Presupuesto"> | Date | string
 }
@@ -919,6 +944,7 @@ export type PresupuestoCreateWithoutDetallesInput = {
   iva?: number
   totalFinal?: number
   notas?: string | null
+  origen?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   pedido?: Prisma.PedidoCreateNestedOneWithoutPresupuestoInput
@@ -942,6 +968,7 @@ export type PresupuestoUncheckedCreateWithoutDetallesInput = {
   iva?: number
   totalFinal?: number
   notas?: string | null
+  origen?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   pedido?: Prisma.PedidoUncheckedCreateNestedOneWithoutPresupuestoInput
@@ -976,6 +1003,7 @@ export type PresupuestoUpdateWithoutDetallesInput = {
   iva?: Prisma.FloatFieldUpdateOperationsInput | number
   totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  origen?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedido?: Prisma.PedidoUpdateOneWithoutPresupuestoNestedInput
@@ -999,6 +1027,7 @@ export type PresupuestoUncheckedUpdateWithoutDetallesInput = {
   iva?: Prisma.FloatFieldUpdateOperationsInput | number
   totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  origen?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedido?: Prisma.PedidoUncheckedUpdateOneWithoutPresupuestoNestedInput
@@ -1017,6 +1046,7 @@ export type PresupuestoCreateWithoutAdicionalesInput = {
   iva?: number
   totalFinal?: number
   notas?: string | null
+  origen?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   pedido?: Prisma.PedidoCreateNestedOneWithoutPresupuestoInput
@@ -1040,6 +1070,7 @@ export type PresupuestoUncheckedCreateWithoutAdicionalesInput = {
   iva?: number
   totalFinal?: number
   notas?: string | null
+  origen?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   pedido?: Prisma.PedidoUncheckedCreateNestedOneWithoutPresupuestoInput
@@ -1074,6 +1105,7 @@ export type PresupuestoUpdateWithoutAdicionalesInput = {
   iva?: Prisma.FloatFieldUpdateOperationsInput | number
   totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  origen?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedido?: Prisma.PedidoUpdateOneWithoutPresupuestoNestedInput
@@ -1097,6 +1129,7 @@ export type PresupuestoUncheckedUpdateWithoutAdicionalesInput = {
   iva?: Prisma.FloatFieldUpdateOperationsInput | number
   totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  origen?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedido?: Prisma.PedidoUncheckedUpdateOneWithoutPresupuestoNestedInput
@@ -1115,6 +1148,7 @@ export type PresupuestoCreateWithoutGastosNegocioInput = {
   iva?: number
   totalFinal?: number
   notas?: string | null
+  origen?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   pedido?: Prisma.PedidoCreateNestedOneWithoutPresupuestoInput
@@ -1137,6 +1171,7 @@ export type PresupuestoUncheckedCreateWithoutGastosNegocioInput = {
   iva?: number
   totalFinal?: number
   notas?: string | null
+  origen?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   pedido?: Prisma.PedidoUncheckedCreateNestedOneWithoutPresupuestoInput
@@ -1182,6 +1217,7 @@ export type PresupuestoCreateWithoutPedidoInput = {
   iva?: number
   totalFinal?: number
   notas?: string | null
+  origen?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   cliente?: Prisma.ClienteCreateNestedOneWithoutPresupuestosInput
@@ -1205,6 +1241,7 @@ export type PresupuestoUncheckedCreateWithoutPedidoInput = {
   iva?: number
   totalFinal?: number
   notas?: string | null
+  origen?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   detalles?: Prisma.PresupuestoDetalleUncheckedCreateNestedManyWithoutPresupuestoInput
@@ -1239,6 +1276,7 @@ export type PresupuestoUpdateWithoutPedidoInput = {
   iva?: Prisma.FloatFieldUpdateOperationsInput | number
   totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  origen?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cliente?: Prisma.ClienteUpdateOneWithoutPresupuestosNestedInput
@@ -1262,6 +1300,7 @@ export type PresupuestoUncheckedUpdateWithoutPedidoInput = {
   iva?: Prisma.FloatFieldUpdateOperationsInput | number
   totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  origen?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   detalles?: Prisma.PresupuestoDetalleUncheckedUpdateManyWithoutPresupuestoNestedInput
@@ -1282,6 +1321,7 @@ export type PresupuestoCreateManyClienteInput = {
   iva?: number
   totalFinal?: number
   notas?: string | null
+  origen?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1298,6 +1338,7 @@ export type PresupuestoUpdateWithoutClienteInput = {
   iva?: Prisma.FloatFieldUpdateOperationsInput | number
   totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  origen?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedido?: Prisma.PedidoUpdateOneWithoutPresupuestoNestedInput
@@ -1320,6 +1361,7 @@ export type PresupuestoUncheckedUpdateWithoutClienteInput = {
   iva?: Prisma.FloatFieldUpdateOperationsInput | number
   totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  origen?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedido?: Prisma.PedidoUncheckedUpdateOneWithoutPresupuestoNestedInput
@@ -1341,6 +1383,7 @@ export type PresupuestoUncheckedUpdateManyWithoutClienteInput = {
   iva?: Prisma.FloatFieldUpdateOperationsInput | number
   totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  origen?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1359,6 +1402,7 @@ export type PresupuestoCreateManyGastosNegocioInput = {
   iva?: number
   totalFinal?: number
   notas?: string | null
+  origen?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1375,6 +1419,7 @@ export type PresupuestoUpdateWithoutGastosNegocioInput = {
   iva?: Prisma.FloatFieldUpdateOperationsInput | number
   totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  origen?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedido?: Prisma.PedidoUpdateOneWithoutPresupuestoNestedInput
@@ -1397,6 +1442,7 @@ export type PresupuestoUncheckedUpdateWithoutGastosNegocioInput = {
   iva?: Prisma.FloatFieldUpdateOperationsInput | number
   totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  origen?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   pedido?: Prisma.PedidoUncheckedUpdateOneWithoutPresupuestoNestedInput
@@ -1418,6 +1464,7 @@ export type PresupuestoUncheckedUpdateManyWithoutGastosNegocioInput = {
   iva?: Prisma.FloatFieldUpdateOperationsInput | number
   totalFinal?: Prisma.FloatFieldUpdateOperationsInput | number
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  origen?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1477,6 +1524,7 @@ export type PresupuestoSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   iva?: boolean
   totalFinal?: boolean
   notas?: boolean
+  origen?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   pedido?: boolean | Prisma.Presupuesto$pedidoArgs<ExtArgs>
@@ -1502,6 +1550,7 @@ export type PresupuestoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   iva?: boolean
   totalFinal?: boolean
   notas?: boolean
+  origen?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   cliente?: boolean | Prisma.Presupuesto$clienteArgs<ExtArgs>
@@ -1523,6 +1572,7 @@ export type PresupuestoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   iva?: boolean
   totalFinal?: boolean
   notas?: boolean
+  origen?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   cliente?: boolean | Prisma.Presupuesto$clienteArgs<ExtArgs>
@@ -1544,11 +1594,12 @@ export type PresupuestoSelectScalar = {
   iva?: boolean
   totalFinal?: boolean
   notas?: boolean
+  origen?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PresupuestoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "numeroPresupuesto" | "nombre" | "clienteId" | "fechaCreacion" | "fechaVencimiento" | "estado" | "margenGananciaPorcentaje" | "totalCosto" | "gastosNegocioId" | "ganancias" | "iva" | "totalFinal" | "notas" | "createdAt" | "updatedAt", ExtArgs["result"]["presupuesto"]>
+export type PresupuestoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "numeroPresupuesto" | "nombre" | "clienteId" | "fechaCreacion" | "fechaVencimiento" | "estado" | "margenGananciaPorcentaje" | "totalCosto" | "gastosNegocioId" | "ganancias" | "iva" | "totalFinal" | "notas" | "origen" | "createdAt" | "updatedAt", ExtArgs["result"]["presupuesto"]>
 export type PresupuestoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   pedido?: boolean | Prisma.Presupuesto$pedidoArgs<ExtArgs>
   cliente?: boolean | Prisma.Presupuesto$clienteArgs<ExtArgs>
@@ -1590,6 +1641,7 @@ export type $PresupuestoPayload<ExtArgs extends runtime.Types.Extensions.Interna
     iva: number
     totalFinal: number
     notas: string | null
+    origen: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["presupuesto"]>
@@ -2034,6 +2086,7 @@ export interface PresupuestoFieldRefs {
   readonly iva: Prisma.FieldRef<"Presupuesto", 'Float'>
   readonly totalFinal: Prisma.FieldRef<"Presupuesto", 'Float'>
   readonly notas: Prisma.FieldRef<"Presupuesto", 'String'>
+  readonly origen: Prisma.FieldRef<"Presupuesto", 'String'>
   readonly createdAt: Prisma.FieldRef<"Presupuesto", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Presupuesto", 'DateTime'>
 }
