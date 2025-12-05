@@ -19,27 +19,26 @@ export interface Order {
   garmentType: string;
   price: number;
   status: "pagado" | "deposito";
-  operativoStatus?: "presupuesto" | "en compra" | "en produccion" | "entregado";
+  operativoStatus?: "no visto" | "en compra" | "en produccion" | "entregado";
   telegramChatId?: string;
+  pedidoId: number; // Necesario para actualizar el pedido
 }
 
 // Función para mapear el estado del backend al estado operativo del frontend
 const mapEstadoToOperativoStatus = (
   estado: Pedido["estado"]
-): "presupuesto" | "en compra" | "en produccion" | "entregado" => {
+): "no visto" | "en compra" | "en produccion" | "entregado" => {
   switch (estado) {
-    case "PENDIENTE":
-      return "presupuesto";
+    case "NO_VISTO":
+      return "no visto";
+    case "EN_COMPRA":
+      return "en compra";
     case "EN_PRODUCCION":
       return "en produccion";
-    case "LISTO":
-      return "en compra";
     case "ENTREGADO":
       return "entregado";
-    case "CANCELADO":
-      return "presupuesto";
     default:
-      return "presupuesto";
+      return "no visto";
   }
 };
 
@@ -60,6 +59,7 @@ const mapPedidoToOrder = (pedido: Pedido): Order => {
     status: pedido.pagado ? "pagado" : "deposito",
     operativoStatus: mapEstadoToOperativoStatus(pedido.estado),
     telegramChatId: pedido.telegramChatId || undefined,
+    pedidoId: pedido.id,
   };
 };
 
