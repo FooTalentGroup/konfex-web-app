@@ -74,13 +74,14 @@ const ChatInput: React.FC<ChatInputProps> = ({
           placeholder="Escribe un mensaje..."
           className="w-full h-12 pr-8 pl-8 rounded-md border border-[#B65CF2] focus:outline-none text-xs sm:text-sm md:text-base font-lato font-normal leading-[131%] tracking-normal text-black bg-[#FEFCFF] shadow-[0px_3px_5.99px_-3px_rgba(0,0,0,0.08),0px_0px_8.99px_0px_rgba(0,0,0,0.10)]"
         />
+        {/* Botón de gancho deshabilitado */}
+        {/*
         <button
           type="button"
           onClick={() => {
             const input = document.createElement("input");
             input.type = "file";
             input.onchange = () => {
-              // placeholder: manejar el archivo seleccionado
               console.log("Archivo seleccionado");
             };
             input.click();
@@ -90,6 +91,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
         >
           <Paperclip className="w-4 h-4 text-[#8B709D]" />
         </button>
+        */}
         <button
           type="button"
           onClick={() => setShowEmoji((prev) => !prev)}

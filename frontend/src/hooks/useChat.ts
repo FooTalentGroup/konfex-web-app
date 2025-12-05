@@ -10,6 +10,9 @@ export interface ChatMessage {
   date?: string; // Fecha completa para separadores de día
   isSent: boolean;
   senderAvatar?: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  username?: string | null;
   // Soporte multimedia
   type?: 'text' | 'photo' | 'document';
   fileUrl?: string | null;
@@ -119,7 +122,10 @@ export const useChat = (chatId: string) => {
               day: 'numeric',
             }),
             isSent,
-            senderAvatar: '/perfil.png',
+            senderAvatar: isSent ? '/perfil.png' : undefined,
+            firstName: msg.firstName ?? null,
+            lastName: msg.lastName ?? null,
+            username: msg.username ?? null,
             type: msg.type || 'text',
             fileUrl: msg.fileUrl ?? null,
             filePath: msg.filePath ?? null,
@@ -189,7 +195,10 @@ export const useChat = (chatId: string) => {
           day: 'numeric',
         }),
         isSent: false,
-        senderAvatar: '/perfil.png',
+        senderAvatar: undefined,
+        firstName: telegramMessage.firstName ?? null,
+        lastName: telegramMessage.lastName ?? null,
+        username: telegramMessage.username ?? null,
         type: telegramMessage.type || (telegramMessage.text ? 'text' : undefined),
         fileUrl: telegramMessage.fileUrl ?? null,
         filePath: telegramMessage.filePath ?? null,

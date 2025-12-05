@@ -7,6 +7,31 @@ import 'react-medium-image-zoom/dist/styles.css';
 import { Paperclip } from 'lucide-react';
 import { ChatMessage as ChatMessageType } from '@/hooks/useChat';
 
+const getInitial = (
+  firstName?: string | null,
+  lastName?: string | null,
+  username?: string | null
+) => {
+  const clean = (value?: string | null) =>
+    value?.replace(/\s+/g, ' ').trim() || '';
+
+  const pick = (value: string) => {
+    if (!value) return null;
+    const match = value.match(/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9]/u);
+    return match ? match[0].toUpperCase() : null;
+  };
+
+  const first = pick(clean(firstName));
+  const last = pick(clean(lastName));
+  const user = pick(clean(username));
+
+  if (first && last) return `${first}${last}`;
+  if (first) return first;
+  if (last) return last;
+  if (user) return user;
+  return null;
+};
+
 interface ChatMessageProps {
   message: ChatMessageType;
 }
@@ -20,13 +45,25 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     >
       {!message.isSent && (
         <div className="shrink-0">
-          <Image
-            src={message.senderAvatar || "/perfil.png"}
-            alt="Sender"
-            width={32}
-            height={32}
-            className="rounded-full object-cover w-7 h-7 sm:w-8 sm:h-8 border border-[#8B709D]"
-          />
+          {(() => {
+            const initials = getInitial(message.firstName, message.lastName, message.username);
+            if (initials) {
+              return (
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#E6E1EA] text-[#6A5379] flex items-center justify-center border border-[#8B709D] font-lato font-semibold text-xs sm:text-sm">
+                  {initials}
+                </div>
+              );
+            }
+            return (
+              <Image
+                src={message.senderAvatar || "/perfil.png"}
+                alt="Sender"
+                width={32}
+                height={32}
+                className="rounded-full object-cover w-7 h-7 sm:w-8 sm:h-8 border border-[#8B709D]"
+              />
+            );
+          })()}
         </div>
       )}
 
