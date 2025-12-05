@@ -9,9 +9,17 @@ export const materialDocs = {
           "Obtiene una lista paginada de materiales con opciones de filtrado, búsqueda y ordenamiento.",
         parameters: [
           {
+            name: "categoriaId",
+            in: "query",
+            description: "Filtrar por ID de categoría",
+            required: false,
+            schema: { type: "integer" },
+            example: 1,
+          },
+          {
             name: "categoria",
             in: "query",
-            description: "Filtrar por categoría",
+            description: "Filtrar por nombre de categoría",
             required: false,
             schema: { type: "string" },
             example: "Tela",
@@ -111,7 +119,7 @@ export const materialDocs = {
             required: false,
             schema: {
               type: "string",
-              enum: ["nombre", "precio", "peso", "ancho", "categoria", "createdAt"],
+              enum: ["nombre", "precio", "peso", "ancho", "createdAt"],
             },
             example: "precio",
           },
@@ -150,7 +158,16 @@ export const materialDocs = {
                               id: { type: "number" },
                               nombre: { type: "string" },
                               url_imagen: { type: "string", nullable: true },
-                              categoria: { type: "string" },
+                              categoriaId: { type: "number" },
+                              categoria: {
+                                type: "object",
+                                properties: {
+                                  id: { type: "number" },
+                                  nombre: { type: "string" },
+                                  createdAt: { type: "string", format: "date-time" },
+                                  updatedAt: { type: "string", format: "date-time" },
+                                },
+                              },
                               unidadMedida: { type: "string" },
                               ancho: { type: "number", nullable: true },
                               peso: { type: "number", nullable: true },
@@ -201,7 +218,7 @@ export const materialDocs = {
               example: {
                 nombre: "Algodón Premium 240g",
                 url_imagen: "https://example.com/images/algodon-premium.jpg",
-                categoria: "Tela",
+                categoriaId: 1,
                 unidadMedida: "metros",
                 ancho: 150,
                 peso: 2.5,
@@ -415,7 +432,7 @@ export const materialDocs = {
         type: "object",
         required: [
           "nombre",
-          "categoria",
+          "categoriaId",
           "unidadMedida",
           "colores",
           "proveedor",
@@ -435,11 +452,11 @@ export const materialDocs = {
             description: "URL de la imagen del material",
             example: "https://example.com/images/algodon-premium.jpg",
           },
-          categoria: {
-            type: "string",
-            minLength: 1,
-            description: "Categoría del material",
-            example: "Tela",
+          categoriaId: {
+            type: "integer",
+            minimum: 1,
+            description: "ID de la categoría del material",
+            example: 1,
           },
           unidadMedida: {
             type: "string",
