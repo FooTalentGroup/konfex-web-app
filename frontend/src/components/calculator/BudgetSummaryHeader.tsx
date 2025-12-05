@@ -38,7 +38,7 @@ export default function BudgetSummaryHeader({
   isEditMode = false,
   origen = "manual",
 }: BudgetSummaryHeaderProps = {}) {
-  const { control, getValues, watch } = useFormContext();
+  const { control, getValues, watch, setValue } = useFormContext();
   const router = useRouter();
   const { gastosNegocio } = useGastosNegocio();
   const { showSuccess, showError, showInfo } = useToast();
@@ -74,13 +74,12 @@ export default function BudgetSummaryHeader({
       ? shippingFee
       : parseFloat(shippingFee || "0") || 0);
 
-  // Calcular costos indirectos y ganancias si tenemos gastosNegocioId
-  const selectedGastosNegocio = gastosNegocio.find(
-    (g) => g.id === gastosNegocioId
+  // Calcular costos indirectos sumando TODOS los porcentajes de gastos de negocio
+  const porcentajeTotalGastos = gastosNegocio.reduce(
+    (sum, gasto) => sum + gasto.porcentaje,
+    0
   );
-  const indirectCosts = selectedGastosNegocio
-    ? (directCost * selectedGastosNegocio.porcentaje) / 100
-    : 0;
+  const indirectCosts = (directCost * porcentajeTotalGastos) / 100;
   const profit = (directCost * desiredProfit) / 100;
   const grandTotal = directCost + indirectCosts + profit;
 
@@ -102,8 +101,16 @@ export default function BudgetSummaryHeader({
         return;
       }
 
-      if (!gastosNegocioId) {
-        showError("Por favor selecciona los gastos de negocio");
+      // Obtener automáticamente el primer gasto de negocio si no hay uno seleccionado
+      let finalGastosNegocioId = gastosNegocioId;
+      if (!finalGastosNegocioId && gastosNegocio.length > 0) {
+        finalGastosNegocioId = gastosNegocio[0].id;
+        // Establecerlo en el formulario para que se use en el payload
+        setValue("gastosNegocioId", finalGastosNegocioId, { shouldValidate: false });
+      }
+
+      if (!finalGastosNegocioId) {
+        showError("No se encontraron gastos de negocio configurados. Por favor contacta al administrador.");
         setIsMenuOpen(false);
         return;
       }
@@ -157,29 +164,27 @@ export default function BudgetSummaryHeader({
         }
       }
 
-      // Obtener gastos de negocio seleccionados
-      const selectedGastos = gastosNegocio.find(
-        (g) => g.id === gastosNegocioId
-      );
-      if (!selectedGastos) {
+      // Validar que haya gastos de negocio disponibles
+      if (!gastosNegocio || gastosNegocio.length === 0) {
         showError(
-          "No se encontraron los gastos de negocio seleccionados. Por favor recarga la página."
+          "No se encontraron gastos de negocio configurados. Por favor contacta al administrador."
         );
         setIsMenuOpen(false);
         return;
       }
 
       // Mapear datos del formulario al formato del backend
+      // Pasar TODOS los gastos de negocio para que se sumen sus porcentajes
       // TypeScript necesita un cast explícito porque getValues() retorna un tipo genérico
       const payload = mapFormDataToBackend(
         {
           ...currentBudgetData,
           clienteId,
-          gastosNegocioId,
+          gastosNegocioId: finalGastosNegocioId,
           materials: (currentBudgetData.materials || []) as Material[],
           extras: (currentBudgetData.extras || []) as Extra[],
         } as Parameters<typeof mapFormDataToBackend>[0],
-        selectedGastos,
+        gastosNegocio,
         origen
       );
 

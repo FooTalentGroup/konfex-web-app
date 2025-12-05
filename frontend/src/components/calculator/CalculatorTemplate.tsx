@@ -100,6 +100,23 @@ export default function CalculatorTemplate({
 
   const { gastosNegocio } = useGastosNegocio();
 
+  // Establecer automáticamente el primer gasto de negocio cuando se cargan los gastos
+  useEffect(() => {
+    if (gastosNegocio.length > 0 && !isEditMode) {
+      const currentGastosNegocioId = methods.getValues("gastosNegocioId");
+      // Solo establecer si no hay uno ya seleccionado
+      if (!currentGastosNegocioId) {
+        // Usar el primer gasto de negocio disponible
+        const firstGastosNegocio = gastosNegocio[0];
+        if (firstGastosNegocio) {
+          methods.setValue("gastosNegocioId", firstGastosNegocio.id, {
+            shouldValidate: false,
+          });
+        }
+      }
+    }
+  }, [gastosNegocio, isEditMode, methods]);
+
   // Cargar datos del presupuesto si estamos en modo edición
   useEffect(() => {
     if (isEditMode && presupuestoId && gastosNegocio.length > 0) {

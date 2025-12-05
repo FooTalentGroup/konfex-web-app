@@ -284,9 +284,13 @@ export const PresupuestoService = {
       }
     }
 
-    // Obtener el porcentaje de gastosNegocio
-    const gastosNegocio = await gastosNegocioService.getById(gastosNegocioId);
-    const gastosIndirectosPorcentaje = gastosNegocio.porcentaje;
+    // Obtener TODOS los gastos de negocio y sumar sus porcentajes
+    // Se mantiene gastosNegocioId para la relación en BD, pero se usan todos para el cálculo
+    const todosGastosNegocio = await gastosNegocioService.getAll();
+    const gastosIndirectosPorcentaje = todosGastosNegocio.reduce(
+      (sum, gasto) => sum + gasto.porcentaje,
+      0
+    );
 
     let totalCosto = typeof totalCostoFromClient === "number" ? totalCostoFromClient : 0;
     let costosIndirectos =
@@ -407,10 +411,14 @@ export const PresupuestoService = {
       origen,
     } = payload;
 
-    // Obtener el porcentaje de gastosNegocio (usar el nuevo si viene, sino el existente)
+    // Obtener TODOS los gastos de negocio y sumar sus porcentajes
+    // Se mantiene gastosNegocioId para la relación en BD, pero se usan todos para el cálculo
+    const todosGastosNegocio = await gastosNegocioService.getAll();
+    const gastosIndirectosPorcentaje = todosGastosNegocio.reduce(
+      (sum, gasto) => sum + gasto.porcentaje,
+      0
+    );
     const gastosNegocioIdToUse = gastosNegocioId ?? existing.gastosNegocioId;
-    const gastosNegocio = await gastosNegocioService.getById(gastosNegocioIdToUse);
-    const gastosIndirectosPorcentaje = gastosNegocio.porcentaje;
 
     // Totales se inicializan en base a lo enviado por el cliente
     let totalCosto = typeof totalCostoFromClient === "number" ? totalCostoFromClient : 0;
@@ -521,10 +529,14 @@ export const PresupuestoService = {
       );
     }
 
-    // Obtener el porcentaje de gastosNegocio (usar el nuevo si viene, sino el existente)
+    // Obtener TODOS los gastos de negocio y sumar sus porcentajes
+    // Se mantiene gastosNegocioId para la relación en BD, pero se usan todos para el cálculo
+    const todosGastosNegocio = await gastosNegocioService.getAll();
+    const gastosIndirectosPorcentaje = todosGastosNegocio.reduce(
+      (sum, gasto) => sum + gasto.porcentaje,
+      0
+    );
     const gastosNegocioIdToUse = payload.gastosNegocioId ?? existing.gastosNegocioId;
-    const gastosNegocio = await gastosNegocioService.getById(gastosNegocioIdToUse);
-    const gastosIndirectosPorcentaje = gastosNegocio.porcentaje;
 
     // Merge valores actuales con payload para cálculos
     const margenGananciaPorcentaje =

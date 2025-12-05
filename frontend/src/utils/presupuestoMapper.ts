@@ -98,13 +98,18 @@ function calculateTotalCosto(
 }
 
 /**
- * Calcula costos indirectos basado en el porcentaje de gastos de negocio
+ * Calcula costos indirectos basado en la suma de TODOS los porcentajes de gastos de negocio
  */
 function calculateCostosIndirectos(
   totalCosto: number,
-  gastosNegocio: GastosNegocio
+  todosGastosNegocio: GastosNegocio[]
 ): number {
-  return (totalCosto * gastosNegocio.porcentaje) / 100;
+  // Sumar todos los porcentajes de todos los gastos de negocio
+  const porcentajeTotal = todosGastosNegocio.reduce(
+    (sum, gasto) => sum + gasto.porcentaje,
+    0
+  );
+  return (totalCosto * porcentajeTotal) / 100;
 }
 
 /**
@@ -122,15 +127,17 @@ function calculateGanancias(
  */
 export function mapFormDataToBackend(
   formData: BudgetFormData,
-  gastosNegocio: GastosNegocio,
+  todosGastosNegocio: GastosNegocio[],
   origen: "telegram" | "manual" = "manual"
 ): CreatePresupuestoDto {
-  // Validar que tenga gastosNegocioId
-  if (!formData.gastosNegocioId && !gastosNegocio) {
-    throw new Error('gastosNegocioId es requerido');
+  // Validar que haya gastos de negocio disponibles
+  if (!todosGastosNegocio || todosGastosNegocio.length === 0) {
+    throw new Error('No hay gastos de negocio configurados');
   }
 
-  const gastosNegocioId = formData.gastosNegocioId || gastosNegocio.id;
+  // Usar el primer gasto de negocio como ID para mantener la relación en BD
+  // Pero el cálculo se hace con TODOS los gastos
+  const gastosNegocioId = formData.gastosNegocioId || todosGastosNegocio[0].id;
 
   // Mapear materiales a detalles (un detalle por cada variant)
   const detalles = formData.materials.flatMap((material) => {
@@ -174,7 +181,7 @@ export function mapFormDataToBackend(
 
   // Calcular totales
   const totalCosto = calculateTotalCosto(detalles, adicionales);
-  const costosIndirectos = calculateCostosIndirectos(totalCosto, gastosNegocio);
+  const costosIndirectos = calculateCostosIndirectos(totalCosto, todosGastosNegocio);
   const ganancias = calculateGanancias(totalCosto, formData.desiredProfit);
 
   return {
