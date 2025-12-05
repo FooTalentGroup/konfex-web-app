@@ -1,18 +1,26 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import Input from '@/components/common/Input';
-import Button from '@/components/common/Button';
-import { useLogin } from '@/hooks/useLogin';
-import { useAuth } from '@/hooks/useAuth';
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Input from "@/components/common/Input";
+import Button from "@/components/common/Button";
+import { useLogin } from "@/hooks/useLogin";
+import { useAuth } from "@/hooks/useAuth";
 
 const LoginPage: React.FC = () => {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const { user } = useAuth();
-  const { register, handleSubmit, errors, isLoading, error, isValid, onSubmit } = useLogin();
+  const {
+    register,
+    handleSubmit,
+    errors,
+    isLoading,
+    error,
+    isValid,
+    onSubmit,
+  } = useLogin();
 
   useEffect(() => {
     setMounted(true);
@@ -21,7 +29,7 @@ const LoginPage: React.FC = () => {
   // Si el usuario ya está autenticado, redirigir a inbox
   useEffect(() => {
     if (mounted && user) {
-      router.push('/inbox');
+      router.push("/inbox");
     }
   }, [mounted, user, router]);
 
@@ -52,33 +60,36 @@ const LoginPage: React.FC = () => {
           <h2
             className="mb-6 sm:mb-8 mt-4 w-full max-w-[390px]"
             style={{
-              minHeight: '42px',
-              fontFamily: 'var(--font-lato), sans-serif',
+              minHeight: "42px",
+              fontFamily: "var(--font-lato), sans-serif",
               fontWeight: 700,
-              fontSize: 'clamp(1.5rem, 4vw, 2rem)',
-              lineHeight: '131%',
-              letterSpacing: '0%',
-              color: '#B65CF2',
-              textAlign: 'center',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              fontSize: "clamp(1.5rem, 4vw, 2rem)",
+              lineHeight: "131%",
+              letterSpacing: "0%",
+              color: "#B65CF2",
+              textAlign: "center",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
             Iniciar sesión
           </h2>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-[390px] space-y-6">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="w-full max-w-[390px] space-y-6"
+          >
             <Input
               id="usuario"
               label="E-mail"
               type="text"
-              placeholder="luciana@gmail.com"
-              register={register('usuario', {
-                required: 'El usuario es requerido',
+              placeholder="test@example.com"
+              register={register("usuario", {
+                required: "El usuario es requerido",
                 pattern: {
                   value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: 'Debe ser un email válido',
+                  message: "Debe ser un email válido",
                 },
               })}
               error={errors.usuario?.message}
@@ -88,10 +99,10 @@ const LoginPage: React.FC = () => {
               id="contraseña"
               label="Contraseña"
               type="password"
-              placeholder="Luciana2025*"
+              placeholder="test1234"
               showPasswordToggle
-              register={register('contraseña', {
-                required: 'La contraseña es requerida'
+              register={register("contraseña", {
+                required: "La contraseña es requerida",
               })}
               error={errors.contraseña?.message}
             />
