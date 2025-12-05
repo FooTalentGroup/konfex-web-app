@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
@@ -12,14 +12,7 @@ import AddFloatingButton from '@/components/common/AddFloatingButton';
 import { useAuth } from '@/hooks/useAuth';
 import { useSidebar } from '@/hooks/useSidebar';
 import { useMaterials } from '@/hooks/useMaterials';
-
-// Mapeo de categorías
-const CATEGORY_MAP: Record<string, { backend: string; display: string }> = {
-    'tela': { backend: 'Tela', display: 'Tela' },
-    'botones': { backend: 'Botones', display: 'Botones' },
-    'hilos': { backend: 'Hilo', display: 'Hilos' },
-    'otros': { backend: 'Otros', display: 'Otros' },
-};
+import { useCategories } from '@/hooks/useCategories';
 
 export default function CategoriaPage() {
     const router = useRouter();
@@ -29,9 +22,24 @@ export default function CategoriaPage() {
     const { user, mounted } = useAuth();
     const { isOpen: isSidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar();
 
-    // Obtener el nombre de categoría para el backend
-    const categoryInfo = CATEGORY_MAP[categoria];
-    const categoriaBackend = categoryInfo?.backend;
+    // Obtener las categorías disponibles
+    const { categories, isLoading: isLoadingCategories } = useCategories();
+
+    // DEBUG - AGREGAR ESTO
+    console.log('=== DEBUG CategoriaPage ===');
+    console.log('Categoria param:', categoria);
+    console.log('isLoadingCategories:', isLoadingCategories);
+    console.log('Categories:', categories);
+    console.log('Categories slugs:', categories.map(c => c.slug));
+
+    // Buscar la categoría actual en las categorías disponibles
+    const currentCategory = categories.find(cat => cat.slug === categoria);
+
+    console.log('Current category found:', currentCategory);
+    console.log('===========================');
+
+    // Usar el nombre de la categoría del backend directamente
+    const categoriaBackend = currentCategory?.nombre;
 
     const {
         filteredFabricMaterials,
@@ -40,11 +48,21 @@ export default function CategoriaPage() {
         error,
         handleFabricSearch,
         handleMaterialClick,
-    } = useMaterials(categoriaBackend); // Pasar la categoría al hook
+    } = useMaterials(categoriaBackend);
 
     const handleAddMaterial = () => {
         router.push(`/materia-prima/${categoria}/crear`);
     };
+
+    // Redirigir si la categoría no existe (después de cargar)
+    useEffect(() => {
+        console.log('useEffect redirect - isLoadingCategories:', isLoadingCategories, 'currentCategory:', currentCategory);
+
+        if (!isLoadingCategories && categories.length > 0 && !currentCategory) {
+            console.log('REDIRIGIENDO a /materia-prima');
+            router.push('/materia-prima');
+        }
+    }, [isLoadingCategories, categories, currentCategory, router]);
 
     if (!mounted) {
         return null;
@@ -54,10 +72,28 @@ export default function CategoriaPage() {
         return null;
     }
 
-    // Si la categoría no existe, redirigir
-    if (!categoryInfo) {
-        router.push('/materia-prima');
-        return null;
+    // Mostrar loading mientras se cargan las categorías
+    if (isLoadingCategories) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-[#E6E1EA]">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Cargando categorías...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Si la categoría no existe después de cargar, mostrar loading mientras redirige
+    if (!currentCategory && categories.length > 0) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-[#E6E1EA]">
+                <div className="text-center">
+                    <p className="text-gray-600">Categoría "{categoria}" no encontrada, redirigiendo...</p>
+                    <p className="text-sm text-gray-500 mt-2">Categorías disponibles: {categories.map(c => c.slug).join(', ')}</p>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -67,7 +103,7 @@ export default function CategoriaPage() {
 
             <div className="flex-1 flex flex-col">
                 <BackNavigationBar
-                    title={categoryInfo.display}
+                    title={currentCategory.nombre}
                     breadcrumbs={[{ label: 'Tus materiales' }]}
                 />
 

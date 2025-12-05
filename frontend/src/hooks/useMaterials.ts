@@ -123,25 +123,16 @@ export const useMaterials = (categoriaFiltro?: string) => {
 
 
   const mapBackendToFrontend = (backendMaterial: BackendMaterial): Material => {
-    const categoryMap: Record<string, Material['category']> = {
-      'Tela': 'tela',
-      'Botones': 'botones',
-      'Hilos': 'hilos',
-      'Hilo': 'hilos',
-    };
-
-    const category = categoryMap[backendMaterial.categoria] || 'otros';
-
     return {
       id: backendMaterial.id.toString(),
       name: backendMaterial.nombre,
-      category,
-      quantity: backendMaterial.peso,
+      category: 'otros', // Ya no importa porque no lo usamos para filtrar
+      quantity: backendMaterial.peso || 0,
       unit: backendMaterial.unidadMedida,
       colors: backendMaterial.colores,
-      measure: `${backendMaterial.ancho}cm`,
+      measure: backendMaterial.ancho ? `${backendMaterial.ancho}cm` : undefined,
       price: `$${backendMaterial.precio.toFixed(2)}`,
-      imageUrl: backendMaterial.url_imagen,
+      imageUrl: backendMaterial.url_imagen || undefined,
     };
   };
 

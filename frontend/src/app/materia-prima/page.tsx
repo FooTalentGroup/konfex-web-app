@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
@@ -8,11 +8,17 @@ import Sidebar from '@/components/common/Sidebar';
 import SearchBar from '@/components/common/SearchBar';
 import CategoryButton from '@/components/common/CategoryButton';
 import UploadButton from '@/components/common/UploadButton';
+import DeleteButton from '@/components/common/DeleteButton';
+import ConfirmDeleteModal from '@/components/common/ConfirmDeleteModal';
 import { useAuth } from '@/hooks/useAuth';
 import { useSidebar } from '@/hooks/useSidebar';
 import { useMaterials } from '@/hooks/useMaterials';
 import { usePDFUpload } from '@/hooks/usePDFUpload';
+import { useCategoryDelete } from '@/hooks/useCategoryDelete';
+import { useCategories } from '@/hooks/useCategories';
 import UploadPDFModal from '@/components/common/UploadPDFModal';
+import { Plus } from 'lucide-react';
+import ActionBar from '@/components/common/ActionBar';
 
 export default function MateriaPrimaPage() {
   const { user, mounted } = useAuth();
@@ -34,9 +40,62 @@ export default function MateriaPrimaPage() {
     uploadState
   } = usePDFUpload();
 
-  // Función genérica para navegar a cualquier categoría
-  const handleCategoryClick = (categoria: string) => {
-    router.push(`/materia-prima/${categoria}`);
+  const {
+    isDeleteMode,
+    toggleDeleteMode,
+  } = useCategoryDelete();
+
+  const {
+    categories,
+    isLoading: isLoadingCategories,
+    error: categoriesError,
+    deleteCategory,
+    fetchCategories,
+  } = useCategories();
+
+  // Estado para el modal de confirmación
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState<{ id: string; name: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Función para navegar a cualquier categoría
+  const handleCategoryClick = (slug: string) => {
+    if (!isDeleteMode) {
+      router.push(`/materia-prima/${slug}`);
+    }
+  };
+
+  // Función para abrir el modal de confirmación
+  const handleDeleteCategory = (categoryId: string, categoryName: string) => {
+    setCategoryToDelete({ id: categoryId, name: categoryName });
+    setDeleteModalOpen(true);
+  };
+
+  // Función para confirmar la eliminación
+  const handleConfirmDelete = async () => {
+    if (!categoryToDelete) return;
+
+    setIsDeleting(true);
+
+    const success = await deleteCategory(categoryToDelete.id);
+
+    setIsDeleting(false);
+    setDeleteModalOpen(false);
+    setCategoryToDelete(null);
+
+    if (success) {
+      alert('Categoría eliminada exitosamente');
+      // Refrescar las categorías después de eliminar
+      await fetchCategories();
+    } else {
+      alert('No se puede eliminar esta categoría. Asegúrate de que no tenga materiales asociados.');
+    }
+  };
+
+  // Función para cancelar la eliminación
+  const handleCancelDelete = () => {
+    setDeleteModalOpen(false);
+    setCategoryToDelete(null);
   };
 
   if (!mounted) {
@@ -80,38 +139,81 @@ export default function MateriaPrimaPage() {
             </p>
 
             <div>
-              <div className="grid grid-cols-2 gap-x-3 sm:gap-x-4 md:gap-x-5 gap-y-4 sm:gap-y-5 md:gap-y-6 mb-6 sm:mb-8">
-                <CategoryButton
-                  label="Tela"
-                  iconPath="/imageTela.png"
-                  onClick={() => handleCategoryClick('tela')}
-                />
-                <CategoryButton
-                  label="Botones"
-                  iconPath="/botones.png"
-                  onClick={() => handleCategoryClick('botones')}
-                />
-                <CategoryButton
-                  label="Hilos"
-                  iconPath="/hilos.png"
-                  onClick={() => handleCategoryClick('hilos')}
-                />
-                <CategoryButton
-                  label="Agregar material"
-                  iconPath="/agregar.png"
-                  onClick={handleAddMaterial}
-                />
-              </div>
-
-              <div className="flex justify-end mt-16 sm:mt-24 md:mt-48 mb-8 sm:mb-12 md:mb-20">
-                <div className="w-[calc((100%-0.75rem)/2)] sm:w-[calc((100%-1rem)/2)] md:w-[calc((100%-1.25rem)/2)]">
-                  <UploadButton onClick={handleUploadPDF} className="w-full" />
+              {/* Loading state */}
+              {isLoadingCategories && (
+                <div className="flex justify-center items-center py-10">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
                 </div>
-              </div>
+              )}
+
+              {/* Error state */}
+              {categoriesError && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                  <p className="font-bold">Error</p>
+                  <p>{categoriesError}</p>
+                </div>
+              )}
+
+              {/* Grid de categorías dinámico */}
+              {!isLoadingCategories && !categoriesError && (
+                <div className="grid grid-cols-2 gap-x-3 sm:gap-x-4 md:gap-x-5 gap-y-4 sm:gap-y-5 md:gap-y-6 mb-6 sm:mb-8">
+                  {categories.map((category) => (
+                    <CategoryButton
+                      key={category.id}
+                      label={category.nombre}
+                      iconPath={category.iconPath}
+                      onClick={() => handleCategoryClick(category.slug)}
+                      isDeleteMode={isDeleteMode}
+                      isSelected={false}
+                      onDeleteClick={() => handleDeleteCategory(category.id, category.nombre)}
+                      canDelete={true}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* Mensaje cuando está en modo delete */}
+              {isDeleteMode && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                  <p className="text-sm text-yellow-800 text-center">
+                    Toca el ícono de basura en cualquier categoría para eliminarla
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </main>
+
+        {/* Botones de acción */}
+        <div className="bg-[#E6E1EA] flex justify-center items-center p-4 sm:p-6 md:p-8 gap-3">
+          {/* Botones de eliminar y agregar a la izquierda */}
+          <ActionBar
+            simpleButtons={[
+              {
+                icon: <Plus size={20} />,
+                onClick: handleAddMaterial
+              }
+            ]}
+          >
+            <DeleteButton
+              onClick={toggleDeleteMode}
+              isActive={isDeleteMode}
+            />
+          </ActionBar>
+          {/* Botón de upload a la derecha */}
+          <div className="sm:w-[calc((100%-1rem)/2)] md:w-[calc((100%-1.25rem)/2)]">
+            <UploadButton onClick={handleUploadPDF} className="w-full" />
+          </div>
+        </div>
       </div>
+
+      {/* Modal de confirmación de eliminación */}
+      <ConfirmDeleteModal
+        isOpen={deleteModalOpen}
+        categoryName={categoryToDelete?.name || ''}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
 
       <UploadPDFModal
         isOpen={isModalOpen}
