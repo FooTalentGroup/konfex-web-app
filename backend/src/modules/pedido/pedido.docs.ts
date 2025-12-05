@@ -257,7 +257,7 @@ export const pedidoDocs = {
         name: "id",
         in: "path",
         required: true,
-        schema: { type: "number" },
+        schema: { type: "integer", format: "int32" },
         description: "ID del pedido",
         example: 1,
       },

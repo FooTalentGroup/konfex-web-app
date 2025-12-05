@@ -3,7 +3,6 @@ import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, Role, EstadoPresupuesto, EstadoPedido } from "../generated/prisma/client";
 
-// Importar repositorios
 import { clienteRepository } from "../src/modules/cliente/cliente.repository";
 import { productoRepository } from "../src/modules/producto/producto.repository";
 import { materialRepository } from "../src/modules/material/material.repository";
@@ -27,7 +26,6 @@ const prisma = new PrismaClient({
 async function main() {
   console.log("Seeding database...");
 
-  console.log("Seeding Clientes...");
   const clientes = [
     {
       nombre: "Claudia Muñoz",
@@ -117,7 +115,6 @@ async function main() {
       const existe = await clienteRepository.findByName(cliente.nombre);
       if (!existe) {
         await clienteRepository.create(cliente);
-        console.log(`  ✓ Cliente creado: ${cliente.nombre}`);
       }
     } catch (error: any) {
       if (error.code !== "P2002") {
@@ -126,7 +123,6 @@ async function main() {
     }
   }
 
-  // Mano de Obra
   const manoDeObra = [
     {
       nombre: "Costurera Principal",
@@ -161,7 +157,6 @@ async function main() {
     }
   }
 
-  // Materiales
   const materiales = [
     {
       nombre: "Algodón Premium 240g",
@@ -324,14 +319,12 @@ async function main() {
     try {
       await prisma.material.create({ data: material as any });
     } catch (error: any) {
-      // Ignorar errores de duplicados
       if (error.code !== "P2002") {
         throw error;
       }
     }
   }
 
-  // Colecciones
   const colecciones = [
     {
       nombre: "Verano 2026",
@@ -350,14 +343,23 @@ async function main() {
   ];
 
   for (const coleccion of colecciones) {
-    await prisma.coleccion.create({
-      data: coleccion,
-    });
+    try {
+      const existe = await prisma.coleccion.findFirst({
+        where: { codigo: coleccion.codigo },
+      });
+      if (!existe) {
+        await prisma.coleccion.create({
+          data: coleccion,
+        });
+      }
+    } catch (error: any) {
+      if (error.code !== "P2002") {
+        throw error;
+      }
+    }
   }
 
-  // productos
   const productos = [
-    // Colección 1
     {
       codigo: 1,
       nombre: "Camiseta Básica",
@@ -507,12 +509,22 @@ async function main() {
   ];
 
   for (const producto of productos) {
-    await prisma.producto.create({
-      data: producto,
-    });
+    try {
+      const existe = await prisma.producto.findFirst({
+        where: { codigo: producto.codigo },
+      });
+      if (!existe) {
+        await prisma.producto.create({
+          data: producto,
+        });
+      }
+    } catch (error: any) {
+      if (error.code !== "P2002") {
+        throw error;
+      }
+    }
   }
 
-  // Usuarios
   const users = [
     {
       email: "mia@mail.com",
@@ -546,7 +558,6 @@ async function main() {
       const existe = await UserRepository.findByEmail(user.email);
       if (!existe) {
         await UserRepository.create(user);
-        console.log(`Usuario creado: ${user.email}`);
       }
     } catch (error: any) {
       if (error.code !== "P2002") {
@@ -555,7 +566,6 @@ async function main() {
     }
   }
 
-  console.log("Seeding ImpuestoGeneral...");
   const impuestoGeneral = {
     nombre: "IVA",
     porcentaje: 19,
@@ -565,9 +575,6 @@ async function main() {
     const existe = await impuestoGeneralRepository.findFirst();
     if (!existe) {
       await impuestoGeneralRepository.create(impuestoGeneral);
-      console.log("ImpuestoGeneral creado:", impuestoGeneral);
-    } else {
-      console.log("ImpuestoGeneral ya existe, omitiendo...");
     }
   } catch (error: any) {
     if (error.code !== "P2002") {
@@ -575,7 +582,6 @@ async function main() {
     }
   }
 
-  console.log("Seeding GastosNegocio...");
   const gastosNegocio = [
     {
       nombre: "Gastos Generales",
@@ -593,7 +599,6 @@ async function main() {
       nombre: "Gastos Fijos",
       porcentaje: 8,
     },
-    // Nuevos gastos
     {
       nombre: "Gastos de Marketing",
       porcentaje: 5,
@@ -610,7 +615,6 @@ async function main() {
       const yaExiste = existe.some((g) => g.nombre === gasto.nombre);
       if (!yaExiste) {
         await gastosNegocioRepository.create(gasto);
-        console.log(`GastosNegocio creado: ${gasto.nombre}`);
       }
     } catch (error: any) {
       if (error.code !== "P2002") {
@@ -619,7 +623,6 @@ async function main() {
     }
   }
 
-  console.log("Seeding Presupuestos...");
   const clientesCreados = await clienteRepository.findAll();
   const productosCreados = await productoRepository.findAll();
   const materialesCreados = await materialRepository.findAll();
@@ -763,7 +766,6 @@ async function main() {
         },
       ],
     },
-    // Nuevos presupuestos
     {
       numeroPresupuesto: 1006,
       nombre: "Presupuesto Colección Formal",
@@ -857,19 +859,27 @@ async function main() {
     },
   ];
 
-  // Obtener el impuesto general para calcular IVA
   const impuestoActivo = await impuestoGeneralRepository.findFirst();
   const ivaPorcentaje = impuestoActivo?.porcentaje || 0;
 
   for (const presupuesto of presupuestos) {
     const { detalles, adicionales, clienteId, gastosNegocioId, ...presupuestoData } = presupuesto;
 
-    // Obtener el gasto de negocio para calcular costos indirectos
+    const detallesValidos = (detalles || []).filter((detalle) => {
+      const productoExiste = productosCreados.some((p) => p.id === detalle.productoId);
+      if (!productoExiste) {
+      }
+      return productoExiste;
+    });
+
+    if (detallesValidos.length === 0 && (detalles || []).length > 0) {
+      continue;
+    }
+
     const gastoNegocio =
       gastosNegocioCreados.find((g) => g.id === gastosNegocioId) || gastosNegocioCreados[0];
     const gastosIndirectosPorcentaje = gastoNegocio?.porcentaje || 15;
 
-    // Calcular costos indirectos, IVA y totalFinal
     const costosIndirectos = presupuestoData.totalCosto * (gastosIndirectosPorcentaje / 100);
     const subtotal = presupuestoData.totalCosto + costosIndirectos + presupuestoData.ganancias;
     const iva = subtotal * (ivaPorcentaje / 100);
@@ -888,20 +898,18 @@ async function main() {
             costosIndirectos,
             iva,
             totalFinal,
-            detalles: detalles || [],
+            detalles: detallesValidos.length > 0 ? detallesValidos : detalles || [],
             adicionales: adicionales || [],
           },
         });
-        console.log(`  ✓ Presupuesto creado: ${presupuesto.numeroPresupuesto}`);
       }
     } catch (error: any) {
-      if (error.code !== "P2002") {
+      if (error.code !== "P2002" && error.code !== "P2003") {
         throw error;
       }
     }
   }
 
-  console.log("Seeding MaterialPorProducto...");
   if (productosCreados.length > 0 && materialesCreados.length > 0) {
     const materialPorProducto = [
       {
@@ -929,7 +937,6 @@ async function main() {
         materialId: materialesCreados[3]?.id || 4,
         cantidad: 0.3,
       },
-      // Nuevas relaciones
       {
         productoId: productosCreados[2]?.id || 3,
         materialId: materialesCreados[1]?.id || 2,
@@ -980,102 +987,92 @@ async function main() {
         }
       }
     }
-    console.log("  ✓ MaterialPorProducto creado");
   }
 
-  console.log("Seeding ManoDeObraPorProducto...");
   if (productosCreados.length > 0 && manoDeObraCreada.length > 0) {
     const manoDeObraPorProducto = [
       {
         productoId: productosCreados[0]?.id || 1,
         manoDeObraId: manoDeObraCreada[1]?.id || 2,
         cantidadHoras: 2.0,
-        costoHora: 20000.0,
       },
       {
         productoId: productosCreados[0]?.id || 1,
         manoDeObraId: manoDeObraCreada[2]?.id || 3,
         cantidadHoras: 1.5,
-        costoHora: 12000.0,
       },
       {
         productoId: productosCreados[0]?.id || 1,
         manoDeObraId: manoDeObraCreada[0]?.id || 1,
         cantidadHoras: 4.0,
-        costoHora: 15000.0,
       },
       {
         productoId: productosCreados[0]?.id || 1,
         manoDeObraId: manoDeObraCreada[3]?.id || 4,
         cantidadHoras: 1.0,
-        costoHora: 10000.0,
       },
       {
         productoId: productosCreados[1]?.id || 2,
         manoDeObraId: manoDeObraCreada[1]?.id || 2,
         cantidadHoras: 1.5,
-        costoHora: 20000.0,
       },
       {
         productoId: productosCreados[1]?.id || 2,
         manoDeObraId: manoDeObraCreada[2]?.id || 3,
         cantidadHoras: 1.0,
-        costoHora: 12000.0,
       },
       {
         productoId: productosCreados[1]?.id || 2,
         manoDeObraId: manoDeObraCreada[0]?.id || 1,
         cantidadHoras: 2.5,
-        costoHora: 15000.0,
       },
       {
         productoId: productosCreados[1]?.id || 2,
         manoDeObraId: manoDeObraCreada[3]?.id || 4,
         cantidadHoras: 0.5,
-        costoHora: 10000.0,
       },
-      // Nuevas relaciones
       {
         productoId: productosCreados[3]?.id || 4,
         manoDeObraId: manoDeObraCreada[1]?.id || 2,
         cantidadHoras: 3.0,
-        costoHora: 20000.0,
       },
       {
         productoId: productosCreados[3]?.id || 4,
         manoDeObraId: manoDeObraCreada[4]?.id || 5,
         cantidadHoras: 1.5,
-        costoHora: 18000.0,
       },
       {
         productoId: productosCreados[4]?.id || 5,
         manoDeObraId: manoDeObraCreada[1]?.id || 2,
         cantidadHoras: 2.5,
-        costoHora: 20000.0,
       },
       {
         productoId: productosCreados[4]?.id || 5,
         manoDeObraId: manoDeObraCreada[5]?.id || 6,
         cantidadHoras: 0.5,
-        costoHora: 8000.0,
       },
     ];
 
     for (const relacion of manoDeObraPorProducto) {
+      const productoExiste = productosCreados.some((p) => p.id === relacion.productoId);
+      const manoDeObraExiste = manoDeObraCreada.some((m) => m.id === relacion.manoDeObraId);
+
+      if (!productoExiste || !manoDeObraExiste) {
+        continue;
+      }
+
       try {
         await prisma.manoDeObraPorProducto.create({
           data: relacion,
         });
       } catch (error: any) {
-        if (error.code !== "P2002") {
+        if (error.code !== "P2002" && error.code !== "P2003") {
           throw error;
         }
       }
     }
-    console.log("  ✓ ManoDeObraPorProducto creado");
   }
 
-  console.log("Seeding Pedidos...");
   const presupuestosAceptados = await prisma.presupuesto.findMany({
     where: { estado: EstadoPresupuesto.ACEPTADO },
     include: { detalles: true },
@@ -1111,7 +1108,6 @@ async function main() {
           include: { detalles: true },
         });
 
-        // ProduccionEtapa - Etapas de producción para los pedidos
         const etapas = [
           {
             pedidoId: pedido.id,
@@ -1140,7 +1136,6 @@ async function main() {
             }
           }
         }
-        console.log(`  ✓ Pedido creado para presupuesto #${presupuesto.numeroPresupuesto}`);
       }
     } catch (error: any) {
       if (error.code !== "P2002") {
@@ -1149,7 +1144,6 @@ async function main() {
     }
   }
 
-  console.log("Seeding TelegramMessage...");
   const telegramMessages = [
     {
       chatId: "123456789",
@@ -1201,7 +1195,6 @@ async function main() {
       source: "telegram",
       timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000),
     },
-    // Nuevos mensajes
     {
       chatId: "111222333",
       clienteId: clientesCreados[7]?.id || null,
@@ -1245,9 +1238,6 @@ async function main() {
       }
     }
   }
-  console.log("TelegramMessage creado");
-
-  console.log("Database seeded successfully!");
 }
 
 main()
