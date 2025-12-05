@@ -85,7 +85,6 @@ export interface MaterialAPIRequest {
     colores: string[]
     proveedor: string
     precio: number
-    stock: number
 }
 
 export interface MaterialAPIResponse {
@@ -99,7 +98,6 @@ export interface MaterialAPIResponse {
     colores: string[]
     proveedor: string
     precio: number
-    stock: number
     createdAt?: string
     updatedAt?: string
 }

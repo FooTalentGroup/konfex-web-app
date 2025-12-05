@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { GarmentSchema, GarmentFormData } from '@/types/IGarment';
+import { GarmentSchema, GarmentFormData, CreateGarmentPayload } from '@/types/IGarment';
+import { garmentService } from '@/services/garment.service';
 
 
 export interface AddGarmentFormState {
@@ -28,11 +29,7 @@ export const useAddGarmentForm = () => {
             rawMaterials: [],
             tempFabricUnit: 'm',
             tempSupplyUnit: 'm',
-            laborRate: 0,
-            laborHours: 0,
-            wasteMaterial: 0,
             wasteUnit: 'm',
-            wastePrice: 0,
         },
         mode: 'onChange',
     });
@@ -78,8 +75,22 @@ export const useAddGarmentForm = () => {
         try {
             await new Promise((resolve) => setTimeout(resolve, 2000));
 
-            const cleanData = {
+            const payload = {
                 ...data,
+                nombre: data.commercialName,
+                descripcion: data.description,
+                activo: true,
+                tallas: data.sizes.split(',').map((size) => size.trim()),
+                colores: data.colors.split(',').map((color) => color.trim()),
+
+                rawMaterial: data.rawMaterials,
+
+                laborRate: data.laborRate,
+                laborHours: data.laborHours,
+                wasteMaterial: data.wasteMaterial,
+                wasteUnit: data.wasteUnit,
+                wastePrice: data.wastePrice,
+
                 tempFabricName: undefined,
                 tempFabricConsumption: undefined,
                 tempFabricUnit: undefined,
@@ -88,15 +99,21 @@ export const useAddGarmentForm = () => {
                 tempSupplyConsumption: undefined,
                 tempSupplyUnit: undefined,
                 tempSupplyPrice: undefined,
-            };
 
-            console.log('✅ Prenda guardada exitosamente:', cleanData);
+            } as CreateGarmentPayload;
 
+            console.log('📤 Enviando datos al backend:', payload);
+
+            await garmentService.create(payload);
+
+            console.log('✅ Request completado (backend puede tener error, pero eso es esperado)', payload);
+
+            alert('✅ Request completado (backend puede tener error, pero eso está en espera)');
             setActiveTab(0);
             form.reset();
-            alert('Prenda guardada exitosamente');
 
         } catch (error) {
+            console.warn('⚠️ Error en la petición (esperado):', error);
             setSubmitError(
                 error instanceof Error 
                     ? error.message 

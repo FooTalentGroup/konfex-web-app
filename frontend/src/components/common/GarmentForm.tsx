@@ -55,6 +55,7 @@ export default function GarmentForm() {
         const isValid = await form.trigger(); 
         if (isValid) {
             submit();
+            onRemoveImage();
         } else {
             const hasDetailErrors = errors.image || errors.commercialName || errors.sizes || errors.colors;
             const hasMaterialErrors = errors.rawMaterials;
