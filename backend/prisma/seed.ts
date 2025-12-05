@@ -24,6 +24,7 @@ const prisma = new PrismaClient({
   adapter,
 });
 
+
 async function main() {
   console.log("Seeding database...");
 
@@ -126,163 +127,23 @@ async function main() {
     }
   }
 
-  console.log("Seeding Productos...");
-  const productos = [
+   // Mano de Obra
+   const manoDeObra = [
     {
-      nombre: "Pantalón Casual",
-      descripcion: "Pantalón cómodo de algodón",
-      activo: true,
-      tallas: ["S", "M", "L", "XL"],
-      colores: ["Azul", "Negro", "Beige"],
+      nombre: "Costurera Principal",
+      costoHora: 15000.0,
     },
     {
-      nombre: "Camiseta Deportiva",
-      descripcion: "Camiseta ligera para entrenamiento",
-      activo: true,
-      tallas: ["XS", "S", "M", "L"],
-      colores: ["Rojo", "Negro", "Blanco"],
-    },
-    // Nuevos productos
-    {
-      nombre: "Chaqueta Deportiva",
-      descripcion: "Chaqueta transpirable para actividades físicas",
-      activo: true,
-      tallas: ["S", "M", "L", "XL", "XXL"],
-      colores: ["Negro", "Gris", "Azul Marino", "Rojo"],
+      nombre: "Diseñador de Patrones",
+      costoHora: 20000.0,
     },
     {
-      nombre: "Vestido Casual",
-      descripcion: "Vestido cómodo para uso diario",
-      activo: true,
-      tallas: ["XS", "S", "M", "L", "XL"],
-      colores: ["Negro", "Blanco", "Rosa", "Azul", "Verde"],
+      nombre: "Cortador",
+      costoHora: 12000.0,
     },
     {
-      nombre: "Pantalón Formal",
-      descripcion: "Pantalón elegante para ocasiones formales",
-      activo: true,
-      tallas: ["S", "M", "L", "XL"],
-      colores: ["Negro", "Gris Oscuro", "Azul Marino", "Beige"],
-    },
-    {
-      nombre: "Blusa de Oficina",
-      descripcion: "Blusa profesional para ambiente laboral",
-      activo: true,
-      tallas: ["XS", "S", "M", "L", "XL"],
-      colores: ["Blanco", "Negro", "Azul Claro", "Beige", "Rosa"],
-    },
-    {
-      nombre: "Shorts Deportivos",
-      descripcion: "Shorts cómodos para ejercicio",
-      activo: true,
-      tallas: ["S", "M", "L", "XL"],
-      colores: ["Negro", "Gris", "Azul", "Rojo", "Verde"],
-    },
-  ];
-
-  for (const producto of productos) {
-    try {
-      const existe = await productoRepository.findByName(producto.nombre);
-      if (!existe) {
-        await productoRepository.create(producto);
-        console.log(`  ✓ Producto creado: ${producto.nombre}`);
-      }
-    } catch (error: any) {
-      if (error.code !== "P2002") {
-        throw error;
-      }
-    }
-  }
-
-  console.log("Seeding Materiales...");
-  const materiales = [
-    {
-      nombre: "Algodón Premium 240g",
-      url_imagen: null,
-      categoria: "Tela",
-      unidadMedida: "metros",
-      ancho: 150,
-      peso: 2.5,
-      colores: ["Blanco", "Negro", "Azul", "Rojo", "Beige"],
-      proveedor: "Textil S.A.",
-      precio: 350.5,
-    },
-    {
-      nombre: "Poliéster Deportivo",
-      url_imagen: null,
-      categoria: "Tela",
-      unidadMedida: "metros",
-      ancho: 140,
-      peso: 1.8,
-      colores: ["Negro", "Blanco", "Gris", "Azul Marino"],
-      proveedor: "Deportes Textiles",
-      precio: 280.0,
-    },
-    {
-      nombre: "Lycra Elástica",
-      url_imagen: null,
-      categoria: "Tela",
-      unidadMedida: "metros",
-      ancho: 160,
-      peso: 1.2,
-      colores: ["Negro", "Blanco", "Rosa", "Azul", "Verde"],
-      proveedor: "Elásticos Premium",
-      precio: 420.75,
-    },
-    {
-      nombre: "Hilo de Algodón 40/2",
-      url_imagen: null,
-      categoria: "Hilo",
-      unidadMedida: "carretes",
-      ancho: null,
-      peso: null,
-      colores: ["Blanco", "Negro", "Azul", "Rojo", "Verde", "Amarillo"],
-      proveedor: "Hilos y Más",
-      precio: 45.0,
-    },
-    {
-      nombre: "Cierres Metálicos #5",
-      url_imagen: null,
-      categoria: "Accesorio",
-      unidadMedida: "unidades",
-      ancho: null,
-      peso: null,
-      colores: ["Negro", "Blanco", "Plata", "Dorado"],
-      proveedor: "Accesorios Textiles",
-      precio: 12.5,
-    },
-    {
-      nombre: "Botones de Madera 15mm",
-      url_imagen: null,
-      categoria: "Accesorio",
-      unidadMedida: "unidades",
-      ancho: null,
-      peso: null,
-      colores: ["Natural", "Negro", "Blanco", "Marrón"],
-      proveedor: "Accesorios Textiles",
-      precio: 8.0,
-    },
-    {
-      nombre: "Jean Denim 12oz",
-      url_imagen: null,
-      categoria: "Tela",
-      unidadMedida: "metros",
-      ancho: 150,
-      peso: 3.0,
-      colores: ["Azul Claro", "Azul Oscuro", "Negro", "Blanco"],
-      proveedor: "Denim Factory",
-      precio: 480.0,
-    },
-    {
-      nombre: "Forro Polar 200g",
-      url_imagen: null,
-      categoria: "Tela",
-      unidadMedida: "metros",
-      ancho: 150,
-      peso: 2.0,
-      colores: ["Negro", "Gris", "Azul", "Rojo", "Verde"],
-      proveedor: "Textil S.A.",
-      precio: 320.0,
+      nombre: "Terminador",
+      costoHora: 10000.0,
     },
     // Nuevos materiales
     {
@@ -353,13 +214,13 @@ async function main() {
     },
   ];
 
-  for (const material of materiales) {
+  for (const mano of manoDeObra) {
     try {
-      const materialesExistentes = await materialRepository.findAll();
-      const existe = materialesExistentes.find((m) => m.nombre === material.nombre);
+      const existe = await prisma.manoDeObra.findFirst({
+        where: { nombre: mano.nombre },
+      });
       if (!existe) {
-        await materialRepository.create(material as any);
-        console.log(`Material creado: ${material.nombre}`);
+        await prisma.manoDeObra.create({ data: mano });
       }
     } catch (error: any) {
       if (error.code !== "P2002") {
@@ -368,7 +229,274 @@ async function main() {
     }
   }
 
-  console.log("Seeding Usuarios...");
+    // Materiales
+    const materiales = [
+      {
+        nombre: "Algodón Premium 240g",
+        url_imagen: null,
+        categoria: "Tela",
+        unidadMedida: "metros",
+        ancho: 150,
+        peso: 2.5,
+        colores: ["Blanco", "Negro", "Azul", "Rojo", "Beige"],
+        proveedor: "Textil S.A.",
+        precio: 350.5,
+      },
+      {
+        nombre: "Poliéster Deportivo",
+        url_imagen: null,
+        categoria: "Tela",
+        unidadMedida: "metros",
+        ancho: 140,
+        peso: 1.8,
+        colores: ["Negro", "Blanco", "Gris", "Azul Marino"],
+        proveedor: "Deportes Textiles",
+        precio: 280.0,
+      },
+      {
+        nombre: "Lycra Elástica",
+        url_imagen: null,
+        categoria: "Tela",
+        unidadMedida: "metros",
+        ancho: 160,
+        peso: 1.2,
+        colores: ["Negro", "Blanco", "Rosa", "Azul", "Verde"],
+        proveedor: "Elásticos Premium",
+        precio: 420.75,
+      },
+      {
+        nombre: "Hilo de Algodón 40/2",
+        url_imagen: null,
+        categoria: "Hilo",
+        unidadMedida: "carretes",
+        ancho: null,
+        peso: null,
+        colores: ["Blanco", "Negro", "Azul", "Rojo", "Verde", "Amarillo"],
+        proveedor: "Hilos y Más",
+        precio: 45.0,
+      },
+      {
+        nombre: "Cierres Metálicos #5",
+        url_imagen: null,
+        categoria: "Accesorio",
+        unidadMedida: "unidades",
+        ancho: null,
+        peso: null,
+        colores: ["Negro", "Blanco", "Plata", "Dorado"],
+        proveedor: "Accesorios Textiles",
+        precio: 12.5,
+      },
+      {
+        nombre: "Botones de Madera 15mm",
+        url_imagen: null,
+        categoria: "Accesorio",
+        unidadMedida: "unidades",
+        ancho: null,
+        peso: null,
+        colores: ["Natural", "Negro", "Blanco", "Marrón"],
+        proveedor: "Accesorios Textiles",
+        precio: 8.0,
+      },
+      {
+        nombre: "Jean Denim 12oz",
+        url_imagen: null,
+        categoria: "Tela",
+        unidadMedida: "metros",
+        ancho: 150,
+        peso: 3.0,
+        colores: ["Azul Claro", "Azul Oscuro", "Negro", "Blanco"],
+        proveedor: "Denim Factory",
+        precio: 480.0,
+      },
+      {
+        nombre: "Forro Polar 200g",
+        url_imagen: null,
+        categoria: "Tela",
+        unidadMedida: "metros",
+        ancho: 150,
+        peso: 2.0,
+        colores: ["Negro", "Gris", "Azul", "Rojo", "Verde"],
+        proveedor: "Textil S.A.",
+        precio: 320.0,
+      },
+    ];
+  
+    for (const material of materiales) {
+      try {
+        await prisma.material.create({ data: material as any });
+      } catch (error: any) {
+        // Ignorar errores de duplicados
+        if (error.code !== "P2002") {
+          throw error;
+        }
+      }
+    }
+
+  // Colecciones
+  const colecciones = [
+    { nombre: "Verano 2026", imagen: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/post-instagram-primavera-nueva-colecci%C3%B3n-design-template-59d147b6a8afea754918bd73c268e55d_screen.jpg?ts=1614790769", icono: "Sun", codigo:1 },
+    { nombre: "Invierno 2026", imagen: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/post-instagram-primavera-nueva-colecci%C3%B3n-design-template-59d147b6a8afea754918bd73c268e55d_screen.jpg?ts=1614790769", icono: "CloudSnow", codigo: 2 },
+  ];
+
+  for (const coleccion of colecciones) {
+    await prisma.coleccion.create({
+      data: coleccion,
+    });
+  }
+
+  // productos
+  const productos = [
+    // Colección 1
+    {
+      codigo: 1,
+      nombre: "Camiseta Básica",
+      descripcion: "Camiseta de algodón unisex",
+      activo: true,
+      imagen: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/post-instagram-primavera-nueva-colecci%C3%B3n-design-template-59d147b6a8afea754918bd73c268e55d_screen.jpg?ts=1614790769",
+      coleccionId: 1,
+      tallas: ["S", "M", "L"],
+      colores: ["Blanco", "Negro"],
+      materiales: {
+        create: [
+          { materialId: 1, cantidad: 1.5 },
+          { materialId: 2, cantidad: 0.2 },
+        ],
+      },
+      manoDeObra: {
+        create: [
+          { manoDeObraId: 1, cantidadHoras: 0.5 },
+          { manoDeObraId: 2, cantidadHoras: 0.3 },
+        ],
+      },
+      mermaCantidad: 0.1,
+      mermaUnidad: "m",
+      mermaPrecio: 500,
+    },
+    {
+      codigo: 2,
+      nombre: "Pantalón Casual",
+      descripcion: "Pantalón cómodo para uso diario",
+      activo: true,
+      imagen: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/post-instagram-primavera-nueva-colecci%C3%B3n-design-template-59d147b6a8afea754918bd73c268e55d_screen.jpg?ts=1614790769",
+      coleccionId: 1,
+      tallas: ["30", "32", "34"],
+      colores: ["Azul", "Negro"],
+      materiales: {
+        create: [{ materialId: 1, cantidad: 2.0 }],
+      },
+      manoDeObra: {
+        create: [
+          { manoDeObraId: 1, cantidadHoras: 0.6 },
+          { manoDeObraId: 2, cantidadHoras: 0.4 },
+        ],
+      },
+      mermaCantidad: 0.2,
+      mermaUnidad: "m",
+      mermaPrecio: 800,
+    },
+    {
+      codigo: 3,
+      nombre: "Chaqueta Ligera",
+      descripcion: "Chaqueta ligera para primavera",
+      activo: true,
+      imagen: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/post-instagram-primavera-nueva-colecci%C3%B3n-design-template-59d147b6a8afea754918bd73c268e55d_screen.jpg?ts=1614790769",
+      coleccionId: 1,
+      tallas: ["S", "M", "L"],
+      colores: ["Verde", "Negro"],
+      materiales: {
+        create: [{ materialId: 3, cantidad: 1.2 }],
+      },
+      manoDeObra: {
+        create: [
+          { manoDeObraId: 1, cantidadHoras: 0.7 },
+          { manoDeObraId: 3, cantidadHoras: 0.5 },
+        ],
+      },
+      mermaCantidad: 0.15,
+      mermaUnidad: "m",
+      mermaPrecio: 600,
+    },
+  
+    // Colección 2
+    {
+      codigo: 4,
+      nombre: "Camiseta Básica Verano",
+      descripcion: "Camiseta ligera para verano",
+      activo: true,
+      imagen: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/post-instagram-primavera-nueva-colecci%C3%B3n-design-template-59d147b6a8afea754918bd73c268e55d_screen.jpg?ts=1614790769",
+      coleccionId: 2,
+      tallas: ["S", "M", "L"],
+      colores: ["Amarillo", "Blanco"],
+      materiales: {
+        create: [
+          { materialId: 1, cantidad: 1.3 },
+          { materialId: 2, cantidad: 0.2 },
+        ],
+      },
+      manoDeObra: {
+        create: [
+          { manoDeObraId: 1, cantidadHoras: 0.5 },
+          { manoDeObraId: 2, cantidadHoras: 0.3 },
+        ],
+      },
+      mermaCantidad: 0.1,
+      mermaUnidad: "m",
+      mermaPrecio: 500,
+    },
+    {
+      codigo: 5,
+      nombre: "Pantalón Jeans",
+      descripcion: "Jeans clásico azul",
+      activo: true,
+      imagen: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/post-instagram-primavera-nueva-colecci%C3%B3n-design-template-59d147b6a8afea754918bd73c268e55d_screen.jpg?ts=1614790769",
+      coleccionId: 2,
+      tallas: ["30", "32", "34"],
+      colores: ["Azul"],
+      materiales: {
+        create: [{ materialId: 1, cantidad: 2.0 }],
+      },
+      manoDeObra: {
+        create: [
+          { manoDeObraId: 1, cantidadHoras: 0.5 },
+          { manoDeObraId: 2, cantidadHoras: 0.3 },
+        ],
+      },
+      mermaCantidad: 0.2,
+      mermaUnidad: "m",
+      mermaPrecio: 800,
+    },
+    {
+      codigo: 6,
+      nombre: "Short Deportivo",
+      descripcion: "Short cómodo para deporte",
+      activo: true,
+      imagen: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/post-instagram-primavera-nueva-colecci%C3%B3n-design-template-59d147b6a8afea754918bd73c268e55d_screen.jpg?ts=1614790769",
+      coleccionId: 2,
+      tallas: ["S", "M", "L"],
+      colores: ["Negro", "Azul"],
+      materiales: {
+        create: [{ materialId: 3, cantidad: 1.0 }],
+      },
+      manoDeObra: {
+        create: [
+          { manoDeObraId: 1, cantidadHoras: 0.4 },
+          { manoDeObraId: 3, cantidadHoras: 0.3 },
+        ],
+      },
+      mermaCantidad: 0.12,
+      mermaUnidad: "m",
+      mermaPrecio: 400,
+    },
+  ];
+  
+
+  for (const producto of productos) {
+    await prisma.producto.create({
+      data: producto,
+    });
+  }
+
+  // Usuarios
   const users = [
     {
       email: "mia@mail.com",
@@ -411,54 +539,6 @@ async function main() {
     }
   }
 
-  console.log("Seeding Mano de Obra...");
-  const manoDeObra = [
-    {
-      nombre: "Costurera Principal",
-      costoHora: 15000.0,
-    },
-    {
-      nombre: "Diseñador de Patrones",
-      costoHora: 20000.0,
-    },
-    {
-      nombre: "Cortador",
-      costoHora: 12000.0,
-    },
-    {
-      nombre: "Terminador",
-      costoHora: 10000.0,
-    },
-    // Nuevos roles
-    {
-      nombre: "Bordador",
-      costoHora: 18000.0,
-    },
-    {
-      nombre: "Planchador",
-      costoHora: 8000.0,
-    },
-    {
-      nombre: "Control de Calidad",
-      costoHora: 16000.0,
-    },
-  ];
-
-  for (const mano of manoDeObra) {
-    try {
-      const existe = await prisma.manoDeObra.findFirst({
-        where: { nombre: mano.nombre },
-      });
-      if (!existe) {
-        await prisma.manoDeObra.create({ data: mano });
-        console.log(`Mano de obra creada: ${mano.nombre}`);
-      }
-    } catch (error: any) {
-      if (error.code !== "P2002") {
-        throw error;
-      }
-    }
-  }
 
   console.log("Seeding ImpuestoGeneral...");
   const impuestoGeneral = {

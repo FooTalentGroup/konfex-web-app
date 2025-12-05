@@ -31,7 +31,6 @@ export type ManoDeObraPorProductoAvgAggregateOutputType = {
   productoId: number | null
   manoDeObraId: number | null
   cantidadHoras: number | null
-  costoHora: number | null
 }
 
 export type ManoDeObraPorProductoSumAggregateOutputType = {
@@ -39,7 +38,6 @@ export type ManoDeObraPorProductoSumAggregateOutputType = {
   productoId: number | null
   manoDeObraId: number | null
   cantidadHoras: number | null
-  costoHora: number | null
 }
 
 export type ManoDeObraPorProductoMinAggregateOutputType = {
@@ -47,7 +45,6 @@ export type ManoDeObraPorProductoMinAggregateOutputType = {
   productoId: number | null
   manoDeObraId: number | null
   cantidadHoras: number | null
-  costoHora: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -57,7 +54,6 @@ export type ManoDeObraPorProductoMaxAggregateOutputType = {
   productoId: number | null
   manoDeObraId: number | null
   cantidadHoras: number | null
-  costoHora: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -67,7 +63,6 @@ export type ManoDeObraPorProductoCountAggregateOutputType = {
   productoId: number
   manoDeObraId: number
   cantidadHoras: number
-  costoHora: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -79,7 +74,6 @@ export type ManoDeObraPorProductoAvgAggregateInputType = {
   productoId?: true
   manoDeObraId?: true
   cantidadHoras?: true
-  costoHora?: true
 }
 
 export type ManoDeObraPorProductoSumAggregateInputType = {
@@ -87,7 +81,6 @@ export type ManoDeObraPorProductoSumAggregateInputType = {
   productoId?: true
   manoDeObraId?: true
   cantidadHoras?: true
-  costoHora?: true
 }
 
 export type ManoDeObraPorProductoMinAggregateInputType = {
@@ -95,7 +88,6 @@ export type ManoDeObraPorProductoMinAggregateInputType = {
   productoId?: true
   manoDeObraId?: true
   cantidadHoras?: true
-  costoHora?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -105,7 +97,6 @@ export type ManoDeObraPorProductoMaxAggregateInputType = {
   productoId?: true
   manoDeObraId?: true
   cantidadHoras?: true
-  costoHora?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -115,7 +106,6 @@ export type ManoDeObraPorProductoCountAggregateInputType = {
   productoId?: true
   manoDeObraId?: true
   cantidadHoras?: true
-  costoHora?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -212,7 +202,6 @@ export type ManoDeObraPorProductoGroupByOutputType = {
   productoId: number
   manoDeObraId: number
   cantidadHoras: number
-  costoHora: number | null
   createdAt: Date
   updatedAt: Date
   _count: ManoDeObraPorProductoCountAggregateOutputType | null
@@ -245,7 +234,6 @@ export type ManoDeObraPorProductoWhereInput = {
   productoId?: Prisma.IntFilter<"ManoDeObraPorProducto"> | number
   manoDeObraId?: Prisma.IntFilter<"ManoDeObraPorProducto"> | number
   cantidadHoras?: Prisma.FloatFilter<"ManoDeObraPorProducto"> | number
-  costoHora?: Prisma.FloatNullableFilter<"ManoDeObraPorProducto"> | number | null
   createdAt?: Prisma.DateTimeFilter<"ManoDeObraPorProducto"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ManoDeObraPorProducto"> | Date | string
   manoDeObra?: Prisma.XOR<Prisma.ManoDeObraScalarRelationFilter, Prisma.ManoDeObraWhereInput>
@@ -257,7 +245,6 @@ export type ManoDeObraPorProductoOrderByWithRelationInput = {
   productoId?: Prisma.SortOrder
   manoDeObraId?: Prisma.SortOrder
   cantidadHoras?: Prisma.SortOrder
-  costoHora?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   manoDeObra?: Prisma.ManoDeObraOrderByWithRelationInput
@@ -272,7 +259,6 @@ export type ManoDeObraPorProductoWhereUniqueInput = Prisma.AtLeast<{
   productoId?: Prisma.IntFilter<"ManoDeObraPorProducto"> | number
   manoDeObraId?: Prisma.IntFilter<"ManoDeObraPorProducto"> | number
   cantidadHoras?: Prisma.FloatFilter<"ManoDeObraPorProducto"> | number
-  costoHora?: Prisma.FloatNullableFilter<"ManoDeObraPorProducto"> | number | null
   createdAt?: Prisma.DateTimeFilter<"ManoDeObraPorProducto"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ManoDeObraPorProducto"> | Date | string
   manoDeObra?: Prisma.XOR<Prisma.ManoDeObraScalarRelationFilter, Prisma.ManoDeObraWhereInput>
@@ -284,7 +270,6 @@ export type ManoDeObraPorProductoOrderByWithAggregationInput = {
   productoId?: Prisma.SortOrder
   manoDeObraId?: Prisma.SortOrder
   cantidadHoras?: Prisma.SortOrder
-  costoHora?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ManoDeObraPorProductoCountOrderByAggregateInput
@@ -302,14 +287,12 @@ export type ManoDeObraPorProductoScalarWhereWithAggregatesInput = {
   productoId?: Prisma.IntWithAggregatesFilter<"ManoDeObraPorProducto"> | number
   manoDeObraId?: Prisma.IntWithAggregatesFilter<"ManoDeObraPorProducto"> | number
   cantidadHoras?: Prisma.FloatWithAggregatesFilter<"ManoDeObraPorProducto"> | number
-  costoHora?: Prisma.FloatNullableWithAggregatesFilter<"ManoDeObraPorProducto"> | number | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ManoDeObraPorProducto"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ManoDeObraPorProducto"> | Date | string
 }
 
 export type ManoDeObraPorProductoCreateInput = {
   cantidadHoras: number
-  costoHora?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   manoDeObra: Prisma.ManoDeObraCreateNestedOneWithoutProductosInput
@@ -321,14 +304,12 @@ export type ManoDeObraPorProductoUncheckedCreateInput = {
   productoId: number
   manoDeObraId: number
   cantidadHoras: number
-  costoHora?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type ManoDeObraPorProductoUpdateInput = {
   cantidadHoras?: Prisma.FloatFieldUpdateOperationsInput | number
-  costoHora?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   manoDeObra?: Prisma.ManoDeObraUpdateOneRequiredWithoutProductosNestedInput
@@ -340,7 +321,6 @@ export type ManoDeObraPorProductoUncheckedUpdateInput = {
   productoId?: Prisma.IntFieldUpdateOperationsInput | number
   manoDeObraId?: Prisma.IntFieldUpdateOperationsInput | number
   cantidadHoras?: Prisma.FloatFieldUpdateOperationsInput | number
-  costoHora?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -350,14 +330,12 @@ export type ManoDeObraPorProductoCreateManyInput = {
   productoId: number
   manoDeObraId: number
   cantidadHoras: number
-  costoHora?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type ManoDeObraPorProductoUpdateManyMutationInput = {
   cantidadHoras?: Prisma.FloatFieldUpdateOperationsInput | number
-  costoHora?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -367,7 +345,6 @@ export type ManoDeObraPorProductoUncheckedUpdateManyInput = {
   productoId?: Prisma.IntFieldUpdateOperationsInput | number
   manoDeObraId?: Prisma.IntFieldUpdateOperationsInput | number
   cantidadHoras?: Prisma.FloatFieldUpdateOperationsInput | number
-  costoHora?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -387,7 +364,6 @@ export type ManoDeObraPorProductoCountOrderByAggregateInput = {
   productoId?: Prisma.SortOrder
   manoDeObraId?: Prisma.SortOrder
   cantidadHoras?: Prisma.SortOrder
-  costoHora?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -397,7 +373,6 @@ export type ManoDeObraPorProductoAvgOrderByAggregateInput = {
   productoId?: Prisma.SortOrder
   manoDeObraId?: Prisma.SortOrder
   cantidadHoras?: Prisma.SortOrder
-  costoHora?: Prisma.SortOrder
 }
 
 export type ManoDeObraPorProductoMaxOrderByAggregateInput = {
@@ -405,7 +380,6 @@ export type ManoDeObraPorProductoMaxOrderByAggregateInput = {
   productoId?: Prisma.SortOrder
   manoDeObraId?: Prisma.SortOrder
   cantidadHoras?: Prisma.SortOrder
-  costoHora?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -415,7 +389,6 @@ export type ManoDeObraPorProductoMinOrderByAggregateInput = {
   productoId?: Prisma.SortOrder
   manoDeObraId?: Prisma.SortOrder
   cantidadHoras?: Prisma.SortOrder
-  costoHora?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -425,7 +398,6 @@ export type ManoDeObraPorProductoSumOrderByAggregateInput = {
   productoId?: Prisma.SortOrder
   manoDeObraId?: Prisma.SortOrder
   cantidadHoras?: Prisma.SortOrder
-  costoHora?: Prisma.SortOrder
 }
 
 export type ManoDeObraPorProductoCreateNestedManyWithoutProductoInput = {
@@ -514,7 +486,6 @@ export type ManoDeObraPorProductoUncheckedUpdateManyWithoutManoDeObraNestedInput
 
 export type ManoDeObraPorProductoCreateWithoutProductoInput = {
   cantidadHoras: number
-  costoHora?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   manoDeObra: Prisma.ManoDeObraCreateNestedOneWithoutProductosInput
@@ -524,7 +495,6 @@ export type ManoDeObraPorProductoUncheckedCreateWithoutProductoInput = {
   id?: number
   manoDeObraId: number
   cantidadHoras: number
-  costoHora?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -563,14 +533,12 @@ export type ManoDeObraPorProductoScalarWhereInput = {
   productoId?: Prisma.IntFilter<"ManoDeObraPorProducto"> | number
   manoDeObraId?: Prisma.IntFilter<"ManoDeObraPorProducto"> | number
   cantidadHoras?: Prisma.FloatFilter<"ManoDeObraPorProducto"> | number
-  costoHora?: Prisma.FloatNullableFilter<"ManoDeObraPorProducto"> | number | null
   createdAt?: Prisma.DateTimeFilter<"ManoDeObraPorProducto"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ManoDeObraPorProducto"> | Date | string
 }
 
 export type ManoDeObraPorProductoCreateWithoutManoDeObraInput = {
   cantidadHoras: number
-  costoHora?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   producto: Prisma.ProductoCreateNestedOneWithoutManoDeObraInput
@@ -580,7 +548,6 @@ export type ManoDeObraPorProductoUncheckedCreateWithoutManoDeObraInput = {
   id?: number
   productoId: number
   cantidadHoras: number
-  costoHora?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -615,14 +582,12 @@ export type ManoDeObraPorProductoCreateManyProductoInput = {
   id?: number
   manoDeObraId: number
   cantidadHoras: number
-  costoHora?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type ManoDeObraPorProductoUpdateWithoutProductoInput = {
   cantidadHoras?: Prisma.FloatFieldUpdateOperationsInput | number
-  costoHora?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   manoDeObra?: Prisma.ManoDeObraUpdateOneRequiredWithoutProductosNestedInput
@@ -632,7 +597,6 @@ export type ManoDeObraPorProductoUncheckedUpdateWithoutProductoInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   manoDeObraId?: Prisma.IntFieldUpdateOperationsInput | number
   cantidadHoras?: Prisma.FloatFieldUpdateOperationsInput | number
-  costoHora?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -641,7 +605,6 @@ export type ManoDeObraPorProductoUncheckedUpdateManyWithoutProductoInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   manoDeObraId?: Prisma.IntFieldUpdateOperationsInput | number
   cantidadHoras?: Prisma.FloatFieldUpdateOperationsInput | number
-  costoHora?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -650,14 +613,12 @@ export type ManoDeObraPorProductoCreateManyManoDeObraInput = {
   id?: number
   productoId: number
   cantidadHoras: number
-  costoHora?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type ManoDeObraPorProductoUpdateWithoutManoDeObraInput = {
   cantidadHoras?: Prisma.FloatFieldUpdateOperationsInput | number
-  costoHora?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   producto?: Prisma.ProductoUpdateOneRequiredWithoutManoDeObraNestedInput
@@ -667,7 +628,6 @@ export type ManoDeObraPorProductoUncheckedUpdateWithoutManoDeObraInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   productoId?: Prisma.IntFieldUpdateOperationsInput | number
   cantidadHoras?: Prisma.FloatFieldUpdateOperationsInput | number
-  costoHora?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -676,7 +636,6 @@ export type ManoDeObraPorProductoUncheckedUpdateManyWithoutManoDeObraInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   productoId?: Prisma.IntFieldUpdateOperationsInput | number
   cantidadHoras?: Prisma.FloatFieldUpdateOperationsInput | number
-  costoHora?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -688,7 +647,6 @@ export type ManoDeObraPorProductoSelect<ExtArgs extends runtime.Types.Extensions
   productoId?: boolean
   manoDeObraId?: boolean
   cantidadHoras?: boolean
-  costoHora?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   manoDeObra?: boolean | Prisma.ManoDeObraDefaultArgs<ExtArgs>
@@ -700,7 +658,6 @@ export type ManoDeObraPorProductoSelectCreateManyAndReturn<ExtArgs extends runti
   productoId?: boolean
   manoDeObraId?: boolean
   cantidadHoras?: boolean
-  costoHora?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   manoDeObra?: boolean | Prisma.ManoDeObraDefaultArgs<ExtArgs>
@@ -712,7 +669,6 @@ export type ManoDeObraPorProductoSelectUpdateManyAndReturn<ExtArgs extends runti
   productoId?: boolean
   manoDeObraId?: boolean
   cantidadHoras?: boolean
-  costoHora?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   manoDeObra?: boolean | Prisma.ManoDeObraDefaultArgs<ExtArgs>
@@ -724,12 +680,11 @@ export type ManoDeObraPorProductoSelectScalar = {
   productoId?: boolean
   manoDeObraId?: boolean
   cantidadHoras?: boolean
-  costoHora?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ManoDeObraPorProductoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "productoId" | "manoDeObraId" | "cantidadHoras" | "costoHora" | "createdAt" | "updatedAt", ExtArgs["result"]["manoDeObraPorProducto"]>
+export type ManoDeObraPorProductoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "productoId" | "manoDeObraId" | "cantidadHoras" | "createdAt" | "updatedAt", ExtArgs["result"]["manoDeObraPorProducto"]>
 export type ManoDeObraPorProductoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   manoDeObra?: boolean | Prisma.ManoDeObraDefaultArgs<ExtArgs>
   producto?: boolean | Prisma.ProductoDefaultArgs<ExtArgs>
@@ -754,7 +709,6 @@ export type $ManoDeObraPorProductoPayload<ExtArgs extends runtime.Types.Extensio
     productoId: number
     manoDeObraId: number
     cantidadHoras: number
-    costoHora: number | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["manoDeObraPorProducto"]>
@@ -1186,7 +1140,6 @@ export interface ManoDeObraPorProductoFieldRefs {
   readonly productoId: Prisma.FieldRef<"ManoDeObraPorProducto", 'Int'>
   readonly manoDeObraId: Prisma.FieldRef<"ManoDeObraPorProducto", 'Int'>
   readonly cantidadHoras: Prisma.FieldRef<"ManoDeObraPorProducto", 'Float'>
-  readonly costoHora: Prisma.FieldRef<"ManoDeObraPorProducto", 'Float'>
   readonly createdAt: Prisma.FieldRef<"ManoDeObraPorProducto", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ManoDeObraPorProducto", 'DateTime'>
 }

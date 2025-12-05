@@ -9,7 +9,7 @@ import type {
 
 export const productoService = {
   // Crear producto
-  create: async (data: CreateProductoDto) => {
+  create: async (data: CreateProductoDtoDB) => {
     // Validación de negocio: nombre único (si quieres controlar antes de Prisma)
     const exists = await productoRepository.findByName(data.nombre);
     if (exists) {

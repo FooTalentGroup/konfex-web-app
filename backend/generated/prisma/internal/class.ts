@@ -17,8 +17,8 @@ import type * as Prisma from "./prismaNamespace"
 
 const config: runtime.GetPrismaClientConfig = {
   "previewFeatures": [],
-  "clientVersion": "7.0.1",
-  "engineVersion": "f09f2815f091dbba658cdcd2264306d88bb5bda6",
+  "clientVersion": "7.1.0",
+  "engineVersion": "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba",
   "activeProvider": "postgresql",
   "inlineSchema": "generator client {\n  provider   = \"prisma-client\"\n  output     = \"../generated/prisma\"\n  engineType = \"client\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id        Int      @id @default(autoincrement())\n  email     String   @unique\n  name      String?\n  password  String\n  role      Role     @default(USER)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  active    Boolean  @default(true)\n}\n\nmodel Cliente {\n  id            Int      @id @default(autoincrement())\n  nombre        String   @unique\n  telefono      String?\n  email         String?\n  origen        String?\n  instagramUser String?\n  notas         String?\n  createdAt     DateTime @default(now())\n  updatedAt     DateTime @updatedAt\n\n  pedidos          Pedido[]\n  presupuestos     Presupuesto[]\n  telegramMessages TelegramMessage[]\n}\n\nmodel Producto {\n  id                  Int                     @id @default(autoincrement())\n  nombre              String                  @unique\n  descripcion         String?\n  activo              Boolean                 @default(true)\n  tallas              String[]\n  colores             String[]\n  createdAt           DateTime                @default(now())\n  updatedAt           DateTime                @updatedAt\n  manoDeObra          ManoDeObraPorProducto[]\n  materiales          MaterialPorProducto[]\n  pedidos             PedidoDetalle[]\n  presupuestoDetalles PresupuestoDetalle[]\n}\n\nmodel Material {\n  id           Int                   @id @default(autoincrement())\n  nombre       String\n  url_imagen   String?\n  categoria    String\n  unidadMedida String\n  ancho        Float?\n  peso         Float?\n  colores      String[]\n  proveedor    String\n  precio       Float\n  createdAt    DateTime              @default(now())\n  updatedAt    DateTime              @updatedAt\n  productos    MaterialPorProducto[]\n\n  @@index([categoria])\n  @@index([precio])\n  @@index([proveedor])\n}\n\nmodel ManoDeObra {\n  id        Int                     @id @default(autoincrement())\n  nombre    String\n  costoHora Float?\n  createdAt DateTime                @default(now())\n  updatedAt DateTime                @updatedAt\n  productos ManoDeObraPorProducto[]\n}\n\nmodel MaterialPorProducto {\n  id         Int   @id @default(autoincrement())\n  productoId Int\n  materialId Int\n  cantidad   Float\n\n  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)\n  producto Producto @relation(fields: [productoId], references: [id], onDelete: Cascade)\n\n  @@unique([productoId, materialId])\n  @@index([materialId])\n  @@index([productoId])\n}\n\nmodel ManoDeObraPorProducto {\n  id            Int        @id @default(autoincrement())\n  productoId    Int\n  manoDeObraId  Int\n  cantidadHoras Float\n  costoHora     Float?\n  createdAt     DateTime   @default(now())\n  updatedAt     DateTime   @updatedAt\n  manoDeObra    ManoDeObra @relation(fields: [manoDeObraId], references: [id], onDelete: Cascade)\n  producto      Producto   @relation(fields: [productoId], references: [id], onDelete: Cascade)\n}\n\nmodel Presupuesto {\n  id                       Int                  @id @default(autoincrement())\n  numeroPresupuesto        Int                  @unique\n  nombre                   String?\n  clienteId                Int?\n  fechaCreacion            DateTime             @default(now())\n  fechaVencimiento         DateTime?\n  estado                   EstadoPresupuesto\n  margenGananciaPorcentaje Float\n  totalCosto               Float\n  gastosNegocioId          Int\n  ganancias                Float\n  iva                      Float                @default(0)\n  totalFinal               Float                @default(0)\n  notas                    String?\n  origen                   String               @default(\"manual\") // \"telegram\" | \"manual\"\n  createdAt                DateTime             @default(now())\n  updatedAt                DateTime             @updatedAt\n  pedido                   Pedido?\n  cliente                  Cliente?             @relation(fields: [clienteId], references: [id], onDelete: Restrict)\n  gastosNegocio            GastosNegocio        @relation(fields: [gastosNegocioId], references: [id], onDelete: Restrict)\n  detalles                 PresupuestoDetalle[]\n  adicionales              Adicional[]\n}\n\nmodel PresupuestoDetalle {\n  id            Int         @id @default(autoincrement())\n  presupuestoId Int\n  productoId    Int\n  descripcion   String?\n  cantidad      Int\n  costoUnitario Float\n  presupuesto   Presupuesto @relation(fields: [presupuestoId], references: [id], onDelete: Cascade)\n  producto      Producto    @relation(fields: [productoId], references: [id])\n\n  @@index([presupuestoId])\n}\n\nmodel Adicional {\n  id            Int         @id @default(autoincrement())\n  presupuestoId Int\n  nombre        String\n  cantidad      Int\n  monto         Float\n  totalCosto    Float\n  tarifaEnvio   Float?      @default(0)\n  observaciones String?\n  createdAt     DateTime    @default(now())\n  updatedAt     DateTime    @updatedAt\n  presupuesto   Presupuesto @relation(fields: [presupuestoId], references: [id], onDelete: Cascade)\n\n  @@index([presupuestoId])\n}\n\nmodel GastosNegocio {\n  id           Int           @id @default(autoincrement())\n  nombre       String\n  porcentaje   Int\n  createdAt    DateTime      @default(now())\n  updatedAt    DateTime      @updatedAt\n  presupuestos Presupuesto[]\n\n  @@index([nombre])\n}\n\nmodel ImpuestoGeneral {\n  id         Int      @id @default(autoincrement())\n  nombre     String   @default(\"IVA\")\n  porcentaje Int\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n}\n\nmodel Pedido {\n  id                   Int               @id @default(autoincrement())\n  presupuestoId        Int               @unique\n  clienteId            Int\n  fechaCreacion        DateTime          @default(now())\n  estado               EstadoPedido\n  pagado               Boolean           @default(false)\n  fechaEntregaEstimada DateTime?\n  fechaEntregaReal     DateTime?\n  createdAt            DateTime          @default(now())\n  updatedAt            DateTime          @updatedAt\n  cliente              Cliente           @relation(fields: [clienteId], references: [id])\n  presupuesto          Presupuesto       @relation(fields: [presupuestoId], references: [id])\n  detalles             PedidoDetalle[]\n  etapas               ProduccionEtapa[]\n}\n\nmodel PedidoDetalle {\n  id             Int      @id @default(autoincrement())\n  pedidoId       Int\n  productoId     Int\n  cantidad       Int\n  talle          String?\n  color          String?\n  costoUnitario  Float\n  precioUnitario Float\n  subtotal       Float\n  pedido         Pedido   @relation(fields: [pedidoId], references: [id], onDelete: Cascade)\n  producto       Producto @relation(fields: [productoId], references: [id])\n}\n\nmodel ProduccionEtapa {\n  id          Int       @id @default(autoincrement())\n  pedidoId    Int\n  etapa       String\n  fechaInicio DateTime  @default(now())\n  fechaFin    DateTime?\n  responsable String?\n  pedido      Pedido    @relation(fields: [pedidoId], references: [id], onDelete: Cascade)\n}\n\nmodel TelegramMessage {\n  id        Int     @id @default(autoincrement())\n  chatId    String\n  clienteId Int?\n  firstName String?\n  lastName  String?\n  username  String?\n\n  // Mensajes de texto\n  text String?\n\n  // Archivos multimedia\n  type         String? @default(\"text\") // \"photo\" | \"video\" | \"audio\" | \"document\" | \"sticker\" | etc.\n  fileId       String?\n  fileUniqueId String?\n  filePath     String? // ruta interna de Telegram\n  fileUrl      String? // URL completa hacia el archivo\n  mimeType     String? // video/mp4, image/jpeg, application/pdf\n  fileSize     Int? // tamaño\n\n  // Metadatos\n  source    String   @default(\"telegram\")\n  timestamp DateTime @default(now())\n\n  cliente Cliente? @relation(fields: [clienteId], references: [id])\n}\n\nenum EstadoPresupuesto {\n  BORRADOR\n  ENVIADO\n  ACEPTADO\n  RECHAZADO\n  VENCIDO\n}\n\nenum EstadoPedido {\n  PENDIENTE\n  EN_PRODUCCION\n  LISTO\n  ENTREGADO\n  CANCELADO\n}\n\nenum Role {\n  USER\n  ADMIN\n}\n",
   "runtimeDataModel": {
@@ -62,7 +62,7 @@ export interface PrismaClientConstructor {
    * const users = await prisma.user.findMany()
    * ```
    * 
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
+   * Read more in our [docs](https://pris.ly/d/client).
    */
 
   new <
@@ -84,7 +84,7 @@ export interface PrismaClientConstructor {
  * const users = await prisma.user.findMany()
  * ```
  * 
- * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
+ * Read more in our [docs](https://pris.ly/d/client).
  */
 
 export interface PrismaClient<
@@ -113,7 +113,7 @@ export interface PrismaClient<
    * const result = await prisma.$executeRaw`UPDATE User SET cool = ${true} WHERE email = ${'user@email.com'};`
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $executeRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<number>;
 
@@ -125,7 +125,7 @@ export interface PrismaClient<
    * const result = await prisma.$executeRawUnsafe('UPDATE User SET cool = $1 WHERE email = $2 ;', true, 'user@email.com')
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $executeRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<number>;
 
@@ -136,7 +136,7 @@ export interface PrismaClient<
    * const result = await prisma.$queryRaw`SELECT * FROM User WHERE id = ${1} OR email = ${'user@email.com'};`
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $queryRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<T>;
 
@@ -148,7 +148,7 @@ export interface PrismaClient<
    * const result = await prisma.$queryRawUnsafe('SELECT * FROM User WHERE id = $1 OR email = $2;', 1, 'user@email.com')
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $queryRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<T>;
 
@@ -193,6 +193,16 @@ export interface PrismaClient<
     * ```
     */
   get cliente(): Prisma.ClienteDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.coleccion`: Exposes CRUD operations for the **Coleccion** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Coleccions
+    * const coleccions = await prisma.coleccion.findMany()
+    * ```
+    */
+  get coleccion(): Prisma.ColeccionDelegate<ExtArgs, { omit: OmitOpts }>;
 
   /**
    * `prisma.producto`: Exposes CRUD operations for the **Producto** model.

@@ -36,19 +36,48 @@ model Cliente {
   telegramMessages TelegramMessage[]
 }
 
+model Coleccion {
+  id        Int       @id @default(autoincrement())
+  codigo    Int       @unique
+  nombre    String    @unique
+  imagen    String?
+  icono     String? 
+  productos Producto[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
 model Producto {
-  id                  Int                     @id @default(autoincrement())
-  nombre              String                  @unique
-  descripcion         String?
-  activo              Boolean                 @default(true)
-  tallas              String[]
-  colores             String[]
-  createdAt           DateTime                @default(now())
-  updatedAt           DateTime                @updatedAt
+  id           Int       @id @default(autoincrement())
+  codigo       Int    @unique
+  nombre       String
+  descripcion  String?
+  activo       Boolean   @default(true)
+  imagen       String?
+  tallas       String[]
+  colores      String[]
+
+  /// Relación con colección
+
+  mermaCantidad Float?
+  mermaUnidad   String?
+  mermaPrecio   Float?
+
+  /// Relaciones existentes
+  coleccionId  Int
+  coleccion    Coleccion @relation(fields: [coleccionId], references: [id])
+  
   manoDeObra          ManoDeObraPorProducto[]
   materiales          MaterialPorProducto[]
+
   pedidos             PedidoDetalle[]
   presupuestoDetalles PresupuestoDetalle[]
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([coleccionId])
 }
 
 model Material {
@@ -72,16 +101,17 @@ model Material {
 }
 
 model ManoDeObra {
-  id        Int                     @id @default(autoincrement())
-  nombre    String
-  costoHora Float?
-  createdAt DateTime                @default(now())
-  updatedAt DateTime                @updatedAt
+  id        Int      @id @default(autoincrement())
+  nombre    String   @unique
+  costoHora Float    // precio asignado en el seed
   productos ManoDeObraPorProducto[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model MaterialPorProducto {
-  id         Int   @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   productoId Int
   materialId Int
   cantidad   Float
@@ -95,15 +125,19 @@ model MaterialPorProducto {
 }
 
 model ManoDeObraPorProducto {
-  id            Int        @id @default(autoincrement())
+  id            Int      @id @default(autoincrement())
   productoId    Int
   manoDeObraId  Int
   cantidadHoras Float
-  costoHora     Float?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  manoDeObra    ManoDeObra @relation(fields: [manoDeObraId], references: [id], onDelete: Cascade)
-  producto      Producto   @relation(fields: [productoId], references: [id], onDelete: Cascade)
+
+  manoDeObra ManoDeObra @relation(fields: [manoDeObraId], references: [id], onDelete: Cascade)
+  producto   Producto   @relation(fields: [productoId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([productoId])
+  @@index([manoDeObraId])
 }
 
 model Presupuesto {

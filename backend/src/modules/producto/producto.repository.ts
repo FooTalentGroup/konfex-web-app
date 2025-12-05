@@ -1,17 +1,11 @@
 import prisma from "../../config/prisma";
+import { CreateProductoDtoDB } from "./producto.types";
 
-export interface CreateProductoDto {
-  nombre: string;
-  descripcion?: string | null;
-  activo?: boolean;
-  tallas?: string[];
-  colores?: string[];
-}
 
 export const productoRepository = {
   create: (data: CreateProductoDto) => prisma.producto.create({ data }),
 
-  update: (id: number, data: Partial<CreateProductoDto>) =>
+  update: (id: number, data: Partial<CreateProductoDtoDB>) =>
     prisma.producto.update({ where: { id }, data }),
 
   findAll: () => prisma.producto.findMany({ orderBy: { createdAt: "desc" } }),
