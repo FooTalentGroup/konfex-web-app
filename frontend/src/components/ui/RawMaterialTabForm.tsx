@@ -18,6 +18,9 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
 
     const rawMaterials = watch('rawMaterials') || [];
 
+    const fabricMaterials = rawMaterials.filter(m => m.type === 'fabric');
+    const supplyMaterials = rawMaterials.filter(m => m.type === 'supply');
+
     const totalPrice = rawMaterials.reduce((sum, material) => sum + material.price, 0);
 
     const fabrics = [
@@ -81,7 +84,7 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
             return;
         }
 
-         if (consumption <= 0) {
+        if (consumption <= 0) {
             alert('El consumo debe ser mayor a 0');
             return;
         }
@@ -120,39 +123,8 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                 <PriceDisplay label="" amount={totalPrice} />
             </div>
 
-            {rawMaterials.length > 0 && (
-                <div className="space-y-3">
-                    {rawMaterials.map((material) => (
-                        <div
-                            key={material.id}
-                            className="flex items-center justify-between bg-white p-4 rounded-lg border border-gray-200"
-                        >
-                            <div className="flex-1">
-                                <p className="font-medium text-gray-800">{material.name}</p>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <span className="text-sm text-gray-600">
-                                    {material.consumption} {material.unit}
-                                </span>
-                                <span className="text-sm font-semibold text-gray-800">
-                                    $ {material.price.toLocaleString('es-CO')}
-                                </span>
-                                <button
-                                    type="button"
-                                    onClick={() => removeMaterial(material.id)}
-                                    className="text-red-500 hover:text-red-700 transition-colors"
-                                >
-                                    <Trash2 className="w-4 h-4" />
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
-
             <div className="space-y-4">
-                <h4 className="text-md font-medium text-gray-800">Tela</h4>
-                
+
                 <CustomSelect
                     id="tempFabricName"
                     label="Tela"
@@ -167,7 +139,7 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                     <CustomInputWithSelect
                         id="tempFabricConsumption"
                         label="Consumo"
-                        register={register('tempFabricConsumption', {  valueAsNumber: true })}
+                        register={register('tempFabricConsumption', { valueAsNumber: true })}
                         error={errors.tempFabricConsumption?.message}
                         placeholder="2.00"
                         selectId="tempFabricUnit"
@@ -194,20 +166,52 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
 
                 <div className="flex items-center gap-4">
                     <div className="flex-1 border-t border-gray-300"></div>
-                    <button
-                        type="button"
-                        onClick={addFabric}
-                        className="flex items-center justify-center w-10 h-10 bg-white border-2 border-primary-300 rounded-full hover:bg-gray-50 transition-colors"
-                    >
-                        <Plus className="w-5 h-5 text-gray-700" />
-                    </button>
+                    <div className='grid grid-cols-1 gap-1 items-center justify-items-center'>
+                        <button
+                            type="button"
+                            onClick={addFabric}
+                            className="flex items-center justify-center w-10 h-10 bg-[#F59E0B] border-2 border-primary-300 rounded-full hover:bg-[#D97706] transition-colors"
+                        >
+                            <Plus className="w-5 h-5 text-gray-700" />
+                        </button>
+                        <span className="text-sm text-gray-600">Agregar tela</span>
+                    </div>
                     <div className="flex-1 border-t border-gray-300"></div>
                 </div>
             </div>
 
+            {fabricMaterials.length > 0 && (
+                <div className="space-y-3 mt-4">
+                    <h5 className="text-sm font-semibold text-gray-700">Lista de telas agregadas:</h5>
+                    {fabricMaterials.map((material) => (
+                        <div
+                            key={material.id}
+                            className="flex items-center justify-between bg-primary-75 p-4 rounded-lg border border-primary-500"
+                        >
+                            <div className="flex-1">
+                                <p className="font-medium text-gray-800">{material.name}</p>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <span className="text-sm text-gray-600">
+                                    {material.consumption} {material.unit}
+                                </span>
+                                <span className="text-sm font-semibold text-gray-800">
+                                    $ {material.price.toLocaleString('es-CO')}
+                                </span>
+                                <button
+                                    type="button"
+                                    onClick={() => removeMaterial(material.id)}
+                                    className="bg-primary-200 p-1 text-gray-500 hover:text-gray-700 border border-primary-500 rounded-md transition-colors"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
             <div className="space-y-4">
-                <h4 className="text-md font-medium text-gray-800">Insumos</h4>
-                
                 <CustomSelect
                     id="tempSupplyName"
                     label="Insumos"
@@ -250,15 +254,49 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
 
                 <div className="flex items-center gap-4">
                     <div className="flex-1 border-t border-gray-300"></div>
-                    <button
-                        type="button"
-                        onClick={addSupply}
-                        className="flex items-center justify-center w-10 h-10 bg-white border-2 border-primary-300 rounded-full hover:bg-gray-50 transition-colors"
-                    >
-                        <Plus className="w-5 h-5 text-gray-700" />
-                    </button>
+                    <div className='grid grid-cols-1 gap-1 justify-items-center'>
+                        <button
+                            type="button"
+                            onClick={addSupply}
+                            className="flex items-center justify-center w-10 h-10 bg-[#F59E0B] border-2 border-primary-300 rounded-full hover:bg-[#D97706] transition-colors"
+                        >
+                            <Plus className="w-5 h-5 text-gray-700" />
+                        </button>
+                        <span className="text-sm text-gray-600">Agregar insumo</span>
+                    </div>
                     <div className="flex-1 border-t border-gray-300"></div>
                 </div>
+
+                {supplyMaterials.length > 0 && (
+                    <div className="space-y-3 mt-4">
+                        <h5 className="text-sm font-semibold text-gray-700">Lista de insumos agregados:</h5>
+                        {supplyMaterials.map((material) => (
+                            <div
+                                key={material.id}
+                                className="flex items-center justify-between bg-primary-75 p-4 rounded-lg border border-primary-500"
+                            >
+                                <div className="flex-1">
+                                    <p className="font-medium text-gray-800">{material.name}</p>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <span className="text-sm text-gray-600">
+                                        {material.consumption} {material.unit}
+                                    </span>
+                                    <span className="text-sm font-semibold text-gray-800">
+                                        $ {material.price.toLocaleString('es-CO')}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeMaterial(material.id)}
+                                        className="bg-primary-200 p-1 text-gray-500 hover:text-gray-700 border border-primary-500 rounded-md transition-colors"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </section>
     );
