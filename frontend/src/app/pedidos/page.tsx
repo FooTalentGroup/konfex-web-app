@@ -8,6 +8,7 @@ import Sidebar from '@/components/common/Sidebar';
 import PageHeader from '@/components/common/PageHeader';
 import { useAuth } from '@/hooks/useAuth';
 import { useSidebar } from '@/hooks/useSidebar';
+import { pedidoService, type Pedido } from '@/services/pedido.service';
 
 export interface Order {
   id: string;
@@ -21,41 +22,59 @@ export interface Order {
   telegramChatId?: string;
 }
 
-const MOCK_API_RESPONSE: Order[] = [
-  {
-    id: '1234569',
-    name: 'Ana Julieta',
-    orderDate: '00/00/00',
-    deliveryDate: '00/00/00',
-    garmentType: 'Blusa manga larga',
-    price: 0,
-    status: 'pagado',
-    operativoStatus: 'entregado',
-    telegramChatId: '1585032016',
-  },
-  {
-    id: '1254307',
-    name: 'Ana Julieta',
-    orderDate: '00/00/00',
-    deliveryDate: '00/00/00',
-    garmentType: 'Blusa manga larga',
-    price: 0,
-    status: 'deposito',
-    operativoStatus: 'en produccion',
-    telegramChatId: '1585032016',
-  },
-  {
-    id: '1234568',
-    name: 'Ana Julieta',
-    orderDate: '00/00/00',
-    deliveryDate: '00/00/00',
-    garmentType: 'Blusa manga larga',
-    price: 0,
-    status: 'pagado',
-    operativoStatus: 'en produccion',
-    telegramChatId: '1585032016',
+// Función para mapear el estado del backend al estado operativo del frontend
+const mapEstadoToOperativoStatus = (
+  estado: Pedido['estado']
+): 'presupuesto' | 'en compra' | 'en produccion' | 'entregado' => {
+  switch (estado) {
+    case 'PENDIENTE':
+      return 'presupuesto';
+    case 'EN_PRODUCCION':
+      return 'en produccion';
+    case 'LISTO':
+      return 'en compra';
+    case 'ENTREGADO':
+      return 'entregado';
+    case 'CANCELADO':
+      return 'presupuesto';
+    default:
+      return 'presupuesto';
   }
-];
+};
+
+// Función para formatear fecha
+const formatDate = (dateString: string | null | undefined): string => {
+  if (!dateString) return '00/00/00';
+  try {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear().toString().slice(-2);
+    return `${day}/${month}/${year}`;
+  } catch {
+    return '00/00/00';
+  }
+};
+
+// Función para mapear Pedido del backend a Order del frontend
+const mapPedidoToOrder = (pedido: Pedido): Order => {
+  // Obtener el tipo de prenda del primer detalle o del nombre del presupuesto
+  const garmentType = pedido.detalles.length > 0
+    ? pedido.detalles[0].producto.nombre
+    : pedido.presupuesto.nombre || 'Sin especificar';
+
+  return {
+    id: pedido.id.toString(),
+    name: pedido.cliente.nombre,
+    orderDate: formatDate(pedido.fechaCreacion),
+    deliveryDate: formatDate(pedido.fechaEntregaEstimada),
+    garmentType,
+    price: pedido.presupuesto.totalFinal,
+    status: pedido.pagado ? 'pagado' : 'deposito',
+    operativoStatus: mapEstadoToOperativoStatus(pedido.estado),
+    telegramChatId: pedido.telegramChatId || undefined,
+  };
+};
 
 export default function PedidosPage() {
   const { user, mounted } = useAuth();
@@ -63,14 +82,26 @@ export default function PedidosPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setOrders(MOCK_API_RESPONSE);
-      setIsLoading(false);
-    }, 500);
+    const fetchPedidos = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const pedidos = await pedidoService.getAll();
+        const mappedOrders = pedidos.map(mapPedidoToOrder);
+        setOrders(mappedOrders);
+      } catch (err) {
+        console.error('Error al cargar pedidos:', err);
+        setError('Error al cargar los pedidos. Por favor, intenta nuevamente.');
+        setOrders([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    return () => clearTimeout(timer);
+    fetchPedidos();
   }, []);
 
   const filteredOrders = orders.filter(order => 
@@ -113,7 +144,17 @@ export default function PedidosPage() {
                 </p>
               </div>
             )}
-            {!isLoading && (
+            {!isLoading && error && (
+              <div className="text-center py-12">
+                <p 
+                  className="text-red-500 text-sm"
+                  style={{ fontFamily: 'var(--font-lato), sans-serif' }}
+                >
+                  {error}
+                </p>
+              </div>
+            )}
+            {!isLoading && !error && (
               <>
                 {filteredOrders.length > 0 ? (
                   <div className="space-y-0">
@@ -127,7 +168,7 @@ export default function PedidosPage() {
                       className="text-gray-500 text-sm"
                       style={{ fontFamily: 'var(--font-lato), sans-serif' }}
                     >
-                      No se encontraron pedidos con ese nombre.
+                      {searchTerm ? 'No se encontraron pedidos con ese nombre.' : 'No hay pedidos disponibles.'}
                     </p>
                   </div>
                 )}
