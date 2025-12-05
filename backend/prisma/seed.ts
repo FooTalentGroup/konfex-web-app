@@ -157,11 +157,42 @@ async function main() {
     }
   }
 
+  // Crear categorías primero
+  const categoriasNombres = ["Tela", "Hilo", "Accesorio", "Forro"];
+  const categoriasMap: Record<string, number> = {};
+
+  for (const nombreCategoria of categoriasNombres) {
+    try {
+      const categoriaExistente = await prisma.categoria.findUnique({
+        where: { nombre: nombreCategoria },
+      });
+      if (categoriaExistente) {
+        categoriasMap[nombreCategoria] = categoriaExistente.id;
+      } else {
+        const nuevaCategoria = await prisma.categoria.create({
+          data: { nombre: nombreCategoria },
+        });
+        categoriasMap[nombreCategoria] = nuevaCategoria.id;
+      }
+    } catch (error: any) {
+      if (error.code !== "P2002") {
+        throw error;
+      }
+      // Si ya existe, buscarla para obtener el ID
+      const categoriaExistente = await prisma.categoria.findUnique({
+        where: { nombre: nombreCategoria },
+      });
+      if (categoriaExistente) {
+        categoriasMap[nombreCategoria] = categoriaExistente.id;
+      }
+    }
+  }
+
   const materiales = [
     {
       nombre: "Algodón Premium 240g",
       url_imagen: null,
-      categoria: "Tela",
+      categoriaId: categoriasMap["Tela"],
       unidadMedida: "metros",
       ancho: 150,
       peso: 2.5,
