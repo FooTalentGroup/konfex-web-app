@@ -10,6 +10,7 @@ import { telegramDocs } from "../modules/telegram";
 import { gastosNegocioDocs } from "../modules/gastos-negocio";
 import { impuestoGeneralDocs } from "../modules/impuesto-general";
 import { productoDocs } from "../modules/producto";
+import { pedidoDocs } from "../modules/pedido";
 
 const options = {
   definition: {
@@ -30,6 +31,7 @@ const options = {
         ...telegramDocs.components.schemas,
         ...gastosNegocioDocs.components.schemas,
         ...impuestoGeneralDocs.components.schemas,
+        ...pedidoDocs.components.schemas,
       },
       parameters: {
         ...productoDocs.components.parameters,
@@ -40,6 +42,7 @@ const options = {
         ...telegramDocs.components.parameters,
         ...gastosNegocioDocs.components.parameters,
         ...impuestoGeneralDocs.components.parameters,
+        ...pedidoDocs.components.parameters,
       },
     },
 
@@ -52,6 +55,7 @@ const options = {
       ...telegramDocs.paths,
       ...gastosNegocioDocs.paths,
       ...impuestoGeneralDocs.paths,
+      ...pedidoDocs.paths,
     },
   },
 
