@@ -3,6 +3,21 @@
 import React, {FC} from 'react';
 import Image from 'next/image';
 
+const getInitial = (fullName?: string) => {
+  const clean = (v?: string) => v?.replace(/\s+/g, ' ').trim() || '';
+  const parts = clean(fullName).split(' ').filter(Boolean);
+  const pick = (v: string) => {
+    const m = v.match(/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9]/u);
+    return m ? m[0].toUpperCase() : null;
+  };
+  const first = pick(parts[0] || '');
+  const last = pick(parts[1] || '');
+  if (first && last) return `${first}${last}`;
+  if (first) return first;
+  if (last) return last;
+  return null;
+};
+
 export interface ChatItemProps {
   id: number;
   avatar?: string;
@@ -10,6 +25,7 @@ export interface ChatItemProps {
   message: string;
   time: string;
   hasBudget?: boolean;
+  isRead?: boolean;
   onClick?: () => void;
 }
 
@@ -46,34 +62,25 @@ const ChatItem: FC<ChatItemProps> = ({
       className="w-full flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg transition-all text-left mb-2 bg-[#FEFCFF] border border-transparent shadow-[0px_4px_8px_0px_rgba(0,0,0,0.06)] hover:bg-[#F3F0F5] hover:border-[#D5A1F7] hover:shadow-none"
     >
       <div className="flex-shrink-0">
-        {avatar ? (
-          <Image
-            src={avatar}
-            alt={name}
-            width={48}
-            height={48}
-            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
-          />
-        ) : (
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-gray-200 flex items-center justify-center bg-gray-100">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-5 h-5 sm:w-6 sm:h-6"
-            >
-              <path
-                d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z"
-                stroke="#9CA3AF"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-        )}
+        {(() => {
+          const initials = getInitial(name);
+          if (initials) {
+            return (
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#E6E1EA] text-[#6A5379] flex items-center justify-center border border-[#8B709D] font-lato font-semibold text-sm sm:text-base">
+                {initials}
+              </div>
+            );
+          }
+          return (
+            <Image
+              src={avatar || '/perfil.png'}
+              alt={name}
+              width={48}
+              height={48}
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
+            />
+          );
+        })()}
       </div>
 
       <div className="flex-1 min-w-0">

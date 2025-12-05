@@ -23,9 +23,11 @@ export default function InboxPage() {
     setSearchQuery,
     activeFilter,
     setActiveFilter,
+    markChatAsRead,
   } = useChatList();
 
   const handleChatClick = (chatId: number) => {
+    markChatAsRead(chatId);
     router.push(`/inbox/chat/${chatId}`);
   };
 
