@@ -1,22 +1,30 @@
 import { AppError } from "@/common/errors";
 
 import { productoRepository } from "./producto.repository";
-import type {
-  CreateProductoDto,
-  UpdateProductoDto,
-  ProductoQueryDto,
-} from "./producto.schema";
+import type { CreateProductoDto, UpdateProductoDto } from "./producto.schema";
+import type { CreateProductoDtoDB } from "./producto.types";
 
 export const productoService = {
   // Crear producto
-  create: async (data: CreateProductoDtoDB) => {
+  create: async (data: CreateProductoDto) => {
     // Validación de negocio: nombre único (si quieres controlar antes de Prisma)
     const exists = await productoRepository.findByName(data.nombre);
     if (exists) {
       throw new AppError("El producto ya existe", 409);
     }
 
-    return productoRepository.create(data);
+    // Mapear CreateProductoDto a CreateProductoDtoDB
+    const dataDB: CreateProductoDtoDB = {
+      codigo: data.codigo,
+      nombre: data.nombre,
+      descripcion: data.descripcion,
+      activo: data.activo,
+      coleccionId: data.coleccionId,
+      tallas: data.tallas,
+      colores: data.colores,
+    };
+
+    return productoRepository.create(dataDB);
   },
 
   // Obtener todos

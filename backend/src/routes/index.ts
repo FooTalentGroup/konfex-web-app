@@ -1,14 +1,17 @@
-import type { Request } from "express";
-import { Router } from "express";
 import authRoutes from "@modules/auth/auth.routes";
 import presupuestoRoutes from "@modules/presupuesto/presupuesto.routes";
+import type { Request } from "express";
+import { Router } from "express";
+
+import { controllerHandler } from "@/common/handlers";
+import prisma from "@/config/prisma";
 import { clienteRoutes } from "@/modules/cliente";
+import { coleccionRoutes } from "@/modules/colecciones";
+import { gastosNegocioRoutes } from "@/modules/gastos-negocio";
+import { impuestoGeneralRoutes } from "@/modules/impuesto-general";
 import { materialRoutes } from "@/modules/material/material.routes";
 import { productoRoutes } from "@/modules/producto/producto.routes";
 import telegramRoutes from "@/modules/telegram/telegram.routes";
-import { gastosNegocioRoutes } from "@/modules/gastos-negocio";
-import { impuestoGeneralRoutes } from "@/modules/impuesto-general";
-import { coleccionRoutes } from "@/modules/colecciones";
 
 const router: Router = Router();
 

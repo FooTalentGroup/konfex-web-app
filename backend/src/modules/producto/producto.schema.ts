@@ -36,6 +36,7 @@ export const updateProductoSchema = z.object({
 
 // Schema para búsqueda de productos
 export const productoQuerySchema = z.object({
+  body: z.object({}),
   query: z.object({
     search: z.string().optional(),
     limit: z
