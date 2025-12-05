@@ -81,11 +81,22 @@ model Producto {
   @@index([coleccionId])
 }
 
+model Categoria {
+  id        Int       @id @default(autoincrement())
+  nombre    String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  materiales Material[]
+
+  @@index([nombre])
+}
+
 model Material {
   id           Int                   @id @default(autoincrement())
   nombre       String
   url_imagen   String?
-  categoria    String
+  categoriaId  Int
+  categoria    Categoria             @relation(fields: [categoriaId], references: [id], onDelete: Restrict)
   unidadMedida String
   ancho        Float?
   peso         Float?
@@ -96,7 +107,7 @@ model Material {
   updatedAt    DateTime              @updatedAt
   productos    MaterialPorProducto[]
 
-  @@index([categoria])
+  @@index([categoriaId])
   @@index([precio])
   @@index([proveedor])
 }

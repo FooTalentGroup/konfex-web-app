@@ -527,9 +527,9 @@ async function main() {
 
   const users = [
     {
-      email: "mia@mail.com",
+      email: "test@example.com",
       name: "testQA",
-      password: "030914Km$",
+      password: "test1234",
       role: Role.ADMIN,
     },
     {

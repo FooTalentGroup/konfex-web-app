@@ -5,6 +5,7 @@ import { Router } from "express";
 
 import { controllerHandler } from "@/common/handlers";
 import prisma from "@/config/prisma";
+import { categoriaRoutes } from "@/modules/categoria";
 import { clienteRoutes } from "@/modules/cliente";
 import { coleccionRoutes } from "@/modules/colecciones";
 import { gastosNegocioRoutes } from "@/modules/gastos-negocio";
