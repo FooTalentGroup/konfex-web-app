@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { Paperclip } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
@@ -71,12 +72,28 @@ const ChatInput: React.FC<ChatInputProps> = ({
           onChange={(e) => onChange(e.target.value)}
           onKeyPress={onKeyPress}
           placeholder="Escribe un mensaje..."
-          className="w-full h-12 px-3 rounded-md border border-[#B65CF2] focus:outline-none text-xs sm:text-sm md:text-base font-lato font-normal leading-[131%] tracking-normal text-black bg-[#FEFCFF] shadow-[0px_3px_5.99px_-3px_rgba(0,0,0,0.08),0px_0px_8.99px_0px_rgba(0,0,0,0.10)]"
+          className="w-full h-12 pr-8 pl-8 rounded-md border border-[#B65CF2] focus:outline-none text-xs sm:text-sm md:text-base font-lato font-normal leading-[131%] tracking-normal text-black bg-[#FEFCFF] shadow-[0px_3px_5.99px_-3px_rgba(0,0,0,0.08),0px_0px_8.99px_0px_rgba(0,0,0,0.10)]"
         />
         <button
           type="button"
+          onClick={() => {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.onchange = () => {
+              // placeholder: manejar el archivo seleccionado
+              console.log("Archivo seleccionado");
+            };
+            input.click();
+          }}
+          className="absolute left-2 top-1/2 -translate-y-1/2 hover:opacity-80 transition"
+          aria-label="Adjuntar archivo"
+        >
+          <Paperclip className="w-4 h-4 text-[#8B709D]" />
+        </button>
+        <button
+          type="button"
           onClick={() => setShowEmoji((prev) => !prev)}
-          className="absolute right-1.5 sm:right-2 top-1/2 transform -translate-y-1/2 hover:opacity-70 transition-opacity"
+          className="absolute right-1.5 sm:right-2 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity"
         >
           <svg
             className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5"
