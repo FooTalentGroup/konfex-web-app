@@ -55,6 +55,20 @@ export const authDocs = {
           },
         },
       },
+      SignOutResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          statusCode: { type: "number", example: 200 },
+          message: { type: "string", example: "Sesión cerrada exitosamente" },
+          data: {
+            type: "object",
+            properties: {
+              success: { type: "boolean", example: true },
+            },
+          },
+        },
+      },
       ErrorResponse: {
         type: "object",
         properties: {
@@ -81,10 +95,10 @@ export const authDocs = {
           },
         },
         responses: {
-          201: { 
-            description: "Usuario creado exitosamente", 
-            content: { 
-              "application/json": { 
+          201: {
+            description: "Usuario creado exitosamente",
+            content: {
+              "application/json": {
                 schema: {
                   type: "object",
                   properties: {
@@ -97,29 +111,29 @@ export const authDocs = {
                         id: { type: "number" },
                         email: { type: "string" },
                         name: { type: "string", nullable: true },
-                        role: { type: "string", enum: ["USER", "ADMIN"] }
-                      }
-                    }
-                  }
-                }
-              } 
-            } 
+                        role: { type: "string", enum: ["USER", "ADMIN"] },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
-          400: { 
-            description: "Error de validación", 
-            content: { 
-              "application/json": { 
-                schema: { $ref: "#/components/schemas/ErrorResponse" } 
-              } 
-            } 
+          400: {
+            description: "Error de validación",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
           },
-          409: { 
-            description: "El usuario ya existe", 
-            content: { 
-              "application/json": { 
-                schema: { $ref: "#/components/schemas/ErrorResponse" } 
-              } 
-            } 
+          409: {
+            description: "El usuario ya existe",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
           },
         },
       },
@@ -142,21 +156,45 @@ export const authDocs = {
               "application/json": { schema: { $ref: "#/components/schemas/SignInResponse" } },
             },
           },
-          400: { 
-            description: "Datos inválidos", 
-            content: { 
-              "application/json": { 
-                schema: { $ref: "#/components/schemas/ErrorResponse" } 
-              } 
-            } 
+          400: {
+            description: "Datos inválidos",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
           },
-          401: { 
-            description: "Credenciales inválidas", 
-            content: { 
-              "application/json": { 
-                schema: { $ref: "#/components/schemas/ErrorResponse" } 
-              } 
-            } 
+          401: {
+            description: "Credenciales inválidas",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/api/v1/auth/sign-out": {
+      post: {
+        tags: ["Auth"],
+        summary: "Cerrar sesión",
+        description:
+          "Cierra la sesión del usuario. Principalmente se maneja del lado del cliente eliminando los tokens del localStorage. Este endpoint puede ser útil para invalidar tokens en el futuro o para logging de auditoría.",
+        responses: {
+          200: {
+            description: "Sesión cerrada exitosamente",
+            content: {
+              "application/json": { schema: { $ref: "#/components/schemas/SignOutResponse" } },
+            },
+          },
+          500: {
+            description: "Error del servidor",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
           },
         },
       },
