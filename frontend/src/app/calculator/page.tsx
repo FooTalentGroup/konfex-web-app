@@ -1,16 +1,20 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Header from '@/components/common/Header';
-import Footer from '@/components/common/Footer';
-import Sidebar from '@/components/common/Sidebar';
-import { useAuth } from '@/hooks/useAuth';
-import { useSidebar } from '@/hooks/useSidebar';
-import CalculatorTemplate from "@/components/calculator/CalculatorTemplate"
+import React from "react";
+import Header from "@/components/common/Header";
+import Footer from "@/components/common/Footer";
+import Sidebar from "@/components/common/Sidebar";
+import { useAuth } from "@/hooks/useAuth";
+import { useSidebar } from "@/hooks/useSidebar";
+import CalculatorTemplate from "@/components/calculator/CalculatorTemplate";
 
 export default function CalculatorPage() {
   const { user, mounted } = useAuth();
-  const { isOpen: isSidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar();
+  const {
+    isOpen: isSidebarOpen,
+    open: openSidebar,
+    close: closeSidebar,
+  } = useSidebar();
 
   if (!mounted) {
     return null;
@@ -24,11 +28,14 @@ export default function CalculatorPage() {
     <div className="min-h-screen flex flex-col bg-gray-100">
       <Header onMenuClick={openSidebar} />
       <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
-      
       <main className="flex-1 p-4 sm:p-6">
-          <CalculatorTemplate />
+        <CalculatorTemplate />
       </main>
-
+      {/* TODO: BOTON PASAR A PRESU */}
+      {/* TODO: Deshabilitar gastos de negocio */}
+      {/* TODO: Cambiar costo indirecto a gastos de negocio */}
+      {/* TODO: Vista calcu crear al presu creado */}
+      {/* TODO: Sacar gastos indirectos y ganancia estimada del PDF y de la vista del usuario */}
       <Footer />
     </div>
   );

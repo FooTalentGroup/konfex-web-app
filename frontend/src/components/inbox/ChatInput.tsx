@@ -1,13 +1,16 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Image from 'next/image';
+import React from "react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { ChatContact } from "@/hooks/useChat";
 
 interface ChatInputProps {
   value: string;
   onChange: (value: string) => void;
   onSend: () => void;
   onKeyPress: (e: React.KeyboardEvent) => void;
+  contact: ChatContact | null;
 }
 
 const ChatInput: React.FC<ChatInputProps> = ({
@@ -15,12 +18,21 @@ const ChatInput: React.FC<ChatInputProps> = ({
   onChange,
   onSend,
   onKeyPress,
+  contact,
 }) => {
+  const router = useRouter();
+
+  const handleCreateBudget = () => {
+    if (contact?.chatId) {
+      router.push(`/calculator?origen=telegram&chatId=${contact.chatId}`);
+    }
+  };
+
   return (
     <div className="w-full px-2 sm:px-3 md:px-4 lg:px-6 pt-2 pb-1 sm:py-2.5 md:py-3 flex items-center gap-1.5 bg-[#F3F0F5] border-t border-[#E5E5E5]">
       <button
-        onClick={() => {}}
-        className="flex-shrink-0 w-12 h-12 rounded-[32px] p-2 flex items-center justify-center transition-colors hover:opacity-90 bg-[#E6E1EA] shadow-[0px_0px_4px_0px_rgba(61,52,68,0.25)]"
+        onClick={handleCreateBudget}
+        className="shrink-0 w-12 h-12 rounded-[32px] p-2 flex items-center justify-center transition-colors hover:opacity-90 bg-[#E6E1EA] shadow-[0px_0px_4px_0px_rgba(61,52,68,0.25)]"
       >
         <Image
           src="/Chatimg.png"
@@ -78,7 +90,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
 
       <button
         onClick={onSend}
-        className="flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-colors hover:opacity-90 bg-[#AA42F0]"
+        className="shrink-0 w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-colors hover:opacity-90 bg-[#AA42F0]"
       >
         <Image
           src="/fechaEnvio.png"
@@ -93,4 +105,3 @@ const ChatInput: React.FC<ChatInputProps> = ({
 };
 
 export default ChatInput;
-
