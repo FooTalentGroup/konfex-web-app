@@ -1,5 +1,7 @@
-import {io} from "@/config/socket";
-import {telegramMessageRepository} from "./telegram.repository";
+import { io } from "@/config/socket";
+import prisma from "@/config/prisma";
+import { telegramMessageRepository } from "./telegram.repository";
+import { messageReadRepository } from "./message-read.repository";
 import { uploadFile } from "@/utils/uploadFile";
 
 const TELEGRAM_API = (token: string) => `https://api.telegram.org/bot${token}`;
@@ -12,7 +14,6 @@ type TelegramGetFileResponse = {
     file_path: string;
   };
 };
-
 
 export const handleIncomingUpdate = async (update: any) => {
   if (!update.message) return;
@@ -33,7 +34,6 @@ export const handleIncomingUpdate = async (update: any) => {
     if (message.text) {
       payload.type = "text";
       payload.text = message.text;
-
     } else if (message.photo) {
       const photos = message.photo;
       const largestPhoto = photos[photos.length - 1];
@@ -44,40 +44,45 @@ export const handleIncomingUpdate = async (update: any) => {
       payload.fileSize = largestPhoto.file_size;
 
       // Obtener URL temporal de Telegram
-      const fileInfo = await fetch(`https://api.telegram.org/bot${botToken}/getFile?file_id=${payload.fileId}`)
-        .then(res => res.json()) as TelegramGetFileResponse;;
+      const fileInfo = (await fetch(
+        `https://api.telegram.org/bot${botToken}/getFile?file_id=${payload.fileId}`
+      ).then((res) => res.json())) as TelegramGetFileResponse;
       const telegramFileUrl = `https://api.telegram.org/file/bot${botToken}/${fileInfo.result.file_path}`;
 
       // Subir a Cloudinary usando tu util
-      const cloudinaryRes = await uploadFile({ url: telegramFileUrl, folder: "telegram_photos", filename: payload.fileUniqueId });
+      const cloudinaryRes = await uploadFile({
+        url: telegramFileUrl,
+        folder: "telegram_photos",
+        filename: payload.fileUniqueId,
+      });
       payload.fileUrl = cloudinaryRes.secure_url;
       payload.filePath = `telegram_photos/${payload.fileUniqueId}`;
-
     } else if (message.document) {
       payload.type = "document";
       payload.fileId = message.document.file_id;
       payload.fileUniqueId = message.document.file_unique_id;
       payload.mimeType = message.document.mime_type;
       payload.fileSize = message.document.file_size;
-      
+
       // Si hay caption (texto junto con el documento), agregarlo
       if (message.caption) {
         payload.text = message.caption;
       }
-    
+
       // Obtener file_path desde Telegram
-      const fileInfo = await fetch(`https://api.telegram.org/bot${botToken}/getFile?file_id=${payload.fileId}`)
-        .then(res => res.json()) as TelegramGetFileResponse;
-    
+      const fileInfo = (await fetch(
+        `https://api.telegram.org/bot${botToken}/getFile?file_id=${payload.fileId}`
+      ).then((res) => res.json())) as TelegramGetFileResponse;
+
       if (!fileInfo.ok) throw new Error("No se pudo obtener el archivo de Telegram");
-    
+
       const telegramFileUrl = `https://api.telegram.org/file/bot${botToken}/${fileInfo.result.file_path}`;
-    
+
       // Descargar a Buffer usando arrayBuffer()
       const response = await fetch(telegramFileUrl);
       const arrayBuffer = await response.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
-    
+
       // Determinar la extensión del archivo desde el mimeType o usar .pdf por defecto
       let extension = ".pdf";
       if (payload.mimeType) {
@@ -90,19 +95,19 @@ export const handleIncomingUpdate = async (update: any) => {
         };
         extension = mimeToExt[payload.mimeType] || ".pdf";
       }
-    
+
       // Subir a Cloudinary usando tu util
       const cloudinaryRes = await uploadFile({
         buffer,
         folder: "telegram_documents",
         filename: `${payload.fileUniqueId}${extension}`,
-        resource_type: "raw"
+        resource_type: "raw",
       });
-      
+
       // La URL de Cloudinary para archivos raw es directamente accesible
       payload.fileUrl = cloudinaryRes.secure_url;
       payload.filePath = `telegram_documents/${payload.fileUniqueId}${extension}`;
-      
+
       console.log("📄 Documento procesado:", {
         type: payload.type,
         mimeType: payload.mimeType,
@@ -116,7 +121,6 @@ export const handleIncomingUpdate = async (update: any) => {
 
     await telegramMessageRepository.save(payload);
     io.emit("telegram_message", payload);
-
   } catch (err) {
     console.error("Error procesando mensaje de Telegram:", err);
   }
@@ -166,48 +170,97 @@ export const sendTextMessage = async (
 
 export const associateUser = async (chatId: string | number, clienteId: number) => {
   return telegramMessageRepository.associateUserToChat(chatId, clienteId);
-}
+};
 
 export const getChatMessages = async (chatId: string | number) => {
   const messages = await telegramMessageRepository.findByChatId(chatId);
-  
-  return messages.map(
-    (message) => ({
-      id: message.id,
-      chatId: message.chatId,
-      text: message.text?.trim() || null,
-      source: message.source,
-      firstName: message.firstName?.trim() || null,
-      lastName: message.lastName?.trim() || null,
-      username: message.username || null,
-      timestamp: message.timestamp,
-      // Campos para archivos multimedia
-      type: message.type || "text",
-      fileId: message.fileId || null,
-      fileUniqueId: message.fileUniqueId || null,
-      filePath: message.filePath || null,
-      fileUrl: message.fileUrl || null,
-      mimeType: message.mimeType || null,
-      fileSize: message.fileSize || null,
-    }),
-  );
-}
 
-export const getChatsList = async () => {
+  return messages.map((message) => ({
+    id: message.id,
+    chatId: message.chatId,
+    text: message.text?.trim() || null,
+    source: message.source,
+    firstName: message.firstName?.trim() || null,
+    lastName: message.lastName?.trim() || null,
+    username: message.username || null,
+    timestamp: message.timestamp,
+    // Campos para archivos multimedia
+    type: message.type || "text",
+    fileId: message.fileId || null,
+    fileUniqueId: message.fileUniqueId || null,
+    filePath: message.filePath || null,
+    fileUrl: message.fileUrl || null,
+    mimeType: message.mimeType || null,
+    fileSize: message.fileSize || null,
+  }));
+};
+
+export const getClienteDataFromChat = async (chatId: string | number) => {
+  // Buscar el primer mensaje de Telegram del chat para obtener datos básicos
+  const telegramMessage = await telegramMessageRepository.findByChatId(chatId);
+  const firstTelegramMsg = telegramMessage.find((msg) => msg.source === "telegram");
+
+  if (!firstTelegramMsg) {
+    return null;
+  }
+
+  // Si el mensaje tiene clienteId asociado, obtener datos completos del cliente
+  if (firstTelegramMsg.clienteId) {
+    const cliente = await prisma.cliente.findUnique({
+      where: { id: firstTelegramMsg.clienteId },
+      select: {
+        id: true,
+        nombre: true,
+        email: true,
+        telefono: true,
+      },
+    });
+
+    if (cliente) {
+      return {
+        clienteId: cliente.id,
+        nombre: cliente.nombre,
+        email: cliente.email || null,
+        telefono: cliente.telefono || null,
+      };
+    }
+  }
+
+  // Si no hay cliente asociado, retornar datos básicos del mensaje de Telegram
+  const nombre =
+    firstTelegramMsg.firstName && firstTelegramMsg.lastName
+      ? `${firstTelegramMsg.firstName} ${firstTelegramMsg.lastName}`.trim()
+      : firstTelegramMsg.firstName || firstTelegramMsg.lastName || null;
+
+  return {
+    clienteId: null,
+    nombre: nombre,
+    email: null, // Telegram no proporciona email directamente
+    telefono: null, // Telegram no proporciona teléfono directamente
+  };
+};
+
+export const getChatsList = async (userId?: number) => {
   // Obtener todos los mensajes ordenados por timestamp descendente
   const allMessages = await telegramMessageRepository.findAll();
-  const getLastMessageText = (msg: typeof allMessages[number]): string => {
+  const getLastMessageText = (msg: (typeof allMessages)[number]): string => {
     if (msg.text) return msg.text;
     switch (msg.type) {
-      case "photo": return "Foto";
-      case "video": return "Video";
-      case "audio": return "Audio";
-      case "document": return "Documento";
-      case "voice": return "Nota de voz";
-      default: return "Mensaje sin contenido";
+      case "photo":
+        return "Foto";
+      case "video":
+        return "Video";
+      case "audio":
+        return "Audio";
+      case "document":
+        return "Documento";
+      case "voice":
+        return "Nota de voz";
+      default:
+        return "Mensaje sin contenido";
     }
   };
-  
+
   // Agrupar por chatId, tomando el primer mensaje (más reciente) de cada chat
   const chatsMap = new Map<
     string,
@@ -242,6 +295,12 @@ export const getChatsList = async () => {
     return b.lastTimestamp.getTime() - a.lastTimestamp.getTime();
   });
 
+  // Obtener conteos de no leídos si hay userId
+  let unreadCounts = new Map<string, number>();
+  if (userId) {
+    unreadCounts = await messageReadRepository.getUnreadCountsByChat(userId);
+  }
+
   // Para cada chat, obtener el nombre del usuario con source "telegram"
   // Si no existe, usar el último mensaje con source "telegram" para obtener el nombre
   return await Promise.all(
@@ -269,7 +328,8 @@ export const getChatsList = async () => {
         lastMessageSource: chat.lastMessageSource,
         timestamp: chat.lastTimestamp,
         hasBudget: false,
+        unreadCount: unreadCounts.get(chat.chatId) || 0,
       };
     })
   );
-}
+};
