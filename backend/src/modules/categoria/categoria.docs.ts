@@ -72,7 +72,7 @@ export const categoriaDocs = {
                 example: {
                   success: false,
                   statusCode: 400,
-                  message: "Ya existe una categoría con el nombre \"Tela\"",
+                  message: 'Ya existe una categoría con el nombre "Tela"',
                   errors: null,
                 },
               },
@@ -126,7 +126,8 @@ export const categoriaDocs = {
       put: {
         tags: ["Categorías"],
         summary: "Actualizar una categoría",
-        description: "Actualiza los datos de una categoría existente. El nombre debe ser único si se modifica.",
+        description:
+          "Actualiza los datos de una categoría existente. El nombre debe ser único si se modifica.",
         parameters: [{ $ref: "#/components/parameters/CategoriaId" }],
         requestBody: {
           content: {
@@ -191,7 +192,8 @@ export const categoriaDocs = {
                 example: {
                   success: false,
                   statusCode: 400,
-                  message: "No se puede eliminar la categoría porque tiene 5 material(es) asociado(s)",
+                  message:
+                    "No se puede eliminar la categoría porque tiene 5 material(es) asociado(s)",
                 },
               },
             },
@@ -278,4 +280,3 @@ export const categoriaDocs = {
     },
   },
 };
-

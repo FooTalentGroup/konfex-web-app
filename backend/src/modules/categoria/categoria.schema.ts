@@ -10,10 +10,5 @@ export const updateCategoriaSchema = z.object({
   body: createCategoriaSchema.shape.body.partial(),
 });
 
-export type CreateCategoriaDto = z.infer<
-  typeof createCategoriaSchema
->["body"];
-export type UpdateCategoriaDto = z.infer<
-  typeof updateCategoriaSchema
->["body"];
-
+export type CreateCategoriaDto = z.infer<typeof createCategoriaSchema>["body"];
+export type UpdateCategoriaDto = z.infer<typeof updateCategoriaSchema>["body"];

@@ -28,6 +28,7 @@ export type AggregateMaterial = {
 
 export type MaterialAvgAggregateOutputType = {
   id: number | null
+  categoriaId: number | null
   ancho: number | null
   peso: number | null
   precio: number | null
@@ -35,6 +36,7 @@ export type MaterialAvgAggregateOutputType = {
 
 export type MaterialSumAggregateOutputType = {
   id: number | null
+  categoriaId: number | null
   ancho: number | null
   peso: number | null
   precio: number | null
@@ -44,7 +46,7 @@ export type MaterialMinAggregateOutputType = {
   id: number | null
   nombre: string | null
   url_imagen: string | null
-  categoria: string | null
+  categoriaId: number | null
   unidadMedida: string | null
   ancho: number | null
   peso: number | null
@@ -58,7 +60,7 @@ export type MaterialMaxAggregateOutputType = {
   id: number | null
   nombre: string | null
   url_imagen: string | null
-  categoria: string | null
+  categoriaId: number | null
   unidadMedida: string | null
   ancho: number | null
   peso: number | null
@@ -72,7 +74,7 @@ export type MaterialCountAggregateOutputType = {
   id: number
   nombre: number
   url_imagen: number
-  categoria: number
+  categoriaId: number
   unidadMedida: number
   ancho: number
   peso: number
@@ -87,6 +89,7 @@ export type MaterialCountAggregateOutputType = {
 
 export type MaterialAvgAggregateInputType = {
   id?: true
+  categoriaId?: true
   ancho?: true
   peso?: true
   precio?: true
@@ -94,6 +97,7 @@ export type MaterialAvgAggregateInputType = {
 
 export type MaterialSumAggregateInputType = {
   id?: true
+  categoriaId?: true
   ancho?: true
   peso?: true
   precio?: true
@@ -103,7 +107,7 @@ export type MaterialMinAggregateInputType = {
   id?: true
   nombre?: true
   url_imagen?: true
-  categoria?: true
+  categoriaId?: true
   unidadMedida?: true
   ancho?: true
   peso?: true
@@ -117,7 +121,7 @@ export type MaterialMaxAggregateInputType = {
   id?: true
   nombre?: true
   url_imagen?: true
-  categoria?: true
+  categoriaId?: true
   unidadMedida?: true
   ancho?: true
   peso?: true
@@ -131,7 +135,7 @@ export type MaterialCountAggregateInputType = {
   id?: true
   nombre?: true
   url_imagen?: true
-  categoria?: true
+  categoriaId?: true
   unidadMedida?: true
   ancho?: true
   peso?: true
@@ -233,7 +237,7 @@ export type MaterialGroupByOutputType = {
   id: number
   nombre: string
   url_imagen: string | null
-  categoria: string
+  categoriaId: number
   unidadMedida: string
   ancho: number | null
   peso: number | null
@@ -271,7 +275,7 @@ export type MaterialWhereInput = {
   id?: Prisma.IntFilter<"Material"> | number
   nombre?: Prisma.StringFilter<"Material"> | string
   url_imagen?: Prisma.StringNullableFilter<"Material"> | string | null
-  categoria?: Prisma.StringFilter<"Material"> | string
+  categoriaId?: Prisma.IntFilter<"Material"> | number
   unidadMedida?: Prisma.StringFilter<"Material"> | string
   ancho?: Prisma.FloatNullableFilter<"Material"> | number | null
   peso?: Prisma.FloatNullableFilter<"Material"> | number | null
@@ -280,6 +284,7 @@ export type MaterialWhereInput = {
   precio?: Prisma.FloatFilter<"Material"> | number
   createdAt?: Prisma.DateTimeFilter<"Material"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Material"> | Date | string
+  categoria?: Prisma.XOR<Prisma.CategoriaScalarRelationFilter, Prisma.CategoriaWhereInput>
   productos?: Prisma.MaterialPorProductoListRelationFilter
 }
 
@@ -287,7 +292,7 @@ export type MaterialOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   url_imagen?: Prisma.SortOrderInput | Prisma.SortOrder
-  categoria?: Prisma.SortOrder
+  categoriaId?: Prisma.SortOrder
   unidadMedida?: Prisma.SortOrder
   ancho?: Prisma.SortOrderInput | Prisma.SortOrder
   peso?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -296,6 +301,7 @@ export type MaterialOrderByWithRelationInput = {
   precio?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  categoria?: Prisma.CategoriaOrderByWithRelationInput
   productos?: Prisma.MaterialPorProductoOrderByRelationAggregateInput
 }
 
@@ -306,7 +312,7 @@ export type MaterialWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.MaterialWhereInput | Prisma.MaterialWhereInput[]
   nombre?: Prisma.StringFilter<"Material"> | string
   url_imagen?: Prisma.StringNullableFilter<"Material"> | string | null
-  categoria?: Prisma.StringFilter<"Material"> | string
+  categoriaId?: Prisma.IntFilter<"Material"> | number
   unidadMedida?: Prisma.StringFilter<"Material"> | string
   ancho?: Prisma.FloatNullableFilter<"Material"> | number | null
   peso?: Prisma.FloatNullableFilter<"Material"> | number | null
@@ -315,6 +321,7 @@ export type MaterialWhereUniqueInput = Prisma.AtLeast<{
   precio?: Prisma.FloatFilter<"Material"> | number
   createdAt?: Prisma.DateTimeFilter<"Material"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Material"> | Date | string
+  categoria?: Prisma.XOR<Prisma.CategoriaScalarRelationFilter, Prisma.CategoriaWhereInput>
   productos?: Prisma.MaterialPorProductoListRelationFilter
 }, "id">
 
@@ -322,7 +329,7 @@ export type MaterialOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   url_imagen?: Prisma.SortOrderInput | Prisma.SortOrder
-  categoria?: Prisma.SortOrder
+  categoriaId?: Prisma.SortOrder
   unidadMedida?: Prisma.SortOrder
   ancho?: Prisma.SortOrderInput | Prisma.SortOrder
   peso?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -345,7 +352,7 @@ export type MaterialScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"Material"> | number
   nombre?: Prisma.StringWithAggregatesFilter<"Material"> | string
   url_imagen?: Prisma.StringNullableWithAggregatesFilter<"Material"> | string | null
-  categoria?: Prisma.StringWithAggregatesFilter<"Material"> | string
+  categoriaId?: Prisma.IntWithAggregatesFilter<"Material"> | number
   unidadMedida?: Prisma.StringWithAggregatesFilter<"Material"> | string
   ancho?: Prisma.FloatNullableWithAggregatesFilter<"Material"> | number | null
   peso?: Prisma.FloatNullableWithAggregatesFilter<"Material"> | number | null
@@ -359,7 +366,6 @@ export type MaterialScalarWhereWithAggregatesInput = {
 export type MaterialCreateInput = {
   nombre: string
   url_imagen?: string | null
-  categoria: string
   unidadMedida: string
   ancho?: number | null
   peso?: number | null
@@ -368,6 +374,7 @@ export type MaterialCreateInput = {
   precio: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  categoria: Prisma.CategoriaCreateNestedOneWithoutMaterialesInput
   productos?: Prisma.MaterialPorProductoCreateNestedManyWithoutMaterialInput
 }
 
@@ -375,7 +382,7 @@ export type MaterialUncheckedCreateInput = {
   id?: number
   nombre: string
   url_imagen?: string | null
-  categoria: string
+  categoriaId: number
   unidadMedida: string
   ancho?: number | null
   peso?: number | null
@@ -390,7 +397,6 @@ export type MaterialUncheckedCreateInput = {
 export type MaterialUpdateInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   url_imagen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoria?: Prisma.StringFieldUpdateOperationsInput | string
   unidadMedida?: Prisma.StringFieldUpdateOperationsInput | string
   ancho?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   peso?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -399,6 +405,7 @@ export type MaterialUpdateInput = {
   precio?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  categoria?: Prisma.CategoriaUpdateOneRequiredWithoutMaterialesNestedInput
   productos?: Prisma.MaterialPorProductoUpdateManyWithoutMaterialNestedInput
 }
 
@@ -406,7 +413,7 @@ export type MaterialUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   url_imagen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoria?: Prisma.StringFieldUpdateOperationsInput | string
+  categoriaId?: Prisma.IntFieldUpdateOperationsInput | number
   unidadMedida?: Prisma.StringFieldUpdateOperationsInput | string
   ancho?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   peso?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -422,7 +429,7 @@ export type MaterialCreateManyInput = {
   id?: number
   nombre: string
   url_imagen?: string | null
-  categoria: string
+  categoriaId: number
   unidadMedida: string
   ancho?: number | null
   peso?: number | null
@@ -436,7 +443,6 @@ export type MaterialCreateManyInput = {
 export type MaterialUpdateManyMutationInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   url_imagen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoria?: Prisma.StringFieldUpdateOperationsInput | string
   unidadMedida?: Prisma.StringFieldUpdateOperationsInput | string
   ancho?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   peso?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -451,7 +457,7 @@ export type MaterialUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   url_imagen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoria?: Prisma.StringFieldUpdateOperationsInput | string
+  categoriaId?: Prisma.IntFieldUpdateOperationsInput | number
   unidadMedida?: Prisma.StringFieldUpdateOperationsInput | string
   ancho?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   peso?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -462,11 +468,21 @@ export type MaterialUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type MaterialListRelationFilter = {
+  every?: Prisma.MaterialWhereInput
+  some?: Prisma.MaterialWhereInput
+  none?: Prisma.MaterialWhereInput
+}
+
+export type MaterialOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type MaterialCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   url_imagen?: Prisma.SortOrder
-  categoria?: Prisma.SortOrder
+  categoriaId?: Prisma.SortOrder
   unidadMedida?: Prisma.SortOrder
   ancho?: Prisma.SortOrder
   peso?: Prisma.SortOrder
@@ -479,6 +495,7 @@ export type MaterialCountOrderByAggregateInput = {
 
 export type MaterialAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  categoriaId?: Prisma.SortOrder
   ancho?: Prisma.SortOrder
   peso?: Prisma.SortOrder
   precio?: Prisma.SortOrder
@@ -488,7 +505,7 @@ export type MaterialMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   url_imagen?: Prisma.SortOrder
-  categoria?: Prisma.SortOrder
+  categoriaId?: Prisma.SortOrder
   unidadMedida?: Prisma.SortOrder
   ancho?: Prisma.SortOrder
   peso?: Prisma.SortOrder
@@ -502,7 +519,7 @@ export type MaterialMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   nombre?: Prisma.SortOrder
   url_imagen?: Prisma.SortOrder
-  categoria?: Prisma.SortOrder
+  categoriaId?: Prisma.SortOrder
   unidadMedida?: Prisma.SortOrder
   ancho?: Prisma.SortOrder
   peso?: Prisma.SortOrder
@@ -514,6 +531,7 @@ export type MaterialMinOrderByAggregateInput = {
 
 export type MaterialSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  categoriaId?: Prisma.SortOrder
   ancho?: Prisma.SortOrder
   peso?: Prisma.SortOrder
   precio?: Prisma.SortOrder
@@ -522,6 +540,48 @@ export type MaterialSumOrderByAggregateInput = {
 export type MaterialScalarRelationFilter = {
   is?: Prisma.MaterialWhereInput
   isNot?: Prisma.MaterialWhereInput
+}
+
+export type MaterialCreateNestedManyWithoutCategoriaInput = {
+  create?: Prisma.XOR<Prisma.MaterialCreateWithoutCategoriaInput, Prisma.MaterialUncheckedCreateWithoutCategoriaInput> | Prisma.MaterialCreateWithoutCategoriaInput[] | Prisma.MaterialUncheckedCreateWithoutCategoriaInput[]
+  connectOrCreate?: Prisma.MaterialCreateOrConnectWithoutCategoriaInput | Prisma.MaterialCreateOrConnectWithoutCategoriaInput[]
+  createMany?: Prisma.MaterialCreateManyCategoriaInputEnvelope
+  connect?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+}
+
+export type MaterialUncheckedCreateNestedManyWithoutCategoriaInput = {
+  create?: Prisma.XOR<Prisma.MaterialCreateWithoutCategoriaInput, Prisma.MaterialUncheckedCreateWithoutCategoriaInput> | Prisma.MaterialCreateWithoutCategoriaInput[] | Prisma.MaterialUncheckedCreateWithoutCategoriaInput[]
+  connectOrCreate?: Prisma.MaterialCreateOrConnectWithoutCategoriaInput | Prisma.MaterialCreateOrConnectWithoutCategoriaInput[]
+  createMany?: Prisma.MaterialCreateManyCategoriaInputEnvelope
+  connect?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+}
+
+export type MaterialUpdateManyWithoutCategoriaNestedInput = {
+  create?: Prisma.XOR<Prisma.MaterialCreateWithoutCategoriaInput, Prisma.MaterialUncheckedCreateWithoutCategoriaInput> | Prisma.MaterialCreateWithoutCategoriaInput[] | Prisma.MaterialUncheckedCreateWithoutCategoriaInput[]
+  connectOrCreate?: Prisma.MaterialCreateOrConnectWithoutCategoriaInput | Prisma.MaterialCreateOrConnectWithoutCategoriaInput[]
+  upsert?: Prisma.MaterialUpsertWithWhereUniqueWithoutCategoriaInput | Prisma.MaterialUpsertWithWhereUniqueWithoutCategoriaInput[]
+  createMany?: Prisma.MaterialCreateManyCategoriaInputEnvelope
+  set?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  disconnect?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  delete?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  connect?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  update?: Prisma.MaterialUpdateWithWhereUniqueWithoutCategoriaInput | Prisma.MaterialUpdateWithWhereUniqueWithoutCategoriaInput[]
+  updateMany?: Prisma.MaterialUpdateManyWithWhereWithoutCategoriaInput | Prisma.MaterialUpdateManyWithWhereWithoutCategoriaInput[]
+  deleteMany?: Prisma.MaterialScalarWhereInput | Prisma.MaterialScalarWhereInput[]
+}
+
+export type MaterialUncheckedUpdateManyWithoutCategoriaNestedInput = {
+  create?: Prisma.XOR<Prisma.MaterialCreateWithoutCategoriaInput, Prisma.MaterialUncheckedCreateWithoutCategoriaInput> | Prisma.MaterialCreateWithoutCategoriaInput[] | Prisma.MaterialUncheckedCreateWithoutCategoriaInput[]
+  connectOrCreate?: Prisma.MaterialCreateOrConnectWithoutCategoriaInput | Prisma.MaterialCreateOrConnectWithoutCategoriaInput[]
+  upsert?: Prisma.MaterialUpsertWithWhereUniqueWithoutCategoriaInput | Prisma.MaterialUpsertWithWhereUniqueWithoutCategoriaInput[]
+  createMany?: Prisma.MaterialCreateManyCategoriaInputEnvelope
+  set?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  disconnect?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  delete?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  connect?: Prisma.MaterialWhereUniqueInput | Prisma.MaterialWhereUniqueInput[]
+  update?: Prisma.MaterialUpdateWithWhereUniqueWithoutCategoriaInput | Prisma.MaterialUpdateWithWhereUniqueWithoutCategoriaInput[]
+  updateMany?: Prisma.MaterialUpdateManyWithWhereWithoutCategoriaInput | Prisma.MaterialUpdateManyWithWhereWithoutCategoriaInput[]
+  deleteMany?: Prisma.MaterialScalarWhereInput | Prisma.MaterialScalarWhereInput[]
 }
 
 export type MaterialCreatecoloresInput = {
@@ -555,10 +615,9 @@ export type MaterialUpdateOneRequiredWithoutProductosNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.MaterialUpdateToOneWithWhereWithoutProductosInput, Prisma.MaterialUpdateWithoutProductosInput>, Prisma.MaterialUncheckedUpdateWithoutProductosInput>
 }
 
-export type MaterialCreateWithoutProductosInput = {
+export type MaterialCreateWithoutCategoriaInput = {
   nombre: string
   url_imagen?: string | null
-  categoria: string
   unidadMedida: string
   ancho?: number | null
   peso?: number | null
@@ -567,13 +626,87 @@ export type MaterialCreateWithoutProductosInput = {
   precio: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  productos?: Prisma.MaterialPorProductoCreateNestedManyWithoutMaterialInput
+}
+
+export type MaterialUncheckedCreateWithoutCategoriaInput = {
+  id?: number
+  nombre: string
+  url_imagen?: string | null
+  unidadMedida: string
+  ancho?: number | null
+  peso?: number | null
+  colores?: Prisma.MaterialCreatecoloresInput | string[]
+  proveedor: string
+  precio: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  productos?: Prisma.MaterialPorProductoUncheckedCreateNestedManyWithoutMaterialInput
+}
+
+export type MaterialCreateOrConnectWithoutCategoriaInput = {
+  where: Prisma.MaterialWhereUniqueInput
+  create: Prisma.XOR<Prisma.MaterialCreateWithoutCategoriaInput, Prisma.MaterialUncheckedCreateWithoutCategoriaInput>
+}
+
+export type MaterialCreateManyCategoriaInputEnvelope = {
+  data: Prisma.MaterialCreateManyCategoriaInput | Prisma.MaterialCreateManyCategoriaInput[]
+  skipDuplicates?: boolean
+}
+
+export type MaterialUpsertWithWhereUniqueWithoutCategoriaInput = {
+  where: Prisma.MaterialWhereUniqueInput
+  update: Prisma.XOR<Prisma.MaterialUpdateWithoutCategoriaInput, Prisma.MaterialUncheckedUpdateWithoutCategoriaInput>
+  create: Prisma.XOR<Prisma.MaterialCreateWithoutCategoriaInput, Prisma.MaterialUncheckedCreateWithoutCategoriaInput>
+}
+
+export type MaterialUpdateWithWhereUniqueWithoutCategoriaInput = {
+  where: Prisma.MaterialWhereUniqueInput
+  data: Prisma.XOR<Prisma.MaterialUpdateWithoutCategoriaInput, Prisma.MaterialUncheckedUpdateWithoutCategoriaInput>
+}
+
+export type MaterialUpdateManyWithWhereWithoutCategoriaInput = {
+  where: Prisma.MaterialScalarWhereInput
+  data: Prisma.XOR<Prisma.MaterialUpdateManyMutationInput, Prisma.MaterialUncheckedUpdateManyWithoutCategoriaInput>
+}
+
+export type MaterialScalarWhereInput = {
+  AND?: Prisma.MaterialScalarWhereInput | Prisma.MaterialScalarWhereInput[]
+  OR?: Prisma.MaterialScalarWhereInput[]
+  NOT?: Prisma.MaterialScalarWhereInput | Prisma.MaterialScalarWhereInput[]
+  id?: Prisma.IntFilter<"Material"> | number
+  nombre?: Prisma.StringFilter<"Material"> | string
+  url_imagen?: Prisma.StringNullableFilter<"Material"> | string | null
+  categoriaId?: Prisma.IntFilter<"Material"> | number
+  unidadMedida?: Prisma.StringFilter<"Material"> | string
+  ancho?: Prisma.FloatNullableFilter<"Material"> | number | null
+  peso?: Prisma.FloatNullableFilter<"Material"> | number | null
+  colores?: Prisma.StringNullableListFilter<"Material">
+  proveedor?: Prisma.StringFilter<"Material"> | string
+  precio?: Prisma.FloatFilter<"Material"> | number
+  createdAt?: Prisma.DateTimeFilter<"Material"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Material"> | Date | string
+}
+
+export type MaterialCreateWithoutProductosInput = {
+  nombre: string
+  url_imagen?: string | null
+  unidadMedida: string
+  ancho?: number | null
+  peso?: number | null
+  colores?: Prisma.MaterialCreatecoloresInput | string[]
+  proveedor: string
+  precio: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  categoria: Prisma.CategoriaCreateNestedOneWithoutMaterialesInput
 }
 
 export type MaterialUncheckedCreateWithoutProductosInput = {
   id?: number
   nombre: string
   url_imagen?: string | null
-  categoria: string
+  categoriaId: number
   unidadMedida: string
   ancho?: number | null
   peso?: number | null
@@ -603,7 +736,22 @@ export type MaterialUpdateToOneWithWhereWithoutProductosInput = {
 export type MaterialUpdateWithoutProductosInput = {
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   url_imagen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoria?: Prisma.StringFieldUpdateOperationsInput | string
+  unidadMedida?: Prisma.StringFieldUpdateOperationsInput | string
+  ancho?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  peso?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  colores?: Prisma.MaterialUpdatecoloresInput | string[]
+  proveedor?: Prisma.StringFieldUpdateOperationsInput | string
+  precio?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  categoria?: Prisma.CategoriaUpdateOneRequiredWithoutMaterialesNestedInput
+}
+
+export type MaterialUncheckedUpdateWithoutProductosInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  url_imagen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoriaId?: Prisma.IntFieldUpdateOperationsInput | number
   unidadMedida?: Prisma.StringFieldUpdateOperationsInput | string
   ancho?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   peso?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -614,11 +762,53 @@ export type MaterialUpdateWithoutProductosInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type MaterialUncheckedUpdateWithoutProductosInput = {
+export type MaterialCreateManyCategoriaInput = {
+  id?: number
+  nombre: string
+  url_imagen?: string | null
+  unidadMedida: string
+  ancho?: number | null
+  peso?: number | null
+  colores?: Prisma.MaterialCreatecoloresInput | string[]
+  proveedor: string
+  precio: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type MaterialUpdateWithoutCategoriaInput = {
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  url_imagen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unidadMedida?: Prisma.StringFieldUpdateOperationsInput | string
+  ancho?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  peso?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  colores?: Prisma.MaterialUpdatecoloresInput | string[]
+  proveedor?: Prisma.StringFieldUpdateOperationsInput | string
+  precio?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  productos?: Prisma.MaterialPorProductoUpdateManyWithoutMaterialNestedInput
+}
+
+export type MaterialUncheckedUpdateWithoutCategoriaInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   nombre?: Prisma.StringFieldUpdateOperationsInput | string
   url_imagen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoria?: Prisma.StringFieldUpdateOperationsInput | string
+  unidadMedida?: Prisma.StringFieldUpdateOperationsInput | string
+  ancho?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  peso?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  colores?: Prisma.MaterialUpdatecoloresInput | string[]
+  proveedor?: Prisma.StringFieldUpdateOperationsInput | string
+  precio?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  productos?: Prisma.MaterialPorProductoUncheckedUpdateManyWithoutMaterialNestedInput
+}
+
+export type MaterialUncheckedUpdateManyWithoutCategoriaInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  url_imagen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unidadMedida?: Prisma.StringFieldUpdateOperationsInput | string
   ancho?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   peso?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -664,7 +854,7 @@ export type MaterialSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   id?: boolean
   nombre?: boolean
   url_imagen?: boolean
-  categoria?: boolean
+  categoriaId?: boolean
   unidadMedida?: boolean
   ancho?: boolean
   peso?: boolean
@@ -673,6 +863,7 @@ export type MaterialSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   precio?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  categoria?: boolean | Prisma.CategoriaDefaultArgs<ExtArgs>
   productos?: boolean | Prisma.Material$productosArgs<ExtArgs>
   _count?: boolean | Prisma.MaterialCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["material"]>
@@ -681,7 +872,7 @@ export type MaterialSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   nombre?: boolean
   url_imagen?: boolean
-  categoria?: boolean
+  categoriaId?: boolean
   unidadMedida?: boolean
   ancho?: boolean
   peso?: boolean
@@ -690,13 +881,14 @@ export type MaterialSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   precio?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  categoria?: boolean | Prisma.CategoriaDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["material"]>
 
 export type MaterialSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   nombre?: boolean
   url_imagen?: boolean
-  categoria?: boolean
+  categoriaId?: boolean
   unidadMedida?: boolean
   ancho?: boolean
   peso?: boolean
@@ -705,13 +897,14 @@ export type MaterialSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   precio?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  categoria?: boolean | Prisma.CategoriaDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["material"]>
 
 export type MaterialSelectScalar = {
   id?: boolean
   nombre?: boolean
   url_imagen?: boolean
-  categoria?: boolean
+  categoriaId?: boolean
   unidadMedida?: boolean
   ancho?: boolean
   peso?: boolean
@@ -722,24 +915,30 @@ export type MaterialSelectScalar = {
   updatedAt?: boolean
 }
 
-export type MaterialOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "url_imagen" | "categoria" | "unidadMedida" | "ancho" | "peso" | "colores" | "proveedor" | "precio" | "createdAt" | "updatedAt", ExtArgs["result"]["material"]>
+export type MaterialOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "url_imagen" | "categoriaId" | "unidadMedida" | "ancho" | "peso" | "colores" | "proveedor" | "precio" | "createdAt" | "updatedAt", ExtArgs["result"]["material"]>
 export type MaterialInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  categoria?: boolean | Prisma.CategoriaDefaultArgs<ExtArgs>
   productos?: boolean | Prisma.Material$productosArgs<ExtArgs>
   _count?: boolean | Prisma.MaterialCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type MaterialIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type MaterialIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type MaterialIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  categoria?: boolean | Prisma.CategoriaDefaultArgs<ExtArgs>
+}
+export type MaterialIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  categoria?: boolean | Prisma.CategoriaDefaultArgs<ExtArgs>
+}
 
 export type $MaterialPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Material"
   objects: {
+    categoria: Prisma.$CategoriaPayload<ExtArgs>
     productos: Prisma.$MaterialPorProductoPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     nombre: string
     url_imagen: string | null
-    categoria: string
+    categoriaId: number
     unidadMedida: string
     ancho: number | null
     peso: number | null
@@ -1142,6 +1341,7 @@ readonly fields: MaterialFieldRefs;
  */
 export interface Prisma__MaterialClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  categoria<T extends Prisma.CategoriaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CategoriaDefaultArgs<ExtArgs>>): Prisma.Prisma__CategoriaClient<runtime.Types.Result.GetResult<Prisma.$CategoriaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   productos<T extends Prisma.Material$productosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Material$productosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaterialPorProductoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1175,7 +1375,7 @@ export interface MaterialFieldRefs {
   readonly id: Prisma.FieldRef<"Material", 'Int'>
   readonly nombre: Prisma.FieldRef<"Material", 'String'>
   readonly url_imagen: Prisma.FieldRef<"Material", 'String'>
-  readonly categoria: Prisma.FieldRef<"Material", 'String'>
+  readonly categoriaId: Prisma.FieldRef<"Material", 'Int'>
   readonly unidadMedida: Prisma.FieldRef<"Material", 'String'>
   readonly ancho: Prisma.FieldRef<"Material", 'Float'>
   readonly peso: Prisma.FieldRef<"Material", 'Float'>
@@ -1433,6 +1633,10 @@ export type MaterialCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    */
   data: Prisma.MaterialCreateManyInput | Prisma.MaterialCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MaterialIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1503,6 +1707,10 @@ export type MaterialUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * Limit how many Materials to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MaterialIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

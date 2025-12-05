@@ -1,20 +1,14 @@
 import { AppError } from "@/common/errors";
 import prisma from "@/config/prisma";
+
 import { categoriaRepository } from "./categoria.repository";
-import {
-  CreateCategoriaDto,
-  UpdateCategoriaDto,
-} from "./categoria.schema";
+import type { CreateCategoriaDto, UpdateCategoriaDto } from "./categoria.schema";
 
 export const categoriaService = {
   create: async (data: CreateCategoriaDto) => {
-    // Verificar si ya existe una categoría con el mismo nombre
     const categoriaExistente = await categoriaRepository.findByNombre(data.nombre);
     if (categoriaExistente) {
-      throw new AppError(
-        `Ya existe una categoría con el nombre "${data.nombre}"`,
-        400
-      );
+      throw new AppError(`Ya existe una categoría con el nombre "${data.nombre}"`, 400);
     }
 
     return categoriaRepository.create(data);
@@ -39,14 +33,10 @@ export const categoriaService = {
   update: async (id: number, data: UpdateCategoriaDto) => {
     await categoriaService.getById(id);
 
-    // Si se está actualizando el nombre, verificar que no exista otra categoría con ese nombre
     if (data.nombre) {
       const categoriaExistente = await categoriaRepository.findByNombre(data.nombre);
       if (categoriaExistente && categoriaExistente.id !== id) {
-        throw new AppError(
-          `Ya existe una categoría con el nombre "${data.nombre}"`,
-          400
-        );
+        throw new AppError(`Ya existe una categoría con el nombre "${data.nombre}"`, 400);
       }
     }
 
@@ -56,7 +46,6 @@ export const categoriaService = {
   delete: async (id: number) => {
     await categoriaService.getById(id);
 
-    // Verificar si hay materiales asociados
     const materialesAsociados = await prisma.material.count({
       where: { categoriaId: id },
     });
@@ -71,4 +60,3 @@ export const categoriaService = {
     return categoriaRepository.delete(id);
   },
 };
-

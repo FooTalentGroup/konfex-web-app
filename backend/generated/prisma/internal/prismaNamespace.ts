@@ -388,6 +388,7 @@ export const ModelName = {
   Cliente: 'Cliente',
   Coleccion: 'Coleccion',
   Producto: 'Producto',
+  Categoria: 'Categoria',
   Material: 'Material',
   ManoDeObra: 'ManoDeObra',
   MaterialPorProducto: 'MaterialPorProducto',
@@ -417,7 +418,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "cliente" | "coleccion" | "producto" | "material" | "manoDeObra" | "materialPorProducto" | "manoDeObraPorProducto" | "presupuesto" | "presupuestoDetalle" | "adicional" | "gastosNegocio" | "impuestoGeneral" | "pedido" | "pedidoDetalle" | "produccionEtapa" | "telegramMessage" | "messageRead"
+    modelProps: "user" | "cliente" | "coleccion" | "producto" | "categoria" | "material" | "manoDeObra" | "materialPorProducto" | "manoDeObraPorProducto" | "presupuesto" | "presupuestoDetalle" | "adicional" | "gastosNegocio" | "impuestoGeneral" | "pedido" | "pedidoDetalle" | "produccionEtapa" | "telegramMessage" | "messageRead"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -714,6 +715,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ProductoCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ProductoCountAggregateOutputType> | number
+        }
+      }
+    }
+    Categoria: {
+      payload: Prisma.$CategoriaPayload<ExtArgs>
+      fields: Prisma.CategoriaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CategoriaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CategoriaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CategoriaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CategoriaPayload>
+        }
+        findFirst: {
+          args: Prisma.CategoriaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CategoriaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CategoriaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CategoriaPayload>
+        }
+        findMany: {
+          args: Prisma.CategoriaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CategoriaPayload>[]
+        }
+        create: {
+          args: Prisma.CategoriaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CategoriaPayload>
+        }
+        createMany: {
+          args: Prisma.CategoriaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CategoriaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CategoriaPayload>[]
+        }
+        delete: {
+          args: Prisma.CategoriaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CategoriaPayload>
+        }
+        update: {
+          args: Prisma.CategoriaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CategoriaPayload>
+        }
+        deleteMany: {
+          args: Prisma.CategoriaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CategoriaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CategoriaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CategoriaPayload>[]
+        }
+        upsert: {
+          args: Prisma.CategoriaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CategoriaPayload>
+        }
+        aggregate: {
+          args: Prisma.CategoriaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCategoria>
+        }
+        groupBy: {
+          args: Prisma.CategoriaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CategoriaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CategoriaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CategoriaCountAggregateOutputType> | number
         }
       }
     }
@@ -1854,11 +1929,21 @@ export const ProductoScalarFieldEnum = {
 export type ProductoScalarFieldEnum = (typeof ProductoScalarFieldEnum)[keyof typeof ProductoScalarFieldEnum]
 
 
+export const CategoriaScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CategoriaScalarFieldEnum = (typeof CategoriaScalarFieldEnum)[keyof typeof CategoriaScalarFieldEnum]
+
+
 export const MaterialScalarFieldEnum = {
   id: 'id',
   nombre: 'nombre',
   url_imagen: 'url_imagen',
-  categoria: 'categoria',
+  categoriaId: 'categoriaId',
   unidadMedida: 'unidadMedida',
   ancho: 'ancho',
   peso: 'peso',
@@ -2270,6 +2355,7 @@ export type GlobalOmitConfig = {
   cliente?: Prisma.ClienteOmit
   coleccion?: Prisma.ColeccionOmit
   producto?: Prisma.ProductoOmit
+  categoria?: Prisma.CategoriaOmit
   material?: Prisma.MaterialOmit
   manoDeObra?: Prisma.ManoDeObraOmit
   materialPorProducto?: Prisma.MaterialPorProductoOmit

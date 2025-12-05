@@ -157,7 +157,6 @@ async function main() {
     }
   }
 
-  // Crear categorías primero
   const categoriasNombres = ["Tela", "Hilo", "Accesorio", "Forro"];
   const categoriasMap: Record<string, number> = {};
 
@@ -178,7 +177,6 @@ async function main() {
       if (error.code !== "P2002") {
         throw error;
       }
-      // Si ya existe, buscarla para obtener el ID
       const categoriaExistente = await prisma.categoria.findUnique({
         where: { nombre: nombreCategoria },
       });
