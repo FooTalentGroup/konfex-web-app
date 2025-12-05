@@ -1,4 +1,4 @@
-import { ParsedQs } from "qs";
+import type { ParsedQs } from "qs";
 
 declare global {
   namespace Express {
@@ -8,4 +8,3 @@ declare global {
     }
   }
 }
-

@@ -1,5 +1,6 @@
-import { Response } from "express";
-import { SuccessPayload } from "../types/response.types";
+import type { Response } from "express";
+
+import type { SuccessPayload } from "../types/response.types";
 
 export const sendSuccess = <T>(
   res: Response,

@@ -1,3 +1,4 @@
+import type { Request } from "express";
 import { Router } from "express";
 import authRoutes from "@modules/auth/auth.routes";
 import presupuestoRoutes from "@modules/presupuesto/presupuesto.routes";
@@ -10,6 +11,42 @@ import { impuestoGeneralRoutes } from "@/modules/impuesto-general";
 import { coleccionRoutes } from "@/modules/colecciones";
 
 const router: Router = Router();
+
+// Health check endpoint
+router.get(
+  "/health",
+  controllerHandler(
+    async (_req: Request) => {
+      // Verificar conexión a la base de datos
+      let databaseStatus = "disconnected";
+      let databaseLatency = 0;
+
+      try {
+        const startTime = Date.now();
+        await prisma.$queryRaw`SELECT 1`;
+        databaseLatency = Date.now() - startTime;
+        databaseStatus = "connected";
+      } catch (error) {
+        databaseStatus = "error";
+        throw error;
+      }
+
+      return {
+        status: "healthy",
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        environment: process.env.NODE_ENV || "development",
+        database: {
+          status: databaseStatus,
+          latency: `${databaseLatency}ms`,
+        },
+        version: "1.0.0",
+      };
+    },
+    "Servidor funcionando correctamente",
+    200
+  )
+);
 
 router.use("/auth", authRoutes);
 router.use("/presupuestos", presupuestoRoutes);

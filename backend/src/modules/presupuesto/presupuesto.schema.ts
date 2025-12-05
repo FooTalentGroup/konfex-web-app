@@ -5,25 +5,19 @@ export const estadoPresupuestoValues = [
   "ENVIADO",
   "ACEPTADO",
   "RECHAZADO",
-  "VENCIDO"
+  "VENCIDO",
 ] as const;
 
 export type EstadoPresupuesto = (typeof estadoPresupuestoValues)[number];
 
 export const presupuestoDetalleSchema = z.object({
-  productoId: z
-    .number()
-    .min(1, { message: "productoId debe ser mayor a 0" }),
+  productoId: z.number().min(1, { message: "productoId debe ser mayor a 0" }),
 
   descripcion: z.string().optional(),
 
-  cantidad: z
-    .number()
-    .min(1, { message: "La cantidad debe ser mayor a 0" }),
+  cantidad: z.number().min(1, { message: "La cantidad debe ser mayor a 0" }),
 
-  costoUnitario: z
-    .number()
-    .min(0, { message: "El costo unitario no puede ser negativo" }),
+  costoUnitario: z.number().min(0, { message: "El costo unitario no puede ser negativo" }),
 });
 
 export const adicionalSchema = z.object({
@@ -54,13 +48,10 @@ export const createPresupuestoSchema = z.object({
       .optional()
       .nullable(),
 
-    fechaVencimiento: z
-      .string()
-      .datetime("Formato de fecha inválido")
-      .optional(),
+    fechaVencimiento: z.string().datetime("Formato de fecha inválido").optional(),
 
     estado: z.enum(estadoPresupuestoValues, {
-        error: "Estado inválido",
+      error: "Estado inválido",
     }),
 
     margenGananciaPorcentaje: z
@@ -72,9 +63,7 @@ export const createPresupuestoSchema = z.object({
       .number()
       .min(1, { message: "gastosNegocioId debe ser mayor a 0" }),
 
-    totalCosto: z
-      .number()
-      .min(0, "totalCosto no puede ser negativo"),
+    totalCosto: z.number().min(0, "totalCosto no puede ser negativo"),
 
     costosIndirectos: z
       .number()
@@ -86,13 +75,14 @@ export const createPresupuestoSchema = z.object({
 
     notas: z.string().optional(),
 
+    origen: z.enum(["telegram", "manual"]).optional().default("manual"),
+
     detalles: z.array(presupuestoDetalleSchema).optional(),
     adicionales: z.array(adicionalSchema).optional(),
   }),
 });
 
-export type CreatePresupuestoRequestDto =
-  z.infer<typeof createPresupuestoSchema>["body"];
+export type CreatePresupuestoRequestDto = z.infer<typeof createPresupuestoSchema>["body"];
 
 export const updatePresupuestoSchema = z.object({
   body: z.object({
@@ -103,10 +93,7 @@ export const updatePresupuestoSchema = z.object({
       .optional()
       .nullable(),
 
-    fechaVencimiento: z
-      .string()
-      .datetime("Formato de fecha inválido")
-      .optional(),
+    fechaVencimiento: z.string().datetime("Formato de fecha inválido").optional(),
 
     estado: z.enum(estadoPresupuestoValues),
 
@@ -119,13 +106,14 @@ export const updatePresupuestoSchema = z.object({
 
     notas: z.string().optional(),
 
+    origen: z.enum(["telegram", "manual"]).optional(),
+
     detalles: z.array(presupuestoDetalleSchema).optional(),
     adicionales: z.array(adicionalSchema).optional(),
   }),
 });
 
-export type UpdatePresupuestoRequestDto =
-  z.infer<typeof updatePresupuestoSchema>["body"];
+export type UpdatePresupuestoRequestDto = z.infer<typeof updatePresupuestoSchema>["body"];
 
 export const partialUpdatePresupuestoSchema = z.object({
   body: z.object({
@@ -136,10 +124,7 @@ export const partialUpdatePresupuestoSchema = z.object({
       .optional()
       .nullable(),
 
-    fechaVencimiento: z
-      .string()
-      .datetime("Formato de fecha inválido")
-      .optional(),
+    fechaVencimiento: z.string().datetime("Formato de fecha inválido").optional(),
 
     estado: z.enum(estadoPresupuestoValues).optional(),
 
@@ -152,10 +137,13 @@ export const partialUpdatePresupuestoSchema = z.object({
 
     notas: z.string().optional(),
 
+    origen: z.enum(["telegram", "manual"]).optional(),
+
     detalles: z.array(presupuestoDetalleSchema).optional(),
     adicionales: z.array(adicionalSchema).optional(),
   }),
 });
 
-export type PartialUpdatePresupuestoRequestDto =
-  z.infer<typeof partialUpdatePresupuestoSchema>["body"];
+export type PartialUpdatePresupuestoRequestDto = z.infer<
+  typeof partialUpdatePresupuestoSchema
+>["body"];

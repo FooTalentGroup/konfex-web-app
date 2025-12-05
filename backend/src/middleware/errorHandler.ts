@@ -1,13 +1,9 @@
-import { Request, Response, NextFunction } from "express";
-import logger from "../utils/logger"; // tu logger configurado
-import { isAppError } from "../common/errors";
+import type { NextFunction, Request, Response } from "express";
 
-export function errorHandler(
-  err: unknown,
-  _req: Request,
-  res: Response,
-  _next: NextFunction
-) {
+import { isAppError } from "../common/errors";
+import logger from "../utils/logger"; // tu logger configurado
+
+export function errorHandler(err: unknown, _req: Request, res: Response, _next: NextFunction) {
   // Log completo
   logger.error(err, "Unhandled error");
 

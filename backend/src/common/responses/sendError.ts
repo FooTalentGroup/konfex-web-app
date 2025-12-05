@@ -1,5 +1,6 @@
-import { Response } from "express";
-import { ErrorPayload } from "../types/response.types";
+import type { Response } from "express";
+
+import type { ErrorPayload } from "../types/response.types";
 
 export const sendError = (
   res: Response,

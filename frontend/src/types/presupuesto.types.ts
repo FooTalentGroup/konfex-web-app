@@ -8,6 +8,18 @@ export interface PresupuestoDetalleResponseDto {
   costoUnitario: number;
 }
 
+export interface AdicionalResponseDto {
+  id: number;
+  nombre: string;
+  cantidad: number;
+  monto: number;
+  totalCosto: number;
+  tarifaEnvio?: number | null;
+  observaciones?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface PresupuestoResponseDto {
   id: number;
   numeroPresupuesto: number;
@@ -20,7 +32,9 @@ export interface PresupuestoResponseDto {
   totalCosto: number;
   totalVenta: number;
   notas: string | null;
+  origen: "telegram" | "manual";
   detalles: PresupuestoDetalleResponseDto[];
+  adicionales?: AdicionalResponseDto[];
   cliente?: {
     id: number;
     nombre: string;
