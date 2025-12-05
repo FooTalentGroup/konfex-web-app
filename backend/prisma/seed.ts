@@ -203,7 +203,7 @@ async function main() {
     {
       nombre: "Poliéster Deportivo",
       url_imagen: null,
-      categoria: "Tela",
+      categoriaId: categoriasMap["Tela"],
       unidadMedida: "metros",
       ancho: 140,
       peso: 1.8,
@@ -214,7 +214,7 @@ async function main() {
     {
       nombre: "Lycra Elástica",
       url_imagen: null,
-      categoria: "Tela",
+      categoriaId: categoriasMap["Tela"],
       unidadMedida: "metros",
       ancho: 160,
       peso: 1.2,
@@ -225,7 +225,7 @@ async function main() {
     {
       nombre: "Hilo de Algodón 40/2",
       url_imagen: null,
-      categoria: "Hilo",
+      categoriaId: categoriasMap["Hilo"],
       unidadMedida: "carretes",
       ancho: null,
       peso: null,
@@ -236,7 +236,7 @@ async function main() {
     {
       nombre: "Cierres Metálicos #5",
       url_imagen: null,
-      categoria: "Accesorio",
+      categoriaId: categoriasMap["Accesorio"],
       unidadMedida: "unidades",
       ancho: null,
       peso: null,
@@ -247,7 +247,7 @@ async function main() {
     {
       nombre: "Botones de Madera 15mm",
       url_imagen: null,
-      categoria: "Accesorio",
+      categoriaId: categoriasMap["Accesorio"],
       unidadMedida: "unidades",
       ancho: null,
       peso: null,
@@ -258,7 +258,7 @@ async function main() {
     {
       nombre: "Jean Denim 12oz",
       url_imagen: null,
-      categoria: "Tela",
+      categoriaId: categoriasMap["Tela"],
       unidadMedida: "metros",
       ancho: 150,
       peso: 3.0,
@@ -269,7 +269,7 @@ async function main() {
     {
       nombre: "Forro Polar 200g",
       url_imagen: null,
-      categoria: "Tela",
+      categoriaId: categoriasMap["Tela"],
       unidadMedida: "metros",
       ancho: 150,
       peso: 2.0,
@@ -281,7 +281,7 @@ async function main() {
     {
       nombre: "Seda Natural",
       url_imagen: null,
-      categoria: "Tela",
+      categoriaId: categoriasMap["Tela"],
       unidadMedida: "metros",
       ancho: 140,
       peso: 0.8,
@@ -292,7 +292,7 @@ async function main() {
     {
       nombre: "Lino Orgánico",
       url_imagen: null,
-      categoria: "Tela",
+      categoriaId: categoriasMap["Tela"],
       unidadMedida: "metros",
       ancho: 150,
       peso: 1.5,
@@ -303,7 +303,7 @@ async function main() {
     {
       nombre: "Hilo de Poliéster 100/3",
       url_imagen: null,
-      categoria: "Hilo",
+      categoriaId: categoriasMap["Hilo"],
       unidadMedida: "carretes",
       ancho: null,
       peso: null,
@@ -314,7 +314,7 @@ async function main() {
     {
       nombre: "Cremalleras Nylon #8",
       url_imagen: null,
-      categoria: "Accesorio",
+      categoriaId: categoriasMap["Accesorio"],
       unidadMedida: "unidades",
       ancho: null,
       peso: null,
@@ -325,7 +325,7 @@ async function main() {
     {
       nombre: "Forro de Seda",
       url_imagen: null,
-      categoria: "Forro",
+      categoriaId: categoriasMap["Forro"],
       unidadMedida: "metros",
       ancho: 140,
       peso: 0.6,
@@ -336,7 +336,7 @@ async function main() {
     {
       nombre: "Entretela Fusible",
       url_imagen: null,
-      categoria: "Forro",
+      categoriaId: categoriasMap["Forro"],
       unidadMedida: "metros",
       ancho: 90,
       peso: 0.3,
