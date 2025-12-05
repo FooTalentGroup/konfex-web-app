@@ -2,18 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import OrderCard from '@/components/orders/OrderCard';
-
-// --- COMPONENTES REUTILIZABLES ---
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import Sidebar from '@/components/common/Sidebar';
 import PageHeader from '@/components/common/PageHeader';
-
-// --- HOOKS ---
 import { useAuth } from '@/hooks/useAuth';
 import { useSidebar } from '@/hooks/useSidebar';
 
-// --- TIPOS ---
 export interface Order {
   id: string;
   name: string;
@@ -22,21 +17,11 @@ export interface Order {
   garmentType: string;
   price: number;
   status: 'pagado' | 'deposito';
-  telegramChatId?: string; // ChatId de Telegram para enviar mensajes
+  operativoStatus?: 'presupuesto' | 'en compra' | 'en produccion' | 'entregado';
+  telegramChatId?: string;
 }
 
-// --- DATOS MOCK ---
 const MOCK_API_RESPONSE: Order[] = [
-  {
-    id: '1254307',
-    name: 'Ana Julieta',
-    orderDate: '00/00/00',
-    deliveryDate: '00/00/00',
-    garmentType: 'Blusa manga larga',
-    price: 0,
-    status: 'pagado',
-    telegramChatId: '1585032016', // Ejemplo de chatId de Telegram
-  },
   {
     id: '1234569',
     name: 'Ana Julieta',
@@ -45,7 +30,30 @@ const MOCK_API_RESPONSE: Order[] = [
     garmentType: 'Blusa manga larga',
     price: 0,
     status: 'pagado',
-    telegramChatId: '1585032016', // Ejemplo de chatId de Telegram
+    operativoStatus: 'entregado',
+    telegramChatId: '1585032016',
+  },
+  {
+    id: '1254307',
+    name: 'Ana Julieta',
+    orderDate: '00/00/00',
+    deliveryDate: '00/00/00',
+    garmentType: 'Blusa manga larga',
+    price: 0,
+    status: 'deposito',
+    operativoStatus: 'en produccion',
+    telegramChatId: '1585032016',
+  },
+  {
+    id: '1234568',
+    name: 'Ana Julieta',
+    orderDate: '00/00/00',
+    deliveryDate: '00/00/00',
+    garmentType: 'Blusa manga larga',
+    price: 0,
+    status: 'pagado',
+    operativoStatus: 'en produccion',
+    telegramChatId: '1585032016',
   }
 ];
 
@@ -57,7 +65,6 @@ export default function PedidosPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulamos carga de datos
     const timer = setTimeout(() => {
       setOrders(MOCK_API_RESPONSE);
       setIsLoading(false);
