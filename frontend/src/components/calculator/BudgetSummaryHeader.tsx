@@ -106,11 +106,15 @@ export default function BudgetSummaryHeader({
       if (!finalGastosNegocioId && gastosNegocio.length > 0) {
         finalGastosNegocioId = gastosNegocio[0].id;
         // Establecerlo en el formulario para que se use en el payload
-        setValue("gastosNegocioId", finalGastosNegocioId, { shouldValidate: false });
+        setValue("gastosNegocioId", finalGastosNegocioId, {
+          shouldValidate: false,
+        });
       }
 
       if (!finalGastosNegocioId) {
-        showError("No se encontraron gastos de negocio configurados. Por favor contacta al administrador.");
+        showError(
+          "No se encontraron gastos de negocio configurados. Por favor contacta al administrador."
+        );
         setIsMenuOpen(false);
         return;
       }
@@ -370,7 +374,7 @@ export default function BudgetSummaryHeader({
             <div className="flex justify-center gap-8 text-sm border-t border-white/20 pt-4 mx-4">
               <div>
                 <p className="text-white/70 text-xs mb-1 uppercase">
-                  Costos indirectos
+                  Gastos del Negocio
                 </p>
                 <p className="font-bold text-lg">
                   $ {indirectCosts.toLocaleString("es-AR")}
@@ -546,18 +550,6 @@ export default function BudgetSummaryHeader({
         {/* Totales Finales */}
         <section className="mt-10 pt-6 border-t-2 border-gray-800 flex flex-col items-end">
           <div className="w-64 space-y-2">
-            <div className="flex justify-between text-sm text-gray-600">
-              <span>Subtotal Directo:</span>
-              <span>$ {directCost.toLocaleString()}</span>
-            </div>
-            <div className="flex justify-between text-sm text-gray-600">
-              <span>Costos Indirectos:</span>
-              <span>$ {indirectCosts.toLocaleString()}</span>
-            </div>
-            <div className="flex justify-between text-sm text-gray-600">
-              <span>Ganancia Estimada:</span>
-              <span>$ {profit.toLocaleString()}</span>
-            </div>
             <div className="flex justify-between text-2xl font-bold text-[#8B709D] mt-4 pt-4 border-t border-gray-200">
               <span>TOTAL:</span>
               <span>$ {grandTotal.toLocaleString()}</span>
