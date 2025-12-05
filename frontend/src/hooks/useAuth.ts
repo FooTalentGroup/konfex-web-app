@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { User } from '@/types/auth.types';
+import { authService } from '@/services/auth.service';
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -54,13 +55,22 @@ export const useAuth = () => {
     }
   }, []);
 
-  const logout = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('token');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('user');
-      window.dispatchEvent(new Event('userUpdated'));
-      router.push('/');
+  const logout = async () => {
+    try {
+      // Llamar al endpoint de logout en el backend
+      await authService.signOut();
+    } catch (error) {
+      console.error('Error durante logout:', error);
+      // Continuar con el logout local aunque falle el servidor
+    } finally {
+      // Siempre limpiar el localStorage y redirigir
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+        window.dispatchEvent(new Event('userUpdated'));
+        router.push('/');
+      }
     }
   };
 

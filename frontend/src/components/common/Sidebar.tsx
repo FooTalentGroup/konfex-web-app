@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
+import UserMenu from './UserMenu';
 
 interface MenuItem {
   id: string;
@@ -22,7 +23,9 @@ export interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { logout } = useAuth();
+  const { logout, userName, user } = useAuth();
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userButtonRef = useRef<HTMLButtonElement>(null);
 
   const menuItems: MenuItem[] = [
     {
@@ -92,6 +95,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     onClose();
   };
 
+  const handleUserClick = () => {
+    setIsUserMenuOpen(!isUserMenuOpen);
+  };
+
+  const handleCloseUserMenu = () => {
+    setIsUserMenuOpen(false);
+  };
+
   return (
     <>
       {isOpen && (
@@ -148,6 +159,53 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             </button>
           </div>
 
+          {/* User Section */}
+          <div className="px-4 py-3 border-b border-gray-600/30">
+            <button
+              ref={userButtonRef}
+              onClick={handleUserClick}
+              className="w-full flex items-center gap-3 px-2 py-2 rounded-lg transition-colors hover:bg-gray-600/20"
+              aria-label="Menú de usuario"
+              aria-expanded={isUserMenuOpen}
+              aria-haspopup="true"
+            >
+              <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center shrink-0">
+                <Image
+                  src="/avatar.png"
+                  alt="Avatar de usuario"
+                  width={40}
+                  height={40}
+                  className="object-cover"
+                />
+              </div>
+              <div className="flex flex-col min-w-0 flex-1 text-left">
+                <span
+                  className="text-sm font-semibold text-white truncate"
+                  style={{
+                    fontFamily: 'var(--font-lato), sans-serif',
+                  }}
+                >
+                  {userName || 'Usuario'}
+                </span>
+                {user?.email && (
+                  <span
+                    className="text-xs text-gray-300 truncate"
+                    style={{
+                      fontFamily: 'var(--font-lato), sans-serif',
+                    }}
+                  >
+                    {user.email}
+                  </span>
+                )}
+              </div>
+            </button>
+            <UserMenu
+              isOpen={isUserMenuOpen}
+              onClose={handleCloseUserMenu}
+              anchorRef={userButtonRef}
+            />
+          </div>
+
           <nav className="flex-1 overflow-y-auto py-4">
             {menuItems.map((item, index) => {
               const isActive = item.path && pathname === item.path;
@@ -192,7 +250,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                       }
                     }}
                   >
-                    <span className="flex-shrink-0">
+                    <span className="shrink-0">
                       {item.iconPath ? (
                         <Image
                           src={item.iconPath}

@@ -32,4 +32,12 @@ export const AuthService = {
       user,
     };
   },
+
+  signOut: async () => {
+    // El logout principalmente se maneja del lado del cliente
+    // eliminando los tokens del localStorage.
+    // Este endpoint puede ser útil para invalidar tokens en el futuro
+    // o para logging de auditoría
+    return { success: true, message: "Sesión cerrada exitosamente" };
+  },
 };

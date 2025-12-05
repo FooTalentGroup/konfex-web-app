@@ -1,39 +1,44 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Image from 'next/image';
-import { useAuth } from '@/hooks/useAuth';
+import React, { useState, useRef } from "react";
+import Image from "next/image";
+import { useAuth } from "@/hooks/useAuth";
+import UserMenu from "./UserMenu";
 
 export interface HeaderProps {
   onMenuClick?: () => void;
   onUserClick?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({
-  onMenuClick,
-  onUserClick,
-}) => {
+const Header: React.FC<HeaderProps> = ({ onMenuClick, onUserClick }) => {
   const { userName } = useAuth();
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userButtonRef = useRef<HTMLButtonElement>(null);
 
   const handleMenuClick = () => {
     onMenuClick?.();
   };
 
   const handleUserClick = () => {
+    setIsUserMenuOpen(!isUserMenuOpen);
     onUserClick?.();
+  };
+
+  const handleCloseUserMenu = () => {
+    setIsUserMenuOpen(false);
   };
 
   return (
     <header
       className="w-full flex items-center px-4 sm:px-6 relative"
       style={{
-        minHeight: '56px',
-        backgroundColor: '#6A5379',
+        minHeight: "56px",
+        backgroundColor: "#6A5379",
       }}
     >
       <button
         onClick={handleMenuClick}
-        className="flex items-center justify-center p-2 hover:opacity-80 transition-opacity focus:outline-none w-10 h-10 flex-shrink-0 relative z-10"
+        className="flex items-center justify-center p-2 hover:opacity-80 transition-opacity focus:outline-none w-10 h-10 shrink-0 relative z-10"
         aria-label="Abrir menú"
       >
         <svg
@@ -64,32 +69,42 @@ const Header: React.FC<HeaderProps> = ({
         />
       </div>
 
-      <button
-        onClick={handleUserClick}
-        className="flex items-center justify-center p-2 hover:opacity-80 transition-opacity focus:outline-none ml-auto flex-shrink-0 relative z-10"
-        aria-label={`Perfil de ${userName || 'usuario'}`}
-      >
-        <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
-          <Image
-            src="/avatar.png"
-            alt="Avatar de usuario"
-            width={40}
-            height={40}
-            className="object-cover"
-          />
-        </div>
-        {userName && (
-          <span
-            className="ml-2 text-sm text-white"
-            style={{
-              color: '#FFFFFF',
-              fontFamily: 'var(--font-lato), sans-serif',
-            }}
-          >
-            {userName}
-          </span>
-        )}
-      </button>
+      <div className="relative ml-auto shrink-0 z-10">
+        <button
+          ref={userButtonRef}
+          onClick={handleUserClick}
+          className="flex items-center justify-center p-2 hover:opacity-80 transition-opacity focus:outline-none"
+          aria-label={`Perfil de ${userName || "usuario"}`}
+          aria-expanded={isUserMenuOpen}
+          aria-haspopup="true"
+        >
+          <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
+            <Image
+              src="/avatar.png"
+              alt="Avatar de usuario"
+              width={40}
+              height={40}
+              className="object-cover"
+            />
+          </div>
+          {userName && (
+            <span
+              className="ml-2 text-sm text-white"
+              style={{
+                color: "#FFFFFF",
+                fontFamily: "var(--font-lato), sans-serif",
+              }}
+            >
+              {userName}
+            </span>
+          )}
+        </button>
+        <UserMenu
+          isOpen={isUserMenuOpen}
+          onClose={handleCloseUserMenu}
+          anchorRef={userButtonRef}
+        />
+      </div>
     </header>
   );
 };

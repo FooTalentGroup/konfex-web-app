@@ -25,3 +25,12 @@ export const signInController = controllerHandler(
   "Login exitoso",
   201
 );
+
+export const signOutController = controllerHandler(
+  async (_req: Request) => {
+    await AuthService.signOut();
+    return { success: true };
+  },
+  "Sesión cerrada exitosamente",
+  200
+);
