@@ -1,13 +1,8 @@
 import { useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import { MoreVertical, FileDown, FolderInput, Send, X } from "lucide-react";
+import { MoreVertical, FileDown, Send, X } from "lucide-react";
 import NavigationTabs from "../ui/NavigationTabs";
-import { presupuestoService } from "@/services/presupuesto.service";
-import { clienteService } from "@/services/cliente.service";
 import { useGastosNegocio } from "@/hooks/useGastosNegocio";
-import { mapFormDataToBackend } from "@/utils/presupuestoMapper";
-import { useToast } from "@/contexts/ToastContext";
 
 interface BudgetSummaryHeaderProps {
   presupuestoId?: number;
@@ -34,22 +29,18 @@ interface Extra {
 }
 
 export default function BudgetSummaryHeader({
-  presupuestoId,
-  isEditMode = false,
-  origen = "manual",
+  presupuestoId: _presupuestoId,
+  isEditMode: _isEditMode,
+  origen: _origen,
 }: BudgetSummaryHeaderProps = {}) {
-  const { control, getValues, watch, setValue } = useFormContext();
-  const router = useRouter();
+  const { control, getValues, watch } = useFormContext();
   const { gastosNegocio } = useGastosNegocio();
-  const { showSuccess, showError, showInfo } = useToast();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
 
   const materials = useWatch({ control, name: "materials" }) || [];
   const extras = useWatch({ control, name: "extras" }) || [];
   const shippingFee = useWatch({ control, name: "shippingFee" }) || 0;
-  const gastosNegocioId = useWatch({ control, name: "gastosNegocioId" });
   const desiredProfit = useWatch({ control, name: "desiredProfit" }) || 0;
 
   const formData = watch();
@@ -82,196 +73,6 @@ export default function BudgetSummaryHeader({
   const indirectCosts = (directCost * porcentajeTotalGastos) / 100;
   const profit = (directCost * desiredProfit) / 100;
   const grandTotal = directCost + indirectCosts + profit;
-
-  const handleSendToBudgets = async () => {
-    try {
-      setIsSaving(true);
-      const currentBudgetData = getValues();
-
-      // Validaciones básicas
-      if (!currentBudgetData.title?.trim()) {
-        showError("Por favor ingresa un título para el presupuesto");
-        setIsMenuOpen(false);
-        return;
-      }
-
-      if (!currentBudgetData.clientName?.trim()) {
-        showError("Por favor ingresa el nombre del cliente");
-        setIsMenuOpen(false);
-        return;
-      }
-
-      // Obtener automáticamente el primer gasto de negocio si no hay uno seleccionado
-      let finalGastosNegocioId = gastosNegocioId;
-      if (!finalGastosNegocioId && gastosNegocio.length > 0) {
-        finalGastosNegocioId = gastosNegocio[0].id;
-        // Establecerlo en el formulario para que se use en el payload
-        setValue("gastosNegocioId", finalGastosNegocioId, {
-          shouldValidate: false,
-        });
-      }
-
-      if (!finalGastosNegocioId) {
-        showError(
-          "No se encontraron gastos de negocio configurados. Por favor contacta al administrador."
-        );
-        setIsMenuOpen(false);
-        return;
-      }
-
-      if (materials.length === 0) {
-        showError("Por favor agrega al menos un material/prenda");
-        setIsMenuOpen(false);
-        return;
-      }
-
-      // Validar que todos los materiales tengan productoId
-      const materialesSinProductoId = materials.filter(
-        (m: Material) => !m.productoId
-      );
-      if (materialesSinProductoId.length > 0) {
-        const nombres = materialesSinProductoId
-          .map((m: Material) => m.name)
-          .join(", ");
-        showError(
-          `Los siguientes materiales no tienen producto asociado. Por favor selecciónalos desde el autocomplete: ${nombres}`,
-          5000
-        );
-        setIsMenuOpen(false);
-        return;
-      }
-
-      // Obtener o crear cliente
-      let clienteId = currentBudgetData.clienteId;
-      if (!clienteId) {
-        try {
-          showInfo("Buscando cliente...");
-          const cliente = await clienteService.findOrCreate(
-            currentBudgetData.clientName,
-            {
-              email: currentBudgetData.clientEmail,
-              telefono: currentBudgetData.clientPhone,
-            }
-          );
-          clienteId = cliente.id;
-          // Guardar el clienteId en el formulario para futuras referencias
-          // (esto requeriría setValue del form, pero por ahora solo lo usamos para el payload)
-        } catch (error) {
-          console.error("Error al obtener/crear cliente:", error);
-          const errorMessage =
-            error instanceof Error
-              ? error.message
-              : "Error al procesar el cliente. Por favor intenta nuevamente.";
-          showError(errorMessage);
-          setIsMenuOpen(false);
-          return;
-        }
-      }
-
-      // Validar que haya gastos de negocio disponibles
-      if (!gastosNegocio || gastosNegocio.length === 0) {
-        showError(
-          "No se encontraron gastos de negocio configurados. Por favor contacta al administrador."
-        );
-        setIsMenuOpen(false);
-        return;
-      }
-
-      // Mapear datos del formulario al formato del backend
-      // Pasar TODOS los gastos de negocio para que se sumen sus porcentajes
-      // TypeScript necesita un cast explícito porque getValues() retorna un tipo genérico
-      const payload = mapFormDataToBackend(
-        {
-          ...currentBudgetData,
-          clienteId,
-          gastosNegocioId: finalGastosNegocioId,
-          materials: (currentBudgetData.materials || []) as Material[],
-          extras: (currentBudgetData.extras || []) as Extra[],
-        } as Parameters<typeof mapFormDataToBackend>[0],
-        gastosNegocio,
-        origen
-      );
-
-      // Crear o actualizar presupuesto en el backend
-      if (isEditMode && presupuestoId) {
-        showInfo("Actualizando presupuesto...");
-        const updatedPresupuesto = await presupuestoService.update(
-          presupuestoId,
-          payload
-        );
-
-        console.log(
-          "✅ Presupuesto actualizado exitosamente:",
-          updatedPresupuesto
-        );
-
-        showSuccess(
-          `Presupuesto #${updatedPresupuesto.numeroPresupuesto} actualizado exitosamente`,
-          4000
-        );
-
-        // Redirigir a presupuestos después de un breve delay
-        setTimeout(() => {
-          router.push("/presupuestos");
-        }, 1500);
-      } else {
-        showInfo("Creando presupuesto...");
-        const createdPresupuesto = await presupuestoService.create(payload);
-
-        console.log("✅ Presupuesto creado exitosamente:", createdPresupuesto);
-
-        showSuccess(
-          `Presupuesto #${createdPresupuesto.numeroPresupuesto} creado exitosamente`,
-          4000
-        );
-
-        // Redirigir a presupuestos después de un breve delay para que se vea el toast
-        setTimeout(() => {
-          router.push("/presupuestos");
-        }, 1500);
-      }
-      setIsMenuOpen(false);
-    } catch (error) {
-      console.error("Error al crear presupuesto:", error);
-
-      // Mejorar mensajes de error específicos
-      let errorMessage = "Error desconocido al crear presupuesto";
-
-      if (error instanceof Error) {
-        const message = error.message;
-
-        // Mensajes específicos según el tipo de error
-        if (message.includes("productoId")) {
-          errorMessage =
-            "Uno o más materiales no tienen producto asociado. Por favor selecciónalos desde el autocomplete.";
-        } else if (message.includes("cliente")) {
-          errorMessage =
-            "Error al procesar el cliente. Verifica que el nombre sea válido.";
-        } else if (message.includes("gastosNegocioId")) {
-          errorMessage =
-            "Error con los gastos de negocio. Por favor selecciona uno válido.";
-        } else if (
-          message.includes("API 400") ||
-          message.includes("validación")
-        ) {
-          errorMessage =
-            "Los datos ingresados no son válidos. Por favor revisa el formulario.";
-        } else if (message.includes("API 404")) {
-          errorMessage =
-            "No se pudo conectar con el servidor. Verifica que el backend esté corriendo.";
-        } else if (message.includes("API 500")) {
-          errorMessage =
-            "Error interno del servidor. Por favor intenta nuevamente más tarde.";
-        } else {
-          errorMessage = message;
-        }
-      }
-
-      showError(errorMessage, 5000);
-    } finally {
-      setIsSaving(false);
-    }
-  };
 
   const handleDownloadPDF = () => {
     window.print();
@@ -334,20 +135,6 @@ export default function BudgetSummaryHeader({
                     onClick={() => setIsMenuOpen(false)}
                   />
                   <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl ring-1 ring-black/5 p-2 z-50 text-left animate-in fade-in zoom-in-95 duration-200 origin-top-right">
-                    <button
-                      onClick={handleSendToBudgets}
-                      disabled={isSaving}
-                      className={`flex items-center gap-3 w-full p-3 hover:bg-[#F4E7FD] rounded-lg text-sm text-gray-700 transition-colors font-medium group ${
-                        isSaving ? "opacity-50 cursor-not-allowed" : ""
-                      }`}
-                    >
-                      <div className="p-2 bg-[#F3F0F5] text-[#8B709D] rounded-lg group-hover:bg-white group-hover:shadow-sm transition-all">
-                        <FolderInput size={18} />
-                      </div>
-                      <span>
-                        {isSaving ? "Guardando..." : "Guardar en Presupuestos"}
-                      </span>
-                    </button>
                     <button
                       onClick={handleDownloadPDF}
                       className="flex items-center gap-3 w-full p-3 hover:bg-[#F4E7FD] rounded-lg text-sm text-gray-700 transition-colors font-medium mt-1 group"

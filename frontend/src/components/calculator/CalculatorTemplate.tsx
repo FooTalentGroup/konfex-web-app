@@ -174,7 +174,13 @@ export default function CalculatorTemplate({
           <div className="bg-[#F3F0F5] min-h-[500px]">
             {activeTab === "details" && <BudgetDetails source={budgetSource} />}
             {activeTab === "materials" && <BudgetMaterials />}
-            {activeTab === "extras" && <BudgetExtras />}
+            {activeTab === "extras" && (
+              <BudgetExtras
+                presupuestoId={presupuestoId}
+                isEditMode={isEditMode}
+                origen={budgetSource}
+              />
+            )}
           </div>
         </div>
       </div>

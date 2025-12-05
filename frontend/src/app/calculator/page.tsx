@@ -31,11 +31,6 @@ export default function CalculatorPage() {
       <main className="flex-1 p-4 sm:p-6">
         <CalculatorTemplate />
       </main>
-      {/* TODO: BOTON PASAR A PRESU */}
-      {/* TODO: Deshabilitar gastos de negocio */}
-      {/* TODO: Cambiar costo indirecto a gastos de negocio */}
-      {/* TODO: Vista calcu crear al presu creado */}
-      {/* TODO: Sacar gastos indirectos y ganancia estimada del PDF y de la vista del usuario */}
       <Footer />
     </div>
   );

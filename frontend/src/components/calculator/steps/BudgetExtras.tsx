@@ -1,9 +1,14 @@
 import React, { useState } from "react";
-import { useFormContext, useFieldArray } from "react-hook-form";
+import { useFormContext, useFieldArray, useWatch } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { Trash2, Plus, Minus } from "lucide-react";
 import CircularAddButton from "@/components/common/CircularAddButton";
 import BudgetTotalBadge from "../BudgetTotalBadge";
-import { useWatch } from "react-hook-form";
+import { presupuestoService } from "@/services/presupuesto.service";
+import { clienteService } from "@/services/cliente.service";
+import { useGastosNegocio } from "@/hooks/useGastosNegocio";
+import { mapFormDataToBackend } from "@/utils/presupuestoMapper";
+import { useToast } from "@/contexts/ToastContext";
 
 interface Extra {
   name: string;
@@ -11,8 +16,29 @@ interface Extra {
   amount: number;
 }
 
-export default function BudgetExtras() {
-  const { control, watch, register, setValue } = useFormContext();
+interface Material {
+  productoId?: number;
+  name: string;
+  unitPrice: number;
+  variants: Array<{ size: string; quantity: number }>;
+}
+
+interface BudgetExtrasProps {
+  presupuestoId?: number;
+  isEditMode?: boolean;
+  origen?: "telegram" | "manual";
+}
+
+export default function BudgetExtras({
+  presupuestoId,
+  isEditMode = false,
+  origen = "manual",
+}: BudgetExtrasProps) {
+  const { control, watch, register, setValue, getValues } = useFormContext();
+  const router = useRouter();
+  const { gastosNegocio } = useGastosNegocio();
+  const { showSuccess, showError, showInfo } = useToast();
+  const [isSaving, setIsSaving] = useState(false);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -40,6 +66,8 @@ export default function BudgetExtras() {
   };
 
   const extras = watch("extras") || [];
+  const materials = useWatch({ control, name: "materials" }) || [];
+  const gastosNegocioId = useWatch({ control, name: "gastosNegocioId" });
   const shippingFeeValue =
     typeof shippingFee === "number"
       ? shippingFee
@@ -52,6 +80,183 @@ export default function BudgetExtras() {
     0
   );
   const total = totalExtras + shippingFeeValue;
+
+  const handleRevisar = async () => {
+    try {
+      setIsSaving(true);
+      const currentBudgetData = getValues();
+
+      // Validaciones básicas
+      if (!currentBudgetData.title?.trim()) {
+        showError("Por favor ingresa un título para el presupuesto");
+        return;
+      }
+
+      if (!currentBudgetData.clientName?.trim()) {
+        showError("Por favor ingresa el nombre del cliente");
+        return;
+      }
+
+      // Obtener automáticamente el primer gasto de negocio si no hay uno seleccionado
+      let finalGastosNegocioId = gastosNegocioId;
+      if (!finalGastosNegocioId && gastosNegocio.length > 0) {
+        finalGastosNegocioId = gastosNegocio[0].id;
+        setValue("gastosNegocioId", finalGastosNegocioId, {
+          shouldValidate: false,
+        });
+      }
+
+      if (!finalGastosNegocioId) {
+        showError(
+          "No se encontraron gastos de negocio configurados. Por favor contacta al administrador."
+        );
+        return;
+      }
+
+      if (materials.length === 0) {
+        showError("Por favor agrega al menos un material/prenda");
+        return;
+      }
+
+      // Validar que todos los materiales tengan productoId
+      const materialesSinProductoId = materials.filter(
+        (m: Material) => !m.productoId
+      );
+      if (materialesSinProductoId.length > 0) {
+        const nombres = materialesSinProductoId
+          .map((m: Material) => m.name)
+          .join(", ");
+        showError(
+          `Los siguientes materiales no tienen producto asociado. Por favor selecciónalos desde el autocomplete: ${nombres}`,
+          5000
+        );
+        return;
+      }
+
+      // Obtener o crear cliente
+      let clienteId = currentBudgetData.clienteId;
+      if (!clienteId) {
+        try {
+          showInfo("Buscando cliente...");
+          const cliente = await clienteService.findOrCreate(
+            currentBudgetData.clientName,
+            {
+              email: currentBudgetData.clientEmail,
+              telefono: currentBudgetData.clientPhone,
+            }
+          );
+          clienteId = cliente.id;
+        } catch (error) {
+          console.error("Error al obtener/crear cliente:", error);
+          const errorMessage =
+            error instanceof Error
+              ? error.message
+              : "Error al procesar el cliente. Por favor intenta nuevamente.";
+          showError(errorMessage);
+          return;
+        }
+      }
+
+      // Validar que haya gastos de negocio disponibles
+      if (!gastosNegocio || gastosNegocio.length === 0) {
+        showError(
+          "No se encontraron gastos de negocio configurados. Por favor contacta al administrador."
+        );
+        return;
+      }
+
+      // Mapear datos del formulario al formato del backend
+      const payload = mapFormDataToBackend(
+        {
+          ...currentBudgetData,
+          clienteId,
+          gastosNegocioId: finalGastosNegocioId,
+          materials: (currentBudgetData.materials || []) as Material[],
+          extras: (currentBudgetData.extras || []) as Extra[],
+        } as Parameters<typeof mapFormDataToBackend>[0],
+        gastosNegocio,
+        origen
+      );
+
+      // Crear o actualizar presupuesto en el backend
+      if (isEditMode && presupuestoId) {
+        showInfo("Actualizando presupuesto...");
+        const updatedPresupuesto = await presupuestoService.update(
+          presupuestoId,
+          payload
+        );
+
+        console.log(
+          "✅ Presupuesto actualizado exitosamente:",
+          updatedPresupuesto
+        );
+
+        showSuccess(
+          `Presupuesto #${updatedPresupuesto.numeroPresupuesto} actualizado exitosamente`,
+          4000
+        );
+
+        // Redirigir a presupuestos después de un breve delay
+        setTimeout(() => {
+          router.push("/presupuestos");
+        }, 1500);
+      } else {
+        showInfo("Creando presupuesto...");
+        const createdPresupuesto = await presupuestoService.create(payload);
+
+        console.log("✅ Presupuesto creado exitosamente:", createdPresupuesto);
+
+        showSuccess(
+          `Presupuesto #${createdPresupuesto.numeroPresupuesto} creado exitosamente`,
+          4000
+        );
+
+        // Redirigir a presupuestos después de un breve delay para que se vea el toast
+        setTimeout(() => {
+          router.push("/presupuestos");
+        }, 1500);
+      }
+    } catch (error) {
+      console.error("Error al crear presupuesto:", error);
+
+      // Mejorar mensajes de error específicos
+      let errorMessage = "Error desconocido al crear presupuesto";
+
+      if (error instanceof Error) {
+        const message = error.message;
+
+        // Mensajes específicos según el tipo de error
+        if (message.includes("productoId")) {
+          errorMessage =
+            "Uno o más materiales no tienen producto asociado. Por favor selecciónalos desde el autocomplete.";
+        } else if (message.includes("cliente")) {
+          errorMessage =
+            "Error al procesar el cliente. Verifica que el nombre sea válido.";
+        } else if (message.includes("gastosNegocioId")) {
+          errorMessage =
+            "Error con los gastos de negocio. Por favor selecciona uno válido.";
+        } else if (
+          message.includes("API 400") ||
+          message.includes("validación")
+        ) {
+          errorMessage =
+            "Los datos ingresados no son válidos. Por favor revisa el formulario.";
+        } else if (message.includes("API 404")) {
+          errorMessage =
+            "No se pudo conectar con el servidor. Verifica que el backend esté corriendo.";
+        } else if (message.includes("API 500")) {
+          errorMessage =
+            "Error interno del servidor. Por favor intenta nuevamente más tarde.";
+        } else {
+          errorMessage = message;
+        }
+      }
+
+      showError(errorMessage, 5000);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <div className="p-5 pb-10 font-lato">
@@ -284,9 +489,13 @@ export default function BudgetExtras() {
       {/* Botón Revisar */}
       <button
         type="button"
-        className="w-full bg-[#8B709D] text-white font-bold py-4 rounded-xl hover:bg-[#7A5F8C] transition-colors shadow-lg"
+        onClick={handleRevisar}
+        disabled={isSaving}
+        className={`w-full bg-[#8B709D] text-white font-bold py-4 rounded-xl hover:bg-[#7A5F8C] transition-colors shadow-lg ${
+          isSaving ? "opacity-50 cursor-not-allowed" : ""
+        }`}
       >
-        Revisar
+        {isSaving ? "Guardando..." : "Revisar"}
       </button>
     </div>
   );
