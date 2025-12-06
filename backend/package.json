@@ -9,15 +9,16 @@
   "scripts": {
     "server": "ts-node-dev --respawn --transpile-only --require tsconfig-paths/register src/index.ts",
     "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "seed": "prisma db seed",
+    "server:dev": "npm run server && npm run prisma:generate && npm run prisma:migrate && npm run seed",
     "build": "npm run prisma:generate && tsc && tsc-alias",
     "start": "node dist/src/index.js",
     "start:prod": "npm run build && node dist/src/index.js",
-    "prisma:migrate": "prisma migrate dev",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"src/**/*.{ts,json}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,json}\"",
-    "seed": "prisma db seed"
+    "format:check": "prettier --check \"src/**/*.{ts,json}\""
   },
   "repository": {
     "type": "git",
