@@ -9,22 +9,6 @@ export const materialDocs = {
           "Obtiene una lista paginada de materiales con opciones de filtrado, búsqueda y ordenamiento.",
         parameters: [
           {
-            name: "categoriaId",
-            in: "query",
-            description: "Filtrar por ID de categoría",
-            required: false,
-            schema: { type: "integer" },
-            example: 1,
-          },
-          {
-            name: "categoria",
-            in: "query",
-            description: "Filtrar por nombre de categoría",
-            required: false,
-            schema: { type: "string" },
-            example: "Tela",
-          },
-          {
             name: "color",
             in: "query",
             description: "Filtrar por color disponible",

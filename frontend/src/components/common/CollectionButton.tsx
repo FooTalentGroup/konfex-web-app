@@ -22,7 +22,7 @@ const CollectionButton: React.FC<CollectionButtonProps> = ({
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center justify-center p-3 sm:p-4 rounded-lg transition-all hover:opacity-90 border border-[#D5A1F7] ${
+      className={`flex flex-col w-full h-full items-center justify-center p-3 sm:p-4 rounded-lg transition-all hover:opacity-90 border border-[#D5A1F7] ${
         isActive 
           ? 'bg-[#B65CF2] text-white' 
           : 'bg-[#E6E1EA] text-[#6A5379]'

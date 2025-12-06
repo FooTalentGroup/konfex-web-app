@@ -11,19 +11,19 @@ import CollectionCard from '@/components/common/CollectionCard';
 import AddFloatingButton from '@/components/common/AddFloatingButton';
 import { useAuth } from '@/hooks/useAuth';
 import { useSidebar } from '@/hooks/useSidebar';
-import { useCollections } from '@/hooks/useCollections';
+import { useProducts } from '@/hooks/useProducts';
 
 export default function SummerPage() {
   const router = useRouter();
   const { user, mounted } = useAuth();
   const { isOpen: isSidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar();
   const {
-    filteredGarments,
-    garmentSearchQuery,
-    handleGarmentSearch,
-    handleGarmentClick,
-    handleAddGarment,
-  } = useCollections();
+    filteredProducts,
+    searchQuery: garmentSearchQuery,
+    handleSearch: handleGarmentSearch,
+    handleProductClick,
+    handleAddProduct,
+  } = useProducts();
 
   if (!mounted) {
     return null;
@@ -57,22 +57,22 @@ export default function SummerPage() {
             </div>
 
             <div className="space-y-2 sm:space-y-3 md:space-y-4 pb-4 sm:pb-5 md:pb-6">
-              {filteredGarments.map((garment) => (
+              {filteredProducts.map((product) => (
                 <CollectionCard
-                  key={garment.id}
-                  id={garment.id}
-                  name={garment.name}
-                  color={garment.color}
-                  size={garment.size}
-                  price={garment.price}
-                  imageUrl={garment.imageUrl}
-                  onClick={() => handleGarmentClick(garment.id)}
+                  key={product.id}
+                  id={String(product.id)}
+                  name={product.nombre}
+                  color={product.colores.length > 0 ? product.colores.join(', ') : 'Sin color'}
+                  size={product.tallas.length > 0 ? product.tallas.join(', ') : 'Sin talla'}
+                  price={`$${product.mermaPrecio || 0}`}
+                  imageUrl={product.imagen || '/placeholder-image.png'}
+                  onClick={() => handleProductClick(product.id)}
                 />
               ))}
             </div>
 
             <div className="pt-4 sm:pt-5 md:pt-6 pb-6 sm:pb-8 md:pb-10">
-              <AddFloatingButton onClick={handleAddGarment} isStatic={true} />
+              <AddFloatingButton onClick={() => handleAddProduct()} isStatic={true} />
             </div>
           </div>
         </div>

@@ -55,6 +55,20 @@ export const authDocs = {
           },
         },
       },
+      SignOutResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          statusCode: { type: "number", example: 200 },
+          message: { type: "string", example: "Sesión cerrada exitosamente" },
+          data: {
+            type: "object",
+            properties: {
+              success: { type: "boolean", example: true },
+            },
+          },
+        },
+      },
       ErrorResponse: {
         type: "object",
         properties: {
@@ -157,6 +171,21 @@ export const authDocs = {
                 schema: { $ref: "#/components/schemas/ErrorResponse" } 
               } 
             } 
+          },
+        },
+      },
+    },
+    "/api/v1/auth/sign-out": {
+      post: {
+        tags: ["Auth"],
+        summary: "Cerrar sesión",
+        description: "Cierra la sesión del usuario actual. Principalmente se maneja del lado del cliente eliminando los tokens del localStorage.",
+        responses: {
+          200: {
+            description: "Sesión cerrada exitosamente",
+            content: {
+              "application/json": { schema: { $ref: "#/components/schemas/SignOutResponse" } },
+            },
           },
         },
       },

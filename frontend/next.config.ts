@@ -8,6 +8,17 @@ const nextConfig: NextConfig = {
         hostname: 'casatextil.com.co',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/**',
+      },
+      {
+        protocol: "https",
+        hostname: '**',
+        port: '',
+        pathname: '**',
+      },
     ],
   },
   async rewrites() {
