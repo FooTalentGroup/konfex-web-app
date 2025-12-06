@@ -38,3 +38,13 @@ export const deleteCategoriaController = controllerHandler(
   "Categoría eliminada correctamente",
   204
 );
+
+export const getMaterialesByCategoriaController = controllerHandler(
+  async (req: Request) => {
+    const id = Number(req.params.id);
+    const page = req.query.page ? Number(req.query.page) : 1;
+    const limit = req.query.limit ? Number(req.query.limit) : 10;
+    return await categoriaService.getMateriales(id, page, limit);
+  },
+  "Materiales obtenidos correctamente"
+);

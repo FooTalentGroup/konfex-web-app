@@ -48,12 +48,6 @@ export const materialIdSchema = z.object({
 export const materialQuerySchema = z.object({
   body: z.object({}),
   query: z.object({
-    categoriaId: z
-      .string()
-      .regex(/^\d+$/)
-      .optional()
-      .transform((val) => (val ? parseInt(val) : undefined)),
-    categoria: z.string().optional(), // Para buscar por nombre de categoría
     color: z.string().optional(),
     precioMin: z
       .string()

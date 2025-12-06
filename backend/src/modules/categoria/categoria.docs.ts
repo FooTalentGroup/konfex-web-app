@@ -209,6 +209,100 @@ export const categoriaDocs = {
         },
       },
     },
+
+    "/api/v1/categorias/{id}/materiales": {
+      get: {
+        tags: ["Categorías"],
+        summary: "Obtener materiales de una categoría",
+        description: "Retorna una lista paginada de materiales asociados a una categoría específica",
+        parameters: [
+          { $ref: "#/components/parameters/CategoriaId" },
+          {
+            name: "page",
+            in: "query",
+            description: "Número de página",
+            required: false,
+            schema: { type: "integer", default: 1 },
+            example: 1,
+          },
+          {
+            name: "limit",
+            in: "query",
+            description: "Cantidad de resultados por página",
+            required: false,
+            schema: { type: "integer", default: 10 },
+            example: 10,
+          },
+        ],
+        responses: {
+          200: {
+            description: "Materiales obtenidos correctamente",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    statusCode: { type: "number" },
+                    message: { type: "string" },
+                    data: {
+                      type: "object",
+                      properties: {
+                        data: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                            properties: {
+                              id: { type: "number" },
+                              nombre: { type: "string" },
+                              url_imagen: { type: "string", nullable: true },
+                              categoriaId: { type: "number" },
+                              categoria: {
+                                $ref: "#/components/schemas/Categoria",
+                              },
+                              unidadMedida: { type: "string" },
+                              ancho: { type: "number", nullable: true },
+                              peso: { type: "number", nullable: true },
+                              colores: { type: "array", items: { type: "string" } },
+                              proveedor: { type: "string" },
+                              precio: { type: "number" },
+                              createdAt: { type: "string", format: "date-time" },
+                              updatedAt: { type: "string", format: "date-time" },
+                            },
+                          },
+                        },
+                        pagination: {
+                          type: "object",
+                          properties: {
+                            page: { type: "number" },
+                            limit: { type: "number" },
+                            total: { type: "number" },
+                            totalPages: { type: "number" },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          404: {
+            description: "Categoría no encontrada",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+                example: {
+                  success: false,
+                  statusCode: 404,
+                  message: "Categoría no encontrada",
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
 
   components: {

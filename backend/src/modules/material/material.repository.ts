@@ -2,32 +2,20 @@ import prisma from "../../config/prisma";
 import type { CreateMaterialDto, MaterialQueryDto } from "./material.schema";
 
 export const materialRepository = {
-  create: (data: CreateMaterialDto) => prisma.material.create({ 
-    data: data as any,
-    include: { categoria: true }
-  }),
+  create: (data: CreateMaterialDto) =>
+    prisma.material.create({
+      data: data as any,
+      include: { categoria: true },
+    }),
   update: (id: number, data: Partial<CreateMaterialDto>) =>
-    prisma.material.update({ 
-      where: { id }, 
+    prisma.material.update({
+      where: { id },
       data,
-      include: { categoria: true }
+      include: { categoria: true },
     }),
   findAll: (filters?: MaterialQueryDto) => {
     const where: any = {};
 
-    // Filtro por categoriaId
-    if (filters?.categoriaId) {
-      where.categoriaId = filters.categoriaId;
-    }
-
-    // Filtro por nombre de categoría (buscar en la relación)
-    if (filters?.categoria) {
-      where.categoria = {
-        nombre: { equals: filters.categoria, mode: "insensitive" }
-      };
-    }
-
-    // Filtro por color
     if (filters?.color) {
       where.colores = { has: filters.color };
     }
@@ -75,23 +63,16 @@ export const materialRepository = {
       const consulta = filters.search.trim();
       const orConditions: any[] = [];
 
-      // Búsqueda en campos de texto
       orConditions.push(
         { nombre: { contains: consulta, mode: "insensitive" } },
-        { categoria: { nombre: { contains: consulta, mode: "insensitive" } } },
         { proveedor: { contains: consulta, mode: "insensitive" } },
         { unidadMedida: { contains: consulta, mode: "insensitive" } }
       );
 
-      // Búsqueda en array de colores
       orConditions.push({ colores: { has: consulta } });
 
-      // Intentar parsear como número para buscar en precio, peso y ancho
-      // Solo si no hay filtros de rango específicos para esos campos
       const numero = parseFloat(consulta.replace(/[^\d.]/g, ""));
       if (!isNaN(numero)) {
-        // Buscar precio exacto o aproximado (con tolerancia del 1%)
-        // Solo si no hay filtros de rango de precio
         const tolerancia = numero * 0.01;
         if (!where.precio) {
           orConditions.push({
@@ -169,17 +150,6 @@ export const materialRepository = {
   count: (filters?: MaterialQueryDto) => {
     const where: any = {};
 
-    // Filtro por categoriaId
-    if (filters?.categoriaId) {
-      where.categoriaId = filters.categoriaId;
-    }
-
-    // Filtro por nombre de categoría (buscar en la relación)
-    if (filters?.categoria) {
-      where.categoria = {
-        nombre: { equals: filters.categoria, mode: "insensitive" }
-      };
-    }
     if (filters?.color) {
       where.colores = { has: filters.color };
     }
@@ -222,7 +192,6 @@ export const materialRepository = {
       // Búsqueda en campos de texto
       orConditions.push(
         { nombre: { contains: consulta, mode: "insensitive" } },
-        { categoria: { nombre: { contains: consulta, mode: "insensitive" } } },
         { proveedor: { contains: consulta, mode: "insensitive" } },
         { unidadMedida: { contains: consulta, mode: "insensitive" } }
       );
@@ -289,11 +258,12 @@ export const materialRepository = {
 
     return prisma.material.count({ where });
   },
-  findById: (id: number) => prisma.material.findUnique({ 
-    where: { id },
-    include: {
-      categoria: true,
-    },
-  }),
+  findById: (id: number) =>
+    prisma.material.findUnique({
+      where: { id },
+      include: {
+        categoria: true,
+      },
+    }),
   delete: (id: number) => prisma.material.delete({ where: { id } }),
 };

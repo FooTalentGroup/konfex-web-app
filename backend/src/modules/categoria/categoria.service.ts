@@ -59,4 +59,23 @@ export const categoriaService = {
 
     return categoriaRepository.delete(id);
   },
+
+  getMateriales: async (id: number, page = 1, limit = 10) => {
+    await categoriaService.getById(id);
+
+    const [materiales, total] = await Promise.all([
+      categoriaRepository.findMaterialesByCategoriaId(id, page, limit),
+      categoriaRepository.countMaterialesByCategoriaId(id),
+    ]);
+
+    return {
+      data: materiales,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  },
 };
