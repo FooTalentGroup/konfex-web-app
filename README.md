@@ -1,4 +1,4 @@
-# Proyecto EOS Indumentaria (Konfex Web App)
+# Proyecto Konfex Web App
 
 Este repositorio contiene el código fuente para el sistema de gestión de EOS Indumentaria. El proyecto está organizado en un monorepo con carpetas separadas para el frontend y el backend, con el objetivo de optimizar la gestión de pedidos, cálculos de costos, presupuestos y comunicación con clientes a través de Telegram.
 
