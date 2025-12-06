@@ -7,6 +7,7 @@ import Image from 'next/image';
 export interface BreadcrumbItem {
   label: string;
   color?: string;
+  href?: string;
 }
 
 export interface BackNavigationBarProps {
@@ -27,6 +28,8 @@ const BackNavigationBar: React.FC<BackNavigationBarProps> = ({
   const handleBack = () => {
     if (onBack) {
       onBack();
+    } else if (breadcrumbs.length > 0 && breadcrumbs[0].href) {
+      router.push(breadcrumbs[0].href);
     } else {
       router.back();
     }
