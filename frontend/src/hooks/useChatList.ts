@@ -46,14 +46,14 @@ export function useChatList() {
       try {
         const response = await apiClient<ApiResponse>('/telegram/chats');
         
-        // El endpoint devuelve { success, statusCode, message, data }
         const chatsData = response.data || [];
         
         const chatsList: ChatItemProps[] = chatsData.map((chat) => {
-          // Agregar prefijo "Tu: " si el mensaje fue enviado desde konfex
           const message = chat.lastMessageSource === 'konfex' 
             ? `Tu:  ${chat.lastMessage || ''}`
             : chat.lastMessage || '';
+          
+          const isRead = chat.lastMessageSource === 'konfex';
           
           const chatItem: ChatItemProps = {
             id: Number(chat.chatId) || 0,
@@ -70,12 +70,12 @@ export function useChatList() {
                   minute: '2-digit' 
                 }),
             hasBudget: chat.hasBudget || false,
+            isRead,
           };
           
           return chatItem;
         });
         
-        // Inicializar el mapa de chats
         chatsMapRef.current.clear();
         chatsList.forEach(chat => {
           chatsMapRef.current.set(String(chat.id), chat);
@@ -84,7 +84,6 @@ export function useChatList() {
         setChats(chatsList);
       } catch (error) {
         console.error('Error al obtener los chats:', error);
-        // En caso de error, mantener el array vacío
         setChats([]);
       } finally {
         setIsLoading(false);
@@ -94,7 +93,6 @@ export function useChatList() {
     fetchChats();
   }, []);
 
-  // Función para crear un ChatItem desde datos de mensaje
   const createChatItemFromMessage = (messageData: TelegramMessageData, existingChat?: ChatItemProps): ChatItemProps => {
     const chatId = String(messageData.chatId);
     const name = messageData.firstName && messageData.lastName
@@ -109,6 +107,9 @@ export function useChatList() {
       ? new Date(messageData.timestamp).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
       : new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
+    const isIncoming = messageData.source !== 'konfex';
+    const isRead = isIncoming ? false : (existingChat?.isRead ?? false);
+
     return {
       id: Number(chatId) || 0,
       avatar: '/imagenChat.png',
@@ -116,36 +117,43 @@ export function useChatList() {
       message,
       time,
       hasBudget: existingChat?.hasBudget || false,
+      isRead,
     };
   };
 
-  // Función para actualizar o agregar un chat desde un mensaje
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateChatFromMessage = (messageData: TelegramMessageData) => {
     const chatId = String(messageData.chatId);
     const existingChat = chatsMapRef.current.get(chatId);
     const chatItem = createChatItemFromMessage(messageData, existingChat);
 
-    // Actualizar el mapa de chats
     chatsMapRef.current.set(chatId, chatItem);
     
-    // Convertir el mapa a array y ordenar por timestamp (más recientes primero)
     const allChats = Array.from(chatsMapRef.current.values());
     
-    // Mover el chat actualizado al principio
     const updatedChatIndex = allChats.findIndex(chat => String(chat.id) === chatId);
     if (updatedChatIndex > 0) {
       const [updatedChat] = allChats.splice(updatedChatIndex, 1);
       allChats.unshift(updatedChat);
     } else if (updatedChatIndex === -1) {
-      // Si no existe, agregarlo al principio
       allChats.unshift(chatItem);
     }
     
     setChats(allChats);
   };
 
-  // Configurar Socket.IO para actualizaciones en tiempo real
+  const markChatAsRead = (chatId: number | string) => {
+    const idStr = String(chatId);
+    const existing = chatsMapRef.current.get(idStr);
+    if (!existing || existing.isRead) return;
+
+    const updated = { ...existing, isRead: true };
+    chatsMapRef.current.set(idStr, updated);
+
+    setChats((prev) =>
+      prev.map((chat) => (String(chat.id) === idStr ? updated : chat))
+    );
+  };
+
   useEffect(() => {
     socketRef.current = getSocket();
     const socket = socketRef.current;
@@ -177,7 +185,6 @@ export function useChatList() {
 
       console.log('🔌 Socket conectado, escuchando mensajes de Telegram para lista de chats...');
       
-      // Escuchar múltiples variantes del evento de mensaje
       socket.on('telegram_message', handleTelegramMessage);
       socket.on('telegram:message', handleTelegramMessage);
       socket.on('telegram:new_message', handleTelegramMessage);
@@ -200,7 +207,6 @@ export function useChatList() {
       }
     }
 
-    // Cleanup: remover listeners cuando el componente se desmonte
     return () => {
       if (socket) {
         socket.off('telegram_message', handleTelegramMessage);
@@ -222,9 +228,9 @@ export function useChatList() {
     }
 
     if (activeFilter === 'no-leidos') {
-      filtered = filtered.filter((chat) => !chat.hasBudget);
+      filtered = filtered.filter((chat) => !chat.isRead);
     } else if (activeFilter === 'leidos') {
-      filtered = filtered.filter((chat) => chat.hasBudget);
+      filtered = filtered.filter((chat) => chat.isRead);
     }
 
     return filtered;
@@ -237,6 +243,7 @@ export function useChatList() {
     setSearchQuery,
     activeFilter,
     setActiveFilter,
+    markChatAsRead,
   };
 }
 

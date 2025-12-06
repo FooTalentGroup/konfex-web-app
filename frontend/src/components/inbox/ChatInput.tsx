@@ -1,8 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { Paperclip } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Picker from "@emoji-mart/react";
+import data from "@emoji-mart/data";
 import { ChatContact } from "@/hooks/useChat";
 
 interface ChatInputProps {
@@ -21,6 +24,25 @@ const ChatInput: React.FC<ChatInputProps> = ({
   contact,
 }) => {
   const router = useRouter();
+  const [showEmoji, setShowEmoji] = useState(false);
+  const emojiRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (emojiRef.current && !emojiRef.current.contains(event.target as Node)) {
+        setShowEmoji(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleSelectEmoji = (emoji: { native: never; }) => {
+    onChange(value + (emoji.native || ""));
+    setShowEmoji(false);
+  };
 
   const handleCreateBudget = () => {
     if (contact?.chatId) {
@@ -50,11 +72,30 @@ const ChatInput: React.FC<ChatInputProps> = ({
           onChange={(e) => onChange(e.target.value)}
           onKeyPress={onKeyPress}
           placeholder="Escribe un mensaje..."
-          className="w-full h-12 px-3 rounded-md border border-[#B65CF2] focus:outline-none text-xs sm:text-sm md:text-base font-lato font-normal leading-[131%] tracking-normal text-black bg-[#FEFCFF] shadow-[0px_3px_5.99px_-3px_rgba(0,0,0,0.08),0px_0px_8.99px_0px_rgba(0,0,0,0.10)]"
+          className="w-full h-12 pr-8 pl-8 rounded-md border border-[#B65CF2] focus:outline-none text-xs sm:text-sm md:text-base font-lato font-normal leading-[131%] tracking-normal text-black bg-[#FEFCFF] shadow-[0px_3px_5.99px_-3px_rgba(0,0,0,0.08),0px_0px_8.99px_0px_rgba(0,0,0,0.10)]"
         />
+        {/* Botón de gancho deshabilitado */}
+        {/*
         <button
-          onClick={() => {}}
-          className="absolute right-1.5 sm:right-2 top-1/2 transform -translate-y-1/2 hover:opacity-70 transition-opacity"
+          type="button"
+          onClick={() => {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.onchange = () => {
+              console.log("Archivo seleccionado");
+            };
+            input.click();
+          }}
+          className="absolute left-2 top-1/2 -translate-y-1/2 hover:opacity-80 transition"
+          aria-label="Adjuntar archivo"
+        >
+          <Paperclip className="w-4 h-4 text-[#8B709D]" />
+        </button>
+        */}
+        <button
+          type="button"
+          onClick={() => setShowEmoji((prev) => !prev)}
+          className="absolute right-1.5 sm:right-2 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity"
         >
           <svg
             className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5"
@@ -86,6 +127,14 @@ const ChatInput: React.FC<ChatInputProps> = ({
             />
           </svg>
         </button>
+        {showEmoji && (
+          <div
+            ref={emojiRef}
+            className="absolute left-[-60px] bottom-12 z-50 bg-white rounded-xl shadow-lg border border-[#E5E5E5] p-2"
+          >
+            <Picker data={data} onEmojiSelect={handleSelectEmoji} theme="light" locale={'es'} />
+          </div>
+        )}
       </div>
 
       <button

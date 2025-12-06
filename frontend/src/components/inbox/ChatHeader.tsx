@@ -6,6 +6,27 @@ import { useRouter } from "next/navigation";
 import { ChatContact } from "@/hooks/useChat";
 import { useSocketStatus } from "@/hooks/useSocketStatus";
 
+const getInitial = (
+  firstName?: string | null,
+  lastName?: string | null,
+  username?: string | null
+) => {
+  const clean = (v?: string | null) => v?.replace(/\s+/g, " ").trim() || "";
+  const pick = (v: string) => {
+    if (!v) return null;
+    const m = v.match(/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9]/u);
+    return m ? m[0].toUpperCase() : null;
+  };
+  const f = pick(clean(firstName));
+  const l = pick(clean(lastName));
+  const u = pick(clean(username));
+  if (f && l) return `${f}${l}`;
+  if (f) return f;
+  if (l) return l;
+  if (u) return u;
+  return null;
+};
+
 interface ChatHeaderProps {
   contact: ChatContact | null;
 }
@@ -70,13 +91,26 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ contact }) => {
           {contact.nombre}
         </span>
         <div className="relative shrink-0">
-          <Image
-            src="/perfil.png"
-            alt={contact.nombre}
-            width={32}
-            height={32}
-            className="rounded-full object-cover shrink-0 w-7 h-7 sm:w-8 sm:h-8 border border-[#8B709D]"
-          />
+          {(() => {
+            const parts = contact.nombre?.split(" ") || [];
+            const initials = getInitial(parts[0], parts[1], contact.avatar);
+            if (initials) {
+              return (
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#E6E1EA] text-[#6A5379] flex items-center justify-center border border-[#8B709D] font-lato font-semibold text-xs sm:text-sm">
+                  {initials}
+                </div>
+              );
+            }
+            return (
+              <Image
+                src={contact.avatar || "/perfil.png"}
+                alt={contact.nombre}
+                width={32}
+                height={32}
+                className="rounded-full object-cover shrink-0 w-7 h-7 sm:w-8 sm:h-8 border border-[#8B709D]"
+              />
+            );
+          })()}
           <div
             className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border-2 border-white ${
               isConnected ? "bg-green-500" : "bg-red-500"
