@@ -18,6 +18,16 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ contact }) => {
     return null;
   }
 
+  const handleClientSheetClick = () => {
+    // Si el cliente tiene un clientId, ir a detalles del cliente existente
+    // Si no, ir a crear nuevo cliente
+    if (contact.clientId) {
+      router.push(`/clientes/${contact.clientId}`);
+    } else {
+      router.push(`/inbox/chat/${contact.id}/ficha-cliente`);
+    }
+  };
+
   return (
     <div className="w-full px-3 sm:px-4 pt-3 sm:pt-4 pb-3 sm:pb-4 bg-[#FEFCFF] rounded-b-2xl shadow-[0px_3px_5.99px_0px_rgba(0,0,0,0.05)]">
       <div className="flex items-center justify-between mb-2 sm:mb-3 gap-2 sm:gap-3">
@@ -90,7 +100,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ contact }) => {
 
       <div className="flex justify-end gap-3 sm:gap-4">
         <button
-          onClick={() => {}}
+          onClick={handleClientSheetClick}
           className="hover:opacity-80 transition-opacity font-lato text-sm font-bold leading-[131%] tracking-normal text-[#770FBD] underline flex items-center gap-2 sm:gap-3"
         >
           Ficha de cliente →

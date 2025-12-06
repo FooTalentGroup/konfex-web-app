@@ -16,6 +16,7 @@ export async function apiClient<TResponse = unknown, TBody = unknown>(
 
   const config: RequestInit = {
     method: options.method ?? "GET",
+    credentials: 'include',
     headers: {
       "Content-Type": "application/json",
       ...(options.headers || {})

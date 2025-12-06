@@ -19,6 +19,7 @@ export interface ChatContact {
   avatar?: string;
   plataforma: 'telegram';
   tienePresupuesto?: boolean;
+  clientId?: string; // ID del cliente si ya está registrado
 }
 
 export interface TelegramMessage {
@@ -76,6 +77,7 @@ export const useChat = (chatId: string) => {
           avatar: '/perfil.png',
           plataforma: 'telegram',
           tienePresupuesto: true,
+          clientId: undefined, // Se obtendría del backend si el cliente existe
         };
         
         setContact(basicContact);
@@ -113,6 +115,7 @@ export const useChat = (chatId: string) => {
           avatar: '/perfil.png',
           plataforma: 'telegram',
           tienePresupuesto: true,
+          clientId: undefined,
         };
         setContact(basicContact);
         setMessages([]);

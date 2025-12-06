@@ -6,6 +6,7 @@ export interface Cliente {
   nombre: string;
   telefono?: string | null;
   email?: string | null;
+  direccion?: string | null;
   origen?: string | null;
   instagramUser?: string | null;
   notas?: string | null;
@@ -17,6 +18,7 @@ export interface CreateClienteDto {
   nombre: string;
   telefono?: string;
   email?: string;
+  direccion?: string;
   origen?: string;
   instagramUser?: string;
   notas?: string;
@@ -89,6 +91,35 @@ export const clienteService = {
       email: additionalData?.email,
       telefono: additionalData?.telefono,
     });
+  },
+
+  update: async (id: number, data: Partial<CreateClienteDto>): Promise<Cliente> => {
+    const response = await apiClient<ApiResponse<Cliente>>(
+      `/clientes/${id}`,
+      {
+        method: 'PUT',
+        body: data,
+      }
+    );
+
+    if (!response.success || !response.data) {
+      throw new Error(response.message || 'Error al actualizar cliente');
+    }
+
+    return response.data;
+  },
+
+  delete: async (id: number): Promise<void> => {
+    const response = await apiClient<ApiResponse<null>>(
+      `/clientes/${id}`,
+      {
+        method: 'DELETE',
+      }
+    );
+
+    if (!response.success) {
+      throw new Error(response.message || 'Error al eliminar cliente');
+    }
   },
 };
 
