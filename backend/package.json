@@ -11,7 +11,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "seed": "prisma db seed",
-    "server:dev": "npm run server && npm run prisma:generate && npm run prisma:migrate && npm run seed",
+    "server:dev": "npm run prisma:generate && npm run prisma:migrate && npm run seed && npm run server",
     "build": "npm run prisma:generate && tsc && tsc-alias",
     "start": "node dist/src/index.js",
     "start:prod": "npm run build && node dist/src/index.js",
