@@ -13,6 +13,12 @@ const nextConfig: NextConfig = {
         hostname: 'res.cloudinary.com',
         pathname: '/**',
       },
+      {
+        protocol: "https",
+        hostname: '**',
+        port: '',
+        pathname: '**',
+      },
     ],
   },
   async rewrites() {
