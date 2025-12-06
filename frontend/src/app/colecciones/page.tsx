@@ -1,8 +1,5 @@
 'use client';
 
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import { Plus, Trash2 } from 'lucide-react';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import Sidebar from '@/components/common/Sidebar';
@@ -11,26 +8,43 @@ import CollectionButton from '@/components/common/CollectionButton';
 import { useAuth } from '@/hooks/useAuth';
 import { useSidebar } from '@/hooks/useSidebar';
 import { useCollections } from '@/hooks/useCollections';
+import CreateCollectionInput from '@/components/ui/CreateCollectionInput';
 import BtnActionsCollections from '@/components/ui/BtnActionsCollection';
+import DeleteCollectionModal from '@/components/ui/DeleteCollectionModal';
 
 export default function CollectionsPage() {
     const { user, mounted } = useAuth();
     const { isOpen: isSidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar();
-    const router = useRouter();
     const {
         searchQuery,
         selectedCollection,
         filteredCollections,
         isLoading,
         error,
-        isDeleteMode,
-        collectionsToDelete,
         handleSearch,
         handleCollectionToggle,
-        handleAddCollection,
-        toggleDeleteMode,
+
+        isCreatingMode,
+        newCollectionName,
+        isCreating,
+
+        isDeleteMode,
+        isDeleting,
+        collectionsToDelete,
         toggleCollectionForDeletion,
+        toggleDeleteMode,
         confirmDeletion,
+
+        startCreatingMode,
+        cancelCreatingMode,
+        handleNewCollectionNameChange,
+        createCollection,
+
+        showDeleteModal,
+        openDeleteModal,
+        closeDeleteModal,
+        selectedCollectionsForDeletion,
+
     } = useCollections();
 
     if (!mounted) {
@@ -40,7 +54,7 @@ export default function CollectionsPage() {
     if (!user) {
         return null;
     }
-    
+
     return (
         <div className="min-h-screen flex flex-col bg-primary-500">
             <Header onMenuClick={openSidebar} />
@@ -66,7 +80,7 @@ export default function CollectionsPage() {
 
                 <main className="flex-1 rounded-t-3xl p-4 sm:p-6 bg-white">
                     <div className="w-full max-w-xs sm:max-w-sm mx-auto">
-                        
+
                         {isLoading && (
                             <div className="text-center py-12">
                                 <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary-500 border-t-transparent"></div>
@@ -87,10 +101,10 @@ export default function CollectionsPage() {
                                 </button>
                             </div>
                         )}
-                        
+
                         {!isLoading && !error && (
                             <>
-                                {filteredCollections.length === 0 ? (
+                                {filteredCollections.length === 0 && !isCreatingMode ? (
                                     <div className="text-center py-12">
                                         <p className="text-gray-600 mb-4">
                                             {searchQuery
@@ -99,7 +113,7 @@ export default function CollectionsPage() {
                                         </p>
                                         {!searchQuery && (
                                             <button
-                                                onClick={handleAddCollection}
+                                                onClick={startCreatingMode}
                                                 className="bg-primary-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-primary-600 transition-colors"
                                             >
                                                 Crear primera colección
@@ -108,6 +122,16 @@ export default function CollectionsPage() {
                                     </div>
                                 ) : (
                                     <div className="grid grid-cols-2 gap-x-3 sm:gap-x-4 md:gap-x-5 gap-y-4 sm:gap-y-5 md:gap-y-6 mb-6 sm:mb-8">
+                                        {isCreatingMode && (
+                                            <CreateCollectionInput
+                                                value={newCollectionName}
+                                                onChange={handleNewCollectionNameChange}
+                                                onKeyDown={createCollection}
+                                                isCreating={isCreating}
+                                                onCancel={cancelCreatingMode}
+                                            />
+                                        )}
+
                                         {filteredCollections.map((collection) => (
                                             <div key={collection.id} className="relative">
                                                 <CollectionButton
@@ -133,6 +157,7 @@ export default function CollectionsPage() {
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             toggleCollectionForDeletion(collection.id);
+                                                            openDeleteModal();
                                                         }}
                                                         className="absolute -top-2 -right-2 w-6 h-6 bg-white opacity-75 rounded-full flex items-center justify-center text-secondary-600 text-xs font-bold hover:bg-red-600 transition-colors shadow-md z-10"
                                                     >
@@ -148,12 +173,22 @@ export default function CollectionsPage() {
                     </div>
                 </main>
             </div>
-            
+
             <BtnActionsCollections
                 collectionsToDelete={collectionsToDelete}
                 isDeleteMode={isDeleteMode}
                 toggleDeleteMode={toggleDeleteMode}
-                confirmDeletion={confirmDeletion}
+                confirmDeletion={openDeleteModal}
+                onAddCollection={startCreatingMode}
+            />
+
+            <DeleteCollectionModal
+                isOpen={showDeleteModal}
+                collectionsToDelete={selectedCollectionsForDeletion}
+                onConfirm={confirmDeletion}
+                onCancel={closeDeleteModal}
+                toggleDeleteMode={toggleDeleteMode}
+                isDeleting={isDeleting}
             />
 
             <Footer />
