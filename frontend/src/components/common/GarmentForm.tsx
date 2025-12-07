@@ -1,5 +1,4 @@
 "use client"
-import React from 'react'
 import ImageUploadField from '../ui/ImageUploadField'
 import GarmentDetailTabForm from '../ui/GarmentDetailTabForm';
 import RawMaterialTabForm from '../ui/RawMaterialTabForm';
@@ -8,10 +7,17 @@ import { useAddGarmentForm, useImageUpload } from '@/hooks';
 import TabNavigation from '../ui/TabNavigation';
 import GarmentInfoCard from '../ui/GarmentInfoCard';
 import { AlertCircle, Loader2 } from 'lucide-react';
+import { useToast } from '@/contexts/ToastContext';
 
-export default function GarmentForm() {
+interface GarmentFormProps {
+    collectionId?: number; 
+}
 
-    const { activeTab, tabs, setActiveTab, form, setValue, errors, submit, isSubmitting, submitError } = useAddGarmentForm();
+export default function GarmentForm({ collectionId }: GarmentFormProps) {
+
+    const toast = useToast();
+
+    const { activeTab, tabs, setActiveTab, form, setValue, errors, submit, isSubmitting, submitError } = useAddGarmentForm(collectionId);
 
     const {
         imagePreview,
@@ -62,10 +68,10 @@ export default function GarmentForm() {
             
             if (hasDetailErrors) {
                 setActiveTab(0); 
-                alert('Por favor completa todos los campos obligatorios en "Detalle prenda"');
+                toast.showWarning('Por favor completa todos los campos obligatorios en "Detalle prenda"');
             } else if (hasMaterialErrors) {
                 setActiveTab(1); 
-                alert('Debes agregar al menos un material (tela o insumo)');
+                toast.showWarning('Debes agregar al menos un material (tela o insumo)');
             }
         }
     }

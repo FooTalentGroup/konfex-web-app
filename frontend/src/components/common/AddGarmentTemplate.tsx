@@ -6,7 +6,11 @@ import { useAuth, useSidebar } from '@/hooks';
 import BackNavigationBar from './BackNavigationBar';
 import GarmentForm from './GarmentForm';
 
-export default function AddGarmentTemplate() {
+interface AddGarmentTemplateProps {
+    collectionId?: number; 
+}
+
+export default function AddGarmentTemplate({ collectionId }: AddGarmentTemplateProps) {
     const { user, mounted } = useAuth();
     const { isOpen: isSidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar();
 
@@ -27,7 +31,7 @@ export default function AddGarmentTemplate() {
                         ]}
                     />
 
-                    <GarmentForm />
+                    <GarmentForm collectionId={collectionId}/>
                 </div>
             </main>
         </div>

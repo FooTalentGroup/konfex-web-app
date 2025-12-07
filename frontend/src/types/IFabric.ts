@@ -101,3 +101,24 @@ export interface MaterialAPIResponse {
     createdAt?: string
     updatedAt?: string
 }
+
+export interface Material {
+    id: number;
+    nombre: string;
+    url_imagen: string | null;
+    categoriaId: number;
+    categoria: {
+        id: number;
+        nombre: string;
+        createdAt: string;
+        updatedAt: string;
+    };
+    unidadMedida: string;
+    ancho: number | null;
+    peso: number | null;
+    colores: string[];
+    proveedor: string;
+    precio: number;
+    createdAt: string;
+    updatedAt: string;
+}

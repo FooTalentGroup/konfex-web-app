@@ -19,6 +19,7 @@ export const productoService = {
       nombre: data.nombre,
       descripcion: data.descripcion,
       activo: data.activo,
+      imagen: data.imagen,
       coleccionId: data.coleccionId,
       tallas: data.tallas,
       colores: data.colores,

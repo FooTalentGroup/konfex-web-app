@@ -67,9 +67,9 @@ export const useProducts = (options?: UseProductsOptions) => {
 
     const handleAddProduct = (collectionId?: number) => {
         if (collectionId) {
-            router.push(`/productos/crear?coleccionId=${collectionId}`);
+            router.push(`/colecciones/crear?coleccionId=${collectionId}`);
         } else {
-            router.push('/productos/crear');
+            router.push('/colecciones/crear');
         }
     };
 
