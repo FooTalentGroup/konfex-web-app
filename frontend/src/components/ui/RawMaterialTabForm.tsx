@@ -8,6 +8,8 @@ import CustomSelect from './CustomSelect';
 import CustomInputWithSelect from './CustomInputWithSelect';
 import PriceDisplay from './PriceDisplay';
 import { Plus, Trash2 } from 'lucide-react';
+import { useMaterials } from '@/hooks/useMaterialsForService';
+import { useToast } from '@/contexts/ToastContext';
 
 interface RawMaterialTabFormProps {
     form: UseFormReturn<GarmentFormData>;
@@ -15,54 +17,61 @@ interface RawMaterialTabFormProps {
 
 const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
     const { register, watch, setValue, formState: { errors } } = form;
+    const { materials, isLoading: loadingMaterials } = useMaterials();
+    const toast = useToast();
 
     const rawMaterials = watch('rawMaterials') || [];
+
+    const fabricMaterialsFromDB = materials.filter(m => m.categoria?.nombre === 'TELA' || m.categoria?.nombre === 'tela');
+    const supplyMaterialsFromDB = materials.filter(m => m.categoria?.nombre === 'INSUMO' || m.categoria?.nombre === 'insumo');
 
     const fabricMaterials = rawMaterials.filter(m => m.type === 'fabric');
     const supplyMaterials = rawMaterials.filter(m => m.type === 'supply');
 
-    const totalPrice = rawMaterials.reduce((sum, material) => sum + material.price, 0);
+    const totalPrice = rawMaterials.reduce((sum, material) => sum + (material.price ?? 0), 0);
 
-    const fabrics = [
-        { value: 'algodon', label: 'Algodón' },
-        { value: 'poliester', label: 'Poliéster' },
-        { value: 'seda', label: 'Seda' },
-    ];
 
-    const supplies = [
-        { value: 'botones', label: 'Botones' },
-        { value: 'cremalleras', label: 'Cremalleras' },
-        { value: 'hilos', label: 'Hilos' },
-    ];
+    const fabricOptions = fabricMaterialsFromDB.map(m => ({
+        value: m.id.toString(),
+        label: m.nombre
+    }));
+
+    const supplyOptions = supplyMaterialsFromDB.map(m => ({
+        value: m.id.toString(),
+        label: m.nombre
+    }));
 
     const addFabric = () => {
-        const name = watch('tempFabricName');
+        const materialIdStr = watch('tempFabricName');
         const consumption = watch('tempFabricConsumption');
         const unit = watch('tempFabricUnit');
         const price = watch('tempFabricPrice');
 
-        if (!name || !consumption || !unit || !price) {
-            alert('Por favor completa todos los campos de tela');
+        if (!materialIdStr || !consumption || !unit) {
+            toast.showWarning('Por favor completa todos los campos de tela');
             return;
         }
 
         if (consumption <= 0) {
-            alert('El consumo debe ser mayor a 0');
+            toast.showWarning('El consumo debe ser mayor a 0');
             return;
         }
 
-        if (price < 0) {
-            alert('El precio debe ser mayor o igual a 0');
+
+        const selectedMaterial = materials.find(m => m.id === parseInt(materialIdStr));
+
+        if (!selectedMaterial) {
+            toast.showWarning('Material no encontrado');
             return;
         }
 
         const newMaterial = {
-            id: `fabric-${Date.now()}`,
+            id: materialIdStr,
             type: 'fabric' as const,
-            name,
+            name: selectedMaterial.nombre,
             consumption,
-            unit,
-            price,
+            unit: selectedMaterial.unidadMedida,
+            price: selectedMaterial.precio * consumption,
         };
 
         setValue('rawMaterials', [...rawMaterials, newMaterial]);
@@ -74,33 +83,36 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
     };
 
     const addSupply = () => {
-        const name = watch('tempSupplyName');
+        const materialIdStr = watch('tempSupplyName');
         const consumption = watch('tempSupplyConsumption');
         const unit = watch('tempSupplyUnit');
-        const price = watch('tempSupplyPrice');
+        // const price = watch('tempSupplyPrice');
 
-        if (!name || !consumption || !unit || !price) {
-            alert('Por favor completa todos los campos de insumo');
+        if (!materialIdStr || !consumption || !unit) {
+            toast.showWarning('Por favor completa todos los campos de insumo');
             return;
         }
 
         if (consumption <= 0) {
-            alert('El consumo debe ser mayor a 0');
+            toast.showWarning('El consumo debe ser mayor a 0');
             return;
         }
 
-        if (price < 0) {
-            alert('El precio debe ser mayor o igual a 0');
+
+        const selectedMaterial = materials.find(m => m.id === parseInt(materialIdStr));
+
+        if (!selectedMaterial) {
+            toast.showWarning('Material no encontrado');
             return;
         }
 
         const newMaterial = {
-            id: `supply-${Date.now()}`,
+            id: materialIdStr,
             type: 'supply' as const,
-            name,
+            name: selectedMaterial.nombre,
             consumption,
-            unit,
-            price,
+            unit: selectedMaterial.unidadMedida,
+            price: selectedMaterial.precio * consumption,
         };
 
         setValue('rawMaterials', [...rawMaterials, newMaterial]);
@@ -128,31 +140,32 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                 <CustomSelect
                     id="tempFabricName"
                     label="Tela"
-                    options={fabrics}
+                    options={fabricOptions}
                     register={register('tempFabricName')}
                     error={errors.tempFabricName?.message}
                     placeholder="Ej. Algodón"
                     className="bg-white"
                 />
 
-                <div className="grid grid-cols-2 gap-4">
-                    <CustomInputWithSelect
-                        id="tempFabricConsumption"
-                        label="Consumo"
-                        register={register('tempFabricConsumption', { valueAsNumber: true })}
-                        error={errors.tempFabricConsumption?.message}
-                        placeholder="2.00"
-                        selectId="tempFabricUnit"
-                        selectRegister={register('tempFabricUnit')}
-                        selectOptions={[
-                            { value: 'm', label: 'm' },
-                            { value: 'cm', label: 'cm' },
-                        ]}
-                        selectError={errors.tempFabricUnit?.message}
-                        className="bg-white"
-                    />
+                <CustomInputWithSelect
+                    id="tempFabricConsumption"
+                    label="Consumo"
+                    register={register('tempFabricConsumption', { valueAsNumber: true })}
+                    error={errors.tempFabricConsumption?.message}
+                    placeholder="2.00"
+                    selectId="tempFabricUnit"
+                    selectRegister={register('tempFabricUnit')}
+                    selectOptions={[
+                        { value: 'm', label: 'm' },
+                        { value: 'cm', label: 'cm' },
+                    ]}
+                    selectError={errors.tempFabricUnit?.message}
+                    className="bg-white"
+                />
 
-                    <CustomInput
+                <div className="grid grid-cols-2 gap-4">
+
+                    {/* <CustomInput
                         id="tempFabricPrice"
                         label="Precio"
                         type="number"
@@ -161,7 +174,7 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                         placeholder="25.000"
                         className="bg-white"
                         unit="$"
-                    />
+                    /> */}
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -196,7 +209,7 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                                     {material.consumption} {material.unit}
                                 </span>
                                 <span className="text-sm font-semibold text-gray-800">
-                                    $ {material.price.toLocaleString('es-CO')}
+                                    $ {material.price}
                                 </span>
                                 <button
                                     type="button"
@@ -215,32 +228,32 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                 <CustomSelect
                     id="tempSupplyName"
                     label="Insumos"
-                    options={supplies}
+                    options={supplyOptions}
                     register={register('tempSupplyName')}
                     error={errors.tempSupplyName?.message}
                     placeholder="Ej. Botones L24 + cortesía"
                     className="bg-white"
                 />
 
+                <CustomInputWithSelect
+                    id="tempSupplyConsumption"
+                    label="Consumo"
+                    register={register('tempSupplyConsumption', { valueAsNumber: true })}
+                    error={errors.tempSupplyConsumption?.message}
+                    placeholder="4"
+                    selectId="tempSupplyUnit"
+                    selectRegister={register('tempSupplyUnit')}
+                    selectOptions={[
+                        { value: 'm', label: 'm' },
+                        { value: 'cm', label: 'cm' },
+                        { value: 'un', label: 'un' },
+                    ]}
+                    selectError={errors.tempSupplyUnit?.message}
+                    className="bg-white"
+                />
                 <div className="grid grid-cols-2 gap-4">
-                    <CustomInputWithSelect
-                        id="tempSupplyConsumption"
-                        label="Consumo"
-                        register={register('tempSupplyConsumption', { valueAsNumber: true })}
-                        error={errors.tempSupplyConsumption?.message}
-                        placeholder="6"
-                        selectId="tempSupplyUnit"
-                        selectRegister={register('tempSupplyUnit')}
-                        selectOptions={[
-                            { value: 'm', label: 'm' },
-                            { value: 'cm', label: 'cm' },
-                            { value: 'un', label: 'un' },
-                        ]}
-                        selectError={errors.tempSupplyUnit?.message}
-                        className="bg-white"
-                    />
 
-                    <CustomInput
+                    {/* <CustomInput
                         id="tempSupplyPrice"
                         label="Precio"
                         type="number"
@@ -249,7 +262,7 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                         placeholder="35.000"
                         className="bg-white"
                         unit="$"
-                    />
+                    /> */}
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -283,7 +296,7 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                                         {material.consumption} {material.unit}
                                     </span>
                                     <span className="text-sm font-semibold text-gray-800">
-                                        $ {material.price.toLocaleString('es-CO')}
+                                        $ {material.price}
                                     </span>
                                     <button
                                         type="button"

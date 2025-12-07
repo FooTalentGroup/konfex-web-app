@@ -21,6 +21,7 @@ export * from './useCollections';
 export * from './useImageUpload';
 export * from './useLogin';
 export * from './useMaterials';
+export * from './useMaterialsForService';
 export * from './useMaterialSubmit';
 export * from './useNavigationTabs';
 export * from './useOrderCard';

@@ -29,7 +29,7 @@ export const GarmentSchema = z.object({
         name: z.string(),
         consumption: z.number().positive('El consumo debe ser mayor a 0'),
         unit: z.string(),
-        price: z.number().min(0, 'El precio debe ser mayor o igual a 0')
+        price: z.number().min(0, 'El precio debe ser mayor o igual a 0').optional(),
     })).default([])
         .optional()
         .refine(
@@ -43,16 +43,16 @@ export const GarmentSchema = z.object({
     tempFabricPrice: z.number({ error: 'El precio debe ser un número' }).min(0, 'El precio debe ser mayor o igual a 0').optional(),
 
     tempSupplyName: z.string().optional(),
-    tempSupplyConsumption: z.number( { error: 'El consumo debe ser un número' }).optional(),
+    tempSupplyConsumption: z.number({ error: 'El consumo debe ser un número' }).optional(),
     tempSupplyUnit: z.string().optional(),
     tempSupplyPrice: z.number({ error: 'El precio debe ser un número' }).min(0, 'El precio debe ser mayor o igual a 0').optional(),
 
 
-    laborRate: z.number( { error: 'La tarifa debe ser un número' }).min(0, 'La tarifa debe ser mayor o igual a 0').optional(),
-    laborHours: z.number( { error: 'Las horas deben ser un número' }).min(0, 'Las horas deben ser mayor o igual a 0').optional(),
-    wasteMaterial: z.number( { error: 'La merma debe ser un número' }).min(0, 'La merma debe ser mayor o igual a 0').optional(),
+    laborRate: z.number({ error: 'La tarifa debe ser un número' }).min(0, 'La tarifa debe ser mayor o igual a 0').optional(),
+    laborHours: z.number({ error: 'Las horas deben ser un número' }).min(0, 'Las horas deben ser mayor o igual a 0').optional(),
+    wasteMaterial: z.number({ error: 'La merma debe ser un número' }).min(0, 'La merma debe ser mayor o igual a 0').optional(),
     wasteUnit: z.string().optional(),
-    wastePrice: z.number( { error: 'El precio debe ser un número' }).min(0, 'El precio debe ser mayor o igual a 0').optional(),
+    wastePrice: z.number({ error: 'El precio debe ser un número' }).min(0, 'El precio debe ser mayor o igual a 0').optional(),
 
 });
 
@@ -60,26 +60,35 @@ export const GarmentSchema = z.object({
 export type GarmentFormData = z.infer<typeof GarmentSchema>;
 
 export interface CreateGarmentPayload {
-  nombre: string;
-  descripcion?: string;
-  activo: boolean;
-  tallas: string[];
-  colores: string[];
+    codigo: string;
+    nombre: string;
+    descripcion?: string;
+    activo: boolean;
+    imagen: string;
+    tallas: string[];
+    colores: string[];
 
-  rawMaterials: RawMaterial[];
+    coleccionId: number;
 
-  laborRate: number;
-  laborHours: number;
-  wasteMaterial: number;
-  wasteUnit: string;
-  wastePrice: number;
+    materiales?: Array<{
+        materialId: number;
+        cantidad: number;
+    }>;
+
+    manoDeObra?: Array<{
+        accionId: number;
+        horas: number;
+    }>;
+
+    mermaCantidad?: number;
+    mermaUnidad?: string;
+    mermaPrecio?: number;
 }
 
 export interface RawMaterial {
-  id: string;
-  type: string;
-  name: string;
-  consumption: number;
-  unit: string;
-  price: number;
+    materialId: number;
+    nombre: string;
+    cantidad: number;
+    unidadMedida: string;
+    precioTotal: number;
 }
