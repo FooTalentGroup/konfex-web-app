@@ -24,6 +24,7 @@ export const clienteDocs = {
                             nombre: { type: "string" },
                             telefono: { type: "string", nullable: true },
                             email: { type: "string", nullable: true },
+                            direccion: { type: "string", nullable: true },
                             origen: { type: "string", nullable: true },
                             instagramUser: { type: "string", nullable: true },
                             notas: { type: "string", nullable: true },
@@ -52,6 +53,7 @@ export const clienteDocs = {
                   nombre: "Juan Pérez",
                   telefono: "987654321",
                   email: "juan@example.com",
+                  direccion: "Av. Principal 123",
                   origen: "Instagram",
                   instagramUser: "@juanp",
                   notas: "Cliente recurrente"
@@ -246,18 +248,20 @@ export const clienteDocs = {
             nombre: { type: "string" },
             telefono: { type: "string", nullable: true },
             email: { type: "string", nullable: true },
+            direccion: { type: "string", nullable: true },
             origen: { type: "string", nullable: true },
             instagramUser: { type: "string", nullable: true },
             notas: { type: "string", nullable: true }
           }
         },
-  
+
         UpdateClienteDto: {
           type: "object",
           properties: {
             nombre: { type: "string" },
             telefono: { type: "string", nullable: true },
             email: { type: "string", nullable: true },
+            direccion: { type: "string", nullable: true },
             origen: { type: "string", nullable: true },
             instagramUser: { type: "string", nullable: true },
             notas: { type: "string", nullable: true }

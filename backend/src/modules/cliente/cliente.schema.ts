@@ -8,6 +8,7 @@ export const createClienteSchema = z.object({
       .min(1, "El nombre es obligatorio y no puede estar vacío"),
     telefono: z.string().trim().optional(),
     email: z.string().trim().optional().nullable(),
+    direccion: z.string().trim().optional(),
     origen: z.string().trim().optional(),
     instagramUser: z.string().trim().optional(),
     notas: z.string().trim().optional(),
