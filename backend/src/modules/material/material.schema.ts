@@ -46,7 +46,7 @@ export const materialIdSchema = z.object({
 
 // Query params (filtros)
 export const materialQuerySchema = z.object({
-  body: z.object({}),
+  body: z.object({}).optional(),
   query: z.object({
     color: z.string().optional(),
     precioMin: z

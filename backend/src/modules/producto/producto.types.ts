@@ -4,6 +4,7 @@ export interface CreateProductoDtoDB {
     nombre: string;
     descripcion?: string | null;
     activo?: boolean;
+    imagen?: string | null;
     tallas?: string[];
     colores?: string[];
   }
