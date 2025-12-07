@@ -26,6 +26,7 @@ model Cliente {
   nombre        String        @unique
   telefono      String?
   email         String?
+  direccion     String?
   origen        String?
   instagramUser String?
   notas         String?
