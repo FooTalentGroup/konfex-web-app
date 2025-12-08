@@ -107,8 +107,3 @@ export type ProduccionEtapa = Prisma.ProduccionEtapaModel
  * 
  */
 export type TelegramMessage = Prisma.TelegramMessageModel
-/**
- * Model MessageRead
- * 
- */
-export type MessageRead = Prisma.MessageReadModel

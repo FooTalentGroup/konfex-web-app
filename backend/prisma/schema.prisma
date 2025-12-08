@@ -17,8 +17,6 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   active    Boolean  @default(true)
-
-  readMessages MessageRead[]
 }
 
 model Cliente {
@@ -274,6 +272,7 @@ model TelegramMessage {
   firstName     String?
   lastName      String?
   username      String?
+  leido         Boolean   @default(false)
 
   // Mensajes de texto
   text          String?
@@ -292,24 +291,7 @@ model TelegramMessage {
   timestamp     DateTime  @default(now())
 
   cliente       Cliente?  @relation(fields: [clienteId], references: [id])
-  readBy        MessageRead[]
 }
-
-model MessageRead {
-  id            Int       @id @default(autoincrement())
-  messageId     Int
-  userId        Int
-  readAt        DateTime  @default(now())
-
-  message       TelegramMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([messageId, userId])
-  @@index([messageId])
-  @@index([userId])
-  @@index([messageId, userId])
-}
-
 
 enum EstadoPresupuesto {
   BORRADOR

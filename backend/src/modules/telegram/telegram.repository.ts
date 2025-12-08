@@ -19,7 +19,6 @@ export const telegramMessageRepository = {
     mimeType?: string;
     fileSize?: number;
   }) => {
-    console.log("creando un mensaje")
     return prisma.telegramMessage.create({
       data: {
         chatId: String(data.chatId),
@@ -60,5 +59,31 @@ export const telegramMessageRepository = {
       where: { chatId: String(chatId) },
       data: { clienteId },
     });
+  },
+
+  markChatAsRead: async (chatId: string) => {
+    return prisma.telegramMessage.updateMany({
+      where: {
+        chatId,
+        leido: false,
+      },
+      data: {
+        leido: true,
+      },
+    });
+  },
+
+  getUnreadCounts: async () => {
+    const result = await prisma.telegramMessage.groupBy({
+      by: ["chatId"],
+      _count: { id: true },
+      where: { leido: false },
+    });
+  
+    const map = new Map<string, number>();
+    for (const r of result) {
+      map.set(r.chatId, r._count.id);
+    }
+    return map;
   },
 };

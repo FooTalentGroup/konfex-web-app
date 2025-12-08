@@ -39,7 +39,6 @@ export const initSocket = (server: HttpServer) => {
   });
 
   io.on("connection", (socket) => {
-    console.log("🔌 Frontend conectado via WebSocket", socket.id);
     socket.on("konfex_send_message", async ({ chatId, text, firstName, lastName, username }) => {
       await sendTextMessage(chatId, text, firstName, lastName, username);
     });
