@@ -1,7 +1,6 @@
 import { io } from "@/config/socket";
 import prisma from "@/config/prisma";
 import { telegramMessageRepository } from "./telegram.repository";
-import { messageReadRepository } from "./message-read.repository";
 import { uploadFile } from "@/utils/uploadFile";
 
 const TELEGRAM_API = (token: string) => `https://api.telegram.org/bot${token}`;
@@ -240,7 +239,7 @@ export const getClienteDataFromChat = async (chatId: string | number) => {
   };
 };
 
-export const getChatsList = async (userId?: number) => {
+export const getChatsList = async () => {
   // Obtener todos los mensajes ordenados por timestamp descendente
   const allMessages = await telegramMessageRepository.findAll();
   const getLastMessageText = (msg: (typeof allMessages)[number]): string => {
@@ -295,41 +294,32 @@ export const getChatsList = async (userId?: number) => {
     return b.lastTimestamp.getTime() - a.lastTimestamp.getTime();
   });
 
-  // Obtener conteos de no leídos si hay userId
-  let unreadCounts = new Map<string, number>();
-  if (userId) {
-    unreadCounts = await messageReadRepository.getUnreadCountsByChat(userId);
-  }
-
   // Para cada chat, obtener el nombre del usuario con source "telegram"
   // Si no existe, usar el último mensaje con source "telegram" para obtener el nombre
-  return await Promise.all(
-    chats.map(async (chat) => {
-      // Buscar el último mensaje con source "telegram" para obtener el nombre del usuario
-      const telegramMessage = allMessages.find(
-        (msg: { chatId: string; source: string }) =>
-          msg.chatId === chat.chatId && msg.source === "telegram"
-      );
+  return chats.map((chat) => {
+    // Buscar el último mensaje con source "telegram" para obtener el nombre del usuario
+    const telegramMessage = allMessages.find(
+      (msg: { chatId: string; source: string }) =>
+        msg.chatId === chat.chatId && msg.source === "telegram"
+    );
 
-      // Usar el nombre del mensaje de telegram si existe, sino usar el del último mensaje
-      const firstName = telegramMessage?.firstName || chat.firstName;
-      const lastName = telegramMessage?.lastName || chat.lastName;
+    // Usar el nombre del mensaje de telegram si existe, sino usar el del último mensaje
+    const firstName = telegramMessage?.firstName || chat.firstName;
+    const lastName = telegramMessage?.lastName || chat.lastName;
 
-      // Concatenar firstName y lastName
-      const name =
-        firstName && lastName
-          ? `${firstName} ${lastName}`.trim()
-          : firstName || lastName || `Chat ${chat.chatId}`;
+    // Concatenar firstName y lastName
+    const name =
+      firstName && lastName
+        ? `${firstName} ${lastName}`.trim()
+        : firstName || lastName || `Chat ${chat.chatId}`;
 
-      return {
-        chatId: chat.chatId,
-        name,
-        lastMessage: chat.lastMessage,
-        lastMessageSource: chat.lastMessageSource,
-        timestamp: chat.lastTimestamp,
-        hasBudget: false,
-        unreadCount: unreadCounts.get(chat.chatId) || 0,
-      };
-    })
-  );
+    return {
+      chatId: chat.chatId,
+      name,
+      lastMessage: chat.lastMessage,
+      lastMessageSource: chat.lastMessageSource,
+      timestamp: chat.lastTimestamp,
+      hasBudget: false,
+    };
+  });
 };

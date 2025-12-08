@@ -8,7 +8,6 @@ import {
   getClienteDataFromChat,
   handleIncomingUpdate,
 } from "./telegram.service";
-import { messageReadRepository } from "./message-read.repository";
 
 export const telegramWebhookController = async (req: Request, res: Response) => {
   try {
@@ -32,10 +31,8 @@ export const telegramWebhookController = async (req: Request, res: Response) => 
 };
 
 export const getChatsController = controllerHandler(
-  async (req: Request) => {
-    // Obtener userId del query param o header (temporal, hasta implementar JWT)
-    const userId = req.query.userId ? parseInt(req.query.userId as string) : undefined;
-    return await getChatsList(userId);
+  async (_req: Request) => {
+    return await getChatsList();
   },
   "Lista de chats obtenida exitosamente",
   200
@@ -50,28 +47,6 @@ export const getChatMessagesController = controllerHandler(
     return await getChatMessages(chatId);
   },
   "Mensajes del chat obtenidos exitosamente",
-  200
-);
-
-export const markChatAsReadController = controllerHandler(
-  async (req: Request) => {
-    const { chatId } = req.params;
-    const { userId } = req.body;
-
-    if (!chatId) {
-      throw new Error("chatId es requerido");
-    }
-    if (!userId || typeof userId !== "number") {
-      throw new Error("userId es requerido y debe ser un número");
-    }
-
-    const result = await messageReadRepository.markChatAsRead(chatId, userId);
-    return {
-      success: true,
-      messagesMarked: result.count,
-    };
-  },
-  "Mensajes marcados como leídos exitosamente",
   200
 );
 

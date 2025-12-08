@@ -1,4 +1,4 @@
-import type { prisma } from "../../config/prisma";
+import prisma from "../../config/prisma";
 
 export interface CreateImpuestoGeneralDto {
   nombre: string;
