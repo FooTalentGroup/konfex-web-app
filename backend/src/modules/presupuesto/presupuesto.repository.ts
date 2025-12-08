@@ -1,3 +1,4 @@
+import type { Prisma } from "../../../generated/prisma/client";
 import prisma from "../../config/prisma";
 import type { EstadoPresupuesto } from "./presupuesto.schema";
 
@@ -64,6 +65,7 @@ export const PresupuestoRepository = {
     return prisma.presupuesto.create({
       data: {
         ...presupuestoData,
+        costosIndirectos,
         clienteId: clienteId ?? null,
         detalles: detalles
           ? {
@@ -87,7 +89,7 @@ export const PresupuestoRepository = {
               })),
             }
           : undefined,
-      } as any,
+      },
       include: {
         detalles: true,
         adicionales: true,
@@ -99,9 +101,9 @@ export const PresupuestoRepository = {
   },
 
   findMany: async (params?: {
-    where?: any;
-    include?: any;
-    orderBy?: any;
+    where?: Prisma.PresupuestoWhereInput;
+    include?: Prisma.PresupuestoInclude;
+    orderBy?: Prisma.PresupuestoOrderByWithRelationInput;
     skip?: number;
     take?: number;
   }) => {
@@ -118,13 +120,13 @@ export const PresupuestoRepository = {
     });
   },
 
-  count: (filters?: any) => {
+  count: (filters?: Prisma.PresupuestoWhereInput) => {
     return prisma.presupuesto.count({
       where: filters,
     });
   },
 
-  findById: async (id: number, options?: { include?: any }) => {
+  findById: async (id: number, options?: { include?: Prisma.PresupuestoInclude }) => {
     return prisma.presupuesto.findUnique({
       where: { id },
       include: {
@@ -157,8 +159,9 @@ export const PresupuestoRepository = {
       });
     }
 
-    const updateData: any = {
+    const updateData: Prisma.PresupuestoUpdateInput = {
       ...presupuestoData,
+      costosIndirectos,
       detalles:
         detalles !== undefined
           ? detalles.length > 0
@@ -191,8 +194,14 @@ export const PresupuestoRepository = {
 
     // Manejar clienteId explícitamente para permitir null
     if (clienteId !== undefined) {
-      updateData.clienteId = clienteId;
+      updateData.cliente = clienteId ? { connect: { id: clienteId } } : { disconnect: true };
     }
+
+    // Need to handle partial structure correctly for Prisma update
+    // But since 'data' uses simple properties that match schema (except relations),
+    // we need to be careful. clientID logic above is valid for Prisma relations.
+    // However, existing updateData logic used simple property assignment which works if scalars.
+    // Let's refine updateData construction to be type-safe.
 
     return prisma.presupuesto.update({
       where: { id },

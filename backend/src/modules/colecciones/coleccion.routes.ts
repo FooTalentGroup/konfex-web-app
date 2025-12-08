@@ -7,8 +7,6 @@ import {
   deleteColeccionController,
 } from "./coleccion.controller";
 
-
-
 import { validationSchema } from "../../middleware";
 import { createColeccionSchema, updateColeccionSchema } from "./coleccion.schema";
 
@@ -18,17 +16,8 @@ coleccionRoutes.get("/", getAllColeccionesController);
 
 coleccionRoutes.get("/:id", getColeccionByIdController);
 
-coleccionRoutes.post(
-  "/",
-  validationSchema(createColeccionSchema),
-  createColeccionController
-);
+coleccionRoutes.post("/", validationSchema(createColeccionSchema), createColeccionController);
 
-coleccionRoutes.put(
-  "/:id",
-  validationSchema(updateColeccionSchema),
-  updateColeccionController
-);
+coleccionRoutes.put("/:id", validationSchema(updateColeccionSchema), updateColeccionController);
 
-// Eliminar colección
 coleccionRoutes.delete("/:id", deleteColeccionController);

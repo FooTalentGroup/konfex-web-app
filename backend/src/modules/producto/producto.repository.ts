@@ -11,10 +11,8 @@ export const productoRepository = {
 
   findById: (id: number) => prisma.producto.findUnique({ where: { id } }),
 
-  /** 🔥 Nuevo método para validar productos duplicados */
   findByName: (nombre: string) => prisma.producto.findFirst({ where: { nombre } }),
 
-  /** Búsqueda de productos por nombre o descripción */
   search: (query: string, limit: number = 10) =>
     prisma.producto.findMany({
       where: {

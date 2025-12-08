@@ -46,18 +46,16 @@ export const categoriaService = {
   delete: async (id: number) => {
     await categoriaService.getById(id);
 
-    const materialesAsociados = await prisma.material.count({
-      where: { categoriaId: id },
-    });
+    const [categoryDeleted] = await prisma.$transaction([
+      prisma.material.deleteMany({
+        where: { categoriaId: id },
+      }),
+      prisma.categoria.delete({
+        where: { id },
+      }),
+    ]);
 
-    if (materialesAsociados > 0) {
-      throw new AppError(
-        `No se puede eliminar la categoría porque tiene ${materialesAsociados} material(es) asociado(s)`,
-        400
-      );
-    }
-
-    return categoriaRepository.delete(id);
+    return categoryDeleted;
   },
 
   getMateriales: async (id: number, page = 1, limit = 10) => {

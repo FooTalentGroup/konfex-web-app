@@ -1,13 +1,9 @@
 import { AppError } from "@/common/errors";
 import { impuestoGeneralRepository } from "./impuesto-general.repository";
-import {
-  CreateImpuestoGeneralDto,
-  UpdateImpuestoGeneralDto,
-} from "./impuesto-general.schema";
+import { CreateImpuestoGeneralDto, UpdateImpuestoGeneralDto } from "./impuesto-general.schema";
 
 export const impuestoGeneralService = {
   create: async (data: CreateImpuestoGeneralDto) => {
-    // Verificar si ya existe un impuesto general
     const existing = await impuestoGeneralRepository.findFirst();
     if (existing) {
       throw new AppError(
@@ -34,14 +30,10 @@ export const impuestoGeneralService = {
     return impuesto;
   },
 
-  // Obtener el impuesto activo (el primero, ya que solo debería haber uno)
   getActivo: async () => {
     const impuesto = await impuestoGeneralRepository.findFirst();
     if (!impuesto) {
-      throw new AppError(
-        "No hay un impuesto general configurado. Debe crear uno primero.",
-        404
-      );
+      throw new AppError("No hay un impuesto general configurado. Debe crear uno primero.", 404);
     }
     return impuesto;
   },
@@ -56,4 +48,3 @@ export const impuestoGeneralService = {
     return impuestoGeneralRepository.delete(id);
   },
 };
-
