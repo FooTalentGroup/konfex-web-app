@@ -1,5 +1,4 @@
 import { AppError } from "@/common/errors";
-
 import { productoRepository } from "./producto.repository";
 import type { CreateProductoDto, UpdateProductoDto } from "./producto.schema";
 import type { CreateProductoDtoDB } from "./producto.types";
@@ -44,18 +43,6 @@ export const productoService = {
     }
 
     return producto;
-  },
-
-  // Buscar productos
-  search: async (query: string, limit: number = 10) => {
-    const trimmedQuery = query.trim();
-    
-    // Si el query está vacío o es muy corto, retornar array vacío
-    if (trimmedQuery.length < 2) {
-      return [];
-    }
-
-    return productoRepository.search(trimmedQuery, limit);
   },
 
   // Actualizar
