@@ -435,7 +435,7 @@ Integración completa con Telegram Bot API que permite:
 - Porcentaje
 - Configuración global
 
-### Telegram (TelegramMessage, MessageRead)
+### Telegram (TelegramMessage)
 - Mensajes de Telegram almacenados
 - Soporte para texto y archivos multimedia
 - Metadatos de archivos (tipo, tamaño, URL)

@@ -7,22 +7,14 @@ import {
   getChatsList,
   getClienteDataFromChat,
   handleIncomingUpdate,
+  markChatAsRead,
 } from "./telegram.service";
 
 export const telegramWebhookController = async (req: Request, res: Response) => {
   try {
-    // Si usas secret_token, verificar aquí
-    // const secret = req.header("X-Telegram-Bot-Api-Secret-Token");
-    // if (secret !== process.env.TELEGRAM_SECRET_TOKEN) return res.sendStatus(403);
-
-    const update = req.body; // Telegram envía el update en JSON
-    // log para debug
-    console.log("Telegram update received:", JSON.stringify(update).slice(0, 2000));
-
-    // Delegar procesamiento (guardar en DB, notificar frontend, etc.)
+    const update = req.body;
     await handleIncomingUpdate(update);
 
-    // Must respond 200 quickly
     return res.sendStatus(200);
   } catch (err) {
     console.error("Webhook handler error:", err);
@@ -31,8 +23,9 @@ export const telegramWebhookController = async (req: Request, res: Response) => 
 };
 
 export const getChatsController = controllerHandler(
-  async (_req: Request) => {
-    return await getChatsList();
+  async (req: Request) => {
+    const userId = req.query.userId ? parseInt(req.query.userId as string) : undefined;
+    return await getChatsList(userId);
   },
   "Lista de chats obtenida exitosamente",
   200
@@ -47,6 +40,25 @@ export const getChatMessagesController = controllerHandler(
     return await getChatMessages(chatId);
   },
   "Mensajes del chat obtenidos exitosamente",
+  200
+);
+
+export const markChatAsReadController = controllerHandler(
+  async (req: Request) => {
+    const { chatId } = req.params;
+
+    if (!chatId) {
+      throw new Error("chatId es requerido");
+    }
+
+    const result = await markChatAsRead(chatId);
+
+    return {
+      success: true,
+      messagesMarked: result.count,
+    };
+  },
+  "Mensajes marcados como leídos exitosamente",
   200
 );
 

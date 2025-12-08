@@ -40,29 +40,18 @@ export const uploadFile = async ({
     return new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         uploadOptions,
-        (error: unknown, result: UploadApiResponse | undefined) => {
+        (error: unknown, result: any) => {
           if (error) {
-            logger.error({ error }, "Error subiendo archivo a Cloudinary");
-            return reject(error instanceof Error ? error : new Error("Unknown error"));
+            console.error("Error subiendo archivo a Cloudinary:", error);
+            return reject(error);
           }
-          if (!result?.secure_url) {
-            logger.error({ result }, "Cloudinary no devolvió secure_url");
+          if (!result || !result.secure_url) {
+            console.error("Cloudinary no devolvió secure_url:", result);
             return reject(new Error("Error subiendo a Cloudinary"));
           }
 
+          // Para archivos raw, la URL debería ser directamente accesible
           const finalUrl = result.secure_url;
-
-          if (resource_type === "raw") {
-            logger.info(
-              {
-                url: finalUrl,
-                public_id: result.public_id,
-                resource_type: result.resource_type,
-                format: result.format,
-              },
-              "PDF subido a Cloudinary"
-            );
-          }
 
           resolve({ secure_url: finalUrl });
         }
@@ -83,18 +72,6 @@ export const uploadFile = async ({
   }
 
   const finalUrl = result.secure_url;
-
-  if (resource_type === "raw") {
-    logger.info(
-      {
-        url: finalUrl,
-        public_id: result.public_id,
-        resource_type: result.resource_type,
-        format: result.format,
-      },
-      "Archivo raw subido a Cloudinary desde URL"
-    );
-  }
 
   return { secure_url: finalUrl };
 };

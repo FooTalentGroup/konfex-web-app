@@ -41,6 +41,16 @@ export const productoService = {
     return producto;
   },
 
+  search: async (query: string, limit: number = 10) => {
+    const trimmedQuery = query.trim();
+
+    if (trimmedQuery.length < 2) {
+      return [];
+    }
+
+    return productoRepository.search(trimmedQuery, limit);
+  },
+
   update: async (id: number, data: UpdateProductoDto) => {
     await productoService.getById(id);
     return productoRepository.update(id, data);

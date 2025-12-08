@@ -106,17 +106,7 @@ export const handleIncomingUpdate = async (update: any) => {
       // La URL de Cloudinary para archivos raw es directamente accesible
       payload.fileUrl = cloudinaryRes.secure_url;
       payload.filePath = `telegram_documents/${payload.fileUniqueId}${extension}`;
-
-      console.log("📄 Documento procesado:", {
-        type: payload.type,
-        mimeType: payload.mimeType,
-        fileSize: payload.fileSize,
-        fileUrl: payload.fileUrl,
-        filePath: payload.filePath,
-      });
     }
-
-    console.log("📩 Mensaje recibido del bot:", payload);
 
     await telegramMessageRepository.save(payload);
     io.emit("telegram_message", payload);
@@ -161,7 +151,6 @@ export const sendTextMessage = async (
     timestamp: new Date().toISOString(),
   };
 
-  console.log("Mensaje enviado al bot:", msgData);
   await telegramMessageRepository.save(msgData);
 
   return response.json();
@@ -183,6 +172,7 @@ export const getChatMessages = async (chatId: string | number) => {
     lastName: message.lastName?.trim() || null,
     username: message.username || null,
     timestamp: message.timestamp,
+    leido: message.leido,
     // Campos para archivos multimedia
     type: message.type || "text",
     fileId: message.fileId || null,
@@ -239,28 +229,21 @@ export const getClienteDataFromChat = async (chatId: string | number) => {
   };
 };
 
-export const getChatsList = async () => {
-  // Obtener todos los mensajes ordenados por timestamp descendente
+export const getChatsList = async (userId?: number) => {
   const allMessages = await telegramMessageRepository.findAll();
+
   const getLastMessageText = (msg: (typeof allMessages)[number]): string => {
     if (msg.text) return msg.text;
     switch (msg.type) {
-      case "photo":
-        return "Foto";
-      case "video":
-        return "Video";
-      case "audio":
-        return "Audio";
-      case "document":
-        return "Documento";
-      case "voice":
-        return "Nota de voz";
-      default:
-        return "Mensaje sin contenido";
+      case "photo": return "Foto";
+      case "video": return "Video";
+      case "audio": return "Audio";
+      case "document": return "Documento";
+      case "voice": return "Nota de voz";
+      default: return "Mensaje sin contenido";
     }
   };
 
-  // Agrupar por chatId, tomando el primer mensaje (más reciente) de cada chat
   const chatsMap = new Map<
     string,
     {
@@ -281,7 +264,6 @@ export const getChatsList = async () => {
         firstName: message.firstName,
         lastName: message.lastName,
         username: message.username,
-        // modificar para recibir el ultimo mensaje
         lastMessage: getLastMessageText(message),
         lastMessageSource: message.source,
         lastTimestamp: message.timestamp,
@@ -289,11 +271,11 @@ export const getChatsList = async () => {
     }
   }
 
-  // Convertir el Map a array y ordenar por timestamp descendente
-  const chats = Array.from(chatsMap.values()).sort((a, b) => {
-    return b.lastTimestamp.getTime() - a.lastTimestamp.getTime();
-  });
+  const chats = Array.from(chatsMap.values()).sort(
+    (a, b) => b.lastTimestamp.getTime() - a.lastTimestamp.getTime()
+  );
 
+<<<<<<< HEAD
   // Para cada chat, obtener el nombre del usuario con source "telegram"
   // Si no existe, usar el último mensaje con source "telegram" para obtener el nombre
   return chats.map((chat) => {
@@ -322,4 +304,43 @@ export const getChatsList = async () => {
       hasBudget: false,
     };
   });
+=======
+  // --- NUEVO: obtener no leídos ---
+  let unreadCounts = new Map<string, number>();
+  if (userId) {
+    unreadCounts = await telegramMessageRepository.getUnreadCounts();
+  }
+
+  return await Promise.all(
+    chats.map(async (chat) => {
+      // Último mensaje enviado por "telegram" para leer nombres reales
+      const telegramMessage = allMessages.find(
+        (msg) => msg.chatId === chat.chatId && msg.source === "telegram"
+      );
+
+      const firstName = telegramMessage?.firstName || chat.firstName;
+      const lastName  = telegramMessage?.lastName  || chat.lastName;
+
+      const name =
+        firstName && lastName
+          ? `${firstName} ${lastName}`.trim()
+          : firstName || lastName || `Chat ${chat.chatId}`;
+
+      return {
+        chatId: chat.chatId,
+        name,
+        lastMessage: chat.lastMessage,
+        lastMessageSource: chat.lastMessageSource,
+        timestamp: chat.lastTimestamp,
+        hasBudget: false,
+        unreadCount: unreadCounts.get(chat.chatId) || 0, // ← funcionando
+      };
+    })
+  );
+>>>>>>> 9a8de7885df3188670dc6c1c9de5ce1e7538d3bf
+};
+
+
+export const markChatAsRead = async (chatId: string) => {
+  return telegramMessageRepository.markChatAsRead(chatId);
 };
