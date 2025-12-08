@@ -1,6 +1,6 @@
-import { AppError } from "@/common/errors";
-import { impuestoGeneralRepository } from "./impuesto-general.repository";
-import { CreateImpuestoGeneralDto, UpdateImpuestoGeneralDto } from "./impuesto-general.schema";
+import type { AppError } from "../../common/errors";
+import type { impuestoGeneralRepository } from "./impuesto-general.repository";
+import type { CreateImpuestoGeneralDto, UpdateImpuestoGeneralDto } from "./impuesto-general.schema";
 
 export const impuestoGeneralService = {
   create: async (data: CreateImpuestoGeneralDto) => {

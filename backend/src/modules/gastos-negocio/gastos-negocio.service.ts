@@ -1,9 +1,6 @@
-import { AppError } from "@/common/errors";
+import type { AppError } from "../../common/errors";
 import { gastosNegocioRepository } from "./gastos-negocio.repository";
-import {
-  CreateGastosNegocioDto,
-  UpdateGastosNegocioDto,
-} from "./gastos-negocio.schema";
+import type { CreateGastosNegocioDto, UpdateGastosNegocioDto } from "./gastos-negocio.schema";
 
 export const gastosNegocioService = {
   create: async (data: CreateGastosNegocioDto) => {

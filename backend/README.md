@@ -14,7 +14,6 @@ Backend API REST para el sistema de gestión de producción en industria textil,
 - [Estructura del Proyecto](#estructura-del-proyecto)
 - [API Endpoints](#api-endpoints)
 - [Documentación API](#documentación-api)
-- [Testing](#testing)
 - [Scripts Disponibles](#scripts-disponibles)
 
 ## Características

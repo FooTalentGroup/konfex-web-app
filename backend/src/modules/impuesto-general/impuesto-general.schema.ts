@@ -1,4 +1,4 @@
-import { z } from "zod";
+import type { z } from "zod";
 
 export const createImpuestoGeneralSchema = z.object({
   body: z.object({
@@ -14,10 +14,5 @@ export const updateImpuestoGeneralSchema = z.object({
   body: createImpuestoGeneralSchema.shape.body.partial(),
 });
 
-export type CreateImpuestoGeneralDto = z.infer<
-  typeof createImpuestoGeneralSchema
->["body"];
-export type UpdateImpuestoGeneralDto = z.infer<
-  typeof updateImpuestoGeneralSchema
->["body"];
-
+export type CreateImpuestoGeneralDto = z.infer<typeof createImpuestoGeneralSchema>["body"];
+export type UpdateImpuestoGeneralDto = z.infer<typeof updateImpuestoGeneralSchema>["body"];

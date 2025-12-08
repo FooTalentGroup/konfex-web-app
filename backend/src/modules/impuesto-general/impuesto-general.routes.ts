@@ -1,4 +1,6 @@
-import { Router } from "express";
+import type { Router } from "express";
+
+import { validationSchema } from "../../middleware";
 import {
   createImpuestoGeneralController,
   deleteImpuestoGeneralController,
@@ -7,12 +9,10 @@ import {
   getImpuestoGeneralByIdController,
   updateImpuestoGeneralController,
 } from "./impuesto-general.controller";
-
 import {
   createImpuestoGeneralSchema,
   updateImpuestoGeneralSchema,
 } from "./impuesto-general.schema";
-import { validationSchema } from "../../middleware";
 
 export const impuestoGeneralRoutes = Router();
 

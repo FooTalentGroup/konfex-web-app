@@ -1,4 +1,3 @@
-// import { USER_ROLES } from "../user/users.types";
 import { AppError } from "../../common/errors";
 import type { UserSignUpRequestDto } from "../auth/auth.schema";
 import { UserRepository } from "../user/user.repository";

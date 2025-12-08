@@ -143,17 +143,13 @@ export const PresupuestoRepository = {
   update: async (id: number, { data }: UpdatePresupuestoData) => {
     const { detalles, adicionales, clienteId, costosIndirectos, ...presupuestoData } = data;
 
-    // Si hay detalles definidos (incluso si es array vacío), eliminamos los existentes
     if (detalles !== undefined) {
-      // Eliminar detalles existentes
       await prisma.presupuestoDetalle.deleteMany({
         where: { presupuestoId: id },
       });
     }
 
-    // Si hay adicionales definidos (incluso si es array vacío), eliminamos los existentes
     if (adicionales !== undefined) {
-      // Eliminar adicionales existentes
       await prisma.adicional.deleteMany({
         where: { presupuestoId: id },
       });
@@ -173,8 +169,8 @@ export const PresupuestoRepository = {
                   costoUnitario: detalle.costoUnitario,
                 })),
               }
-            : undefined // Si es array vacío, no creamos nada (ya se eliminaron)
-          : undefined, // Si no se pasa, no tocamos los detalles
+            : undefined
+          : undefined,
       adicionales:
         adicionales !== undefined
           ? adicionales.length > 0
@@ -188,20 +184,13 @@ export const PresupuestoRepository = {
                   observaciones: adicional.observaciones,
                 })),
               }
-            : undefined // Si es array vacío, no creamos nada (ya se eliminaron)
-          : undefined, // Si no se pasa, no tocamos los adicionales
+            : undefined
+          : undefined,
     };
 
-    // Manejar clienteId explícitamente para permitir null
     if (clienteId !== undefined) {
       updateData.cliente = clienteId ? { connect: { id: clienteId } } : { disconnect: true };
     }
-
-    // Need to handle partial structure correctly for Prisma update
-    // But since 'data' uses simple properties that match schema (except relations),
-    // we need to be careful. clientID logic above is valid for Prisma relations.
-    // However, existing updateData logic used simple property assignment which works if scalars.
-    // Let's refine updateData construction to be type-safe.
 
     return prisma.presupuesto.update({
       where: { id },

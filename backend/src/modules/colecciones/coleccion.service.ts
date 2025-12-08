@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 import { AppError } from "../../common/errors";
 import { productoRepository } from "../producto/producto.repository";
 import { coleccionRepository } from "./coleccion.repository";
@@ -57,14 +59,15 @@ export const coleccionService = {
   delete: async (id: number) => {
     await coleccionService.getById(id);
 
-    // Eliminar productos asociados primero (Cascade Delete manual)
     await productoRepository.deleteByColeccionId(id);
 
     try {
       return await coleccionRepository.delete(id);
-    } catch (error: any) {
-      // P2003: Foreign key constraint failed (e.g. Pedidos)
-      if (error?.code === "P2003" || error?.code === "23001") {
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        (error.code === "P2003" || error.code === "23001")
+      ) {
         throw new AppError(
           "No se puede eliminar la colección porque tiene registros asociados (ej. Pedidos) que dependen de ella o sus productos.",
           409

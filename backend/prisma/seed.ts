@@ -90,7 +90,6 @@ async function main() {
       instagramUser: "@ana_torres",
       notas: "Primer pedido online",
     },
-    // Nuevos clientes
     {
       nombre: "Laura Fernández",
       telefono: "987667788",
@@ -285,7 +284,6 @@ async function main() {
       proveedor: "Textil S.A.",
       precio: 320.0,
     },
-    // Nuevos materiales
     {
       nombre: "Seda Natural",
       url_imagen: null,
@@ -472,7 +470,6 @@ async function main() {
       mermaPrecio: 600,
     },
 
-    // Colección 2
     {
       codigo: 4,
       nombre: "Camiseta Básica Verano",
@@ -577,7 +574,6 @@ async function main() {
       password: "testQA1!",
       role: Role.ADMIN,
     },
-    // Nuevos usuarios
     {
       email: "admin@konfex.com",
       name: "Administrador",
