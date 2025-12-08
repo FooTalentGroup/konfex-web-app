@@ -48,15 +48,6 @@ export const uploadFile = async ({ buffer, url, folder, filename, resource_type 
               // Para archivos raw, la URL debería ser directamente accesible
               const finalUrl = result.secure_url;
               
-              if (resource_type === "raw") {
-                console.log("PDF subido a Cloudinary:", {
-                  url: finalUrl,
-                  public_id: result.public_id,
-                  resource_type: result.resource_type,
-                  format: result.format,
-                });
-              }
-              
               resolve({ secure_url: finalUrl });
             }
           );
@@ -77,14 +68,6 @@ export const uploadFile = async ({ buffer, url, folder, filename, resource_type 
   }
 
   const finalUrl = result.secure_url;
-  
-  if (resource_type === "raw") {
-    console.log("Archivo raw subido a Cloudinary desde URL:", {
-      url: finalUrl,
-      public_id: result.public_id,
-      resource_type: result.resource_type,
-    });
-  }
 
   return { secure_url: finalUrl };
 };

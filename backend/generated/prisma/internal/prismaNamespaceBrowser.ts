@@ -68,8 +68,7 @@ export const ModelName = {
   Pedido: 'Pedido',
   PedidoDetalle: 'PedidoDetalle',
   ProduccionEtapa: 'ProduccionEtapa',
-  TelegramMessage: 'TelegramMessage',
-  MessageRead: 'MessageRead'
+  TelegramMessage: 'TelegramMessage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -335,6 +334,7 @@ export const TelegramMessageScalarFieldEnum = {
   firstName: 'firstName',
   lastName: 'lastName',
   username: 'username',
+  leido: 'leido',
   text: 'text',
   type: 'type',
   fileId: 'fileId',
@@ -348,16 +348,6 @@ export const TelegramMessageScalarFieldEnum = {
 } as const
 
 export type TelegramMessageScalarFieldEnum = (typeof TelegramMessageScalarFieldEnum)[keyof typeof TelegramMessageScalarFieldEnum]
-
-
-export const MessageReadScalarFieldEnum = {
-  id: 'id',
-  messageId: 'messageId',
-  userId: 'userId',
-  readAt: 'readAt'
-} as const
-
-export type MessageReadScalarFieldEnum = (typeof MessageReadScalarFieldEnum)[keyof typeof MessageReadScalarFieldEnum]
 
 
 export const SortOrder = {
