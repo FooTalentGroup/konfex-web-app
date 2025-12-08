@@ -1,13 +1,13 @@
 import { Router } from "express";
-import {
-  getAllColeccionesController,
-  getColeccionByIdController,
-  createColeccionController,
-  updateColeccionController,
-  deleteColeccionController,
-} from "./coleccion.controller";
 
 import { validationSchema } from "../../middleware";
+import {
+  createColeccionController,
+  deleteColeccionController,
+  getAllColeccionesController,
+  getColeccionByIdController,
+  updateColeccionController,
+} from "./coleccion.controller";
 import { createColeccionSchema, updateColeccionSchema } from "./coleccion.schema";
 
 export const coleccionRoutes = Router();

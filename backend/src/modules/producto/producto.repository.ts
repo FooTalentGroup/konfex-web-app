@@ -27,4 +27,7 @@ export const productoRepository = {
     }),
 
   delete: (id: number) => prisma.producto.delete({ where: { id } }),
+
+  deleteByColeccionId: (coleccionId: number) =>
+    prisma.producto.deleteMany({ where: { coleccionId } }),
 };
