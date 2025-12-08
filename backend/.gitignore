@@ -32,5 +32,6 @@ coverage/
 .history/
 .cache/
 *.tgz
+generated/
 
 /generated
