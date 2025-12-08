@@ -11,86 +11,72 @@ import MaterialCard from '@/components/common/MaterialCard';
 import AddFloatingButton from '@/components/common/AddFloatingButton';
 import { useAuth } from '@/hooks/useAuth';
 import { useSidebar } from '@/hooks/useSidebar';
-import { useMaterials } from '@/hooks/useMaterials';
 import { useCategories } from '@/hooks/useCategories';
+import { useMaterialsByCategory } from '@/hooks/useMaterialsByCategory';
 
 export default function CategoriaPage() {
     const router = useRouter();
     const params = useParams();
-    const categoria = params.categoria as string;
+
+    // Convertir params.categoria a string
+    const categoria = Array.isArray(params.categoria)
+        ? params.categoria[0]
+        : (params.categoria as string) || '';
 
     const { user, mounted } = useAuth();
     const { isOpen: isSidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar();
 
-    // Obtener las categorías disponibles
     const { categories, isLoading: isLoadingCategories } = useCategories();
 
-    // DEBUG - AGREGAR ESTO
-    console.log('=== DEBUG CategoriaPage ===');
-    console.log('Categoria param:', categoria);
-    console.log('isLoadingCategories:', isLoadingCategories);
-    console.log('Categories:', categories);
-    console.log('Categories slugs:', categories.map(c => c.slug));
+    // Buscar la categoría actual por slug
+    const currentCategory = categories.find((c) => c.slug === categoria);
 
-    // Buscar la categoría actual en las categorías disponibles
-    const currentCategory = categories.find(cat => cat.slug === categoria);
-
-    console.log('Current category found:', currentCategory);
-    console.log('===========================');
-
-    // Usar el nombre de la categoría del backend directamente
-    const categoriaBackend = currentCategory?.nombre;
-
+    // Usar el ID numérico de la categoría
     const {
-        filteredFabricMaterials,
-        fabricSearchQuery,
+        materials,
+        searchQuery,
         isLoading,
         error,
-        handleFabricSearch,
+        handleSearch,
         handleMaterialClick,
-    } = useMaterials(categoriaBackend);
+    } = useMaterialsByCategory(currentCategory?.id);
 
-    const handleAddMaterial = () => {
-        router.push(`/materia-prima/${categoria}/crear`);
-    };
-
-    // Redirigir si la categoría no existe (después de cargar)
+    // Redirigir si la categoría no existe
     useEffect(() => {
-        console.log('useEffect redirect - isLoadingCategories:', isLoadingCategories, 'currentCategory:', currentCategory);
-
-        if (!isLoadingCategories && categories.length > 0 && !currentCategory) {
-            console.log('REDIRIGIENDO a /materia-prima');
+        if (!isLoadingCategories && categories.length > 0 && categoria && !currentCategory) {
+            console.log('❌ Categoría no encontrada, redirigiendo...', {
+                categoria,
+                categoriasDisponibles: categories.map(c => c.slug)
+            });
             router.push('/materia-prima');
         }
-    }, [isLoadingCategories, categories, currentCategory, router]);
+    }, [isLoadingCategories, categories, currentCategory, categoria, router]);
 
-    if (!mounted) {
+    if (!mounted || !user) {
         return null;
     }
 
-    if (!user) {
-        return null;
-    }
-
-    // Mostrar loading mientras se cargan las categorías
-    if (isLoadingCategories) {
+    // Loading de categorías
+    if (isLoadingCategories || !categoria) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[#E6E1EA]">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Cargando categorías...</p>
+                    <p className="text-gray-600">Cargando categoría...</p>
                 </div>
             </div>
         );
     }
 
-    // Si la categoría no existe después de cargar, mostrar loading mientras redirige
-    if (!currentCategory && categories.length > 0) {
+    // Si la categoría no existe después de cargar
+    if (!currentCategory) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[#E6E1EA]">
                 <div className="text-center">
                     <p className="text-gray-600">Categoría "{categoria}" no encontrada, redirigiendo...</p>
-                    <p className="text-sm text-gray-500 mt-2">Categorías disponibles: {categories.map(c => c.slug).join(', ')}</p>
+                    <p className="text-sm text-gray-500 mt-2">
+                        Categorías disponibles: {categories.map(c => c.slug).join(', ')}
+                    </p>
                 </div>
             </div>
         );
@@ -107,13 +93,13 @@ export default function CategoriaPage() {
                     breadcrumbs={[{ label: 'Tus materiales' }]}
                 />
 
-                <div className="bg-[#E6E1EA] rounded-t-2xl py-3 sm:py-4 md:py-5 flex-1">
-                    <div className="w-[calc(100%-2rem)] sm:w-[calc(100%-4rem)] max-w-xs sm:max-w-sm mx-auto">
-                        <div className="mb-3 sm:mb-4 md:mb-5 pt-3 sm:pt-4 md:pt-5">
+                <div className="bg-[#E6E1EA] rounded-t-2xl py-4 flex-1">
+                    <div className="w-[calc(100%-2rem)] max-w-sm mx-auto">
+                        <div className="mb-4 pt-4">
                             <SearchBarWhite
                                 placeholder="Buscar color, precio...."
-                                value={fabricSearchQuery}
-                                onChange={handleFabricSearch}
+                                value={searchQuery}
+                                onChange={handleSearch}
                             />
                         </div>
 
@@ -135,22 +121,22 @@ export default function CategoriaPage() {
                         {/* Lista de Materiales */}
                         {!isLoading && !error && (
                             <>
-                                {filteredFabricMaterials.length === 0 ? (
+                                {!Array.isArray(materials) || materials.length === 0 ? (
                                     <div className="text-center py-10 text-gray-600">
                                         No se encontraron materiales en esta categoría
                                     </div>
                                 ) : (
-                                    <div className="space-y-2 sm:space-y-3 md:space-y-4 pb-4 sm:pb-5 md:pb-6">
-                                        {filteredFabricMaterials.map((material) => (
+                                    <div className="space-y-3 pb-6">
+                                        {materials.map((material: any) => (
                                             <MaterialCard
                                                 key={material.id}
                                                 id={material.id}
-                                                name={material.name}
-                                                colors={material.colors}
-                                                measure={material.measure}
-                                                price={material.price}
-                                                imageUrl={material.imageUrl}
-                                                onClick={() => handleMaterialClick(material.id)}
+                                                name={material.nombre}
+                                                colors={material.colores}
+                                                measure={material.ancho ? `${material.ancho}cm` : undefined}
+                                                price={`$${material.precio.toFixed(2)}`}
+                                                imageUrl={material.url_imagen}
+                                                onClick={() => router.push(`/materia-prima/${categoria}/${material.id}`)}
                                             />
                                         ))}
                                     </div>
@@ -158,12 +144,16 @@ export default function CategoriaPage() {
                             </>
                         )}
 
-                        <div className="pt-4 sm:pt-5 md:pt-6 pb-6 sm:pb-8 md:pb-10">
-                            <AddFloatingButton onClick={handleAddMaterial} isStatic={true} />
+                        <div className="pt-4 pb-10">
+                            <AddFloatingButton
+                                onClick={() => router.push(`/materia-prima/${categoria}/crear`)}
+                                isStatic={true}
+                            />
                         </div>
                     </div>
                 </div>
             </div>
+
             <Footer />
         </div>
     );

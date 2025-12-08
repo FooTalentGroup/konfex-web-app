@@ -27,7 +27,6 @@ export default function MateriaPrimaPage() {
   const {
     searchQuery,
     handleSearch,
-    handleAddMaterial,
   } = useMaterials();
   const {
     fileInputRef,
@@ -51,27 +50,37 @@ export default function MateriaPrimaPage() {
     error: categoriesError,
     deleteCategory,
     fetchCategories,
+    addCategory,
   } = useCategories();
+
+  // Estado para agregar nueva categoría
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  // Manejar agregar categoría
+  const handleAddCategory = async (nombre: string) => {
+    if (!nombre.trim()) return;
+    await addCategory(nombre);
+  };
 
   // Estado para el modal de confirmación
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState<{ id: string; name: string } | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Función para navegar a cualquier categoría
+  // Navegar a cualquier categoría
   const handleCategoryClick = (slug: string) => {
     if (!isDeleteMode) {
       router.push(`/materia-prima/${slug}`);
     }
   };
 
-  // Función para abrir el modal de confirmación
+  // Abrir el modal de confirmación
   const handleDeleteCategory = (categoryId: string, categoryName: string) => {
     setCategoryToDelete({ id: categoryId, name: categoryName });
     setDeleteModalOpen(true);
   };
 
-  // Función para confirmar la eliminación
+  // Confirmar la eliminación
   const handleConfirmDelete = async () => {
     if (!categoryToDelete) return;
 
@@ -92,7 +101,7 @@ export default function MateriaPrimaPage() {
     }
   };
 
-  // Función para cancelar la eliminación
+  // Cancelar la eliminación
   const handleCancelDelete = () => {
     setDeleteModalOpen(false);
     setCategoryToDelete(null);
@@ -120,23 +129,23 @@ export default function MateriaPrimaPage() {
       />
 
       <div className="flex-1 flex flex-col">
-        <div className="w-full px-3 sm:px-4 md:px-6 py-3 sm:py-4 bg-[#9D86AC]">
+        <div className="w-full px-4 pt-8 pb-4 bg-[var(--primary-color-500)] ">
+          <h1 className="text-lg sm:text-xl md:text-2xl mb-1 text-[var(--bg-gray-color-500)] font-[var(--font-lato),sans-serif] font-bold leading-[131%] tracking-[0%]">
+            Tus materiales
+          </h1>
+          <p className="text-xs sm:text-sm md:text-base mb-4 sm:mb-6 font-[var(--font-lato),sans-serif] text-[var(--bg-gray-color-500)]">
+            Organiza tus telas, hilos y accesorios fácilmente.          </p>
           <SearchBar
             placeholder="Buscar material..."
             value={searchQuery}
             onChange={handleSearch}
-            className="max-w-xs sm:max-w-md md:max-w-2xl mx-auto"
+            className=" mx-auto"
           />
         </div>
 
         <main className="flex-1 rounded-t-3xl p-4 sm:p-6 bg-white">
           <div className="w-full max-w-xs sm:max-w-sm mx-auto">
-            <h1 className="text-lg sm:text-xl md:text-2xl mb-2 text-[#770FBD] font-[var(--font-lato),sans-serif] font-bold leading-[131%] tracking-[0%]">
-              Tus materiales
-            </h1>
-            <p className="text-xs sm:text-sm md:text-base mb-4 sm:mb-6 text-black font-[var(--font-lato),sans-serif]">
-              Ten a mano todas tus telas, hilos y accesorios para crear tus prendas sin complicarte.
-            </p>
+
 
             <div>
               {/* Loading state */}
@@ -156,6 +165,7 @@ export default function MateriaPrimaPage() {
 
               {/* Grid de categorías dinámico */}
               {!isLoadingCategories && !categoriesError && (
+
                 <div className="grid grid-cols-2 gap-x-3 sm:gap-x-4 md:gap-x-5 gap-y-4 sm:gap-y-5 md:gap-y-6 mb-6 sm:mb-8">
                   {categories.map((category) => (
                     <CategoryButton
@@ -165,21 +175,22 @@ export default function MateriaPrimaPage() {
                       onClick={() => handleCategoryClick(category.slug)}
                       isDeleteMode={isDeleteMode}
                       isSelected={false}
-                      onDeleteClick={() => handleDeleteCategory(category.id, category.nombre)}
+                      onDeleteClick={() => handleDeleteCategory(String(category.id), category.nombre)}
                       canDelete={true}
                     />
                   ))}
                 </div>
+
               )}
 
               {/* Mensaje cuando está en modo delete */}
-              {isDeleteMode && (
+              {/* {isDeleteMode && (
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
                   <p className="text-sm text-yellow-800 text-center">
                     Toca el ícono de basura en cualquier categoría para eliminarla
                   </p>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </main>
@@ -191,7 +202,7 @@ export default function MateriaPrimaPage() {
             simpleButtons={[
               {
                 icon: <Plus size={20} />,
-                onClick: handleAddMaterial
+                onClick: () => setShowAddModal(true)
               }
             ]}
           >

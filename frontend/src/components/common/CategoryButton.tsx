@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Trash2 } from 'lucide-react';
+import { X } from 'lucide-react';
 
 export interface CategoryButtonProps {
   label: string;
@@ -73,11 +73,11 @@ const CategoryButton: React.FC<CategoryButtonProps> = ({
         {/* Icono de tacho en la esquina superior derecha - clickeable directamente */}
         {isDeleteMode && canDelete && (
           <div
-            className="absolute top-2 right-2 cursor-pointer"
+            className="absolute top-[-10px] right-[-8px] cursor-pointer"
             onClick={handleDeleteClick}
           >
-            <div className="bg-red-500 hover:bg-red-600 rounded-full p-1.5 transition-all duration-200 shadow-lg">
-              <Trash2 className="w-4 h-4 text-white" />
+            <div className="bg-[var(--background-light)] opacity-60 rounded-full p-1 transition-all duration-200 shadow-lg">
+              <X className="w-5 h-5 text-[#5A0B8E] " strokeWidth={1.1} />
             </div>
           </div>
         )}

@@ -1,125 +1,106 @@
-import { useState, useEffect } from 'react';
+'use client';
 
-export interface Category {
-    id: string;
-    nombre: string;
-    slug: string;
-    iconPath: string;
-}
+import { useState, useCallback, useEffect } from 'react';
 
-interface BackendMaterial {
+interface Category {
     id: number;
     nombre: string;
-    categoria: string;
-    // ... otros campos
+    slug: string;
+    iconPath?: string;
 }
 
-interface BackendResponse {
-    success: boolean;
-    statusCode: number;
-    message: string;
-    data: {
-        data: BackendMaterial[];
-        pagination: any;
-    };
-}
+// Función para generar slug desde el nombre
+const generateSlug = (nombre: string): string => {
+    return nombre
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+};
 
-// Mapeo de categorías a sus iconos
+// Mapeo de íconos conocidos
 const CATEGORY_ICON_MAP: Record<string, string> = {
     'Tela': '/imageTela.png',
     'Hilo': '/hilos.png',
+    'Hilos': '/hilos.png',
     'Botones': '/botones.png',
     'Boton': '/botones.png',
-    'Hilos': '/hilos.png',
+    'Accesorios': '/agregar.png',
 };
 
-// Mapeo de categorías a sus slugs
-const CATEGORY_SLUG_MAP: Record<string, string> = {
-    'Tela': 'tela',
-    'Hilo': 'hilos',
-    'Hilos': 'hilos',
-    'Botones': 'botones',
-    'Boton': 'botones',
-};
-
-export const useCategories = () => {
+export function useCategories() {
     const [categories, setCategories] = useState<Category[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
 
-    const fetchCategories = async () => {
+    const fetchCategories = useCallback(async () => {
         try {
             setIsLoading(true);
-            setError(null);
+            setError('');
 
-            const url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/materiales`;
-            console.log('Fetching materials to extract categories from:', url);
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categorias`);
+            const json = await res.json();
 
-            const response = await fetch(url);
-
-            if (!response.ok) {
-                throw new Error('Error al cargar los materiales');
+            if (!json.success) {
+                throw new Error(json.message || 'Error fetching categories');
             }
 
-            const result: BackendResponse = await response.json();
-            console.log('Materials result:', result);
+            // Mapear y agregar slug a cada categoría
+            const mappedCategories = (json.data || []).map((cat: any) => ({
+                id: cat.id,
+                nombre: cat.nombre,
+                slug: generateSlug(cat.nombre),
+                iconPath: CATEGORY_ICON_MAP[cat.nombre] || '/agregar.png',
+            }));
 
-            if (result.data && Array.isArray(result.data.data)) {
-                // Extraer categorías únicas
-                const uniqueCategories = new Set<string>();
-                result.data.data.forEach((material) => {
-                    if (material.categoria) {
-                        uniqueCategories.add(material.categoria);
-                    }
-                });
-
-                console.log('Unique categories found:', Array.from(uniqueCategories));
-
-                // Mapear a formato de categorías
-                const mappedCategories: Category[] = Array.from(uniqueCategories).map((catName, index) => ({
-                    id: `cat-${index}`, // ID temporal basado en el nombre
-                    nombre: catName,
-                    slug: CATEGORY_SLUG_MAP[catName] || catName.toLowerCase(),
-                    iconPath: CATEGORY_ICON_MAP[catName] || '/agregar.png',
-                }));
-
-                setCategories(mappedCategories);
-            } else {
-                throw new Error('Formato de respuesta inválido');
-            }
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Error desconocido');
-            console.error('Error fetching categories:', err);
-            setCategories([]);
+            setCategories(mappedCategories);
+        } catch (err: any) {
+            setError(err.message);
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
+
+    const addCategory = useCallback(async (nombre: string) => {
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categorias`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre })
+            });
+
+            const json = await res.json();
+
+            if (!json.success) throw new Error(json.message || 'Error creating category');
+
+            fetchCategories();
+            return true;
+        } catch (err) {
+            console.error(err);
+            return false;
+        }
+    }, [fetchCategories]);
+
+    const deleteCategory = useCallback(async (id: string | number) => {
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categorias/${id}`, {
+                method: 'DELETE'
+            });
+            const json = await res.json();
+
+            if (!json.success) return false;
+
+            fetchCategories();
+            return true;
+        } catch (err) {
+            return false;
+        }
+    }, [fetchCategories]);
 
     useEffect(() => {
         fetchCategories();
-    }, []);
-
-    const deleteCategory = async (categoryName: string) => {
-        // Como no hay endpoint de categorías, simular la eliminación
-        // En realidad, esto debería eliminar todos los materiales de esa categoría
-        console.warn('No hay endpoint para eliminar categorías. Categoría:', categoryName);
-        return false;
-    };
-
-    const deleteMultipleCategories = async (categoryIds: string[]) => {
-        // Obtener los nombres de las categorías desde los IDs
-        const categoriesToDelete = categories
-            .filter(cat => categoryIds.includes(cat.id))
-            .map(cat => cat.nombre);
-
-        console.warn('No hay endpoint para eliminar categorías. Categorías:', categoriesToDelete);
-
-        // TODO: Cuando tengas el endpoint, deberías eliminar todos los materiales de estas categorías
-        // O mostrar un mensaje diciendo que no se pueden eliminar categorías que tienen materiales
-
-        return false;
-    };
+    }, [fetchCategories]);
 
     return {
         categories,
@@ -127,6 +108,6 @@ export const useCategories = () => {
         error,
         fetchCategories,
         deleteCategory,
-        deleteMultipleCategories,
+        addCategory,
     };
-};
+}

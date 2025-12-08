@@ -13,7 +13,6 @@ export interface Material {
   imageUrl?: string;
 }
 
-
 interface BackendMaterial {
   id: number;
   nombre: string;
@@ -33,15 +32,7 @@ interface BackendResponse {
   success: boolean;
   statusCode: number;
   message: string;
-  data: {
-    data: BackendMaterial[];
-    pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
-    };
-  };
+  data: BackendMaterial[];
 }
 
 const mockMaterials: Material[] = [
@@ -55,65 +46,7 @@ const mockMaterials: Material[] = [
   { id: '8', name: 'Cremallera Metálica', category: 'otros', quantity: 10, unit: 'unidades', color: 'Plateado' },
 ];
 
-export const mockFabricMaterials: Material[] = [
-  {
-    id: 'f1',
-    name: 'Jersey de Algodón',
-    category: 'tela',
-    quantity: 1.7,
-    unit: 'metros',
-    colors: ['azul', 'rosa', 'amarillo'],
-    measure: '1.7mt',
-    price: '0000000',
-    imageUrl: '/telass.png',
-  },
-  {
-    id: 'f2',
-    name: 'Jersey de Algodón',
-    category: 'tela',
-    quantity: 1.7,
-    unit: 'metros',
-    colors: ['azul', 'rosa', 'amarillo'],
-    measure: '1.7mt',
-    price: '0000000',
-    imageUrl: '/telass.png',
-  },
-  {
-    id: 'f3',
-    name: 'Jersey de Algodón',
-    category: 'tela',
-    quantity: 1.7,
-    unit: 'metros',
-    colors: ['azul', 'rosa', 'amarillo'],
-    measure: '1.7mt',
-    price: '0000000',
-    imageUrl: '/telass.png',
-  },
-  {
-    id: 'f4',
-    name: 'Jersey de Algodón',
-    category: 'tela',
-    quantity: 1.7,
-    unit: 'metros',
-    colors: ['azul', 'rosa', 'amarillo'],
-    measure: '1.7mt',
-    price: '0000000',
-    imageUrl: '/telass.png',
-  },
-  {
-    id: 'f5',
-    name: 'Jersey de Algodón',
-    category: 'tela',
-    quantity: 1.7,
-    unit: 'metros',
-    colors: ['azul', 'rosa', 'amarillo'],
-    measure: '1.7mt',
-    price: '0000000',
-    imageUrl: '/telass.png',
-  },
-];
-
-export const useMaterials = (categoriaFiltro?: string) => {
+export const useMaterials = (categoriaId?: number) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
@@ -121,12 +54,11 @@ export const useMaterials = (categoriaFiltro?: string) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-
   const mapBackendToFrontend = (backendMaterial: BackendMaterial): Material => {
     return {
       id: backendMaterial.id.toString(),
       name: backendMaterial.nombre,
-      category: 'otros', // Ya no importa porque no lo usamos para filtrar
+      category: 'otros',
       quantity: backendMaterial.peso || 0,
       unit: backendMaterial.unidadMedida,
       colors: backendMaterial.colores,
@@ -137,46 +69,42 @@ export const useMaterials = (categoriaFiltro?: string) => {
   };
 
   useEffect(() => {
-    if (!categoriaFiltro) {
+    if (!categoriaId) {
       setIsLoading(false);
       return;
     }
+
     const fetchFabricMaterials = async () => {
       try {
         setIsLoading(true);
         setError(null);
 
-        let url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/materiales`;
-        if (categoriaFiltro) {
-          url += `?categoria=${encodeURIComponent(categoriaFiltro)}`;
-        }
+        // Usar el nuevo endpoint con el ID de categoría
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/categorias/${categoriaId}/materiales`;
+
         console.log('========== DEBUG START ==========');
         console.log('1. URL completa:', url);
-        console.log('2. Categoria filtro:', categoriaFiltro);
+        console.log('2. Categoria ID:', categoriaId);
 
         const response = await fetch(url);
         console.log('3. Response status:', response.status);
 
         if (!response.ok) {
-          throw new Error('Error al cargar los materiales de tela');
+          throw new Error('Error al cargar los materiales');
         }
 
         const result: BackendResponse = await response.json();
         console.log('4. Result completo:', result);
-        console.log('5. result.data:', result.data);
-        console.log('6. result.data.data:', result.data.data);
-        console.log('7. Cantidad de items:', result.data.data.length);
 
-        if (result.data.data.length > 0) {
-          console.log('8. Primer item del backend:', result.data.data[0]);
-          console.log('9. Categoría del primer item:', result.data.data[0].categoria);
-        }
+        if (result.data && Array.isArray(result.data)) {
+          console.log('5. Cantidad de items:', result.data.length);
 
-        if (result.data && Array.isArray(result.data.data)) {
-          console.log('Data array length:', result.data.data.length);
-          const mappedMaterials = result.data.data.map(mapBackendToFrontend);
-          console.log('10. Mapped materials:', mappedMaterials);
-          console.log('11. Cantidad de mapped materials:', mappedMaterials.length);
+          if (result.data.length > 0) {
+            console.log('6. Primer item:', result.data[0]);
+          }
+
+          const mappedMaterials = result.data.map(mapBackendToFrontend);
+          console.log('7. Mapped materials:', mappedMaterials);
           setFabricMaterials(mappedMaterials);
         } else {
           console.error('Estructura de datos inválida:', result);
@@ -186,13 +114,14 @@ export const useMaterials = (categoriaFiltro?: string) => {
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Error desconocido');
         console.error('Error fetching fabric materials:', err);
+        setFabricMaterials([]);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchFabricMaterials();
-  }, [categoriaFiltro]);
+  }, [categoriaId]);
 
   const filteredMaterials = useMemo(() => {
     let filtered = mockMaterials;
@@ -235,15 +164,10 @@ export const useMaterials = (categoriaFiltro?: string) => {
       return [];
     }
 
-    let filtered = fabricMaterials;
-    if (categoriaFiltro) {
-      const categoryLower = categoriaFiltro.toLowerCase();
-      filtered = filtered.filter(m => m.category === categoryLower);
-    }
-
     if (!fabricSearchQuery.trim()) {
       return fabricMaterials;
     }
+
     const searchTerm = fabricSearchQuery.toLowerCase();
     return fabricMaterials.filter(
       (material) =>
@@ -278,4 +202,3 @@ export const useMaterials = (categoriaFiltro?: string) => {
     handleMaterialClick,
   };
 };
-
