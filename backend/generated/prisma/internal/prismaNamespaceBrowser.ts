@@ -68,7 +68,8 @@ export const ModelName = {
   Pedido: 'Pedido',
   PedidoDetalle: 'PedidoDetalle',
   ProduccionEtapa: 'ProduccionEtapa',
-  TelegramMessage: 'TelegramMessage'
+  TelegramMessage: 'TelegramMessage',
+  TelegramConversation: 'TelegramConversation'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -350,12 +351,31 @@ export const TelegramMessageScalarFieldEnum = {
 export type TelegramMessageScalarFieldEnum = (typeof TelegramMessageScalarFieldEnum)[keyof typeof TelegramMessageScalarFieldEnum]
 
 
+export const TelegramConversationScalarFieldEnum = {
+  chatId: 'chatId',
+  currentStep: 'currentStep',
+  formData: 'formData',
+  manualMode: 'manualMode',
+  lastMessageAt: 'lastMessageAt'
+} as const
+
+export type TelegramConversationScalarFieldEnum = (typeof TelegramConversationScalarFieldEnum)[keyof typeof TelegramConversationScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: 'DbNull',
+  JsonNull: 'JsonNull'
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -372,4 +392,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: 'DbNull',
+  JsonNull: 'JsonNull',
+  AnyNull: 'AnyNull'
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

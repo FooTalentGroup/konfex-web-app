@@ -2,6 +2,8 @@ import { io } from "@/config/socket";
 import prisma from "@/config/prisma";
 import { telegramMessageRepository } from "./telegram.repository";
 import { uploadFile } from "@/utils/uploadFile";
+import { LeadForm, LeadStep, questions } from "../ai/types";
+import { extractLeadField } from "../ai/extractores/lead";
 
 const TELEGRAM_API = (token: string) => `https://api.telegram.org/bot${token}`;
 
@@ -110,6 +112,66 @@ export const handleIncomingUpdate = async (update: any) => {
 
     await telegramMessageRepository.save(payload);
     io.emit("telegram_message", payload);
+
+    // manejo de IA
+    const chatId = payload.chatId;
+
+    // Revisar si hay conversación activa
+    let conversation = await prisma.telegramConversation.findUnique({ where: { chatId } });
+    if (!conversation) {
+      conversation = await prisma.telegramConversation.create({ data: { chatId } });
+      return sendTextMessage(chatId, questions[LeadStep.PRENDA], "Konfex", "Usuario", "");
+    }
+    const currentStep = conversation.currentStep as LeadStep;
+    let partialData: LeadForm = {
+      prenda: "",
+      tipoCliente: null,
+      cantidad: null,
+      fecha: null,
+      diseno: null,
+      contacto: null,
+    };
+    if (conversation.formData && typeof conversation.formData === "object" && !Array.isArray(conversation.formData)) {
+      partialData = { ...partialData, ...(conversation.formData as LeadForm) };
+    }
+
+    const updatedData = await extractLeadField(
+      questions[currentStep],
+      payload.text || "",
+      partialData
+    );
+
+    // Avanzar al siguiente paso
+    let nextStep = currentStep + 1;
+    if (nextStep > LeadStep.CONTACTO) nextStep = LeadStep.DONE;
+
+    await prisma.telegramConversation.update({
+      where: { chatId },
+      data: {
+        currentStep: nextStep,
+        formData: updatedData,
+        lastMessageAt: new Date()
+      }
+    });
+
+    // Enviar siguiente pregunta o finalizar flujo
+    if (nextStep === LeadStep.DONE) {
+      await sendTextMessage(chatId, "¡Gracias! Un asesor humano te contactará.", "Konfex", "Usuario", "");
+      await prisma.telegramConversation.update({
+        where: { chatId },
+        data: {
+          currentStep: nextStep,
+          formData: updatedData,
+          manualMode: true,
+          lastMessageAt: new Date()
+        }
+      });
+      return;
+    }
+
+    await sendTextMessage(chatId, questions[currentStep as LeadStep], "Konfex", "Usuario", "");
+
+
   } catch (err) {
     console.error("Error procesando mensaje de Telegram:", err);
   }

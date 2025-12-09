@@ -293,6 +293,14 @@ model TelegramMessage {
   cliente       Cliente?  @relation(fields: [clienteId], references: [id])
 }
 
+model TelegramConversation {
+  chatId        String   @id
+  currentStep   Int      @default(1)
+  formData      Json?    @default("{}")
+  manualMode    Boolean  @default(false)
+  lastMessageAt DateTime @default(now())
+}
+
 enum EstadoPresupuesto {
   BORRADOR
   ENVIADO
