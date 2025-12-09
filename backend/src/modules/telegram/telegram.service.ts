@@ -154,26 +154,21 @@ export const handleIncomingUpdate = async (update: any) => {
       }
     });
 
-    // Enviar siguiente pregunta o finalizar flujo
     if (nextStep === LeadStep.DONE) {
-      await sendTextMessage(chatId, "¡Gracias! Un asesor humano te contactará.", "Konfex", "Usuario", "");
+      await sendTextMessage(chatId, questions[LeadStep.DONE], "Konfex", "Usuario", "");
       await prisma.telegramConversation.update({
         where: { chatId },
-        data: {
-          currentStep: nextStep,
-          formData: updatedData,
-          manualMode: true,
-          lastMessageAt: new Date()
-        }
+        data: { manualMode: true }
       });
-      return;
+    } else {
+      await sendTextMessage(chatId, questions[nextStep as LeadStep], "Konfex", "Usuario", "");
     }
-
-    await sendTextMessage(chatId, questions[currentStep as LeadStep], "Konfex", "Usuario", "");
-
+    return
+    
 
   } catch (err) {
     console.error("Error procesando mensaje de Telegram:", err);
+    return
   }
 };
 

@@ -11,6 +11,7 @@ Dado:
 - Los datos recolectados hasta ahora: ${JSON.stringify(partial)}
 
 Tu tarea:
+- Verificar los campos que ya estan llenos para no sobreescribirlos.
 - Interpretar la respuesta en lenguaje natural.
 - Devolver SOLO un JSON válido con el estado actualizado del formulario:
 
@@ -19,15 +20,15 @@ Tu tarea:
   "tipoCliente": "personal"|"equipo"|null,
   "cantidad": number|null,
   "fecha": string|null,
-  "diseño": string|null,
+  "diseno": string|null,
   "contacto": string|null
 }
 
-Reglas:
+Reglas importantes:
 - Si el usuario no responde la pregunta, mantener el valor anterior.
 - Si la respuesta es ambigua, intenta inferir sin inventar.
-- NO incluyas nada fuera del JSON.
-
+- NO incluyas nada fuera del JSON, evita comentarios o formatos que causen problemas de parseo.
+- El campo diseno, hace referencia a si tiene o no diseño de su producto.
 `;
 }
 
@@ -36,5 +37,8 @@ export async function extractLeadField(
   answer: string,
   partial: any
 ) {
-  return runJsonPrompt(buildLeadPrompt(question, answer, partial), (obj): obj is any => true);
+  return runJsonPrompt(buildLeadPrompt(question, answer, partial), (obj): obj is any => {
+    console.log(obj);
+    return true;
+  });
 }
