@@ -17,7 +17,6 @@ export default function BudgetDetails({
 
   return (
     <div className="space-y-4 p-5 bg-[#F3F0F5] rounded-b-2xl min-h-[400px]">
-      {/* Header con ID, Manual/Telegram y Fecha */}
       <div className="flex justify-between items-center mb-4 text-sm text-gray-600">
         <span className="font-bold text-gray-800">ID: XXXX</span>
         <div className="flex items-center gap-2">
@@ -36,62 +35,130 @@ export default function BudgetDetails({
         </div>
       </div>
 
-      {/* Instrucciones */}
       <p className="text-sm text-gray-700 mb-4">
         Completa los datos principales del presupuesto.
       </p>
 
-      {/* Título presupuesto */}
       <div>
         <label className="block text-sm font-bold text-gray-700 mb-1.5">
           Título presupuesto<span className="text-[#8B709D]">*</span>
         </label>
         <input
-          {...register("title")}
+          {...register("title", {
+            maxLength: {
+              value: 200,
+              message: "El título no puede exceder 200 caracteres",
+            },
+          })}
           type="text"
           placeholder="Ingresa el título del presupuesto"
-          className="w-full bg-white border border-[#D5A1F7] rounded-lg p-3 text-sm text-gray-700 outline-none focus:border-[#B65CF2] focus:ring-1 focus:ring-[#B65CF2] placeholder:text-gray-400"
+          maxLength={200}
+          className={`w-full bg-white border rounded-lg p-3 text-sm text-gray-700 outline-none focus:ring-1 placeholder:text-gray-400 ${
+            errors.title
+              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+              : "border-[#D5A1F7] focus:border-[#B65CF2] focus:ring-[#B65CF2]"
+          }`}
         />
+        {errors.title && (
+          <p className="text-xs text-red-500 mt-1">
+            {errors.title.message as string}
+          </p>
+        )}
       </div>
 
-      {/* Nombre cliente */}
       <div>
         <label className="block text-sm font-bold text-gray-700 mb-1.5">
           Nombre cliente<span className="text-[#8B709D]">*</span>
         </label>
         <input
-          {...register("clientName")}
+          {...register("clientName", {
+            maxLength: {
+              value: 100,
+              message: "El nombre no puede exceder 100 caracteres",
+            },
+            pattern: {
+              value: /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/,
+              message: "El nombre solo puede contener letras y espacios",
+            },
+          })}
           type="text"
           placeholder="Ingresa el nombre del cliente"
-          className="w-full bg-white border border-[#D5A1F7] rounded-lg p-3 text-sm text-gray-700 outline-none focus:border-[#B65CF2] focus:ring-1 focus:ring-[#B65CF2] placeholder:text-gray-400"
+          maxLength={100}
+          className={`w-full bg-white border rounded-lg p-3 text-sm text-gray-700 outline-none focus:ring-1 placeholder:text-gray-400 ${
+            errors.clientName
+              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+              : "border-[#D5A1F7] focus:border-[#B65CF2] focus:ring-[#B65CF2]"
+          }`}
         />
+        {errors.clientName && (
+          <p className="text-xs text-red-500 mt-1">
+            {errors.clientName.message as string}
+          </p>
+        )}
       </div>
 
-      {/* E-mail */}
       <div>
         <label className="block text-sm font-bold text-gray-700 mb-1.5">
           E-mail<span className="text-[#8B709D]">*</span>
         </label>
         <input
-          {...register("clientEmail")}
+          {...register("clientEmail", {
+            maxLength: {
+              value: 100,
+              message: "El email no puede exceder 100 caracteres",
+            },
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: "Ingresa un email válido",
+            },
+          })}
           type="email"
           placeholder="Ingresa el e-mail del cliente"
-          className="w-full bg-white border border-[#D5A1F7] rounded-lg p-3 text-sm text-gray-700 outline-none focus:border-[#B65CF2] focus:ring-1 focus:ring-[#B65CF2] placeholder:text-gray-400"
+          maxLength={100}
+          className={`w-full bg-white border rounded-lg p-3 text-sm text-gray-700 outline-none focus:ring-1 placeholder:text-gray-400 ${
+            errors.clientEmail
+              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+              : "border-[#D5A1F7] focus:border-[#B65CF2] focus:ring-[#B65CF2]"
+          }`}
         />
+        {errors.clientEmail && (
+          <p className="text-xs text-red-500 mt-1">
+            {errors.clientEmail.message as string}
+          </p>
+        )}
       </div>
 
-      {/* Teléfono y Fecha entrega */}
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-1.5">
             Teléfono<span className="text-[#8B709D]">*</span>
           </label>
           <input
-            {...register("clientPhone")}
+            {...register("clientPhone", {
+              maxLength: {
+                value: 16,
+                message: "El teléfono no puede exceder 16 caracteres",
+              },
+              pattern: {
+                value: /^[0-9\-\s\+\(\)]+$/,
+                message:
+                  "El teléfono solo puede contener números, guiones, espacios y paréntesis",
+              },
+            })}
             type="tel"
             placeholder="X-XXXX-XXXX"
-            className="w-full bg-white border border-[#D5A1F7] rounded-lg p-3 text-sm text-gray-700 outline-none focus:border-[#B65CF2] focus:ring-1 focus:ring-[#B65CF2] placeholder:text-gray-400"
+            maxLength={16}
+            className={`w-full bg-white border rounded-lg p-3 text-sm text-gray-700 outline-none focus:ring-1 placeholder:text-gray-400 ${
+              errors.clientPhone
+                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                : "border-[#D5A1F7] focus:border-[#B65CF2] focus:ring-[#B65CF2]"
+            }`}
           />
+          {errors.clientPhone && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.clientPhone.message as string}
+            </p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-1.5">
@@ -121,12 +188,10 @@ export default function BudgetDetails({
         </div>
       </div>
 
-      {/* Nota sobre fecha de entrega */}
       <p className="text-xs text-gray-500 mt-2 leading-relaxed">
         *La fecha de entrega se confirmará una vez aprobado el presupuesto.
       </p>
 
-      {/* Ganancia deseada */}
       <div>
         <label className="block text-sm font-bold text-gray-700 mb-1.5">
           Ganancia deseada (%)
@@ -148,6 +213,8 @@ export default function BudgetDetails({
             min="0"
             max="100"
             step="0.01"
+            placeholder="0-100"
+            onWheel={(e) => e.currentTarget.blur()}
             className={`w-full bg-white border rounded-lg p-3 pr-8 text-sm text-gray-700 outline-none focus:ring-1 placeholder:text-gray-400 ${
               errors.desiredProfit
                 ? "border-red-500 focus:border-red-500 focus:ring-red-500"
