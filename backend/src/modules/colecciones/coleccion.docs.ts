@@ -4,7 +4,8 @@ export const coleccionDocs = {
       get: {
         tags: ["Colecciones"],
         summary: "Obtener todas las colecciones",
-        description: "Retorna una lista de todas las colecciones disponibles",
+        description:
+          "Retorna una lista de todas las colecciones disponibles con sus productos asociados",
         responses: {
           200: {
             description: "Colecciones obtenidas correctamente",
@@ -84,7 +85,7 @@ export const coleccionDocs = {
       get: {
         tags: ["Colecciones"],
         summary: "Obtener colección por ID",
-        description: "Retorna una colección específica por su ID",
+        description: "Retorna una colección específica por su ID con sus productos asociados",
         parameters: [{ $ref: "#/components/parameters/ColeccionId" }],
         responses: {
           200: {
@@ -233,6 +234,29 @@ export const coleccionDocs = {
             type: "string",
             nullable: true,
             description: "URL del icono de la colección",
+          },
+          productos: {
+            type: "array",
+            description: "Productos asociados a esta colección",
+            items: {
+              type: "object",
+              properties: {
+                id: { type: "number" },
+                codigo: { type: "number" },
+                nombre: { type: "string" },
+                descripcion: { type: "string", nullable: true },
+                activo: { type: "boolean" },
+                imagen: { type: "string", nullable: true },
+                tallas: { type: "array", items: { type: "string" } },
+                colores: { type: "array", items: { type: "string" } },
+                coleccionId: { type: "number" },
+                mermaCantidad: { type: "number", nullable: true },
+                mermaUnidad: { type: "string", nullable: true },
+                mermaPrecio: { type: "number", nullable: true },
+                createdAt: { type: "string", format: "date-time" },
+                updatedAt: { type: "string", format: "date-time" },
+              },
+            },
           },
           createdAt: {
             type: "string",

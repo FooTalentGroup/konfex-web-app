@@ -20,7 +20,12 @@ export const coleccionService = {
     return await coleccionRepository.create(payload);
   },
 
-  getAll: () => coleccionRepository.findAll(),
+  getAll: () =>
+    coleccionRepository.findAll({
+      include: {
+        productos: true,
+      },
+    }),
 
   getById: async (id: number) => {
     if (!id || isNaN(id)) {
@@ -65,7 +70,7 @@ export const coleccionService = {
 
     try {
       return await coleccionRepository.delete(id);
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error?.code === "P2003" || error?.code === "23001") {
         throw new AppError(
           `No se puede eliminar la colección "${coleccion.nombre}" porque tiene productos asociados. Elimine primero los productos de esta colección.`,
