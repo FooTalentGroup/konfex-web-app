@@ -40,6 +40,7 @@ export type ClienteMinAggregateOutputType = {
   telefono: string | null
   email: string | null
   direccion: string | null
+  numeroIdentificacion: string | null
   origen: string | null
   instagramUser: string | null
   notas: string | null
@@ -53,6 +54,7 @@ export type ClienteMaxAggregateOutputType = {
   telefono: string | null
   email: string | null
   direccion: string | null
+  numeroIdentificacion: string | null
   origen: string | null
   instagramUser: string | null
   notas: string | null
@@ -66,6 +68,7 @@ export type ClienteCountAggregateOutputType = {
   telefono: number
   email: number
   direccion: number
+  numeroIdentificacion: number
   origen: number
   instagramUser: number
   notas: number
@@ -89,6 +92,7 @@ export type ClienteMinAggregateInputType = {
   telefono?: true
   email?: true
   direccion?: true
+  numeroIdentificacion?: true
   origen?: true
   instagramUser?: true
   notas?: true
@@ -102,6 +106,7 @@ export type ClienteMaxAggregateInputType = {
   telefono?: true
   email?: true
   direccion?: true
+  numeroIdentificacion?: true
   origen?: true
   instagramUser?: true
   notas?: true
@@ -115,6 +120,7 @@ export type ClienteCountAggregateInputType = {
   telefono?: true
   email?: true
   direccion?: true
+  numeroIdentificacion?: true
   origen?: true
   instagramUser?: true
   notas?: true
@@ -215,6 +221,7 @@ export type ClienteGroupByOutputType = {
   telefono: string | null
   email: string | null
   direccion: string | null
+  numeroIdentificacion: string | null
   origen: string | null
   instagramUser: string | null
   notas: string | null
@@ -251,6 +258,7 @@ export type ClienteWhereInput = {
   telefono?: Prisma.StringNullableFilter<"Cliente"> | string | null
   email?: Prisma.StringNullableFilter<"Cliente"> | string | null
   direccion?: Prisma.StringNullableFilter<"Cliente"> | string | null
+  numeroIdentificacion?: Prisma.StringNullableFilter<"Cliente"> | string | null
   origen?: Prisma.StringNullableFilter<"Cliente"> | string | null
   instagramUser?: Prisma.StringNullableFilter<"Cliente"> | string | null
   notas?: Prisma.StringNullableFilter<"Cliente"> | string | null
@@ -267,6 +275,7 @@ export type ClienteOrderByWithRelationInput = {
   telefono?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   direccion?: Prisma.SortOrderInput | Prisma.SortOrder
+  numeroIdentificacion?: Prisma.SortOrderInput | Prisma.SortOrder
   origen?: Prisma.SortOrderInput | Prisma.SortOrder
   instagramUser?: Prisma.SortOrderInput | Prisma.SortOrder
   notas?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -286,6 +295,7 @@ export type ClienteWhereUniqueInput = Prisma.AtLeast<{
   telefono?: Prisma.StringNullableFilter<"Cliente"> | string | null
   email?: Prisma.StringNullableFilter<"Cliente"> | string | null
   direccion?: Prisma.StringNullableFilter<"Cliente"> | string | null
+  numeroIdentificacion?: Prisma.StringNullableFilter<"Cliente"> | string | null
   origen?: Prisma.StringNullableFilter<"Cliente"> | string | null
   instagramUser?: Prisma.StringNullableFilter<"Cliente"> | string | null
   notas?: Prisma.StringNullableFilter<"Cliente"> | string | null
@@ -302,6 +312,7 @@ export type ClienteOrderByWithAggregationInput = {
   telefono?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   direccion?: Prisma.SortOrderInput | Prisma.SortOrder
+  numeroIdentificacion?: Prisma.SortOrderInput | Prisma.SortOrder
   origen?: Prisma.SortOrderInput | Prisma.SortOrder
   instagramUser?: Prisma.SortOrderInput | Prisma.SortOrder
   notas?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -323,6 +334,7 @@ export type ClienteScalarWhereWithAggregatesInput = {
   telefono?: Prisma.StringNullableWithAggregatesFilter<"Cliente"> | string | null
   email?: Prisma.StringNullableWithAggregatesFilter<"Cliente"> | string | null
   direccion?: Prisma.StringNullableWithAggregatesFilter<"Cliente"> | string | null
+  numeroIdentificacion?: Prisma.StringNullableWithAggregatesFilter<"Cliente"> | string | null
   origen?: Prisma.StringNullableWithAggregatesFilter<"Cliente"> | string | null
   instagramUser?: Prisma.StringNullableWithAggregatesFilter<"Cliente"> | string | null
   notas?: Prisma.StringNullableWithAggregatesFilter<"Cliente"> | string | null
@@ -335,6 +347,7 @@ export type ClienteCreateInput = {
   telefono?: string | null
   email?: string | null
   direccion?: string | null
+  numeroIdentificacion?: string | null
   origen?: string | null
   instagramUser?: string | null
   notas?: string | null
@@ -351,6 +364,7 @@ export type ClienteUncheckedCreateInput = {
   telefono?: string | null
   email?: string | null
   direccion?: string | null
+  numeroIdentificacion?: string | null
   origen?: string | null
   instagramUser?: string | null
   notas?: string | null
@@ -366,6 +380,7 @@ export type ClienteUpdateInput = {
   telefono?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direccion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroIdentificacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   origen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instagramUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -382,6 +397,7 @@ export type ClienteUncheckedUpdateInput = {
   telefono?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direccion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroIdentificacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   origen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instagramUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -398,6 +414,7 @@ export type ClienteCreateManyInput = {
   telefono?: string | null
   email?: string | null
   direccion?: string | null
+  numeroIdentificacion?: string | null
   origen?: string | null
   instagramUser?: string | null
   notas?: string | null
@@ -410,6 +427,7 @@ export type ClienteUpdateManyMutationInput = {
   telefono?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direccion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroIdentificacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   origen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instagramUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -423,6 +441,7 @@ export type ClienteUncheckedUpdateManyInput = {
   telefono?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direccion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroIdentificacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   origen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instagramUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -436,6 +455,7 @@ export type ClienteCountOrderByAggregateInput = {
   telefono?: Prisma.SortOrder
   email?: Prisma.SortOrder
   direccion?: Prisma.SortOrder
+  numeroIdentificacion?: Prisma.SortOrder
   origen?: Prisma.SortOrder
   instagramUser?: Prisma.SortOrder
   notas?: Prisma.SortOrder
@@ -453,6 +473,7 @@ export type ClienteMaxOrderByAggregateInput = {
   telefono?: Prisma.SortOrder
   email?: Prisma.SortOrder
   direccion?: Prisma.SortOrder
+  numeroIdentificacion?: Prisma.SortOrder
   origen?: Prisma.SortOrder
   instagramUser?: Prisma.SortOrder
   notas?: Prisma.SortOrder
@@ -466,6 +487,7 @@ export type ClienteMinOrderByAggregateInput = {
   telefono?: Prisma.SortOrder
   email?: Prisma.SortOrder
   direccion?: Prisma.SortOrder
+  numeroIdentificacion?: Prisma.SortOrder
   origen?: Prisma.SortOrder
   instagramUser?: Prisma.SortOrder
   notas?: Prisma.SortOrder
@@ -538,6 +560,7 @@ export type ClienteCreateWithoutPresupuestosInput = {
   telefono?: string | null
   email?: string | null
   direccion?: string | null
+  numeroIdentificacion?: string | null
   origen?: string | null
   instagramUser?: string | null
   notas?: string | null
@@ -553,6 +576,7 @@ export type ClienteUncheckedCreateWithoutPresupuestosInput = {
   telefono?: string | null
   email?: string | null
   direccion?: string | null
+  numeroIdentificacion?: string | null
   origen?: string | null
   instagramUser?: string | null
   notas?: string | null
@@ -583,6 +607,7 @@ export type ClienteUpdateWithoutPresupuestosInput = {
   telefono?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direccion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroIdentificacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   origen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instagramUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -598,6 +623,7 @@ export type ClienteUncheckedUpdateWithoutPresupuestosInput = {
   telefono?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direccion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroIdentificacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   origen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instagramUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -612,6 +638,7 @@ export type ClienteCreateWithoutPedidosInput = {
   telefono?: string | null
   email?: string | null
   direccion?: string | null
+  numeroIdentificacion?: string | null
   origen?: string | null
   instagramUser?: string | null
   notas?: string | null
@@ -627,6 +654,7 @@ export type ClienteUncheckedCreateWithoutPedidosInput = {
   telefono?: string | null
   email?: string | null
   direccion?: string | null
+  numeroIdentificacion?: string | null
   origen?: string | null
   instagramUser?: string | null
   notas?: string | null
@@ -657,6 +685,7 @@ export type ClienteUpdateWithoutPedidosInput = {
   telefono?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direccion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroIdentificacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   origen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instagramUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -672,6 +701,7 @@ export type ClienteUncheckedUpdateWithoutPedidosInput = {
   telefono?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direccion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroIdentificacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   origen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instagramUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -686,6 +716,7 @@ export type ClienteCreateWithoutTelegramMessagesInput = {
   telefono?: string | null
   email?: string | null
   direccion?: string | null
+  numeroIdentificacion?: string | null
   origen?: string | null
   instagramUser?: string | null
   notas?: string | null
@@ -701,6 +732,7 @@ export type ClienteUncheckedCreateWithoutTelegramMessagesInput = {
   telefono?: string | null
   email?: string | null
   direccion?: string | null
+  numeroIdentificacion?: string | null
   origen?: string | null
   instagramUser?: string | null
   notas?: string | null
@@ -731,6 +763,7 @@ export type ClienteUpdateWithoutTelegramMessagesInput = {
   telefono?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direccion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroIdentificacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   origen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instagramUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -746,6 +779,7 @@ export type ClienteUncheckedUpdateWithoutTelegramMessagesInput = {
   telefono?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direccion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  numeroIdentificacion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   origen?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instagramUser?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notas?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -810,6 +844,7 @@ export type ClienteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   telefono?: boolean
   email?: boolean
   direccion?: boolean
+  numeroIdentificacion?: boolean
   origen?: boolean
   instagramUser?: boolean
   notas?: boolean
@@ -827,6 +862,7 @@ export type ClienteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   telefono?: boolean
   email?: boolean
   direccion?: boolean
+  numeroIdentificacion?: boolean
   origen?: boolean
   instagramUser?: boolean
   notas?: boolean
@@ -840,6 +876,7 @@ export type ClienteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   telefono?: boolean
   email?: boolean
   direccion?: boolean
+  numeroIdentificacion?: boolean
   origen?: boolean
   instagramUser?: boolean
   notas?: boolean
@@ -853,6 +890,7 @@ export type ClienteSelectScalar = {
   telefono?: boolean
   email?: boolean
   direccion?: boolean
+  numeroIdentificacion?: boolean
   origen?: boolean
   instagramUser?: boolean
   notas?: boolean
@@ -860,7 +898,7 @@ export type ClienteSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ClienteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "telefono" | "email" | "direccion" | "origen" | "instagramUser" | "notas" | "createdAt" | "updatedAt", ExtArgs["result"]["cliente"]>
+export type ClienteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "telefono" | "email" | "direccion" | "numeroIdentificacion" | "origen" | "instagramUser" | "notas" | "createdAt" | "updatedAt", ExtArgs["result"]["cliente"]>
 export type ClienteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   pedidos?: boolean | Prisma.Cliente$pedidosArgs<ExtArgs>
   presupuestos?: boolean | Prisma.Cliente$presupuestosArgs<ExtArgs>
@@ -883,6 +921,7 @@ export type $ClientePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     telefono: string | null
     email: string | null
     direccion: string | null
+    numeroIdentificacion: string | null
     origen: string | null
     instagramUser: string | null
     notas: string | null
@@ -1319,6 +1358,7 @@ export interface ClienteFieldRefs {
   readonly telefono: Prisma.FieldRef<"Cliente", 'String'>
   readonly email: Prisma.FieldRef<"Cliente", 'String'>
   readonly direccion: Prisma.FieldRef<"Cliente", 'String'>
+  readonly numeroIdentificacion: Prisma.FieldRef<"Cliente", 'String'>
   readonly origen: Prisma.FieldRef<"Cliente", 'String'>
   readonly instagramUser: Prisma.FieldRef<"Cliente", 'String'>
   readonly notas: Prisma.FieldRef<"Cliente", 'String'>

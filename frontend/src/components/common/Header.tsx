@@ -89,7 +89,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, onUserClick }) => {
           </div>
           {userName && (
             <span
-              className="ml-2 text-sm text-white"
+              className="ml-2 text-sm text-white hidden sm:inline"
               style={{
                 color: "#FFFFFF",
                 fontFamily: "var(--font-lato), sans-serif",

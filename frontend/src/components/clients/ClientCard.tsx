@@ -41,7 +41,6 @@ export default function ClientCard({
         </div>
       </div>
 
-
       <div className="flex-1 flex flex-col gap-3">
 
         <div className="flex justify-between items-start">
