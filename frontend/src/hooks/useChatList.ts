@@ -160,22 +160,22 @@ export function useChatList() {
 
     const handleTelegramMessage = (messageData: TelegramMessageData) => {
       if (messageData && messageData.chatId) {
-        console.log('📩 Nuevo mensaje recibido via Socket.IO para lista de chats:', messageData);
+        console.log('Nuevo mensaje recibido via Socket.IO para lista de chats:', messageData);
         updateChatFromMessage(messageData);
       }
     };
 
     const setupListeners = () => {
       if (!socket.io.opts.autoConnect) {
-        console.warn('⚠️ Socket deshabilitado (no auto-connect). Socket.IO no disponible.');
+        console.warn('Socket deshabilitado (no auto-connect). Socket.IO no disponible.');
         return;
       }
 
       if (!socket.connected) {
-        console.log('⏳ Socket no conectado aún, esperando conexión...');
+        console.log('Socket no conectado aún, esperando conexión...');
         
         const onConnect = () => {
-          console.log('✅ Socket conectado, configurando listeners de chats...');
+          console.log('Socket conectado, configurando listeners de chats...');
           setupListeners();
         };
         
@@ -190,7 +190,7 @@ export function useChatList() {
       socket.on('telegram:new_message', handleTelegramMessage);
       socket.on('message:telegram', handleTelegramMessage);
       
-      console.log('✅ Listeners de Socket.IO registrados para actualizaciones de chats');
+      console.log('Listeners de Socket.IO registrados para actualizaciones de chats');
     };
 
     if (socket.connected) {
@@ -203,7 +203,7 @@ export function useChatList() {
           socket.connect();
         }
       } catch (error) {
-        console.warn('⚠️ No se pudo conectar el socket:', error);
+        console.warn('No se pudo conectar el socket:', error);
       }
     }
 

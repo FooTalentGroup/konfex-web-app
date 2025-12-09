@@ -8,6 +8,7 @@ import {
   getClienteDataFromChat,
   handleIncomingUpdate,
   markChatAsRead,
+  sendTextMessage,
 } from "./telegram.service";
 
 export const telegramWebhookController = async (req: Request, res: Response) => {
@@ -24,7 +25,7 @@ export const telegramWebhookController = async (req: Request, res: Response) => 
 
 export const getChatsController = controllerHandler(
   async (req: Request) => {
-    const userId = req.query.userId ? parseInt(req.query.userId as string) : undefined;
+    const userId = req.user?.id;
     return await getChatsList(userId);
   },
   "Lista de chats obtenida exitosamente",
@@ -71,5 +72,28 @@ export const getClienteDataFromChatController = controllerHandler(
     return await getClienteDataFromChat(chatId);
   },
   "Datos del cliente obtenidos exitosamente",
+  200
+);
+
+export const sendMessageToTelegram = controllerHandler(
+  async (req: Request) => {
+    const { chatId, text, firstName, lastName, username } = req.body;
+
+    if (!chatId || !text) {
+      throw new Error("chatId y text son requeridos");
+    }
+    const defaultFirstName = firstName || "Konfex";
+    const defaultLastName = lastName || "Usuario";
+    const defaultUsername = username || null;
+
+    return await sendTextMessage(
+      chatId,
+      text,
+      defaultFirstName,
+      defaultLastName,
+      defaultUsername
+    );
+  },
+  "Mensaje enviado correctamente",
   200
 );
