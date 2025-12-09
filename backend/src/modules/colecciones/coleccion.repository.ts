@@ -1,39 +1,38 @@
-import type { Prisma } from "@prisma/client";
-
+import prisma from "../../config/prisma";
 import type { CreateColeccionDtoDb, UpdateColeccionDtoDb } from "./coleccion.types";
 
 export const coleccionRepository = {
-  create: (data: CreateColeccionDtoDb) => Prisma.coleccion.create({ data }),
+  create: (data: CreateColeccionDtoDb) => prisma.coleccion.create({ data }),
 
   update: (id: number, data: UpdateColeccionDtoDb) =>
-    Prisma.coleccion.update({ where: { id }, data }),
+    prisma.coleccion.update({ where: { id }, data }),
 
-  findAll: (params?: { include?: Prisma.ColeccionInclude }) =>
-    Prisma.coleccion.findMany({
+  findAll: (params?: { include?: any }) =>
+    prisma.coleccion.findMany({
       orderBy: { createdAt: "desc" },
       include: params?.include,
     }),
 
-  findById: (id: number, params?: { include?: Prisma.ColeccionInclude }) =>
-    Prisma.coleccion.findUnique({
+  findById: (id: number, params?: { include?: any }) =>
+    prisma.coleccion.findUnique({
       where: { id },
       include: params?.include,
     }),
 
   findByName: (nombre: string) =>
-    Prisma.coleccion.findUnique({
+    prisma.coleccion.findUnique({
       where: { nombre },
     }),
 
   findByCodigo: (codigo: number) =>
-    Prisma.coleccion.findUnique({
+    prisma.coleccion.findUnique({
       where: { codigo },
     }),
 
   findLast: () =>
-    Prisma.coleccion.findFirst({
+    prisma.coleccion.findFirst({
       orderBy: { codigo: "desc" },
     }),
 
-  delete: (id: number) => Prisma.coleccion.delete({ where: { id } }),
+  delete: (id: number) => prisma.coleccion.delete({ where: { id } }),
 };

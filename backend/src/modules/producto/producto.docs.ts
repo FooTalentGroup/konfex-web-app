@@ -21,22 +21,28 @@ export const productoDocs = {
                         type: "object",
                         properties: {
                           id: { type: "number" },
+                          codigo: { type: "number" },
                           nombre: { type: "string" },
                           descripcion: { type: "string", nullable: true },
                           activo: { type: "boolean" },
+                          imagen: { type: "string", nullable: true },
+                          coleccionId: { type: "number" },
                           tallas: { type: "array", items: { type: "string" } },
                           colores: { type: "array", items: { type: "string" } },
+                          mermaCantidad: { type: "number", nullable: true },
+                          mermaUnidad: { type: "string", nullable: true },
+                          mermaPrecio: { type: "number", nullable: true },
                           createdAt: { type: "string", format: "date-time" },
-                          updatedAt: { type: "string", format: "date-time" }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+                          updatedAt: { type: "string", format: "date-time" },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
 
       post: {
@@ -48,11 +54,17 @@ export const productoDocs = {
             "application/json": {
               schema: { $ref: "#/components/schemas/CreateProductoDto" },
               example: {
+                codigo: 1001,
                 nombre: "Polera Oversize",
                 descripcion: "Polera algodón 240g",
                 activo: true,
+                imagen: "https://example.com/polera.jpg",
+                coleccionId: 1,
                 tallas: ["S", "M", "L"],
                 colores: ["Negro", "Blanco"],
+                wasteMaterial: 0.15,
+                wasteUnit: "metros",
+                wastePrice: 50.0,
               },
             },
           },
@@ -72,19 +84,25 @@ export const productoDocs = {
                       type: "object",
                       properties: {
                         id: { type: "number" },
+                        codigo: { type: "number" },
                         nombre: { type: "string" },
                         descripcion: { type: "string", nullable: true },
                         activo: { type: "boolean" },
+                        imagen: { type: "string", nullable: true },
+                        coleccionId: { type: "number" },
                         tallas: { type: "array", items: { type: "string" } },
                         colores: { type: "array", items: { type: "string" } },
+                        mermaCantidad: { type: "number", nullable: true },
+                        mermaUnidad: { type: "string", nullable: true },
+                        mermaPrecio: { type: "number", nullable: true },
                         createdAt: { type: "string", format: "date-time" },
-                        updatedAt: { type: "string", format: "date-time" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+                        updatedAt: { type: "string", format: "date-time" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
           400: {
             description: "Error de validación o duplicado",
@@ -137,19 +155,25 @@ export const productoDocs = {
                       type: "object",
                       properties: {
                         id: { type: "number" },
+                        codigo: { type: "number" },
                         nombre: { type: "string" },
                         descripcion: { type: "string", nullable: true },
                         activo: { type: "boolean" },
+                        imagen: { type: "string", nullable: true },
+                        coleccionId: { type: "number" },
                         tallas: { type: "array", items: { type: "string" } },
                         colores: { type: "array", items: { type: "string" } },
+                        mermaCantidad: { type: "number", nullable: true },
+                        mermaUnidad: { type: "string", nullable: true },
+                        mermaPrecio: { type: "number", nullable: true },
                         createdAt: { type: "string", format: "date-time" },
-                        updatedAt: { type: "string", format: "date-time" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+                        updatedAt: { type: "string", format: "date-time" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
           404: {
             description: "Producto no encontrado",
@@ -188,19 +212,25 @@ export const productoDocs = {
                       type: "object",
                       properties: {
                         id: { type: "number" },
+                        codigo: { type: "number" },
                         nombre: { type: "string" },
                         descripcion: { type: "string", nullable: true },
                         activo: { type: "boolean" },
+                        imagen: { type: "string", nullable: true },
+                        coleccionId: { type: "number" },
                         tallas: { type: "array", items: { type: "string" } },
                         colores: { type: "array", items: { type: "string" } },
+                        mermaCantidad: { type: "number", nullable: true },
+                        mermaUnidad: { type: "string", nullable: true },
+                        mermaPrecio: { type: "number", nullable: true },
                         createdAt: { type: "string", format: "date-time" },
-                        updatedAt: { type: "string", format: "date-time" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+                        updatedAt: { type: "string", format: "date-time" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
           404: {
             description: "Producto no encontrado",
@@ -236,24 +266,36 @@ export const productoDocs = {
     schemas: {
       CreateProductoDto: {
         type: "object",
-        required: ["nombre"],
+        required: ["nombre", "codigo", "coleccionId"],
         properties: {
+          codigo: { type: "number" },
           nombre: { type: "string" },
           descripcion: { type: "string", nullable: true },
           activo: { type: "boolean" },
+          imagen: { type: "string", nullable: true },
+          coleccionId: { type: "number" },
           tallas: { type: "array", items: { type: "string" } },
           colores: { type: "array", items: { type: "string" } },
+          wasteMaterial: { type: "number" },
+          wasteUnit: { type: "string" },
+          wastePrice: { type: "number" },
         },
       },
 
       UpdateProductoDto: {
         type: "object",
         properties: {
+          codigo: { type: "number" },
           nombre: { type: "string" },
           descripcion: { type: "string", nullable: true },
           activo: { type: "boolean" },
+          imagen: { type: "string", nullable: true },
+          coleccionId: { type: "number" },
           tallas: { type: "array", items: { type: "string" } },
           colores: { type: "array", items: { type: "string" } },
+          wasteMaterial: { type: "number" },
+          wasteUnit: { type: "string" },
+          wastePrice: { type: "number" },
         },
       },
 

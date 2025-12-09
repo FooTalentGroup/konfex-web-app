@@ -23,6 +23,9 @@ export const productoService = {
       coleccionId: data.coleccionId,
       tallas: data.tallas,
       colores: data.colores,
+      mermaCantidad: data.wasteMaterial,
+      mermaUnidad: data.wasteUnit,
+      mermaPrecio: data.wastePrice,
     };
 
     return productoRepository.create(dataDB);
@@ -49,7 +52,7 @@ export const productoService = {
   // Buscar productos
   search: async (query: string, limit: number = 10) => {
     const trimmedQuery = query.trim();
-    
+
     // Si el query está vacío o es muy corto, retornar array vacío
     if (trimmedQuery.length < 2) {
       return [];
@@ -61,7 +64,19 @@ export const productoService = {
   // Actualizar
   update: async (id: number, data: UpdateProductoDto) => {
     await productoService.getById(id); // Valida existencia
-    return productoRepository.update(id, data);
+    const dataDB: Partial<CreateProductoDtoDB> = {
+      ...data,
+      mermaCantidad: data.wasteMaterial,
+      mermaUnidad: data.wasteUnit,
+      mermaPrecio: data.wastePrice,
+    };
+
+    // Eliminar propiedades que no existen en la DB si vienen en el DTO (opcional, pero limpio)
+    delete (dataDB as any).wasteMaterial;
+    delete (dataDB as any).wasteUnit;
+    delete (dataDB as any).wastePrice;
+
+    return productoRepository.update(id, dataDB);
   },
 
   // Eliminar

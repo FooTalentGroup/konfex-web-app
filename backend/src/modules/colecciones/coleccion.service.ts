@@ -20,7 +20,12 @@ export const coleccionService = {
     return await coleccionRepository.create(payload);
   },
 
-  getAll: () => coleccionRepository.findAll(),
+  getAll: () =>
+    coleccionRepository.findAll({
+      include: {
+        productos: true,
+      },
+    }),
 
   getById: async (id: number) => {
     if (!id || isNaN(id)) {
