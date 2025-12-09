@@ -1,15 +1,13 @@
 import { Router } from "express";
-import {
-  getAllColeccionesController,
-  getColeccionByIdController,
-  createColeccionController,
-  updateColeccionController,
-  deleteColeccionController,
-} from "./coleccion.controller";
-
-
 
 import { validationSchema } from "../../middleware";
+import {
+  createColeccionController,
+  deleteColeccionController,
+  getAllColeccionesController,
+  getColeccionByIdController,
+  updateColeccionController,
+} from "./coleccion.controller";
 import { createColeccionSchema, updateColeccionSchema } from "./coleccion.schema";
 
 export const coleccionRoutes = Router();
@@ -18,17 +16,8 @@ coleccionRoutes.get("/", getAllColeccionesController);
 
 coleccionRoutes.get("/:id", getColeccionByIdController);
 
-coleccionRoutes.post(
-  "/",
-  validationSchema(createColeccionSchema),
-  createColeccionController
-);
+coleccionRoutes.post("/", validationSchema(createColeccionSchema), createColeccionController);
 
-coleccionRoutes.put(
-  "/:id",
-  validationSchema(updateColeccionSchema),
-  updateColeccionController
-);
+coleccionRoutes.put("/:id", validationSchema(updateColeccionSchema), updateColeccionController);
 
-// Eliminar colección
 coleccionRoutes.delete("/:id", deleteColeccionController);

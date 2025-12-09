@@ -13,7 +13,6 @@ import {
 
 export const telegramWebhookController = async (req: Request, res: Response) => {
   try {
-
     const update = req.body;
     await handleIncomingUpdate(update);
 

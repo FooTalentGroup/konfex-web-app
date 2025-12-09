@@ -1,4 +1,6 @@
-import cloudinary from "@/config/cloudinary";
+import { type UploadApiOptions, v2 as cloudinary } from "cloudinary";
+
+import logger from "./logger";
 
 type UploadFileInput = {
   buffer?: Buffer;
@@ -8,8 +10,13 @@ type UploadFileInput = {
   resource_type?: "image" | "video" | "raw" | "auto";
 };
 
-/* Sube un archivo a Cloudinary desde Buffer o URL. */
-export const uploadFile = async ({ buffer, url, folder, filename, resource_type }: UploadFileInput): Promise<{ secure_url: string }> => {
+export const uploadFile = async ({
+  buffer,
+  url,
+  folder,
+  filename,
+  resource_type,
+}: UploadFileInput): Promise<{ secure_url: string }> => {
   if (!buffer && !url) {
     throw new Error("Debes proporcionar buffer o url");
   }
@@ -18,10 +25,9 @@ export const uploadFile = async ({ buffer, url, folder, filename, resource_type 
     throw new Error("Folder y filename son requeridos");
   }
 
-  // Opciones comunes para asegurar que el archivo sea público y accesible
-  const uploadOptions: any = {
+  const uploadOptions: UploadApiOptions = {
     folder,
-    public_id: filename, // Para archivos raw, mantener el nombre completo con extensión
+    public_id: filename,
     resource_type: resource_type || "auto",
     access_mode: "public",
     ...(resource_type === "raw" && {
@@ -31,40 +37,38 @@ export const uploadFile = async ({ buffer, url, folder, filename, resource_type 
   };
 
   if (buffer) {
-    // Subida desde Buffer
     return new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-            uploadOptions,
-            (error: unknown, result: any) => {
-              if (error) {
-                console.error("Error subiendo archivo a Cloudinary:", error);
-                return reject(error);
-              }
-              if (!result || !result.secure_url) {
-                console.error("Cloudinary no devolvió secure_url:", result);
-                return reject(new Error("Error subiendo a Cloudinary"));
-              }
-              
-              // Para archivos raw, la URL debería ser directamente accesible
-              const finalUrl = result.secure_url;
-              
-              resolve({ secure_url: finalUrl });
-            }
-          );
+      const stream = cloudinary.uploader.upload_stream(
+        uploadOptions,
+        (error: unknown, result: any) => {
+          if (error) {
+            console.error("Error subiendo archivo a Cloudinary:", error);
+            return reject(error);
+          }
+          if (!result || !result.secure_url) {
+            console.error("Cloudinary no devolvió secure_url:", result);
+            return reject(new Error("Error subiendo a Cloudinary"));
+          }
+
+          // Para archivos raw, la URL debería ser directamente accesible
+          const finalUrl = result.secure_url;
+
+          resolve({ secure_url: finalUrl });
+        }
+      );
       stream.end(buffer);
     });
   }
 
-  // Subida desde URL
   if (!url) {
     throw new Error("No se pudo obtener la URL del archivo de Telegram");
   }
-  
+
   const result = await cloudinary.uploader.upload(url, uploadOptions);
 
-  if (!result || !result.secure_url) {
-    console.error("Error subiendo archivo desde URL a Cloudinary:", result);
-    throw new Error("Error subiendo a Cloudinary desde URL");
+  if (!result?.secure_url) {
+    logger.error({ result }, "Cloudinary no devolvió secure_url desde URL");
+    throw new Error("Error subiendo a Cloudinary");
   }
 
   const finalUrl = result.secure_url;

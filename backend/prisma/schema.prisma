@@ -1,6 +1,6 @@
 generator client {
-  provider   = "prisma-client"
-  output     = "../generated/prisma"
+  provider   = "prisma-client-js"
+  output     = "../node_modules/.prisma/client"
   engineType = "client"
 }
 
@@ -20,43 +20,43 @@ model User {
 }
 
 model Cliente {
-  id            Int           @id @default(autoincrement())
-  nombre        String        @unique
+  id            Int      @id @default(autoincrement())
+  nombre        String   @unique
   telefono      String?
   email         String?
   direccion     String?
   origen        String?
   instagramUser String?
   notas         String?
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  pedidos       Pedido[]
-  presupuestos  Presupuesto[]
+  pedidos          Pedido[]
+  presupuestos     Presupuesto[]
   telegramMessages TelegramMessage[]
 }
 
 model Coleccion {
-  id        Int       @id @default(autoincrement())
-  codigo    Int       @unique
-  nombre    String    @unique
+  id        Int        @id @default(autoincrement())
+  codigo    Int        @unique
+  nombre    String     @unique
   imagen    String?
-  icono     String? 
+  icono     String?
   productos Producto[]
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Producto {
-  id           Int       @id @default(autoincrement())
-  codigo       Int    @unique
-  nombre       String
-  descripcion  String?
-  activo       Boolean   @default(true)
-  imagen       String?
-  tallas       String[]
-  colores      String[]
+  id          Int      @id @default(autoincrement())
+  codigo      Int      @unique
+  nombre      String
+  descripcion String?
+  activo      Boolean  @default(true)
+  imagen      String?
+  tallas      String[]
+  colores     String[]
 
   /// Relación con colección
 
@@ -65,26 +65,26 @@ model Producto {
   mermaPrecio   Float?
 
   /// Relaciones existentes
-  coleccionId  Int
-  coleccion    Coleccion @relation(fields: [coleccionId], references: [id])
-  
-  manoDeObra          ManoDeObraPorProducto[]
-  materiales          MaterialPorProducto[]
+  coleccionId Int
+  coleccion   Coleccion @relation(fields: [coleccionId], references: [id])
+
+  manoDeObra ManoDeObraPorProducto[]
+  materiales MaterialPorProducto[]
 
   pedidos             PedidoDetalle[]
   presupuestoDetalles PresupuestoDetalle[]
 
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([coleccionId])
 }
 
 model Categoria {
-  id        Int       @id @default(autoincrement())
-  nombre    String    @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id         Int        @id @default(autoincrement())
+  nombre     String     @unique
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
   materiales Material[]
 
   @@index([nombre])
@@ -112,9 +112,9 @@ model Material {
 }
 
 model ManoDeObra {
-  id        Int      @id @default(autoincrement())
-  nombre    String   @unique
-  costoHora Float    // precio asignado en el seed
+  id        Int                     @id @default(autoincrement())
+  nombre    String                  @unique
+  costoHora Float // precio asignado en el seed
   productos ManoDeObraPorProducto[]
 
   createdAt DateTime @default(now())
@@ -122,7 +122,7 @@ model ManoDeObra {
 }
 
 model MaterialPorProducto {
-  id         Int      @id @default(autoincrement())
+  id         Int   @id @default(autoincrement())
   productoId Int
   materialId Int
   cantidad   Float
@@ -136,7 +136,7 @@ model MaterialPorProducto {
 }
 
 model ManoDeObraPorProducto {
-  id            Int      @id @default(autoincrement())
+  id            Int   @id @default(autoincrement())
   productoId    Int
   manoDeObraId  Int
   cantidadHoras Float
@@ -144,36 +144,37 @@ model ManoDeObraPorProducto {
   manoDeObra ManoDeObra @relation(fields: [manoDeObraId], references: [id], onDelete: Cascade)
   producto   Producto   @relation(fields: [productoId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([productoId])
   @@index([manoDeObraId])
 }
 
 model Presupuesto {
-  id                         Int                  @id @default(autoincrement())
-  numeroPresupuesto          Int                  @unique
-  nombre                     String?
-  clienteId                  Int?
-  fechaCreacion              DateTime             @default(now())
-  fechaVencimiento           DateTime?
-  estado                     EstadoPresupuesto
-  margenGananciaPorcentaje   Float
-  totalCosto                 Float
-  gastosNegocioId            Int
-  ganancias                  Float
-  iva                        Float                @default(0)
-  totalFinal                 Float                @default(0)
-  notas                      String?
-  origen                     String               @default("manual") // "telegram" | "manual"
-  createdAt                  DateTime             @default(now())
-  updatedAt                  DateTime             @updatedAt
-  pedido                     Pedido?
-  cliente                    Cliente?             @relation(fields: [clienteId], references: [id], onDelete: Restrict)
-  gastosNegocio              GastosNegocio        @relation(fields: [gastosNegocioId], references: [id], onDelete: Restrict)
-  detalles                   PresupuestoDetalle[]
-  adicionales                Adicional[]
+  id                       Int                  @id @default(autoincrement())
+  numeroPresupuesto        Int                  @unique
+  nombre                   String?
+  clienteId                Int?
+  fechaCreacion            DateTime             @default(now())
+  fechaVencimiento         DateTime?
+  estado                   EstadoPresupuesto
+  margenGananciaPorcentaje Float
+  totalCosto               Float
+  costosIndirectos         Float
+  gastosNegocioId          Int
+  ganancias                Float
+  iva                      Float                @default(0)
+  totalFinal               Float                @default(0)
+  notas                    String?
+  origen                   String               @default("manual") // "telegram" | "manual"
+  createdAt                DateTime             @default(now())
+  updatedAt                DateTime             @updatedAt
+  pedido                   Pedido?
+  cliente                  Cliente?             @relation(fields: [clienteId], references: [id], onDelete: Restrict)
+  gastosNegocio            GastosNegocio        @relation(fields: [gastosNegocioId], references: [id], onDelete: Restrict)
+  detalles                 PresupuestoDetalle[]
+  adicionales              Adicional[]
 }
 
 model PresupuestoDetalle {
@@ -206,22 +207,22 @@ model Adicional {
 }
 
 model GastosNegocio {
-  id          Int           @id @default(autoincrement())
-  nombre      String
-  porcentaje  Int
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id           Int           @id @default(autoincrement())
+  nombre       String
+  porcentaje   Int
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   presupuestos Presupuesto[]
 
   @@index([nombre])
 }
 
 model ImpuestoGeneral {
-  id          Int       @id @default(autoincrement())
-  nombre      String    @default("IVA")
-  porcentaje  Int
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id         Int      @id @default(autoincrement())
+  nombre     String   @default("IVA")
+  porcentaje Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Pedido {
@@ -266,31 +267,31 @@ model ProduccionEtapa {
 }
 
 model TelegramMessage {
-  id            Int       @id @default(autoincrement())
-  chatId        String
-  clienteId     Int?
-  firstName     String?
-  lastName      String?
-  username      String?
-  leido         Boolean   @default(false)
+  id        Int     @id @default(autoincrement())
+  chatId    String
+  clienteId Int?
+  firstName String?
+  lastName  String?
+  username  String?
+  leido     Boolean @default(false)
 
   // Mensajes de texto
-  text          String?
+  text String?
 
   // Archivos multimedia
-  type          String?   @default("text") // "photo" | "video" | "audio" | "document" | "sticker" | etc.
-  fileId        String?
-  fileUniqueId  String?
-  filePath      String?   // ruta interna de Telegram
-  fileUrl       String?   // URL completa hacia el archivo
-  mimeType      String?   // video/mp4, image/jpeg, application/pdf
-  fileSize      Int?      // tamaño
+  type         String? @default("text") // "photo" | "video" | "audio" | "document" | "sticker" | etc.
+  fileId       String?
+  fileUniqueId String?
+  filePath     String? // ruta interna de Telegram
+  fileUrl      String? // URL completa hacia el archivo
+  mimeType     String? // video/mp4, image/jpeg, application/pdf
+  fileSize     Int? // tamaño
 
   // Metadatos
-  source        String    @default("telegram")
-  timestamp     DateTime  @default(now())
+  source    String   @default("telegram")
+  timestamp DateTime @default(now())
 
-  cliente       Cliente?  @relation(fields: [clienteId], references: [id])
+  cliente Cliente? @relation(fields: [clienteId], references: [id])
 }
 
 enum EstadoPresupuesto {
@@ -312,4 +313,3 @@ enum Role {
   USER
   ADMIN
 }
-

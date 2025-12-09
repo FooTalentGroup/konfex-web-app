@@ -1,6 +1,9 @@
+import { Prisma } from "@prisma/client";
+
 import { AppError } from "../../common/errors";
+import { productoRepository } from "../producto/producto.repository";
 import { coleccionRepository } from "./coleccion.repository";
-import { CreateColeccionDto, UpdateColeccionDto } from "./coleccion.schema";
+import type { CreateColeccionDto, UpdateColeccionDto } from "./coleccion.schema";
 
 export const coleccionService = {
   create: async (data: CreateColeccionDto) => {
@@ -54,21 +57,19 @@ export const coleccionService = {
   },
 
   delete: async (id: number) => {
-    const coleccion = await coleccionService.getById(id);
+    await coleccionService.getById(id);
 
-    if (coleccion.productos && coleccion.productos.length > 0) {
-      throw new AppError(
-        `No se puede eliminar la colección "${coleccion.nombre}" porque tiene ${coleccion.productos.length} producto(s) asociado(s). Elimine primero los productos de esta colección.`,
-        409
-      );
-    }
+    await productoRepository.deleteByColeccionId(id);
 
     try {
       return await coleccionRepository.delete(id);
-    } catch (error: any) {
-      if (error?.code === "P2003" || error?.code === "23001") {
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        (error.code === "P2003" || error.code === "23001")
+      ) {
         throw new AppError(
-          `No se puede eliminar la colección "${coleccion.nombre}" porque tiene productos asociados. Elimine primero los productos de esta colección.`,
+          "No se puede eliminar la colección porque tiene registros asociados (ej. Pedidos) que dependen de ella o sus productos.",
           409
         );
       }

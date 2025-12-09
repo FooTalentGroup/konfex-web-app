@@ -1,4 +1,6 @@
-import { Router } from "express";
+import express from "express";
+
+import { validationSchema } from "../../middleware";
 import {
   createImpuestoGeneralController,
   deleteImpuestoGeneralController,
@@ -7,33 +9,28 @@ import {
   getImpuestoGeneralByIdController,
   updateImpuestoGeneralController,
 } from "./impuesto-general.controller";
-
 import {
   createImpuestoGeneralSchema,
   updateImpuestoGeneralSchema,
 } from "./impuesto-general.schema";
-import { validationSchema } from "../../middleware";
 
-export const impuestoGeneralRoutes = Router();
+export const impuestoGeneralRoutes = express.Router();
 
-// Obtener el impuesto activo (endpoint especial)
 impuestoGeneralRoutes.get("/activo", getImpuestoGeneralActivoController);
 
-// CRUD estándar
 impuestoGeneralRoutes.get("/", getAllImpuestoGeneralController);
 impuestoGeneralRoutes.get("/:id", getImpuestoGeneralByIdController);
 
 impuestoGeneralRoutes.post(
   "/",
   validationSchema(createImpuestoGeneralSchema),
-  createImpuestoGeneralController,
+  createImpuestoGeneralController
 );
 
 impuestoGeneralRoutes.put(
   "/:id",
   validationSchema(updateImpuestoGeneralSchema),
-  updateImpuestoGeneralController,
+  updateImpuestoGeneralController
 );
 
 impuestoGeneralRoutes.delete("/:id", deleteImpuestoGeneralController);
-

@@ -5,7 +5,6 @@ import { toUserSignInResponseDto, toUserSignUpResponseDto } from "../user/user.m
 import type { UserSignInRequestDto, UserSignUpRequestDto } from "./auth.schema";
 import { AuthService } from "./auth.service";
 
-// Crear usuario
 export const signUpController = controllerHandler(
   async (req: Request) => {
     const { email, name, role, password }: UserSignUpRequestDto = req.body;
@@ -27,8 +26,8 @@ export const signInController = controllerHandler(
 );
 
 export const signOutController = controllerHandler(
-  async (_req: Request) => {
-    await AuthService.signOut();
+  (_req: Request) => {
+    AuthService.signOut();
     return { success: true };
   },
   "Sesión cerrada exitosamente",

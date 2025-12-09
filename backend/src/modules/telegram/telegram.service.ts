@@ -235,12 +235,18 @@ export const getChatsList = async (userId?: number) => {
   const getLastMessageText = (msg: (typeof allMessages)[number]): string => {
     if (msg.text) return msg.text;
     switch (msg.type) {
-      case "photo": return "Foto";
-      case "video": return "Video";
-      case "audio": return "Audio";
-      case "document": return "Documento";
-      case "voice": return "Nota de voz";
-      default: return "Mensaje sin contenido";
+      case "photo":
+        return "Foto";
+      case "video":
+        return "Video";
+      case "audio":
+        return "Audio";
+      case "document":
+        return "Documento";
+      case "voice":
+        return "Nota de voz";
+      default:
+        return "Mensaje sin contenido";
     }
   };
 
@@ -289,7 +295,7 @@ export const getChatsList = async (userId?: number) => {
       );
 
       const firstName = telegramMessage?.firstName || chat.firstName;
-      const lastName  = telegramMessage?.lastName  || chat.lastName;
+      const lastName = telegramMessage?.lastName || chat.lastName;
 
       const name =
         firstName && lastName
@@ -308,7 +314,6 @@ export const getChatsList = async (userId?: number) => {
     })
   );
 };
-
 
 export const markChatAsRead = async (chatId: string) => {
   return telegramMessageRepository.markChatAsRead(chatId);
