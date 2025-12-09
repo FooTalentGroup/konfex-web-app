@@ -19,7 +19,7 @@ type Payload = {
 
 export const AuthTokens = {
   build: (payload: Payload) => ({
-    token: jwt.sign(payload, JWT_SECRET, { expiresIn: "15m" }),
+    token: jwt.sign(payload, JWT_SECRET, { expiresIn: "1d" }),
     refreshToken: jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: "7d" }),
   }),
 };
