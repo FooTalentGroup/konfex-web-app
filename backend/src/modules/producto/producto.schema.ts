@@ -3,10 +3,10 @@ import { z } from "zod";
 export const createProductoSchema = z.object({
   body: z.object({
     codigo: z
-      .string() 
+      .string()
       .trim()
       .min(1, "El código no puede estar vacío")
-      .transform(val => parseInt(val, 10)),
+      .transform((val) => parseInt(val, 10)),
     nombre: z.string().trim().min(1, "El nombre no puede estar vacío"),
     descripcion: z.string().optional().nullable(),
     activo: z.boolean().optional().default(true),
@@ -15,19 +15,27 @@ export const createProductoSchema = z.object({
 
     tallas: z.array(z.string().trim().min(1)).default([]),
     colores: z.array(z.string().trim().min(1)).default([]),
-    materiales: z.array(z.object({
-      materialId: z.number(),
-      cantidad: z.number().min(0.0001)
-    })).default([]),
-    manoDeObra: z.array(z.object({
-      accionId: z.number(),
-      horas: z.number().min(0.1)
-    })).default([]),
+    materiales: z
+      .array(
+        z.object({
+          materialId: z.number(),
+          cantidad: z.number().min(0.0001),
+        })
+      )
+      .default([]),
+    manoDeObra: z
+      .array(
+        z.object({
+          accionId: z.number(),
+          horas: z.number().min(0.1),
+        })
+      )
+      .default([]),
 
     wasteMaterial: z.number().optional(),
     wasteUnit: z.string().trim().min(1).optional(),
-    wastePrice: z.number().optional()
-  })
+    wastePrice: z.number().optional(),
+  }),
 });
 
 export const updateProductoSchema = z.object({
@@ -36,7 +44,7 @@ export const updateProductoSchema = z.object({
 
 // Schema para búsqueda de productos
 export const productoQuerySchema = z.object({
-  body: z.object({}),
+  body: z.object({}).optional(),
   query: z.object({
     search: z.string().optional(),
     limit: z

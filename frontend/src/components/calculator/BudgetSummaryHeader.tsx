@@ -1,8 +1,11 @@
-import { useState } from "react";
+"use client";
+
+import { useState, useRef } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { MoreVertical, FileDown, Send, X } from "lucide-react";
 import NavigationTabs from "../ui/NavigationTabs";
 import { useGastosNegocio } from "@/hooks/useGastosNegocio";
+import { useToast } from "@/contexts/ToastContext";
 
 interface BudgetSummaryHeaderProps {
   presupuestoId?: number;
@@ -35,6 +38,8 @@ export default function BudgetSummaryHeader({
 }: BudgetSummaryHeaderProps = {}) {
   const { control, getValues, watch } = useFormContext();
   const { gastosNegocio } = useGastosNegocio();
+  const { showError, showInfo } = useToast();
+  const pdfContentRef = useRef<HTMLDivElement>(null);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -74,9 +79,62 @@ export default function BudgetSummaryHeader({
   const profit = (directCost * desiredProfit) / 100;
   const grandTotal = directCost + indirectCosts + profit;
 
-  const handleDownloadPDF = () => {
-    window.print();
-    setIsMenuOpen(false);
+  const handleDownloadPDF = async () => {
+    // Validar campos obligatorios
+    const currentData = getValues();
+
+    if (!currentData.title?.trim()) {
+      showError("Por favor ingresa un título para el presupuesto");
+      setIsMenuOpen(false);
+      return;
+    }
+
+    if (!currentData.clientName?.trim()) {
+      showError("Por favor ingresa el nombre del cliente");
+      setIsMenuOpen(false);
+      return;
+    }
+
+    if (!materials || materials.length === 0) {
+      showError(
+        "Por favor agrega al menos un material/prenda antes de descargar el PDF"
+      );
+      setIsMenuOpen(false);
+      return;
+    }
+
+    // Si todas las validaciones pasan, generar el PDF
+    if (!pdfContentRef.current) {
+      showError("Error al generar el PDF. Por favor intenta nuevamente.");
+      setIsMenuOpen(false);
+      return;
+    }
+
+    try {
+      showInfo("Generando PDF...");
+      setIsMenuOpen(false);
+
+      // Importar html2pdf dinámicamente (solo en el cliente)
+      const html2pdf = (await import("html2pdf.js")).default;
+
+      // Configuración del PDF
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: `Presupuesto_${currentData.clientName.replace(
+          /\s+/g,
+          "_"
+        )}_${new Date().toLocaleDateString("es-AR").replace(/\//g, "-")}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      };
+
+      // Generar y descargar el PDF
+      await html2pdf().set(opt).from(pdfContentRef.current).save();
+    } catch (error) {
+      console.error("Error al generar PDF:", error);
+      showError("Error al generar el PDF. Por favor intenta nuevamente.");
+    }
   };
 
   const handleSendToTelegram = () => {
@@ -181,9 +239,12 @@ export default function BudgetSummaryHeader({
         </div>
       </div>
 
-      {/* VISTA DE IMPRESIÓN PDF */}
-      {/* Esta sección está oculta en pantalla (hidden) y solo aparece al imprimir (print:block) */}
-      <div className="hidden print:block fixed inset-0 bg-white z-9999 p-8 text-black font-lato overflow-y-auto">
+      {/* VISTA PARA GENERAR PDF */}
+      {/* Esta sección está fuera de la pantalla (off-screen) para que html2pdf pueda capturarla */}
+      <div
+        ref={pdfContentRef}
+        className="fixed -left-[9999px] top-0 bg-white p-8 text-black font-lato w-[210mm]"
+      >
         <div className="flex justify-between items-end border-b-2 border-[#8B709D] pb-4 mb-8">
           <div>
             <h1 className="text-4xl font-bold text-[#8B709D] mb-1 tracking-tight">
