@@ -308,7 +308,7 @@ export default function BudgetExtras({
                 setShippingFee("0");
               }
             }}
-            placeholder="000.000"
+            placeholder="Ingresa la tarifa de envío"
             className="w-full bg-white border border-gray-200 rounded-xl p-3.5 pr-8 text-sm outline-none font-bold text-gray-800 text-right shadow-sm focus:border-[#8B709D] focus:ring-2 focus:ring-[#8B709D]/10 transition-all placeholder:font-normal"
             min="0"
             step="0.01"
@@ -369,8 +369,7 @@ export default function BudgetExtras({
                     setQty(1);
                   }
                 }}
-                placeholder="00"
-                className="w-12 bg-transparent text-center text-sm outline-none font-bold text-gray-800 placeholder:text-gray-400"
+                className="w-12 bg-transparent text-center text-sm outline-none font-bold text-gray-800"
                 min="1"
                 step="1"
               />
@@ -416,7 +415,7 @@ export default function BudgetExtras({
                     setAmount("");
                   }
                 }}
-                placeholder="000.000"
+                placeholder="Ingresa el monto"
                 className="w-full bg-white border border-gray-200 rounded-xl p-3.5 pr-8 text-sm outline-none font-bold text-gray-800 text-right shadow-sm focus:border-[#8B709D] focus:ring-2 focus:ring-[#8B709D]/10 transition-all placeholder:font-normal"
                 min="0"
                 step="0.01"
