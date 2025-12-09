@@ -24,10 +24,10 @@ export const GarmentSchema = z.object({
     colors: z.string().min(1, 'Los colores son requeridos'),
 
     rawMaterials: z.array(z.object({
-        id: z.string(),
-        type: z.enum(['fabric', 'supply']),
-        name: z.string(),
-        consumption: z.number().positive('El consumo debe ser mayor a 0'),
+        id: z.string().optional(),
+        type: z.enum(['fabric', 'supply']).optional(),
+        name: z.string().optional(),
+        consumption: z.number().positive('El consumo debe ser mayor a 0').optional(),
         unit: z.string(),
         price: z.number().min(0, 'El precio debe ser mayor o igual a 0').optional(),
     })).default([])
@@ -67,6 +67,7 @@ export interface CreateGarmentPayload {
     imagen: string;
     tallas: string[];
     colores: string[];
+    precio: number;
 
     coleccionId: number;
 
@@ -75,10 +76,8 @@ export interface CreateGarmentPayload {
         cantidad: number;
     }>;
 
-    manoDeObra?: Array<{
-        accionId: number;
-        horas: number;
-    }>;
+    tarifaCosto?: number;
+    tarifaHoras?: number;
 
     mermaCantidad?: number;
     mermaUnidad?: string;

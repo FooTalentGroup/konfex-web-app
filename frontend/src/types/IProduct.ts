@@ -9,6 +9,7 @@ export const productAPISchema = z.object({
     imagen: z.string().url(),
     tallas: z.array(z.string()),
     colores: z.array(z.string()),
+    precio: z.number(),
     mermaCantidad: z.number(),
     mermaUnidad: z.string(),
     mermaPrecio: z.number(),
@@ -35,6 +36,7 @@ export interface Product {
     imagen: string
     tallas: string[]
     colores: string[]
+    precio: number
     mermaCantidad: number
     mermaUnidad: string
     mermaPrecio: number
@@ -50,6 +52,7 @@ export interface CreateProductRequest {
     imagen?: string
     tallas: string[]
     colores: string[]
+    precio: number
     mermaCantidad: number
     mermaUnidad: string
     mermaPrecio: number
@@ -63,6 +66,7 @@ export interface UpdateProductRequest {
     imagen?: string
     tallas?: string[]
     colores?: string[]
+    precio?: number
     mermaCantidad?: number
     mermaUnidad?: string
     mermaPrecio?: number
