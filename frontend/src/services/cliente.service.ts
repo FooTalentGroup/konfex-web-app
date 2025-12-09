@@ -7,6 +7,7 @@ export interface Cliente {
   telefono?: string | null;
   email?: string | null;
   direccion?: string | null;
+  numeroIdentificacion?: string | null;
   origen?: string | null;
   instagramUser?: string | null;
   notas?: string | null;
@@ -19,6 +20,7 @@ export interface CreateClienteDto {
   telefono?: string;
   email?: string;
   direccion?: string;
+  numeroIdentificacion?: string;
   origen?: string;
   instagramUser?: string;
   notas?: string;

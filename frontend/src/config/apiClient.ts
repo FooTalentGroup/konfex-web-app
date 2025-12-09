@@ -31,6 +31,12 @@ export async function apiClient<TResponse = unknown, TBody = unknown>(
 
   if (!res.ok) {
     const errorText = await res.text();
+    
+    if (res.status === 500) {
+      console.error('Backend error response:', errorText);
+      throw new Error(`Error del servidor: ${errorText || 'Error interno del servidor'}`);
+    }
+    
     throw new Error(`API ${res.status}: ${errorText || res.statusText}`);
   }
 

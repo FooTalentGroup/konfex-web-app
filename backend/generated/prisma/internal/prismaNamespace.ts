@@ -1887,6 +1887,7 @@ export const ClienteScalarFieldEnum = {
   telefono: 'telefono',
   email: 'email',
   direccion: 'direccion',
+  numeroIdentificacion: 'numeroIdentificacion',
   origen: 'origen',
   instagramUser: 'instagramUser',
   notas: 'notas',

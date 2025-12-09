@@ -25,6 +25,7 @@ export const clienteDocs = {
                             telefono: { type: "string", nullable: true },
                             email: { type: "string", nullable: true },
                             direccion: { type: "string", nullable: true },
+                            numeroIdentificacion: { type: "string", nullable: true },
                             origen: { type: "string", nullable: true },
                             instagramUser: { type: "string", nullable: true },
                             notas: { type: "string", nullable: true },
@@ -54,6 +55,7 @@ export const clienteDocs = {
                   telefono: "987654321",
                   email: "juan@example.com",
                   direccion: "Av. Principal 123",
+                  numeroIdentificacion: "12345678",
                   origen: "Instagram",
                   instagramUser: "@juanp",
                   notas: "Cliente recurrente"
@@ -139,6 +141,8 @@ export const clienteDocs = {
                           nombre: { type: "string" },
                           telefono: { type: "string", nullable: true },
                           email: { type: "string", nullable: true },
+                          direccion: { type: "string", nullable: true },
+                          numeroIdentificacion: { type: "string", nullable: true },
                           origen: { type: "string", nullable: true },
                           instagramUser: { type: "string", nullable: true },
                           notas: { type: "string", nullable: true },
@@ -172,6 +176,7 @@ export const clienteDocs = {
                 schema: { $ref: "#/components/schemas/UpdateClienteDto" },
                 example: {
                   telefono: "999888777",
+                  numeroIdentificacion: "12345678",
                   notas: "Actualizado por seguimiento"
                 }
               }
@@ -195,6 +200,8 @@ export const clienteDocs = {
                           nombre: { type: "string" },
                           telefono: { type: "string", nullable: true },
                           email: { type: "string", nullable: true },
+                          direccion: { type: "string", nullable: true },
+                          numeroIdentificacion: { type: "string", nullable: true },
                           origen: { type: "string", nullable: true },
                           instagramUser: { type: "string", nullable: true },
                           notas: { type: "string", nullable: true },
@@ -249,6 +256,7 @@ export const clienteDocs = {
             telefono: { type: "string", nullable: true },
             email: { type: "string", nullable: true },
             direccion: { type: "string", nullable: true },
+            numeroIdentificacion: { type: "string", nullable: true },
             origen: { type: "string", nullable: true },
             instagramUser: { type: "string", nullable: true },
             notas: { type: "string", nullable: true }
@@ -262,6 +270,7 @@ export const clienteDocs = {
             telefono: { type: "string", nullable: true },
             email: { type: "string", nullable: true },
             direccion: { type: "string", nullable: true },
+            numeroIdentificacion: { type: "string", nullable: true },
             origen: { type: "string", nullable: true },
             instagramUser: { type: "string", nullable: true },
             notas: { type: "string", nullable: true }
