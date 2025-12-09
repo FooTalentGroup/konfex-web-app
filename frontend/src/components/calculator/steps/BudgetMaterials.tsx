@@ -244,6 +244,7 @@ export default function BudgetMaterials() {
                     setCurrentQty(9999);
                   }
                 }}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-12 bg-transparent text-center text-sm outline-none font-bold text-gray-800"
                 min="1"
                 max="9999"

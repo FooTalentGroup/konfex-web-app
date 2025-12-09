@@ -214,6 +214,7 @@ export default function BudgetDetails({
             max="100"
             step="0.01"
             placeholder="0-100"
+            onWheel={(e) => e.currentTarget.blur()}
             className={`w-full bg-white border rounded-lg p-3 pr-8 text-sm text-gray-700 outline-none focus:ring-1 placeholder:text-gray-400 ${
               errors.desiredProfit
                 ? "border-red-500 focus:border-red-500 focus:ring-red-500"
