@@ -17,13 +17,13 @@ export default function DeleteButton({ onClick, isActive = false }: DeleteButton
         transition-all duration-200
         shadow-lg
         ${isActive
-                    ? 'bg-red-400 '
+                    ? 'bg-[var(--terciary-color-500)] text-[var(--purple-dark)]'
                     : 'bg-[var(--primary-color-500)] hover:bg-gray-700'
                 }
       `}
             aria-label="Eliminar categorías"
         >
-            <Trash2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <Trash2 className="w-5 h-5 sm:w-6 sm:h-6 text-white " />
         </button>
     );
 }

@@ -3,13 +3,13 @@
 import { ReactNode } from "react";
 
 interface SimpleButton {
-    icon: ReactNode;        // Ej: <Plus size={20} />
+    icon: ReactNode;
     onClick: () => void;
 }
 
 interface Props {
-    simpleButtons?: SimpleButton[]; // Botones comunes
-    children?: ReactNode;           // Para botones personalizados como DeleteButton
+    simpleButtons?: SimpleButton[];
+    children?: ReactNode;
 }
 
 export default function ActionBar({ simpleButtons = [], children }: Props) {
@@ -20,11 +20,7 @@ export default function ActionBar({ simpleButtons = [], children }: Props) {
             {simpleButtons.map((btn, index) => (
                 <button
                     key={index}
-                    className="bg-[var(--primary-color-500)] flex items-center justify-center
-            w-10 h-10 sm:w-12 sm:h-12
-            rounded-full
-            transition-all duration-200
-            shadow-lg"
+                    className="bg-[var(--primary-color-500)] flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition-all duration-200 shadow-lg"
                     onClick={btn.onClick}
                 >
                     {btn.icon}

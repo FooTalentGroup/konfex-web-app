@@ -9,7 +9,7 @@ interface Category {
     iconPath?: string;
 }
 
-// Función para generar slug desde el nombre
+// Generar slug desde el nombre
 const generateSlug = (nombre: string): string => {
     return nombre
         .toLowerCase()
@@ -17,16 +17,6 @@ const generateSlug = (nombre: string): string => {
         .replace(/[\u0300-\u036f]/g, '')
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
-};
-
-// Mapeo de íconos conocidos
-const CATEGORY_ICON_MAP: Record<string, string> = {
-    'Tela': '/imageTela.png',
-    'Hilo': '/hilos.png',
-    'Hilos': '/hilos.png',
-    'Botones': '/botones.png',
-    'Boton': '/botones.png',
-    'Accesorios': '/agregar.png',
 };
 
 export function useCategories() {
@@ -51,7 +41,6 @@ export function useCategories() {
                 id: cat.id,
                 nombre: cat.nombre,
                 slug: generateSlug(cat.nombre),
-                iconPath: CATEGORY_ICON_MAP[cat.nombre] || '/agregar.png',
             }));
 
             setCategories(mappedCategories);
@@ -77,7 +66,6 @@ export function useCategories() {
             fetchCategories();
             return true;
         } catch (err) {
-            console.error(err);
             return false;
         }
     }, [fetchCategories]);
@@ -87,16 +75,24 @@ export function useCategories() {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categorias/${id}`, {
                 method: 'DELETE'
             });
-            const json = await res.json();
 
-            if (!json.success) return false;
+            if (res.status === 204) {
+                await fetchCategories();
+                return true;
+            }
 
-            fetchCategories();
-            return true;
+            if (res.status === 400 || res.status === 404) {
+                const json = await res.json().catch(() => ({}));
+                return false;
+            }
+            return false;
+
         } catch (err) {
             return false;
         }
     }, [fetchCategories]);
+
+
 
     useEffect(() => {
         fetchCategories();

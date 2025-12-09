@@ -1,18 +1,24 @@
 'use client';
 
 import React from 'react';
-import { X, AlertTriangle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 interface ConfirmDeleteModalProps {
     isOpen: boolean;
-    categoryName: string;
+    title: string;
+    message: string;
+    cancelText: string;
+    confirmText: string;
     onConfirm: () => void;
     onCancel: () => void;
 }
 
 export default function ConfirmDeleteModal({
     isOpen,
-    categoryName,
+    title,
+    message,
+    cancelText,
+    confirmText,
     onConfirm,
     onCancel,
 }: ConfirmDeleteModalProps) {
@@ -20,56 +26,34 @@ export default function ConfirmDeleteModal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-            {/* Overlay */}
             <div
-                className="absolute inset-0 bg-black bg-opacity-50"
+                className="absolute inset-0 bg-[#0000004f]"
                 onClick={onCancel}
             />
-
-            {/* Modal */}
-            <div className="relative bg-white rounded-2xl shadow-2xl w-[90%] max-w-md p-6 mx-4">
-                {/* Botón cerrar */}
-                <button
-                    onClick={onCancel}
-                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                    <X className="w-5 h-5" />
-                </button>
-
-                {/* Icono de advertencia */}
-                <div className="flex justify-center mb-4">
-                    <div className="bg-red-100 rounded-full p-3">
-                        <AlertTriangle className="w-8 h-8 text-red-600" />
+            <div className="relative bg-[#FEFCFF] rounded-2xl shadow-2xl w-[90%] max-w-md p-4 mx-4">
+                <div className="flex justify-center mb-4 mt-8">
+                    <div className="bg-[#FDCEDC] rounded-full p-1">
+                        <AlertCircle size={24} className="text-[#C40841]" />
                     </div>
                 </div>
-
-                {/* Título */}
-                <h2 className="text-xl font-bold text-center text-gray-900 mb-2">
-                    ¿Eliminar categoría?
+                <h2 className="text-lg font-bold text-center text-[#c40841] mb-4 px-2 leading-snug">
+                    {title}
                 </h2>
-
-                {/* Mensaje */}
-                <p className="text-center text-gray-600 mb-6">
-                    Estás a punto de eliminar la categoría{' '}
-                    <span className="font-bold text-gray-900">"{categoryName}"</span>.
-                    <br />
-                    <br />
-                    Esto eliminará todos los materiales asociados a esta categoría.
+                <p className="text-center text-gray-600 mb-6 leading-tight">
+                    {message}
                 </p>
-
-                {/* Botones */}
-                <div className="flex gap-3">
+                <div className="flex flex-col gap-3">
                     <button
                         onClick={onCancel}
-                        className="flex-1 py-3 px-4 bg-gray-200 hover:bg-gray-300 rounded-lg font-medium transition-colors text-gray-700"
+                        className="w-full py-3 px-4 bg-[var(--secondary-color-500)] rounded-4xl font-medium transition-colors text-[#FEFCFF]"
                     >
-                        Cancelar
+                        {cancelText}
                     </button>
                     <button
                         onClick={onConfirm}
-                        className="flex-1 py-3 px-4 bg-red-500 hover:bg-red-600 rounded-lg font-medium transition-colors text-white"
+                        className="w-full py-3 px-4 bg-[var(--primary-color-200)] rounded-4xl font-medium transition-colors text-[#5A0B8E]"
                     >
-                        Eliminar
+                        {confirmText}
                     </button>
                 </div>
             </div>
