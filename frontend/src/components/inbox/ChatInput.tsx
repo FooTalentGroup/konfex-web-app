@@ -82,7 +82,6 @@ const ChatInput: React.FC<ChatInputProps> = ({
             const input = document.createElement("input");
             input.type = "file";
             input.onchange = () => {
-              console.log("Archivo seleccionado");
             };
             input.click();
           }}

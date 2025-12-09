@@ -7,13 +7,12 @@ export interface ChatMessage {
   id: number;
   text?: string | null;
   time: string;
-  date?: string; // Fecha completa para separadores de día
+  date?: string;
   isSent: boolean;
   senderAvatar?: string;
   firstName?: string | null;
   lastName?: string | null;
   username?: string | null;
-  // Soporte multimedia
   type?: 'text' | 'photo' | 'document';
   fileUrl?: string | null;
   mimeType?: string | null;
@@ -28,7 +27,7 @@ export interface ChatContact {
   avatar?: string;
   plataforma: 'telegram';
   tienePresupuesto?: boolean;
-  clientId?: string; // ID del cliente si ya está registrado
+  clientId?: string;
 }
 
 export interface TelegramMessage {
@@ -39,7 +38,6 @@ export interface TelegramMessage {
   lastName?: string;
   username?: string;
   timestamp: string;
-  // multimedia
   type?: 'text' | 'photo' | 'document';
   fileUrl?: string | null;
   filePath?: string | null;
@@ -56,12 +54,10 @@ export const useChat = (chatId: string) => {
   const [messageText, setMessageText] = useState('');
   const socketRef = useRef<Socket | null>(null);
 
-  // Obtener mensajes históricos y datos del contacto
   useEffect(() => {
     const fetchChatData = async () => {
       setIsLoading(true);
       try {
-        // Obtener mensajes del chat
         const response = await apiClient<{
           success: boolean;
           statusCode: number;
@@ -89,7 +85,6 @@ export const useChat = (chatId: string) => {
         
         // Obtener el nombre del contacto desde el primer mensaje con source "telegram"
         const telegramMessage = messagesData.find(msg => msg.source === 'telegram');
-          console.log('telegramMessage', telegramMessage);
         const contactName = telegramMessage
           ? `${telegramMessage.firstName || ''} ${telegramMessage.lastName || ''}`.trim() || `Chat ${chatId}`
           : `Chat ${chatId}`;
@@ -165,17 +160,12 @@ export const useChat = (chatId: string) => {
     const socket = socketRef.current;
 
     const handleTelegramMessage = (telegramMessage: TelegramMessage) => {
-      console.log('📨 Mensaje recibido de Telegram:', telegramMessage);
-      
       const messageChatId = String(telegramMessage.chatId);
       const currentChatId = String(chatId);
       
       if (messageChatId !== currentChatId) {
-        console.log('⏭️ Mensaje ignorado - chatId no coincide:', messageChatId, 'vs', currentChatId);
         return;
       }
-
-      console.log('✅ Mensaje aceptado para este chat');
 
       const messageDate = new Date(telegramMessage.timestamp);
       
@@ -216,15 +206,8 @@ export const useChat = (chatId: string) => {
         });
         
         if (messageExists) {
-          console.log('⚠️ Mensaje duplicado ignorado');
           return prevMessages;
         }
-        
-        console.log('➕ Nuevo mensaje agregado:', {
-          id: newMessage.id,
-          text: newMessage.text?.substring(0, 50) + (newMessage.text?.length || 0 > 50 ? '...' : ''),
-          time: newMessage.time,
-        });
         
         return [...prevMessages, newMessage];
       });
@@ -237,8 +220,6 @@ export const useChat = (chatId: string) => {
       }
 
       if (!socket.connected) {
-        console.log('⏳ Socket no conectado aún, esperando conexión...');
-        
         const timeout = setTimeout(() => {
           console.warn('⚠️ Timeout esperando conexión Socket.IO. Los mensajes en tiempo real no estarán disponibles.');
           console.warn('💡 Los mensajes seguirán funcionando mediante polling manual');
@@ -246,7 +227,6 @@ export const useChat = (chatId: string) => {
 
         const onConnect = () => {
           clearTimeout(timeout);
-          console.log('✅ Socket conectado, configurando listeners...');
           setupListeners();
         };
         
@@ -262,12 +242,7 @@ export const useChat = (chatId: string) => {
         return;
       }
 
-      console.log('🔌 Socket conectado:', socket.connected);
-      console.log('📡 Escuchando mensajes para chatId:', chatId);
-      console.log('👂 Registrando listeners de socket...');
-      
       socket.on('telegram_message', handleTelegramMessage);
-      console.log('✅ Listeners registrados para eventos: telegram_message');
     };
 
     if (socket.connected) {
@@ -285,7 +260,6 @@ export const useChat = (chatId: string) => {
     }
 
     return () => {
-      console.log('🧹 Limpiando listeners de socket para chatId:', chatId);
       socket.off('telegram_message', handleTelegramMessage);
       socket.off('connect', setupListeners);
     };
@@ -296,8 +270,6 @@ export const useChat = (chatId: string) => {
 
     const socket = socketRef.current;
     const textToSend = messageText.trim();
-
-    console.log('📤 Enviando mensaje:', { chatId, text: textToSend });
 
     const tempId = Date.now();
     const now = new Date();
@@ -316,23 +288,14 @@ export const useChat = (chatId: string) => {
     setMessages([...messages, newMessage]);
     setMessageText('');
 
-      console.log('➕ Mensaje agregado localmente con ID temporal:', tempId);
-
     if (socket && socket.connected) {
-        console.log('🔌 Socket.IO conectado, enviando mensaje al backend...');
       socket.emit('konfex_send_message', {
         chatId: chatId,
         text: textToSend,
         timestamp: new Date().toISOString(),
-          firstName: 'Konfex', // Datos de usuario estáticos por ahora colocar usuario de la sessión
+          firstName: 'Konfex',
           lastName: 'User',
           username: 'konfex_user',
-      }, (response: never) => {
-        console.log('✅ Respuesta del servidor:', response);
-      });
-
-      socket.once('telegram:send_success', (data) => {
-        console.log('✅ Mensaje enviado exitosamente:', data);
       });
 
       socket.once('telegram:send_error', (error) => {
