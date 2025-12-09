@@ -1,4 +1,4 @@
-import { type UploadApiOptions, type UploadApiResponse, v2 as cloudinary } from "cloudinary";
+import { type UploadApiOptions, v2 as cloudinary } from "cloudinary";
 
 import logger from "./logger";
 

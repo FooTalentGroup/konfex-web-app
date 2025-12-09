@@ -235,12 +235,18 @@ export const getChatsList = async (userId?: number) => {
   const getLastMessageText = (msg: (typeof allMessages)[number]): string => {
     if (msg.text) return msg.text;
     switch (msg.type) {
-      case "photo": return "Foto";
-      case "video": return "Video";
-      case "audio": return "Audio";
-      case "document": return "Documento";
-      case "voice": return "Nota de voz";
-      default: return "Mensaje sin contenido";
+      case "photo":
+        return "Foto";
+      case "video":
+        return "Video";
+      case "audio":
+        return "Audio";
+      case "document":
+        return "Documento";
+      case "voice":
+        return "Nota de voz";
+      default:
+        return "Mensaje sin contenido";
     }
   };
 
@@ -275,36 +281,6 @@ export const getChatsList = async (userId?: number) => {
     (a, b) => b.lastTimestamp.getTime() - a.lastTimestamp.getTime()
   );
 
-<<<<<<< HEAD
-  // Para cada chat, obtener el nombre del usuario con source "telegram"
-  // Si no existe, usar el último mensaje con source "telegram" para obtener el nombre
-  return chats.map((chat) => {
-    // Buscar el último mensaje con source "telegram" para obtener el nombre del usuario
-    const telegramMessage = allMessages.find(
-      (msg: { chatId: string; source: string }) =>
-        msg.chatId === chat.chatId && msg.source === "telegram"
-    );
-
-    // Usar el nombre del mensaje de telegram si existe, sino usar el del último mensaje
-    const firstName = telegramMessage?.firstName || chat.firstName;
-    const lastName = telegramMessage?.lastName || chat.lastName;
-
-    // Concatenar firstName y lastName
-    const name =
-      firstName && lastName
-        ? `${firstName} ${lastName}`.trim()
-        : firstName || lastName || `Chat ${chat.chatId}`;
-
-    return {
-      chatId: chat.chatId,
-      name,
-      lastMessage: chat.lastMessage,
-      lastMessageSource: chat.lastMessageSource,
-      timestamp: chat.lastTimestamp,
-      hasBudget: false,
-    };
-  });
-=======
   // --- NUEVO: obtener no leídos ---
   let unreadCounts = new Map<string, number>();
   if (userId) {
@@ -319,7 +295,7 @@ export const getChatsList = async (userId?: number) => {
       );
 
       const firstName = telegramMessage?.firstName || chat.firstName;
-      const lastName  = telegramMessage?.lastName  || chat.lastName;
+      const lastName = telegramMessage?.lastName || chat.lastName;
 
       const name =
         firstName && lastName
@@ -337,9 +313,7 @@ export const getChatsList = async (userId?: number) => {
       };
     })
   );
->>>>>>> 9a8de7885df3188670dc6c1c9de5ce1e7538d3bf
 };
-
 
 export const markChatAsRead = async (chatId: string) => {
   return telegramMessageRepository.markChatAsRead(chatId);

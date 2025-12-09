@@ -5,7 +5,7 @@ import type {
   Pedido,
   Presupuesto,
   PresupuestoDetalle,
-} from "../../../generated/prisma/client";
+} from "@prisma/client";
 import type { EstadoPresupuesto } from "./presupuesto.schema";
 import type {
   AdicionalResponseDto,

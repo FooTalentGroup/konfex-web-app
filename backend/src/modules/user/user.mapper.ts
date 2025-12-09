@@ -1,4 +1,4 @@
-import type { User } from "../../../generated/prisma/client";
+import type { User } from "@prisma/client";
 import type { UserSignInResponseDto, UserSignUpResponseDto } from "../auth/auth.types";
 
 export const toUserSignUpResponseDto = (user: User): UserSignUpResponseDto => ({
