@@ -1,4 +1,5 @@
 import type { Prisma } from "@prisma/client";
+
 import prisma from "../../config/prisma";
 import type { CreateColeccionDtoDb, UpdateColeccionDtoDb } from "./coleccion.types";
 
