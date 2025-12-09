@@ -164,6 +164,7 @@ export default function BudgetMaterials() {
             type="number"
             value={tempPrice}
             onChange={(e) => setTempPrice(e.target.value)}
+            onWheel={(e) => e.currentTarget.blur()}
             className="hidden"
           />
         </div>
@@ -225,6 +226,7 @@ export default function BudgetMaterials() {
                     setCurrentQty(1);
                   }
                 }}
+                onWheel={(e) => e.currentTarget.blur()}
                 className="w-12 bg-transparent text-center text-sm outline-none font-bold text-gray-800"
                 min="1"
                 step="1"
