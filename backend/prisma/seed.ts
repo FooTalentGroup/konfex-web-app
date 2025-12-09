@@ -3,24 +3,19 @@ import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, Role, EstadoPresupuesto, EstadoPedido } from "../generated/prisma/client";
 
-import { clienteRepository } from "../src/modules/cliente/cliente.repository";
-import { productoRepository } from "../src/modules/producto/producto.repository";
-import { materialRepository } from "../src/modules/material/material.repository";
-import { gastosNegocioRepository } from "../src/modules/gastos-negocio/gastos-negocio.repository";
-import { impuestoGeneralRepository } from "../src/modules/impuesto-general/impuesto-general.repository";
-import { UserRepository } from "../src/modules/user/user.repository";
-import { PresupuestoRepository } from "../src/modules/presupuesto/presupuesto.repository";
-
 const databaseUrl = process.env.DATABASE_URL;
+
 if (!databaseUrl) {
-  throw new Error("Missing required environment variable: DATABASE_URL");
+  throw new Error(
+    "Missing required environment variable: DATABASE_URL. Please check your .env file."
+  );
 }
 
 const pool = new Pool({ connectionString: databaseUrl });
 const adapter = new PrismaPg(pool);
 
 const prisma = new PrismaClient({
-  adapter,
+  adapter: adapter,
 });
 
 async function main() {
@@ -122,43 +117,11 @@ async function main() {
 
   for (const cliente of clientes) {
     try {
-      const existe = await clienteRepository.findByName(cliente.nombre);
-      if (!existe) {
-        await clienteRepository.create(cliente);
-      }
-    } catch (error: any) {
-      if (error.code !== "P2002") {
-        throw error;
-      }
-    }
-  }
-
-  const manoDeObra = [
-    {
-      nombre: "Costurera Principal",
-      costoHora: 15000.0,
-    },
-    {
-      nombre: "Diseñador de Patrones",
-      costoHora: 20000.0,
-    },
-    {
-      nombre: "Cortador",
-      costoHora: 12000.0,
-    },
-    {
-      nombre: "Terminador",
-      costoHora: 10000.0,
-    },
-  ];
-
-  for (const mano of manoDeObra) {
-    try {
-      const existe = await prisma.manoDeObra.findFirst({
-        where: { nombre: mano.nombre },
+      const existe = await prisma.cliente.findFirst({
+        where: { nombre: cliente.nombre },
       });
       if (!existe) {
-        await prisma.manoDeObra.create({ data: mano });
+        await prisma.cliente.create({ data: cliente });
       }
     } catch (error: any) {
       if (error.code !== "P2002") {
@@ -409,18 +372,16 @@ async function main() {
       coleccionId: 1,
       tallas: ["S", "M", "L"],
       colores: ["Blanco", "Negro"],
+      precio: 15000,
       materiales: {
         create: [
           { materialId: 1, cantidad: 1.5 },
           { materialId: 2, cantidad: 0.2 },
         ],
       },
-      manoDeObra: {
-        create: [
-          { manoDeObraId: 1, cantidadHoras: 0.5 },
-          { manoDeObraId: 2, cantidadHoras: 0.3 },
-        ],
-      },
+
+      tarifaCosto: 7500,
+      tarifaHoras: 0.8,
       mermaCantidad: 0.1,
       mermaUnidad: "m",
       mermaPrecio: 500,
@@ -435,15 +396,13 @@ async function main() {
       coleccionId: 1,
       tallas: ["30", "32", "34"],
       colores: ["Azul", "Negro"],
+      precio: 25000,
       materiales: {
         create: [{ materialId: 1, cantidad: 2.0 }],
       },
-      manoDeObra: {
-        create: [
-          { manoDeObraId: 1, cantidadHoras: 0.6 },
-          { manoDeObraId: 2, cantidadHoras: 0.4 },
-        ],
-      },
+
+      tarifaCosto: 9000,
+      tarifaHoras: 1.0,
       mermaCantidad: 0.2,
       mermaUnidad: "m",
       mermaPrecio: 800,
@@ -458,15 +417,13 @@ async function main() {
       coleccionId: 1,
       tallas: ["S", "M", "L"],
       colores: ["Verde", "Negro"],
+      precio: 32000,
       materiales: {
         create: [{ materialId: 3, cantidad: 1.2 }],
       },
-      manoDeObra: {
-        create: [
-          { manoDeObraId: 1, cantidadHoras: 0.7 },
-          { manoDeObraId: 3, cantidadHoras: 0.5 },
-        ],
-      },
+
+      tarifaCosto: 10500,
+      tarifaHoras: 1.2,
       mermaCantidad: 0.15,
       mermaUnidad: "m",
       mermaPrecio: 600,
@@ -483,18 +440,16 @@ async function main() {
       coleccionId: 2,
       tallas: ["S", "M", "L"],
       colores: ["Amarillo", "Blanco"],
+      precio: 14500,
       materiales: {
         create: [
           { materialId: 1, cantidad: 1.3 },
           { materialId: 2, cantidad: 0.2 },
         ],
       },
-      manoDeObra: {
-        create: [
-          { manoDeObraId: 1, cantidadHoras: 0.5 },
-          { manoDeObraId: 2, cantidadHoras: 0.3 },
-        ],
-      },
+
+      tarifaCosto: 7500,
+      tarifaHoras: 0.8,
       mermaCantidad: 0.1,
       mermaUnidad: "m",
       mermaPrecio: 500,
@@ -509,15 +464,13 @@ async function main() {
       coleccionId: 2,
       tallas: ["30", "32", "34"],
       colores: ["Azul"],
+      precio: 28000,
       materiales: {
         create: [{ materialId: 1, cantidad: 2.0 }],
       },
-      manoDeObra: {
-        create: [
-          { manoDeObraId: 1, cantidadHoras: 0.5 },
-          { manoDeObraId: 2, cantidadHoras: 0.3 },
-        ],
-      },
+
+      tarifaCosto: 9000,
+      tarifaHoras: 1.0,
       mermaCantidad: 0.2,
       mermaUnidad: "m",
       mermaPrecio: 800,
@@ -532,15 +485,13 @@ async function main() {
       coleccionId: 2,
       tallas: ["S", "M", "L"],
       colores: ["Negro", "Azul"],
+      precio: 18500,
       materiales: {
         create: [{ materialId: 3, cantidad: 1.0 }],
       },
-      manoDeObra: {
-        create: [
-          { manoDeObraId: 1, cantidadHoras: 0.4 },
-          { manoDeObraId: 3, cantidadHoras: 0.3 },
-        ],
-      },
+
+      tarifaCosto: 8500,
+      tarifaHoras: 0.7,
       mermaCantidad: 0.12,
       mermaUnidad: "m",
       mermaPrecio: 400,
@@ -594,9 +545,11 @@ async function main() {
 
   for (const user of users) {
     try {
-      const existe = await UserRepository.findByEmail(user.email);
+      const existe = await prisma.user.findUnique({
+        where: { email: user.email },
+      });
       if (!existe) {
-        await UserRepository.create(user);
+        await prisma.user.create({ data: user });
       }
     } catch (error: any) {
       if (error.code !== "P2002") {
@@ -611,9 +564,9 @@ async function main() {
   };
 
   try {
-    const existe = await impuestoGeneralRepository.findFirst();
+    const existe = await prisma.impuestoGeneral.findFirst();
     if (!existe) {
-      await impuestoGeneralRepository.create(impuestoGeneral);
+      await prisma.impuestoGeneral.create({ data: impuestoGeneral });
     }
   } catch (error: any) {
     if (error.code !== "P2002") {
@@ -650,10 +603,10 @@ async function main() {
 
   for (const gasto of gastosNegocio) {
     try {
-      const existe = await gastosNegocioRepository.findAll();
+      const existe = await prisma.gastosNegocio.findMany();
       const yaExiste = existe.some((g) => g.nombre === gasto.nombre);
       if (!yaExiste) {
-        await gastosNegocioRepository.create(gasto);
+        await prisma.gastosNegocio.create({ data: gasto });
       }
     } catch (error: any) {
       if (error.code !== "P2002") {
@@ -662,11 +615,11 @@ async function main() {
     }
   }
 
-  const clientesCreados = await clienteRepository.findAll();
-  const productosCreados = await productoRepository.findAll();
-  const materialesCreados = await materialRepository.findAll();
-  const manoDeObraCreada = await prisma.manoDeObra.findMany();
-  const gastosNegocioCreados = await gastosNegocioRepository.findAll();
+  const clientesCreados = await prisma.cliente.findMany();
+  const productosCreados = await prisma.producto.findMany();
+  const materialesCreados = await prisma.material.findMany();
+
+  const gastosNegocioCreados = await prisma.gastosNegocio.findMany();
 
   const presupuestos = [
     {
@@ -898,7 +851,7 @@ async function main() {
     },
   ];
 
-  const impuestoActivo = await impuestoGeneralRepository.findFirst();
+  const impuestoActivo = await prisma.impuestoGeneral.findFirst();
   const ivaPorcentaje = impuestoActivo?.porcentaje || 0;
 
   for (const presupuesto of presupuestos) {
@@ -929,16 +882,31 @@ async function main() {
         where: { numeroPresupuesto: presupuesto.numeroPresupuesto },
       });
       if (!existe) {
-        await PresupuestoRepository.create({
+        await prisma.presupuesto.create({
           data: {
             ...presupuestoData,
             clienteId: clienteId ?? null,
             gastosNegocioId: gastosNegocioId || gastosNegocioCreados[0]?.id || 1,
-            costosIndirectos,
             iva,
             totalFinal,
-            detalles: detallesValidos.length > 0 ? detallesValidos : detalles || [],
-            adicionales: adicionales || [],
+            detalles: {
+              create: (detallesValidos.length > 0 ? detallesValidos : detalles || []).map((d) => ({
+                productoId: d.productoId,
+                descripcion: d.descripcion,
+                cantidad: d.cantidad,
+                costoUnitario: d.costoUnitario,
+              })),
+            },
+            adicionales: {
+              create: (adicionales || []).map((a) => ({
+                nombre: a.nombre,
+                cantidad: a.cantidad,
+                monto: a.monto,
+                totalCosto: a.totalCosto,
+                tarifaEnvio: (a as any).tarifaEnvio ?? 0,
+                observaciones: a.observaciones,
+              })),
+            },
           },
         });
       }
@@ -1022,90 +990,6 @@ async function main() {
         });
       } catch (error: any) {
         if (error.code !== "P2002") {
-          throw error;
-        }
-      }
-    }
-  }
-
-  if (productosCreados.length > 0 && manoDeObraCreada.length > 0) {
-    const manoDeObraPorProducto = [
-      {
-        productoId: productosCreados[0]?.id || 1,
-        manoDeObraId: manoDeObraCreada[1]?.id || 2,
-        cantidadHoras: 2.0,
-      },
-      {
-        productoId: productosCreados[0]?.id || 1,
-        manoDeObraId: manoDeObraCreada[2]?.id || 3,
-        cantidadHoras: 1.5,
-      },
-      {
-        productoId: productosCreados[0]?.id || 1,
-        manoDeObraId: manoDeObraCreada[0]?.id || 1,
-        cantidadHoras: 4.0,
-      },
-      {
-        productoId: productosCreados[0]?.id || 1,
-        manoDeObraId: manoDeObraCreada[3]?.id || 4,
-        cantidadHoras: 1.0,
-      },
-      {
-        productoId: productosCreados[1]?.id || 2,
-        manoDeObraId: manoDeObraCreada[1]?.id || 2,
-        cantidadHoras: 1.5,
-      },
-      {
-        productoId: productosCreados[1]?.id || 2,
-        manoDeObraId: manoDeObraCreada[2]?.id || 3,
-        cantidadHoras: 1.0,
-      },
-      {
-        productoId: productosCreados[1]?.id || 2,
-        manoDeObraId: manoDeObraCreada[0]?.id || 1,
-        cantidadHoras: 2.5,
-      },
-      {
-        productoId: productosCreados[1]?.id || 2,
-        manoDeObraId: manoDeObraCreada[3]?.id || 4,
-        cantidadHoras: 0.5,
-      },
-      {
-        productoId: productosCreados[3]?.id || 4,
-        manoDeObraId: manoDeObraCreada[1]?.id || 2,
-        cantidadHoras: 3.0,
-      },
-      {
-        productoId: productosCreados[3]?.id || 4,
-        manoDeObraId: manoDeObraCreada[4]?.id || 5,
-        cantidadHoras: 1.5,
-      },
-      {
-        productoId: productosCreados[4]?.id || 5,
-        manoDeObraId: manoDeObraCreada[1]?.id || 2,
-        cantidadHoras: 2.5,
-      },
-      {
-        productoId: productosCreados[4]?.id || 5,
-        manoDeObraId: manoDeObraCreada[5]?.id || 6,
-        cantidadHoras: 0.5,
-      },
-    ];
-
-    for (const relacion of manoDeObraPorProducto) {
-      const productoExiste = productosCreados.some((p) => p.id === relacion.productoId);
-      const manoDeObraExiste = manoDeObraCreada.some((m) => m.id === relacion.manoDeObraId);
-
-      if (!productoExiste || !manoDeObraExiste) {
-        continue;
-      }
-
-      try {
-        await prisma.manoDeObraPorProducto.create({
-          data: relacion,
-        });
-      } catch (error: any) {
-        if (error.code !== "P2002" && error.code !== "P2003") {
           throw error;
         }
       }

@@ -23,9 +23,13 @@ export const productoService = {
       coleccionId: data.coleccionId,
       tallas: data.tallas,
       colores: data.colores,
+      precio: data.precio,
       mermaCantidad: data.wasteMaterial,
       mermaUnidad: data.wasteUnit,
       mermaPrecio: data.wastePrice,
+      tarifaCosto: data.tarifaCosto,
+      tarifaHoras: data.tarifaHoras,
+      materiales: data.materiales,
     };
 
     return productoRepository.create(dataDB);

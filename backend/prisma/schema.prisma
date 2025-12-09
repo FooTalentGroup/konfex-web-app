@@ -58,16 +58,15 @@ model Producto {
   imagen      String?
   tallas      String[]
   colores     String[]
+  precio      Float?
 
-  /// Relación con colección
+  mermaCantidad Float?
+  mermaUnidad   String?
+  mermaPrecio   Float?
 
-  mermaCantidad  Float?
-  mermaUnidad    String?
-  mermaPrecio    Float?
-  tarifaSalarial Float?
-  horasTrabajo   Int?
+  tarifaCosto Float?
+  tarifaHoras Float?
 
-  /// Relaciones existentes
   coleccionId Int
   coleccion   Coleccion @relation(fields: [coleccionId], references: [id])
 
@@ -76,9 +75,8 @@ model Producto {
   pedidos             PedidoDetalle[]
   presupuestoDetalles PresupuestoDetalle[]
 
-  createdAt              DateTime                @default(now())
-  updatedAt              DateTime                @updatedAt
-  manoDeObraPorProductos ManoDeObraPorProducto[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([coleccionId])
 }
@@ -114,16 +112,6 @@ model Material {
   @@index([proveedor])
 }
 
-model ManoDeObra {
-  id        Int                     @id @default(autoincrement())
-  nombre    String                  @unique
-  costoHora Float // precio asignado en el seed
-  productos ManoDeObraPorProducto[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model MaterialPorProducto {
   id         Int   @id @default(autoincrement())
   productoId Int
@@ -131,27 +119,11 @@ model MaterialPorProducto {
   cantidad   Float
 
   material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
-  producto Producto @relation(fields: [productoId], references: [id])
+  producto Producto @relation(fields: [productoId], references: [id], onDelete: Cascade)
 
   @@unique([productoId, materialId])
   @@index([materialId])
   @@index([productoId])
-}
-
-model ManoDeObraPorProducto {
-  id            Int   @id @default(autoincrement())
-  productoId    Int
-  manoDeObraId  Int
-  cantidadHoras Float
-
-  manoDeObra ManoDeObra @relation(fields: [manoDeObraId], references: [id], onDelete: Cascade)
-  producto   Producto   @relation(fields: [productoId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([productoId])
-  @@index([manoDeObraId])
 }
 
 model Presupuesto {
