@@ -1,5 +1,6 @@
-import type { ParsedQs } from "qs";
 import "express";
+
+import type { ParsedQs } from "qs";
 
 declare module "express-serve-static-core" {
   interface Request {

@@ -1,6 +1,6 @@
 import { AppError } from "../../common/errors";
 import { coleccionRepository } from "./coleccion.repository";
-import { CreateColeccionDto, UpdateColeccionDto } from "./coleccion.schema";
+import type { CreateColeccionDto, UpdateColeccionDto } from "./coleccion.schema";
 
 export const coleccionService = {
   create: async (data: CreateColeccionDto) => {

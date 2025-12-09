@@ -105,7 +105,7 @@ export const materialRepository = {
       // Si hay otros filtros, combinarlos con AND
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       if (Object.keys(where).length > 0) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unnecessary-type-assertion
+         
         where.AND = [
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           ...Object.entries(where).map(
@@ -237,7 +237,7 @@ export const materialRepository = {
       // Si hay otros filtros, combinarlos con AND
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       if (Object.keys(where).length > 0) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unnecessary-type-assertion
+         
         where.AND = [
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           ...Object.entries(where).map(

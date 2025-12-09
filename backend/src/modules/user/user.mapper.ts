@@ -1,5 +1,5 @@
-import { User } from "../../../generated/prisma/client";
-import {
+import type { User } from "../../../generated/prisma/client";
+import type {
   UserSignInResponseDto,
   UserSignUpResponseDto,
 } from "../auth/auth.types";

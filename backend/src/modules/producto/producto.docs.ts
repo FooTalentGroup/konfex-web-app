@@ -21,22 +21,28 @@ export const productoDocs = {
                         type: "object",
                         properties: {
                           id: { type: "number" },
+                          codigo: { type: "number" },
                           nombre: { type: "string" },
                           descripcion: { type: "string", nullable: true },
                           activo: { type: "boolean" },
+                          imagen: { type: "string", nullable: true },
                           tallas: { type: "array", items: { type: "string" } },
                           colores: { type: "array", items: { type: "string" } },
+                          coleccionId: { type: "number" },
+                          mermaCantidad: { type: "number", nullable: true },
+                          mermaUnidad: { type: "string", nullable: true },
+                          mermaPrecio: { type: "number", nullable: true },
                           createdAt: { type: "string", format: "date-time" },
-                          updatedAt: { type: "string", format: "date-time" }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+                          updatedAt: { type: "string", format: "date-time" },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
 
       post: {
@@ -48,11 +54,22 @@ export const productoDocs = {
             "application/json": {
               schema: { $ref: "#/components/schemas/CreateProductoDto" },
               example: {
+                codigo: 1001,
                 nombre: "Polera Oversize",
                 descripcion: "Polera algodón 240g",
                 activo: true,
+                imagen: "https://ejemplo.com/polera-oversize.jpg",
                 tallas: ["S", "M", "L"],
                 colores: ["Negro", "Blanco"],
+                coleccionId: 1,
+                mermaCantidad: 0.5,
+                mermaUnidad: "metros",
+                mermaPrecio: 2.5,
+                materiales: [
+                  { materialId: 1, cantidad: 1.5 },
+                  { materialId: 2, cantidad: 0.3 },
+                ],
+                manoDeObra: [{ accionId: 1, horas: 2.5 }],
               },
             },
           },
@@ -72,19 +89,25 @@ export const productoDocs = {
                       type: "object",
                       properties: {
                         id: { type: "number" },
+                        codigo: { type: "number" },
                         nombre: { type: "string" },
                         descripcion: { type: "string", nullable: true },
                         activo: { type: "boolean" },
+                        imagen: { type: "string", nullable: true },
                         tallas: { type: "array", items: { type: "string" } },
                         colores: { type: "array", items: { type: "string" } },
+                        coleccionId: { type: "number" },
+                        mermaCantidad: { type: "number", nullable: true },
+                        mermaUnidad: { type: "string", nullable: true },
+                        mermaPrecio: { type: "number", nullable: true },
                         createdAt: { type: "string", format: "date-time" },
-                        updatedAt: { type: "string", format: "date-time" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+                        updatedAt: { type: "string", format: "date-time" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
           400: {
             description: "Error de validación o duplicado",
@@ -137,19 +160,25 @@ export const productoDocs = {
                       type: "object",
                       properties: {
                         id: { type: "number" },
+                        codigo: { type: "number" },
                         nombre: { type: "string" },
                         descripcion: { type: "string", nullable: true },
                         activo: { type: "boolean" },
+                        imagen: { type: "string", nullable: true },
                         tallas: { type: "array", items: { type: "string" } },
                         colores: { type: "array", items: { type: "string" } },
+                        coleccionId: { type: "number" },
+                        mermaCantidad: { type: "number", nullable: true },
+                        mermaUnidad: { type: "string", nullable: true },
+                        mermaPrecio: { type: "number", nullable: true },
                         createdAt: { type: "string", format: "date-time" },
-                        updatedAt: { type: "string", format: "date-time" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+                        updatedAt: { type: "string", format: "date-time" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
           404: {
             description: "Producto no encontrado",
@@ -188,19 +217,25 @@ export const productoDocs = {
                       type: "object",
                       properties: {
                         id: { type: "number" },
+                        codigo: { type: "number" },
                         nombre: { type: "string" },
                         descripcion: { type: "string", nullable: true },
                         activo: { type: "boolean" },
+                        imagen: { type: "string", nullable: true },
                         tallas: { type: "array", items: { type: "string" } },
                         colores: { type: "array", items: { type: "string" } },
+                        coleccionId: { type: "number" },
+                        mermaCantidad: { type: "number", nullable: true },
+                        mermaUnidad: { type: "string", nullable: true },
+                        mermaPrecio: { type: "number", nullable: true },
                         createdAt: { type: "string", format: "date-time" },
-                        updatedAt: { type: "string", format: "date-time" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+                        updatedAt: { type: "string", format: "date-time" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
           404: {
             description: "Producto no encontrado",
@@ -236,24 +271,163 @@ export const productoDocs = {
     schemas: {
       CreateProductoDto: {
         type: "object",
-        required: ["nombre"],
+        required: ["codigo", "nombre", "coleccionId"],
         properties: {
-          nombre: { type: "string" },
-          descripcion: { type: "string", nullable: true },
-          activo: { type: "boolean" },
-          tallas: { type: "array", items: { type: "string" } },
-          colores: { type: "array", items: { type: "string" } },
+          codigo: {
+            type: "number",
+            description: "Código único del producto",
+          },
+          nombre: {
+            type: "string",
+            description: "Nombre del producto",
+          },
+          descripcion: {
+            type: "string",
+            nullable: true,
+            description: "Descripción del producto",
+          },
+          activo: {
+            type: "boolean",
+            default: true,
+            description: "Estado activo/inactivo del producto",
+          },
+          imagen: {
+            type: "string",
+            format: "uri",
+            nullable: true,
+            description: "URL de la imagen del producto",
+          },
+          tallas: {
+            type: "array",
+            items: { type: "string" },
+            description: "Tallas disponibles del producto",
+          },
+          colores: {
+            type: "array",
+            items: { type: "string" },
+            description: "Colores disponibles del producto",
+          },
+          coleccionId: {
+            type: "number",
+            description: "ID de la colección a la que pertenece el producto",
+          },
+          mermaCantidad: {
+            type: "number",
+            nullable: true,
+            description: "Cantidad de merma del producto",
+          },
+          mermaUnidad: {
+            type: "string",
+            nullable: true,
+            description: "Unidad de medida de la merma",
+          },
+          mermaPrecio: {
+            type: "number",
+            nullable: true,
+            description: "Precio de la merma",
+          },
+          materiales: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                materialId: { type: "number" },
+                cantidad: { type: "number", minimum: 0.0001 },
+              },
+            },
+            description: "Materiales asociados al producto",
+          },
+          manoDeObra: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                accionId: { type: "number" },
+                horas: { type: "number", minimum: 0.1 },
+              },
+            },
+            description: "Mano de obra asociada al producto",
+          },
         },
       },
 
       UpdateProductoDto: {
         type: "object",
         properties: {
-          nombre: { type: "string" },
-          descripcion: { type: "string", nullable: true },
-          activo: { type: "boolean" },
-          tallas: { type: "array", items: { type: "string" } },
-          colores: { type: "array", items: { type: "string" } },
+          codigo: {
+            type: "number",
+            description: "Código único del producto",
+          },
+          nombre: {
+            type: "string",
+            description: "Nombre del producto",
+          },
+          descripcion: {
+            type: "string",
+            nullable: true,
+            description: "Descripción del producto",
+          },
+          activo: {
+            type: "boolean",
+            description: "Estado activo/inactivo del producto",
+          },
+          imagen: {
+            type: "string",
+            format: "uri",
+            nullable: true,
+            description: "URL de la imagen del producto",
+          },
+          tallas: {
+            type: "array",
+            items: { type: "string" },
+            description: "Tallas disponibles del producto",
+          },
+          colores: {
+            type: "array",
+            items: { type: "string" },
+            description: "Colores disponibles del producto",
+          },
+          coleccionId: {
+            type: "number",
+            description: "ID de la colección a la que pertenece el producto",
+          },
+          mermaCantidad: {
+            type: "number",
+            nullable: true,
+            description: "Cantidad de merma del producto",
+          },
+          mermaUnidad: {
+            type: "string",
+            nullable: true,
+            description: "Unidad de medida de la merma",
+          },
+          mermaPrecio: {
+            type: "number",
+            nullable: true,
+            description: "Precio de la merma",
+          },
+          materiales: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                materialId: { type: "number" },
+                cantidad: { type: "number", minimum: 0.0001 },
+              },
+            },
+            description: "Materiales asociados al producto",
+          },
+          manoDeObra: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                accionId: { type: "number" },
+                horas: { type: "number", minimum: 0.1 },
+              },
+            },
+            description: "Mano de obra asociada al producto",
+          },
         },
       },
 

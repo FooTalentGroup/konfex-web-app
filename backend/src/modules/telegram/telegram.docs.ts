@@ -299,7 +299,6 @@ export const telegramDocs = {
         }
       },
 
-
       ErrorResponse: {
         type: "object",
         properties: {

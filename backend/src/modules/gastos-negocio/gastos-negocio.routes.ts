@@ -1,4 +1,6 @@
 import { Router } from "express";
+
+import { validationSchema } from "../../middleware";
 import {
   createGastosNegocioController,
   deleteGastosNegocioController,
@@ -6,12 +8,10 @@ import {
   getGastosNegocioByIdController,
   updateGastosNegocioController,
 } from "./gastos-negocio.controller";
-
 import {
   createGastosNegocioSchema,
   updateGastosNegocioSchema,
 } from "./gastos-negocio.schema";
-import { validationSchema } from "../../middleware";
 
 export const gastosNegocioRoutes = Router();
 
