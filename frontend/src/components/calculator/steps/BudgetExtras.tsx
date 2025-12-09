@@ -34,7 +34,14 @@ export default function BudgetExtras({
   isEditMode = false,
   origen = "manual",
 }: BudgetExtrasProps) {
-  const { control, watch, register, setValue, getValues } = useFormContext();
+  const {
+    control,
+    watch,
+    register,
+    setValue,
+    getValues,
+    formState: { errors },
+  } = useFormContext();
   const router = useRouter();
   const { gastosNegocio } = useGastosNegocio();
   const { showSuccess, showError, showInfo } = useToast();
@@ -329,8 +336,14 @@ export default function BudgetExtras({
           <input
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              // Limitar a 100 caracteres
+              if (e.target.value.length <= 100) {
+                setName(e.target.value);
+              }
+            }}
             placeholder="Ej.: Estampado, botones adicionales"
+            maxLength={100}
             className="w-full bg-[#F3F0F5] rounded-xl p-3.5 text-sm outline-none text-gray-800 placeholder:text-gray-400 border border-transparent focus:border-gray-200 transition-colors"
           />
         </div>
@@ -360,6 +373,8 @@ export default function BudgetExtras({
                   const val = parseInt(e.target.value);
                   if (isNaN(val) || val < 1) {
                     setQty(1);
+                  } else if (val > 9999) {
+                    setQty(9999);
                   } else {
                     setQty(val);
                   }
@@ -368,12 +383,15 @@ export default function BudgetExtras({
                   const val = parseInt(e.target.value);
                   if (isNaN(val) || val < 1) {
                     setQty(1);
+                  } else if (val > 9999) {
+                    setQty(9999);
                   }
                 }}
                 onWheel={(e) => e.currentTarget.blur()}
                 placeholder="00"
                 className="w-12 bg-transparent text-center text-sm outline-none font-bold text-gray-800 placeholder:text-gray-400"
                 min="1"
+                max="9999"
                 step="1"
               />
               <button
@@ -482,11 +500,22 @@ export default function BudgetExtras({
           Observaciones
         </label>
         <textarea
-          {...register("observations")}
+          {...register("observations", {
+            maxLength: {
+              value: 500,
+              message: "Las observaciones no pueden exceder 500 caracteres",
+            },
+          })}
           rows={4}
           placeholder="Ej.: Estampado, bordado, botones extra"
+          maxLength={500}
           className="w-full bg-[#F3F0F5] border-none rounded-xl p-4 text-sm text-gray-800 outline-none shadow-sm resize-none placeholder:text-gray-400 border border-transparent focus:border-gray-200 transition-colors"
         ></textarea>
+        {errors.observations && (
+          <p className="text-xs text-red-500 mt-1">
+            {errors.observations.message as string}
+          </p>
+        )}
       </div>
 
       {/* Botón Revisar */}
