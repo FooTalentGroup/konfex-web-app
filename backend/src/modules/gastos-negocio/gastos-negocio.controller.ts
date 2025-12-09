@@ -1,8 +1,10 @@
-import type { Request } from "express";
-
+import { Request } from "express";
 import { controllerHandler } from "../../common/handlers";
-import type { CreateGastosNegocioDto, UpdateGastosNegocioDto } from "./gastos-negocio.schema";
 import { gastosNegocioService } from "./gastos-negocio.service";
+import {
+  CreateGastosNegocioDto,
+  UpdateGastosNegocioDto,
+} from "./gastos-negocio.schema";
 
 export const createGastosNegocioController = controllerHandler(
   async (req: Request) => {
@@ -10,23 +12,29 @@ export const createGastosNegocioController = controllerHandler(
     return await gastosNegocioService.create(data);
   },
   "Gastos de negocio creados exitosamente",
-  201
+  201,
 );
 
 export const getAllGastosNegocioController = controllerHandler(async () => {
   return await gastosNegocioService.getAll();
 }, "Gastos de negocio obtenidos correctamente");
 
-export const getGastosNegocioByIdController = controllerHandler(async (req: Request) => {
-  const id = Number(req.params.id);
-  return await gastosNegocioService.getById(id);
-}, "Gastos de negocio obtenidos correctamente");
+export const getGastosNegocioByIdController = controllerHandler(
+  async (req: Request) => {
+    const id = Number(req.params.id);
+    return await gastosNegocioService.getById(id);
+  },
+  "Gastos de negocio obtenidos correctamente",
+);
 
-export const updateGastosNegocioController = controllerHandler(async (req: Request) => {
-  const id = Number(req.params.id);
-  const data: UpdateGastosNegocioDto = req.body;
-  return await gastosNegocioService.update(id, data);
-}, "Gastos de negocio actualizados correctamente");
+export const updateGastosNegocioController = controllerHandler(
+  async (req: Request) => {
+    const id = Number(req.params.id);
+    const data: UpdateGastosNegocioDto = req.body;
+    return await gastosNegocioService.update(id, data);
+  },
+  "Gastos de negocio actualizados correctamente",
+);
 
 export const deleteGastosNegocioController = controllerHandler(
   async (req: Request) => {
@@ -35,5 +43,5 @@ export const deleteGastosNegocioController = controllerHandler(
     return null;
   },
   "Gastos de negocio eliminados correctamente",
-  204
+  204,
 );

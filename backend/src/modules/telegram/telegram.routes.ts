@@ -18,6 +18,8 @@ telegramRoutes.get("/chats", authMiddleware, getChatsController);
 
 telegramRoutes.get("/chats/:chatId/messages", getChatMessagesController);
 
+telegramRoutes.post("/chats/:chatId/messages/read", markChatAsReadController);
+
 telegramRoutes.get("/chats/:chatId/cliente", getClienteDataFromChatController);
 
 telegramRoutes.post("/send", sendMessageToTelegram);

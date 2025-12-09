@@ -7,8 +7,16 @@ export const createMaterialSchema = z.object({
     url_imagen: z.string().optional().nullable(),
     categoriaId: z.number().int().positive("La categoría es obligatoria"),
     unidadMedida: z.string().min(1, "La unidad de medida es obligatoria"),
-    ancho: z.number().min(0, "El ancho no puede ser negativo").optional().nullable(),
-    peso: z.number().min(0, "El peso no puede ser negativo").optional().nullable(),
+    ancho: z
+      .number()
+      .min(0, "El ancho no puede ser negativo")
+      .optional()
+      .nullable(),
+    peso: z
+      .number()
+      .min(0, "El peso no puede ser negativo")
+      .optional()
+      .nullable(),
     colores: z.array(z.string().min(1)).min(1, "Debe tener al menos un color"),
     proveedor: z.string().min(1, "El proveedor es obligatorio"),
     precio: z.number().min(0, "El precio no puede ser negativo"),
