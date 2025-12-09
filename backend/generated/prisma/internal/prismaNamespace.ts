@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.1.0
- * Query Engine version: ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba
+ * Prisma Client JS version: 7.0.1
+ * Query Engine version: f09f2815f091dbba658cdcd2264306d88bb5bda6
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.1.0",
-  engine: "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba"
+  client: "7.0.1",
+  engine: "f09f2815f091dbba658cdcd2264306d88bb5bda6"
 }
 
 /**
@@ -401,7 +401,8 @@ export const ModelName = {
   Pedido: 'Pedido',
   PedidoDetalle: 'PedidoDetalle',
   ProduccionEtapa: 'ProduccionEtapa',
-  TelegramMessage: 'TelegramMessage'
+  TelegramMessage: 'TelegramMessage',
+  TelegramConversation: 'TelegramConversation'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -417,7 +418,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "cliente" | "coleccion" | "producto" | "categoria" | "material" | "manoDeObra" | "materialPorProducto" | "manoDeObraPorProducto" | "presupuesto" | "presupuestoDetalle" | "adicional" | "gastosNegocio" | "impuestoGeneral" | "pedido" | "pedidoDetalle" | "produccionEtapa" | "telegramMessage"
+    modelProps: "user" | "cliente" | "coleccion" | "producto" | "categoria" | "material" | "manoDeObra" | "materialPorProducto" | "manoDeObraPorProducto" | "presupuesto" | "presupuestoDetalle" | "adicional" | "gastosNegocio" | "impuestoGeneral" | "pedido" | "pedidoDetalle" | "produccionEtapa" | "telegramMessage" | "telegramConversation"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1753,6 +1754,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TelegramConversation: {
+      payload: Prisma.$TelegramConversationPayload<ExtArgs>
+      fields: Prisma.TelegramConversationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TelegramConversationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConversationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TelegramConversationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConversationPayload>
+        }
+        findFirst: {
+          args: Prisma.TelegramConversationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConversationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TelegramConversationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConversationPayload>
+        }
+        findMany: {
+          args: Prisma.TelegramConversationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConversationPayload>[]
+        }
+        create: {
+          args: Prisma.TelegramConversationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConversationPayload>
+        }
+        createMany: {
+          args: Prisma.TelegramConversationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TelegramConversationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConversationPayload>[]
+        }
+        delete: {
+          args: Prisma.TelegramConversationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConversationPayload>
+        }
+        update: {
+          args: Prisma.TelegramConversationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConversationPayload>
+        }
+        deleteMany: {
+          args: Prisma.TelegramConversationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TelegramConversationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TelegramConversationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConversationPayload>[]
+        }
+        upsert: {
+          args: Prisma.TelegramConversationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramConversationPayload>
+        }
+        aggregate: {
+          args: Prisma.TelegramConversationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTelegramConversation>
+        }
+        groupBy: {
+          args: Prisma.TelegramConversationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TelegramConversationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TelegramConversationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TelegramConversationCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2055,12 +2130,31 @@ export const TelegramMessageScalarFieldEnum = {
 export type TelegramMessageScalarFieldEnum = (typeof TelegramMessageScalarFieldEnum)[keyof typeof TelegramMessageScalarFieldEnum]
 
 
+export const TelegramConversationScalarFieldEnum = {
+  chatId: 'chatId',
+  currentStep: 'currentStep',
+  formData: 'formData',
+  manualMode: 'manualMode',
+  lastMessageAt: 'lastMessageAt'
+} as const
+
+export type TelegramConversationScalarFieldEnum = (typeof TelegramConversationScalarFieldEnum)[keyof typeof TelegramConversationScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -2077,6 +2171,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -2189,6 +2292,20 @@ export type EnumEstadoPedidoFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
 export type ListEnumEstadoPedidoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstadoPedido[]'>
     
 
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -2238,7 +2355,7 @@ export type PrismaClientOptions = ({
    *  { emit: 'stdout', level: 'error' }
    * 
    * ```
-   * Read more in our [docs](https://pris.ly/d/logging).
+   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
    */
   log?: (LogLevel | LogDefinition)[]
   /**
@@ -2266,22 +2383,6 @@ export type PrismaClientOptions = ({
    * ```
    */
   omit?: GlobalOmitConfig
-  /**
-   * SQL commenter plugins that add metadata to SQL queries as comments.
-   * Comments follow the sqlcommenter format: https://google.github.io/sqlcommenter/
-   * 
-   * @example
-   * ```
-   * const prisma = new PrismaClient({
-   *   adapter,
-   *   comments: [
-   *     traceContext(),
-   *     queryInsights(),
-   *   ],
-   * })
-   * ```
-   */
-  comments?: runtime.SqlCommenterPlugin[]
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
@@ -2302,6 +2403,7 @@ export type GlobalOmitConfig = {
   pedidoDetalle?: Prisma.PedidoDetalleOmit
   produccionEtapa?: Prisma.ProduccionEtapaOmit
   telegramMessage?: Prisma.TelegramMessageOmit
+  telegramConversation?: Prisma.TelegramConversationOmit
 }
 
 /* Types for Logging */

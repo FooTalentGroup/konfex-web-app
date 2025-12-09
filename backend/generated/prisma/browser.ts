@@ -107,3 +107,8 @@ export type ProduccionEtapa = Prisma.ProduccionEtapaModel
  * 
  */
 export type TelegramMessage = Prisma.TelegramMessageModel
+/**
+ * Model TelegramConversation
+ * 
+ */
+export type TelegramConversation = Prisma.TelegramConversationModel
