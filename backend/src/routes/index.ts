@@ -17,10 +17,12 @@ import telegramRoutes from "@/modules/telegram/telegram.routes";
 
 const router: Router = Router();
 
+// Health check endpoint
 router.get(
   "/health",
   controllerHandler(
     async (_req: Request) => {
+      // Verificar conexión a la base de datos
       let databaseStatus = "disconnected";
       let databaseLatency = 0;
 

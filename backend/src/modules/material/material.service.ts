@@ -46,7 +46,7 @@ export const materialService = {
   },
   update: async (id: number, data: UpdateMaterialDto) => {
     await materialService.getById(id);
-
+    
     // Validar que la categoría exista si se está actualizando
     if (data.categoriaId) {
       const categoria = await prisma.categoria.findUnique({
@@ -56,7 +56,7 @@ export const materialService = {
         throw new AppError("La categoría especificada no existe", 400);
       }
     }
-
+    
     return materialRepository.update(id, data);
   },
   delete: async (id: number) => {

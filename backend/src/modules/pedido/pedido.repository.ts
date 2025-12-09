@@ -1,7 +1,7 @@
-import type { Prisma } from "@prisma/client";
 import prisma from "../../config/prisma";
 
 export const pedidoRepository = {
+  // Crear pedido
   create: (data: {
     presupuestoId: number;
     clienteId: number;
@@ -36,7 +36,8 @@ export const pedidoRepository = {
       },
     }),
 
-  findAll: (params?: { include?: Prisma.PedidoInclude }) =>
+  // Traer todos
+  findAll: (params?: { include?: any }) =>
     prisma.pedido.findMany({
       orderBy: { createdAt: "desc" },
       include: params?.include || {
@@ -66,7 +67,8 @@ export const pedidoRepository = {
       },
     }),
 
-  findById: (id: number, params?: { include?: Prisma.PedidoInclude }) =>
+  // Buscar por ID
+  findById: (id: number, params?: { include?: any }) =>
     prisma.pedido.findUnique({
       where: { id },
       include: params?.include || {
@@ -96,6 +98,7 @@ export const pedidoRepository = {
       },
     }),
 
+  // Buscar por presupuestoId
   findByPresupuestoId: (presupuestoId: number) =>
     prisma.pedido.findUnique({
       where: { presupuestoId },
@@ -126,15 +129,13 @@ export const pedidoRepository = {
       },
     }),
 
-  update: (
-    id: number,
-    data: {
-      estado?: "NO_VISTO" | "EN_COMPRA" | "EN_PRODUCCION" | "ENTREGADO";
-      pagado?: boolean;
-      fechaEntregaEstimada?: Date | null;
-      fechaEntregaReal?: Date | null;
-    }
-  ) =>
+  // Actualizar pedido
+  update: (id: number, data: {
+    estado?: "NO_VISTO" | "EN_COMPRA" | "EN_PRODUCCION" | "ENTREGADO";
+    pagado?: boolean;
+    fechaEntregaEstimada?: Date | null;
+    fechaEntregaReal?: Date | null;
+  }) =>
     prisma.pedido.update({
       where: { id },
       data,
@@ -165,5 +166,8 @@ export const pedidoRepository = {
       },
     }),
 
-  delete: (id: number) => prisma.pedido.delete({ where: { id } }),
+  // Eliminar pedido
+  delete: (id: number) =>
+    prisma.pedido.delete({ where: { id } }),
 };
+

@@ -1,11 +1,10 @@
-import type { Prisma } from "@prisma/client";
 import prisma from "../../config/prisma";
 import type { CreateMaterialDto, MaterialQueryDto } from "./material.schema";
 
 export const materialRepository = {
   create: (data: CreateMaterialDto) =>
     prisma.material.create({
-      data,
+      data: data as any,
       include: { categoria: true },
     }),
   update: (id: number, data: Partial<CreateMaterialDto>) =>
@@ -15,12 +14,13 @@ export const materialRepository = {
       include: { categoria: true },
     }),
   findAll: (filters?: MaterialQueryDto) => {
-    const where: Prisma.MaterialWhereInput = {};
+    const where: any = {};
 
     if (filters?.color) {
       where.colores = { has: filters.color };
     }
 
+    // Filtro por rango de precio
     if (filters?.precioMin !== undefined || filters?.precioMax !== undefined) {
       where.precio = {};
       if (filters?.precioMin !== undefined) {
@@ -31,6 +31,7 @@ export const materialRepository = {
       }
     }
 
+    // Filtro por rango de peso
     if (filters?.pesoMin !== undefined || filters?.pesoMax !== undefined) {
       where.peso = {};
       if (filters.pesoMin !== undefined) {
@@ -41,6 +42,7 @@ export const materialRepository = {
       }
     }
 
+    // Filtro por rango de ancho
     if (filters?.anchoMin !== undefined || filters?.anchoMax !== undefined) {
       where.ancho = {};
       if (filters.anchoMin !== undefined) {
@@ -51,13 +53,15 @@ export const materialRepository = {
       }
     }
 
+    // Filtro por proveedor
     if (filters?.proveedor) {
       where.proveedor = { contains: filters.proveedor, mode: "insensitive" };
     }
 
+    // Superbuscador: búsqueda en múltiples campos
     if (filters?.search) {
       const consulta = filters.search.trim();
-      const orConditions: Prisma.MaterialWhereInput[] = [];
+      const orConditions: any[] = [];
 
       orConditions.push(
         { nombre: { contains: consulta, mode: "insensitive" } },
@@ -70,62 +74,65 @@ export const materialRepository = {
       const numero = parseFloat(consulta.replace(/[^\d.]/g, ""));
       if (!isNaN(numero)) {
         const tolerancia = numero * 0.01;
-        const numericConditions: Prisma.MaterialWhereInput[] = [];
-
         if (!where.precio) {
-          numericConditions.push({
+          orConditions.push({
             precio: {
               gte: numero - tolerancia,
               lte: numero + tolerancia,
             },
           });
         }
-
+        // Solo si no hay filtros de rango de peso
         if (!where.peso) {
-          numericConditions.push({
+          orConditions.push({
             peso: {
               gte: numero - tolerancia,
               lte: numero + tolerancia,
             },
           });
         }
-
+        // Solo si no hay filtros de rango de ancho
         if (!where.ancho) {
-          numericConditions.push({
+          orConditions.push({
             ancho: {
               gte: numero - tolerancia,
               lte: numero + tolerancia,
             },
           });
         }
-        orConditions.push(...numericConditions);
       }
 
+      // Si hay otros filtros, combinarlos con AND
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       if (Object.keys(where).length > 0) {
-        const existingWhere = { ...where };
-
-        where.OR = orConditions;
-
-        return prisma.material.findMany({
-          where: {
-            AND: [existingWhere, { OR: orConditions }],
-          },
-          orderBy: filters?.sortBy
-            ? { [filters.sortBy]: filters.sortOrder || "desc" }
-            : { createdAt: "desc" },
-          skip: (filters?.page || 1 - 1) * (filters?.limit || 10),
-          take: filters?.limit || 10,
-          include: { categoria: true },
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unnecessary-type-assertion
+        where.AND = [
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+          ...Object.entries(where).map(
+            ([key, value]) => ({ [key]: value }) as Record<string, unknown>
+          ),
+          { OR: orConditions },
+        ];
+        // Limpiar las propiedades individuales ya que están en AND
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        const keysToDelete = Object.keys(where).filter((key) => key !== "AND");
+        keysToDelete.forEach((key) => {
+          delete where[key];
         });
       } else {
         where.OR = orConditions;
       }
     }
 
-    const orderBy: Prisma.MaterialOrderByWithRelationInput = filters?.sortBy
-      ? { [filters.sortBy]: filters.sortOrder || "desc" }
-      : { createdAt: "desc" };
+    // Ordenamiento
+    const orderBy: any = {};
+    if (filters?.sortBy) {
+      orderBy[filters.sortBy] = filters.sortOrder || "desc";
+    } else {
+      orderBy.createdAt = "desc";
+    }
 
+    // Paginación
     const page = filters?.page || 1;
     const limit = filters?.limit || 10;
     const skip = (page - 1) * limit;
@@ -141,7 +148,7 @@ export const materialRepository = {
     });
   },
   count: (filters?: MaterialQueryDto) => {
-    const where: Prisma.MaterialWhereInput = {};
+    const where: any = {};
 
     if (filters?.color) {
       where.colores = { has: filters.color };
@@ -177,46 +184,72 @@ export const materialRepository = {
       where.proveedor = { contains: filters.proveedor, mode: "insensitive" };
     }
 
+    // Superbuscador: búsqueda en múltiples campos (misma lógica que findAll)
     if (filters?.search) {
       const consulta = filters.search.trim();
-      const orConditions: Prisma.MaterialWhereInput[] = [];
+      const orConditions: any[] = [];
 
+      // Búsqueda en campos de texto
       orConditions.push(
         { nombre: { contains: consulta, mode: "insensitive" } },
         { proveedor: { contains: consulta, mode: "insensitive" } },
         { unidadMedida: { contains: consulta, mode: "insensitive" } }
       );
 
+      // Búsqueda en array de colores
       orConditions.push({ colores: { has: consulta } });
 
+      // Intentar parsear como número para buscar en precio, peso y ancho
+      // Solo si no hay filtros de rango específicos para esos campos
       const numero = parseFloat(consulta.replace(/[^\d.]/g, ""));
       if (!isNaN(numero)) {
+        // Buscar precio exacto o aproximado (con tolerancia del 1%)
+        // Solo si no hay filtros de rango de precio
         const tolerancia = numero * 0.01;
-        const numericConditions: Prisma.MaterialWhereInput[] = [];
         if (!where.precio) {
-          numericConditions.push({
-            precio: { gte: numero - tolerancia, lte: numero + tolerancia },
+          orConditions.push({
+            precio: {
+              gte: numero - tolerancia,
+              lte: numero + tolerancia,
+            },
           });
         }
+        // Solo si no hay filtros de rango de peso
         if (!where.peso) {
-          numericConditions.push({
-            peso: { gte: numero - tolerancia, lte: numero + tolerancia },
+          orConditions.push({
+            peso: {
+              gte: numero - tolerancia,
+              lte: numero + tolerancia,
+            },
           });
         }
+        // Solo si no hay filtros de rango de ancho
         if (!where.ancho) {
-          numericConditions.push({
-            ancho: { gte: numero - tolerancia, lte: numero + tolerancia },
+          orConditions.push({
+            ancho: {
+              gte: numero - tolerancia,
+              lte: numero + tolerancia,
+            },
           });
         }
-        orConditions.push(...numericConditions);
       }
 
+      // Si hay otros filtros, combinarlos con AND
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       if (Object.keys(where).length > 0) {
-        const existingWhere = { ...where };
-        return prisma.material.count({
-          where: {
-            AND: [existingWhere, { OR: orConditions }],
-          },
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unnecessary-type-assertion
+        where.AND = [
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+          ...Object.entries(where).map(
+            ([key, value]) => ({ [key]: value }) as Record<string, unknown>
+          ),
+          { OR: orConditions },
+        ];
+        // Limpiar las propiedades individuales ya que están en AND
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        const keysToDelete = Object.keys(where).filter((key) => key !== "AND");
+        keysToDelete.forEach((key) => {
+          delete where[key];
         });
       } else {
         where.OR = orConditions;

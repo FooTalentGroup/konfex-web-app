@@ -1,3 +1,4 @@
+// Documentación del módulo de materiales
 export const materialDocs = {
   paths: {
     "/api/v1/materiales": {
@@ -158,9 +159,9 @@ export const materialDocs = {
                               proveedor: { type: "string" },
                               precio: { type: "number" },
                               createdAt: { type: "string", format: "date-time" },
-                              updatedAt: { type: "string", format: "date-time" },
-                            },
-                          },
+                              updatedAt: { type: "string", format: "date-time" }
+                            }
+                          }
                         },
                         pagination: {
                           type: "object",
@@ -168,13 +169,13 @@ export const materialDocs = {
                             page: { type: "number" },
                             limit: { type: "number" },
                             total: { type: "number" },
-                            totalPages: { type: "number" },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
+                            totalPages: { type: "number" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               },
             },
           },
@@ -237,11 +238,11 @@ export const materialDocs = {
                         proveedor: { type: "string" },
                         precio: { type: "number" },
                         createdAt: { type: "string", format: "date-time" },
-                        updatedAt: { type: "string", format: "date-time" },
-                      },
-                    },
-                  },
-                },
+                        updatedAt: { type: "string", format: "date-time" }
+                      }
+                    }
+                  }
+                }
               },
             },
           },
@@ -294,11 +295,11 @@ export const materialDocs = {
                         proveedor: { type: "string" },
                         precio: { type: "number" },
                         createdAt: { type: "string", format: "date-time" },
-                        updatedAt: { type: "string", format: "date-time" },
-                      },
-                    },
-                  },
-                },
+                        updatedAt: { type: "string", format: "date-time" }
+                      }
+                    }
+                  }
+                }
               },
             },
           },
@@ -360,11 +361,11 @@ export const materialDocs = {
                         proveedor: { type: "string" },
                         precio: { type: "number" },
                         createdAt: { type: "string", format: "date-time" },
-                        updatedAt: { type: "string", format: "date-time" },
-                      },
-                    },
-                  },
-                },
+                        updatedAt: { type: "string", format: "date-time" }
+                      }
+                    }
+                  }
+                }
               },
             },
           },
@@ -413,7 +414,14 @@ export const materialDocs = {
     schemas: {
       CreateMaterialDto: {
         type: "object",
-        required: ["nombre", "categoriaId", "unidadMedida", "colores", "proveedor", "precio"],
+        required: [
+          "nombre",
+          "categoriaId",
+          "unidadMedida",
+          "colores",
+          "proveedor",
+          "precio",
+        ],
         properties: {
           nombre: {
             type: "string",
@@ -437,7 +445,8 @@ export const materialDocs = {
           unidadMedida: {
             type: "string",
             minLength: 1,
-            description: "Unidad de medida del material (metros, unidades, paquetes, kg, etc.)",
+            description:
+              "Unidad de medida del material (metros, unidades, paquetes, kg, etc.)",
             example: "metros",
           },
           ancho: {
@@ -445,7 +454,8 @@ export const materialDocs = {
             format: "float",
             minimum: 0,
             nullable: true,
-            description: "Ancho del material en centímetros (opcional, solo para telas)",
+            description:
+              "Ancho del material en centímetros (opcional, solo para telas)",
             example: 150,
           },
           peso: {
@@ -501,14 +511,16 @@ export const materialDocs = {
           unidadMedida: {
             type: "string",
             minLength: 1,
-            description: "Unidad de medida del material (metros, unidades, paquetes, kg, etc.)",
+            description:
+              "Unidad de medida del material (metros, unidades, paquetes, kg, etc.)",
           },
           ancho: {
             type: "number",
             format: "float",
             minimum: 0,
             nullable: true,
-            description: "Ancho del material en centímetros (opcional, solo para telas)",
+            description:
+              "Ancho del material en centímetros (opcional, solo para telas)",
           },
           peso: {
             type: "number",
@@ -536,6 +548,7 @@ export const materialDocs = {
           },
         },
       },
+
 
       ErrorResponse: {
         type: "object",

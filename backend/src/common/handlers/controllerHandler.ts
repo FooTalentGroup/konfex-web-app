@@ -4,7 +4,7 @@ import { isAppError } from "../errors";
 import { sendError, sendSuccess } from "../responses";
 
 export function controllerHandler<T>(
-  controllerFn: (req: Request) => T | Promise<T>,
+  controllerFn: (req: Request) => Promise<T>,
   successMessage: string,
   statusCode: number = 200
 ) {
@@ -17,7 +17,9 @@ export function controllerHandler<T>(
         message: successMessage,
         data,
       });
-    } catch (error: unknown) {
+    } catch (error: any) {
+      console.error("Controller error:", error);
+
       if (isAppError(error)) {
         return sendError(res, {
           statusCode: error.statusCode,

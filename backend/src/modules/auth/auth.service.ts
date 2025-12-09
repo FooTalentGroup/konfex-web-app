@@ -6,8 +6,11 @@ import type { UserSignUpRequestDto } from "./auth.schema";
 
 export const AuthService = {
   signUp: async ({ email, name, role, password }: UserSignUpRequestDto) => {
+    // Validación de negocio
+    // Crear usuario
     const user = await UserService.createUser({ email, name, role, password });
 
+    // Configurar DTO
     return user;
   },
 
@@ -30,7 +33,11 @@ export const AuthService = {
     };
   },
 
-  signOut: () => {
+  signOut: async () => {
+    // El logout principalmente se maneja del lado del cliente
+    // eliminando los tokens del localStorage.
+    // Este endpoint puede ser útil para invalidar tokens en el futuro
+    // o para logging de auditoría
     return { success: true, message: "Sesión cerrada exitosamente" };
   },
 };
