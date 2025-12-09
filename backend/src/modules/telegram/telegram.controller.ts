@@ -7,23 +7,16 @@ import {
   getChatsList,
   getClienteDataFromChat,
   handleIncomingUpdate,
+  markChatAsRead,
+  sendTextMessage,
 } from "./telegram.service";
-import { messageReadRepository } from "./message-read.repository";
 
 export const telegramWebhookController = async (req: Request, res: Response) => {
   try {
-    // Si usas secret_token, verificar aquí
-    // const secret = req.header("X-Telegram-Bot-Api-Secret-Token");
-    // if (secret !== process.env.TELEGRAM_SECRET_TOKEN) return res.sendStatus(403);
 
-    const update = req.body; // Telegram envía el update en JSON
-    // log para debug
-    console.log("Telegram update received:", JSON.stringify(update).slice(0, 2000));
-
-    // Delegar procesamiento (guardar en DB, notificar frontend, etc.)
+    const update = req.body;
     await handleIncomingUpdate(update);
 
-    // Must respond 200 quickly
     return res.sendStatus(200);
   } catch (err) {
     console.error("Webhook handler error:", err);
@@ -33,8 +26,7 @@ export const telegramWebhookController = async (req: Request, res: Response) => 
 
 export const getChatsController = controllerHandler(
   async (req: Request) => {
-    // Obtener userId del query param o header (temporal, hasta implementar JWT)
-    const userId = req.query.userId ? parseInt(req.query.userId as string) : undefined;
+    const userId = req.user?.id;
     return await getChatsList(userId);
   },
   "Lista de chats obtenida exitosamente",
@@ -56,16 +48,13 @@ export const getChatMessagesController = controllerHandler(
 export const markChatAsReadController = controllerHandler(
   async (req: Request) => {
     const { chatId } = req.params;
-    const { userId } = req.body;
 
     if (!chatId) {
       throw new Error("chatId es requerido");
     }
-    if (!userId || typeof userId !== "number") {
-      throw new Error("userId es requerido y debe ser un número");
-    }
 
-    const result = await messageReadRepository.markChatAsRead(chatId, userId);
+    const result = await markChatAsRead(chatId);
+
     return {
       success: true,
       messagesMarked: result.count,
@@ -84,5 +73,28 @@ export const getClienteDataFromChatController = controllerHandler(
     return await getClienteDataFromChat(chatId);
   },
   "Datos del cliente obtenidos exitosamente",
+  200
+);
+
+export const sendMessageToTelegram = controllerHandler(
+  async (req: Request) => {
+    const { chatId, text, firstName, lastName, username } = req.body;
+
+    if (!chatId || !text) {
+      throw new Error("chatId y text son requeridos");
+    }
+    const defaultFirstName = firstName || "Konfex";
+    const defaultLastName = lastName || "Usuario";
+    const defaultUsername = username || null;
+
+    return await sendTextMessage(
+      chatId,
+      text,
+      defaultFirstName,
+      defaultLastName,
+      defaultUsername
+    );
+  },
+  "Mensaje enviado correctamente",
   200
 );

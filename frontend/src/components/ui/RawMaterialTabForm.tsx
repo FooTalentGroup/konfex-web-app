@@ -19,18 +19,18 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
     const { register, watch, setValue, formState: { errors } } = form;
     const { materials, isLoading: loadingMaterials } = useMaterials();
     const toast = useToast();
-
+    
     const rawMaterials = watch('rawMaterials') || [];
-
-    const fabricMaterialsFromDB = materials.filter(m => m.categoria?.nombre === 'TELA' || m.categoria?.nombre === 'tela');
-    const supplyMaterialsFromDB = materials.filter(m => m.categoria?.nombre === 'INSUMO' || m.categoria?.nombre === 'insumo');
-
+    
+    const fabricMaterialsFromDB = materials.filter(m => m.categoria?.nombre.toUpperCase() === 'TELA');
+    const supplyMaterialsFromDB = materials.filter(m => m.categoria?.nombre.toUpperCase() !== 'TELA');
+    
     const fabricMaterials = rawMaterials.filter(m => m.type === 'fabric');
     const supplyMaterials = rawMaterials.filter(m => m.type === 'supply');
-
+    
     const totalPrice = rawMaterials.reduce((sum, material) => sum + (material.price ?? 0), 0);
-
-
+    
+    
     const fabricOptions = fabricMaterialsFromDB.map(m => ({
         value: m.id.toString(),
         label: m.nombre
