@@ -549,7 +549,6 @@ export const materialDocs = {
         },
       },
 
-
       ErrorResponse: {
         type: "object",
         properties: {

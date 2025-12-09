@@ -7,9 +7,35 @@ export const productoRepository = {
   update: (id: number, data: Partial<CreateProductoDtoDB>) =>
     prisma.producto.update({ where: { id }, data }),
 
-  findAll: () => prisma.producto.findMany({ orderBy: { createdAt: "desc" } }),
+  findAll: () =>
+    prisma.producto.findMany({
+      orderBy: { createdAt: "desc" },
+      include: {
+        coleccion: true,
+        materiales: {
+          include: {
+            material: true,
+          },
+        },
+        pedidos: true,
+        presupuestoDetalles: true,
+      },
+    }),
 
-  findById: (id: number) => prisma.producto.findUnique({ where: { id } }),
+  findById: (id: number) =>
+    prisma.producto.findUnique({
+      where: { id },
+      include: {
+        coleccion: true,
+        materiales: {
+          include: {
+            material: true,
+          },
+        },
+        pedidos: true,
+        presupuestoDetalles: true,
+      },
+    }),
 
   /** 🔥 Nuevo método para validar productos duplicados */
   findByName: (nombre: string) => prisma.producto.findFirst({ where: { nombre } }),
@@ -26,6 +52,16 @@ export const productoRepository = {
       },
       take: limit,
       orderBy: { nombre: "asc" },
+      include: {
+        coleccion: true,
+        materiales: {
+          include: {
+            material: true,
+          },
+        },
+        pedidos: true,
+        presupuestoDetalles: true,
+      },
     }),
 
   delete: (id: number) => prisma.producto.delete({ where: { id } }),

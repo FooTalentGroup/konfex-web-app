@@ -1,6 +1,6 @@
 import { AppError } from "../../common/errors";
 import { coleccionRepository } from "./coleccion.repository";
-import { CreateColeccionDto, UpdateColeccionDto } from "./coleccion.schema";
+import type { CreateColeccionDto, UpdateColeccionDto } from "./coleccion.schema";
 
 export const coleccionService = {
   create: async (data: CreateColeccionDto) => {
@@ -20,7 +20,12 @@ export const coleccionService = {
     return await coleccionRepository.create(payload);
   },
 
-  getAll: () => coleccionRepository.findAll(),
+  getAll: () =>
+    coleccionRepository.findAll({
+      include: {
+        productos: true,
+      },
+    }),
 
   getById: async (id: number) => {
     if (!id || isNaN(id)) {
@@ -65,8 +70,14 @@ export const coleccionService = {
 
     try {
       return await coleccionRepository.delete(id);
-    } catch (error: any) {
-      if (error?.code === "P2003" || error?.code === "23001") {
+    } catch (error: unknown) {
+      // Type guard para verificar si el error tiene la propiedad 'code'
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        (error.code === "P2003" || error.code === "23001")
+      ) {
         throw new AppError(
           `No se puede eliminar la colección "${coleccion.nombre}" porque tiene productos asociados. Elimine primero los productos de esta colección.`,
           409

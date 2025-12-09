@@ -1,17 +1,16 @@
-import {
+import type {
+  Adicional,
+  Cliente,
+  GastosNegocio,
+  Pedido,
   Presupuesto,
   PresupuestoDetalle,
-  Cliente,
-  Pedido,
-  Adicional,
-  GastosNegocio,
 } from "../../../generated/prisma/client";
-
 import type { EstadoPresupuesto } from "./presupuesto.schema";
 import type {
+  AdicionalResponseDto,
   PresupuestoDetalleResponseDto,
   PresupuestoListItemDto,
-  AdicionalResponseDto,
   PresupuestoResponseDto,
 } from "./presupuesto.types";
 

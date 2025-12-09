@@ -22,8 +22,6 @@ export const getSocket = (): Socket => {
       }
     }
     
-    console.log('🔌 Intentando conectar Socket.IO a:', socketUrl);
-    
     socket = io(socketUrl, {
       transports: ['polling', 'websocket'],
       reconnection: true,
@@ -37,13 +35,11 @@ export const getSocket = (): Socket => {
     let errorLogged = false;
 
     socket.on('connect', () => {
-      console.log('✅ Conectado a Socket.IO en:', socketUrl);
       errorLogged = false;
     });
 
     socket.on('disconnect', (reason) => {
       if (reason !== 'io client disconnect') {
-        console.log('❌ Desconectado de Socket.IO. Razón:', reason);
       }
     });
 

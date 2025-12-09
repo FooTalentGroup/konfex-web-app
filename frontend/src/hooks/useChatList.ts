@@ -13,6 +13,7 @@ interface TelegramChatResponse {
   lastMessageSource: string;
   timestamp: Date | string;
   hasBudget: boolean;
+  unreadCount?: number;
 }
 
 interface ApiResponse {
@@ -52,9 +53,9 @@ export function useChatList() {
           const message = chat.lastMessageSource === 'konfex' 
             ? `Tu:  ${chat.lastMessage || ''}`
             : chat.lastMessage || '';
-          
-          const isRead = chat.lastMessageSource === 'konfex';
-          
+
+          const isRead = (chat.unreadCount ?? 0) === 0;
+
           const chatItem: ChatItemProps = {
             id: Number(chat.chatId) || 0,
             avatar: '/imagenChat.png',
@@ -141,10 +142,16 @@ export function useChatList() {
     setChats(allChats);
   };
 
-  const markChatAsRead = (chatId: number | string) => {
+  const markChatAsRead = async (chatId: number | string) => {
     const idStr = String(chatId);
     const existing = chatsMapRef.current.get(idStr);
     if (!existing || existing.isRead) return;
+
+    try {
+      await apiClient.post(`/telegram/chats/${idStr}/messages/read`);
+    } catch (error) {
+      console.warn('No se pudo marcar leído en backend:', error);
+    }
 
     const updated = { ...existing, isRead: true };
     chatsMapRef.current.set(idStr, updated);
@@ -160,7 +167,6 @@ export function useChatList() {
 
     const handleTelegramMessage = (messageData: TelegramMessageData) => {
       if (messageData && messageData.chatId) {
-        console.log('Nuevo mensaje recibido via Socket.IO para lista de chats:', messageData);
         updateChatFromMessage(messageData);
       }
     };
@@ -172,25 +178,18 @@ export function useChatList() {
       }
 
       if (!socket.connected) {
-        console.log('Socket no conectado aún, esperando conexión...');
-        
         const onConnect = () => {
-          console.log('Socket conectado, configurando listeners de chats...');
           setupListeners();
         };
         
         socket.once('connect', onConnect);
         return;
       }
-
-      console.log('🔌 Socket conectado, escuchando mensajes de Telegram para lista de chats...');
       
       socket.on('telegram_message', handleTelegramMessage);
       socket.on('telegram:message', handleTelegramMessage);
       socket.on('telegram:new_message', handleTelegramMessage);
       socket.on('message:telegram', handleTelegramMessage);
-      
-      console.log('Listeners de Socket.IO registrados para actualizaciones de chats');
     };
 
     if (socket.connected) {
