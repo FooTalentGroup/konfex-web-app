@@ -14,5 +14,10 @@ export const updateImpuestoGeneralSchema = z.object({
   body: createImpuestoGeneralSchema.shape.body.partial(),
 });
 
-export type CreateImpuestoGeneralDto = z.infer<typeof createImpuestoGeneralSchema>["body"];
-export type UpdateImpuestoGeneralDto = z.infer<typeof updateImpuestoGeneralSchema>["body"];
+export type CreateImpuestoGeneralDto = z.infer<
+  typeof createImpuestoGeneralSchema
+>["body"];
+export type UpdateImpuestoGeneralDto = z.infer<
+  typeof updateImpuestoGeneralSchema
+>["body"];
+

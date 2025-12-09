@@ -4,14 +4,14 @@ import swaggerUi from "swagger-ui-express";
 
 import { authDocs } from "../modules/auth";
 import { categoriaDocs } from "../modules/categoria";
+import { materialDocs } from "../modules/material";
 import { clienteDocs } from "../modules/cliente";
+import { presupuestoDocs } from "../modules/presupuesto";
+import { telegramDocs } from "../modules/telegram";
 import { gastosNegocioDocs } from "../modules/gastos-negocio";
 import { impuestoGeneralDocs } from "../modules/impuesto-general";
-import { materialDocs } from "../modules/material";
-import { pedidoDocs } from "../modules/pedido";
-import { presupuestoDocs } from "../modules/presupuesto";
 import { productoDocs } from "../modules/producto";
-import { telegramDocs } from "../modules/telegram";
+import { pedidoDocs } from "../modules/pedido";
 
 const options = {
   definition: {
@@ -63,6 +63,7 @@ const options = {
     },
   },
 
+  // NO vas a usar decoradores ni comentarios → vacío
   apis: [],
 };
 

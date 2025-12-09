@@ -4,8 +4,7 @@ export const telegramDocs = {
       post: {
         tags: ["Telegram"],
         summary: "Webhook de Telegram",
-        description:
-          "Endpoint para recibir actualizaciones de Telegram Bot. Este endpoint es llamado por Telegram cuando hay nuevos mensajes o actualizaciones.",
+        description: "Endpoint para recibir actualizaciones de Telegram Bot. Este endpoint es llamado por Telegram cuando hay nuevos mensajes o actualizaciones.",
         requestBody: {
           required: true,
           content: {
@@ -21,21 +20,21 @@ export const telegramDocs = {
                     first_name: "Juan",
                     last_name: "Pérez",
                     username: "juanperez",
-                    language_code: "es",
+                    language_code: "es"
                   },
                   chat: {
                     id: 123456789,
                     first_name: "Juan",
                     last_name: "Pérez",
                     username: "juanperez",
-                    type: "private",
+                    type: "private"
                   },
                   date: 1609459200,
-                  text: "Hola, quiero información sobre presupuestos",
-                },
-              },
-            },
-          },
+                  text: "Hola, quiero información sobre presupuestos"
+                }
+              }
+            }
+          }
         },
         responses: {
           200: {
@@ -44,10 +43,10 @@ export const telegramDocs = {
               "application/json": {
                 schema: {
                   type: "string",
-                  example: "OK",
-                },
-              },
-            },
+                  example: "OK"
+                }
+              }
+            }
           },
           500: {
             description: "Error al procesar el webhook",
@@ -56,22 +55,21 @@ export const telegramDocs = {
                 schema: {
                   type: "object",
                   properties: {
-                    ok: { type: "boolean", example: false },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
+                    ok: { type: "boolean", example: false }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
 
     "/api/v1/telegram/chats": {
       get: {
         tags: ["Telegram"],
         summary: "Obtener lista de chats",
-        description:
-          "Retorna una lista de todos los chats de Telegram con información del último mensaje",
+        description: "Retorna una lista de todos los chats de Telegram con información del último mensaje",
         responses: {
           200: {
             description: "Lista de chats obtenida correctamente",
@@ -80,6 +78,7 @@ export const telegramDocs = {
                 schema: {
                   type: "object",
                   properties: {
+                    success: { type: "boolean" },
                     statusCode: { type: "number" },
                     message: { type: "string" },
                     data: {
@@ -92,20 +91,20 @@ export const telegramDocs = {
                           lastMessage: { type: "string" },
                           lastMessageSource: {
                             type: "string",
-                            enum: ["telegram", "konfex"],
+                            enum: ["telegram", "konfex"]
                           },
                           timestamp: { type: "string", format: "date-time" },
-                          hasBudget: { type: "boolean" },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
+                          hasBudget: { type: "boolean" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
 
     "/api/v1/telegram/chats/{chatId}/messages": {
@@ -135,30 +134,30 @@ export const telegramDocs = {
                           text: { type: "string" },
                           source: {
                             type: "string",
-                            enum: ["telegram", "konfex"],
+                            enum: ["telegram", "konfex"]
                           },
                           firstName: { type: "string", nullable: true },
                           lastName: { type: "string", nullable: true },
                           username: { type: "string", nullable: true },
-                          timestamp: { type: "string", format: "date-time" },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
+                          timestamp: { type: "string", format: "date-time" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           400: {
             description: "chatId es requerido",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/ErrorResponse" },
-              },
-            },
-          },
-        },
-      },
+                schema: { $ref: "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
     },
 
     "/api/v1/telegram/send": {
@@ -176,10 +175,10 @@ export const telegramDocs = {
                 text: "Hola, este es un mensaje de prueba",
                 firstName: "Konfex",
                 lastName: "Usuario",
-                username: null,
-              },
-            },
-          },
+                username: null
+              }
+            }
+          }
         },
         responses: {
           200: {
@@ -193,12 +192,12 @@ export const telegramDocs = {
                     message: { type: "string", example: "Mensaje enviado" },
                     telegramResponse: {
                       type: "object",
-                      description: "Respuesta de la API de Telegram",
-                    },
-                  },
-                },
-              },
-            },
+                      description: "Respuesta de la API de Telegram"
+                    }
+                  }
+                }
+              }
+            }
           },
           400: {
             description: "chatId y text son requeridos",
@@ -207,11 +206,11 @@ export const telegramDocs = {
                 schema: {
                   type: "object",
                   properties: {
-                    error: { type: "string", example: "chatId y text son requeridos" },
-                  },
-                },
-              },
-            },
+                    error: { type: "string", example: "chatId y text son requeridos" }
+                  }
+                }
+              }
+            }
           },
           500: {
             description: "Error al enviar el mensaje",
@@ -220,15 +219,15 @@ export const telegramDocs = {
                 schema: {
                   type: "object",
                   properties: {
-                    error: { type: "string" },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
+                    error: { type: "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   },
 
   components: {
@@ -250,8 +249,8 @@ export const telegramDocs = {
                   first_name: { type: "string" },
                   last_name: { type: "string", nullable: true },
                   username: { type: "string", nullable: true },
-                  language_code: { type: "string", nullable: true },
-                },
+                  language_code: { type: "string", nullable: true }
+                }
               },
               chat: {
                 type: "object",
@@ -260,14 +259,14 @@ export const telegramDocs = {
                   first_name: { type: "string", nullable: true },
                   last_name: { type: "string", nullable: true },
                   username: { type: "string", nullable: true },
-                  type: { type: "string" },
-                },
+                  type: { type: "string" }
+                }
               },
               date: { type: "number" },
-              text: { type: "string", nullable: true },
-            },
-          },
-        },
+              text: { type: "string", nullable: true }
+            }
+          }
+        }
       },
 
       SendMessageDto: {
@@ -276,29 +275,30 @@ export const telegramDocs = {
         properties: {
           chatId: {
             type: "string",
-            description: "ID del chat de Telegram",
+            description: "ID del chat de Telegram"
           },
           text: {
             type: "string",
-            description: "Texto del mensaje a enviar",
+            description: "Texto del mensaje a enviar"
           },
           firstName: {
             type: "string",
             nullable: true,
-            description: "Nombre del remitente (opcional, por defecto 'Konfex')",
+            description: "Nombre del remitente (opcional, por defecto 'Konfex')"
           },
           lastName: {
             type: "string",
             nullable: true,
-            description: "Apellido del remitente (opcional, por defecto 'Usuario')",
+            description: "Apellido del remitente (opcional, por defecto 'Usuario')"
           },
           username: {
             type: "string",
             nullable: true,
-            description: "Username del remitente (opcional)",
-          },
-        },
+            description: "Username del remitente (opcional)"
+          }
+        }
       },
+
 
       ErrorResponse: {
         type: "object",
@@ -310,11 +310,11 @@ export const telegramDocs = {
             oneOf: [
               { type: "array", items: { type: "string" } },
               { type: "object" },
-              { type: "null" },
-            ],
-          },
-        },
-      },
+              { type: "null" }
+            ]
+          }
+        }
+      }
     },
 
     parameters: {
@@ -324,8 +324,9 @@ export const telegramDocs = {
         required: true,
         schema: { type: "string" },
         description: "ID del chat de Telegram",
-        example: "123456789",
-      },
-    },
-  },
+        example: "123456789"
+      }
+    }
+  }
 };
+

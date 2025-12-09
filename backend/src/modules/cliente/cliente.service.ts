@@ -1,6 +1,6 @@
 import { AppError } from "../../common/errors";
 import { clienteRepository } from "./cliente.repository";
-import type { CreateClienteDto, UpdateClienteDto } from "./cliente.schema";
+import { CreateClienteDto, UpdateClienteDto } from "./cliente.schema";
 
 export const clienteService = {
   create: async (data: CreateClienteDto) => {

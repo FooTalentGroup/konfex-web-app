@@ -1,4 +1,3 @@
-import type { Prisma } from "@prisma/client";
 import prisma from "../../config/prisma";
 import type { EstadoPresupuesto } from "./presupuesto.schema";
 
@@ -65,7 +64,6 @@ export const PresupuestoRepository = {
     return prisma.presupuesto.create({
       data: {
         ...presupuestoData,
-        costosIndirectos,
         clienteId: clienteId ?? null,
         detalles: detalles
           ? {
@@ -89,7 +87,7 @@ export const PresupuestoRepository = {
               })),
             }
           : undefined,
-      },
+      } as any,
       include: {
         detalles: true,
         adicionales: true,
@@ -101,9 +99,9 @@ export const PresupuestoRepository = {
   },
 
   findMany: async (params?: {
-    where?: Prisma.PresupuestoWhereInput;
-    include?: Prisma.PresupuestoInclude;
-    orderBy?: Prisma.PresupuestoOrderByWithRelationInput;
+    where?: any;
+    include?: any;
+    orderBy?: any;
     skip?: number;
     take?: number;
   }) => {
@@ -120,13 +118,13 @@ export const PresupuestoRepository = {
     });
   },
 
-  count: (filters?: Prisma.PresupuestoWhereInput) => {
+  count: (filters?: any) => {
     return prisma.presupuesto.count({
       where: filters,
     });
   },
 
-  findById: async (id: number, options?: { include?: Prisma.PresupuestoInclude }) => {
+  findById: async (id: number, options?: { include?: any }) => {
     return prisma.presupuesto.findUnique({
       where: { id },
       include: {
@@ -143,21 +141,24 @@ export const PresupuestoRepository = {
   update: async (id: number, { data }: UpdatePresupuestoData) => {
     const { detalles, adicionales, clienteId, costosIndirectos, ...presupuestoData } = data;
 
+    // Si hay detalles definidos (incluso si es array vacío), eliminamos los existentes
     if (detalles !== undefined) {
+      // Eliminar detalles existentes
       await prisma.presupuestoDetalle.deleteMany({
         where: { presupuestoId: id },
       });
     }
 
+    // Si hay adicionales definidos (incluso si es array vacío), eliminamos los existentes
     if (adicionales !== undefined) {
+      // Eliminar adicionales existentes
       await prisma.adicional.deleteMany({
         where: { presupuestoId: id },
       });
     }
 
-    const updateData: Prisma.PresupuestoUpdateInput = {
+    const updateData: any = {
       ...presupuestoData,
-      costosIndirectos,
       detalles:
         detalles !== undefined
           ? detalles.length > 0
@@ -169,8 +170,8 @@ export const PresupuestoRepository = {
                   costoUnitario: detalle.costoUnitario,
                 })),
               }
-            : undefined
-          : undefined,
+            : undefined // Si es array vacío, no creamos nada (ya se eliminaron)
+          : undefined, // Si no se pasa, no tocamos los detalles
       adicionales:
         adicionales !== undefined
           ? adicionales.length > 0
@@ -184,12 +185,13 @@ export const PresupuestoRepository = {
                   observaciones: adicional.observaciones,
                 })),
               }
-            : undefined
-          : undefined,
+            : undefined // Si es array vacío, no creamos nada (ya se eliminaron)
+          : undefined, // Si no se pasa, no tocamos los adicionales
     };
 
+    // Manejar clienteId explícitamente para permitir null
     if (clienteId !== undefined) {
-      updateData.cliente = clienteId ? { connect: { id: clienteId } } : { disconnect: true };
+      updateData.clienteId = clienteId;
     }
 
     return prisma.presupuesto.update({

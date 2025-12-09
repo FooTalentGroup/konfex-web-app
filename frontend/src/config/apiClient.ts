@@ -1,5 +1,6 @@
 import { API_CONFIG } from "@/config/api.config";
 
+
 type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 interface ApiOptions<TBody> {
@@ -12,15 +13,19 @@ export async function apiClient<TResponse = unknown, TBody = unknown>(
   endpoint: string,
   options: ApiOptions<TBody> = {}
 ): Promise<TResponse> {
+
+  const token = localStorage.getItem("token");
+
   const url = API_CONFIG.getApiUrl(endpoint);
 
   const config: RequestInit = {
     method: options.method ?? "GET",
-    credentials: 'include',
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      ...(options.headers || {})
-    }
+      Authorization: token ? `Bearer ${token}` : "",
+      ...(options.headers || {}),
+    },
   };
 
   if (options.body) {
@@ -31,6 +36,12 @@ export async function apiClient<TResponse = unknown, TBody = unknown>(
 
   if (!res.ok) {
     const errorText = await res.text();
+    
+    if (res.status === 500) {
+      console.error('Backend error response:', errorText);
+      throw new Error(`Error del servidor: ${errorText || 'Error interno del servidor'}`);
+    }
+    
     throw new Error(`API ${res.status}: ${errorText || res.statusText}`);
   }
 

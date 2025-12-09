@@ -1,8 +1,10 @@
-import type { Request } from "express";
-
+import { Request } from "express";
 import { controllerHandler } from "../../common/handlers";
-import type { CreateImpuestoGeneralDto, UpdateImpuestoGeneralDto } from "./impuesto-general.schema";
 import { impuestoGeneralService } from "./impuesto-general.service";
+import {
+  CreateImpuestoGeneralDto,
+  UpdateImpuestoGeneralDto,
+} from "./impuesto-general.schema";
 
 export const createImpuestoGeneralController = controllerHandler(
   async (req: Request) => {
@@ -10,27 +12,36 @@ export const createImpuestoGeneralController = controllerHandler(
     return await impuestoGeneralService.create(data);
   },
   "Impuesto general creado exitosamente",
-  201
+  201,
 );
 
 export const getAllImpuestoGeneralController = controllerHandler(async () => {
   return await impuestoGeneralService.getAll();
 }, "Impuestos generales obtenidos correctamente");
 
-export const getImpuestoGeneralByIdController = controllerHandler(async (req: Request) => {
-  const id = Number(req.params.id);
-  return await impuestoGeneralService.getById(id);
-}, "Impuesto general obtenido correctamente");
+export const getImpuestoGeneralByIdController = controllerHandler(
+  async (req: Request) => {
+    const id = Number(req.params.id);
+    return await impuestoGeneralService.getById(id);
+  },
+  "Impuesto general obtenido correctamente",
+);
 
-export const getImpuestoGeneralActivoController = controllerHandler(async () => {
-  return await impuestoGeneralService.getActivo();
-}, "Impuesto general activo obtenido correctamente");
+export const getImpuestoGeneralActivoController = controllerHandler(
+  async () => {
+    return await impuestoGeneralService.getActivo();
+  },
+  "Impuesto general activo obtenido correctamente",
+);
 
-export const updateImpuestoGeneralController = controllerHandler(async (req: Request) => {
-  const id = Number(req.params.id);
-  const data: UpdateImpuestoGeneralDto = req.body;
-  return await impuestoGeneralService.update(id, data);
-}, "Impuesto general actualizado correctamente");
+export const updateImpuestoGeneralController = controllerHandler(
+  async (req: Request) => {
+    const id = Number(req.params.id);
+    const data: UpdateImpuestoGeneralDto = req.body;
+    return await impuestoGeneralService.update(id, data);
+  },
+  "Impuesto general actualizado correctamente",
+);
 
 export const deleteImpuestoGeneralController = controllerHandler(
   async (req: Request) => {
@@ -39,5 +50,6 @@ export const deleteImpuestoGeneralController = controllerHandler(
     return null;
   },
   "Impuesto general eliminado correctamente",
-  204
+  204,
 );
+

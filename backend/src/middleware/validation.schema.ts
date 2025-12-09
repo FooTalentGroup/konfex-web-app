@@ -18,6 +18,8 @@ export const validationSchema =
     }
 
     req.body = result.data.body;
+    // En Express 5, req.query y req.params son de solo lectura
+    // Usamos propiedades personalizadas para los datos validados
     if (result.data.query) {
       req.validatedQuery = result.data.query as ParsedQs;
     }

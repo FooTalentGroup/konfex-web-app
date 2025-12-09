@@ -3,6 +3,7 @@ export interface ClienteCreateInput {
     telefono?: string | null;
     email?: string | null;
     direccion?: string | null;
+    numeroIdentificacion?: string | null;
     origen?: string | null;
     instagramUser?: string | null;
     notas?: string | null;
@@ -13,6 +14,7 @@ export interface ClienteUpdateInput {
     telefono?: string | null;
     email?: string | null;
     direccion?: string | null;
+    numeroIdentificacion?: string | null;
     origen?: string | null;
     instagramUser?: string | null;
     notas?: string | null;

@@ -9,6 +9,7 @@ export const createClienteSchema = z.object({
     telefono: z.string().trim().optional(),
     email: z.string().trim().optional().nullable(),
     direccion: z.string().trim().optional(),
+    numeroIdentificacion: z.string().trim().optional(),
     origen: z.string().trim().optional(),
     instagramUser: z.string().trim().optional(),
     notas: z.string().trim().optional(),

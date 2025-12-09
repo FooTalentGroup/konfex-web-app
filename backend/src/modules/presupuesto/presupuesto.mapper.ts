@@ -1,22 +1,22 @@
-import type {
-  Adicional,
-  Cliente,
-  GastosNegocio,
-  Pedido,
+import {
   Presupuesto,
   PresupuestoDetalle,
-} from "@prisma/client";
+  Cliente,
+  Pedido,
+  Adicional,
+  GastosNegocio,
+} from "../../../generated/prisma/client";
 
 import type { EstadoPresupuesto } from "./presupuesto.schema";
 import type {
-  AdicionalResponseDto,
   PresupuestoDetalleResponseDto,
   PresupuestoListItemDto,
+  AdicionalResponseDto,
   PresupuestoResponseDto,
 } from "./presupuesto.types";
 
 export const toPresupuestoDetalleResponseDto = (
-  detalle: PresupuestoDetalle
+  detalle: PresupuestoDetalle,
 ): PresupuestoDetalleResponseDto => ({
   id: detalle.id,
   productoId: detalle.productoId,
@@ -25,7 +25,9 @@ export const toPresupuestoDetalleResponseDto = (
   costoUnitario: detalle.costoUnitario,
 });
 
-export const toAdicionalResponseDto = (adicional: Adicional): AdicionalResponseDto => ({
+export const toAdicionalResponseDto = (
+  adicional: Adicional,
+): AdicionalResponseDto => ({
   id: adicional.id,
   nombre: adicional.nombre,
   cantidad: adicional.cantidad,
@@ -44,13 +46,16 @@ export const toPresupuestoResponseDto = (
     cliente?: Cliente | null;
     pedido?: Pedido | null;
     gastosNegocio?: GastosNegocio;
-  }
+  },
 ): PresupuestoResponseDto => {
   if (!presupuesto.gastosNegocio) {
-    throw new Error("gastosNegocio es requerido para calcular costosIndirectos");
+    throw new Error(
+      "gastosNegocio es requerido para calcular costosIndirectos",
+    );
   }
 
-  const costosIndirectos = (presupuesto.gastosNegocio.porcentaje * presupuesto.totalCosto) / 100;
+  const costosIndirectos =
+    (presupuesto.gastosNegocio.porcentaje * presupuesto.totalCosto) / 100;
 
   return {
     id: presupuesto.id,
@@ -98,5 +103,5 @@ export const toPresupuestoListResponseDto = (
     cliente?: Cliente | null;
     pedido?: Pedido | null;
     gastosNegocio?: GastosNegocio;
-  })[]
+  })[],
 ): PresupuestoListItemDto[] => items.map(toPresupuestoResponseDto);
