@@ -7,10 +7,16 @@ import PageHeader from "@/components/common/PageHeader";
 import { useGastosNegocio } from "@/hooks/useGastosNegocio";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
+import ConfirmDeleteModal from "@/components/common/ConfirmDeleteModal";
 
 export default function GastosNegocioPage() {
     const { user, mounted } = useAuth();
     const { isOpen: isSidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar();
+
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [gastoToDelete, setGastoToDelete] = useState<string | null>(null);
+
+
 
     const {
         gastosNegocio,
@@ -25,7 +31,6 @@ export default function GastosNegocioPage() {
         saveChanges,
     } = useGastosNegocio();
 
-    // NEW: Control de cambios
     const [dirty, setDirty] = useState(false);
 
     const totalPercent = gastosNegocio.reduce((acc, g) => acc + Number(g.porcentaje || 0), 0) + Number(iva || 0);
@@ -36,24 +41,38 @@ export default function GastosNegocioPage() {
         const success = await saveChanges();
 
         if (success) {
-            alert('Gastos guardados exitosamente');
-            setDirty(false); // Reset
+            setDirty(false);
         } else {
-            alert('Error al guardar los gastos');
         }
     };
 
-    const handleDeleteGasto = async (id: string) => {
-        const confirmed = window.confirm('¿Estás seguro de eliminar este gasto?');
-        if (!confirmed) return;
+    const handleDeleteGasto = (id: string) => {
+        setGastoToDelete(id);
+        setIsDeleteModalOpen(true);
+    };
 
-        const success = await deleteGasto(id);
+
+    const confirmDelete = async () => {
+        if (!gastoToDelete) return;
+
+        const success = await deleteGasto(gastoToDelete);
+
         if (!success) {
-            alert('Error al eliminar el gasto');
         } else {
             setDirty(true);
         }
+
+        setIsDeleteModalOpen(false);
+        setGastoToDelete(null);
     };
+
+
+    const cancelDelete = () => {
+        setIsDeleteModalOpen(false);
+        setGastoToDelete(null);
+    };
+
+
 
     if (!mounted || !user) {
         return null;
@@ -66,24 +85,19 @@ export default function GastosNegocioPage() {
             <div className="flex-1 flex flex-col">
                 <PageHeader
                     title="Gastos del negocio"
-                    description="Revisa y ajusta tus costos indirectos desde aquí."
+                    description="Revisa y ajusta tus costos indirectos e impuestos desde aquí."
                     backgroundColor="#8b709d"
                 />
 
-                {/* Loading state */}
-                {loading && (
-                    <div className="flex justify-center items-center py-10">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-                    </div>
-                )}
-
-                {/* Error state */}
-                {error && !loading && (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 mx-auto max-w-xl mt-4">
-                        <p className="font-bold">Error</p>
-                        <p>{error}</p>
-                    </div>
-                )}
+                <ConfirmDeleteModal
+                    isOpen={isDeleteModalOpen}
+                    title="Eliminar gasto"
+                    message="¿Estás seguro que deseas eliminar este gasto? Esta acción no se puede deshacer."
+                    cancelText="Cancelar"
+                    confirmText="Eliminar"
+                    onCancel={cancelDelete}
+                    onConfirm={confirmDelete}
+                />
 
                 {/* Form */}
                 {!loading && (
@@ -106,6 +120,61 @@ export default function GastosNegocioPage() {
                                     </p>
                                 )}
 
+                                {/* --------------------------------------- */}
+                                {/* MAP desde el gasto 3 en adelante */}
+                                {/* --------------------------------------- */}
+                                {gastosNegocio.slice(2).map((gasto, index) => (
+                                    <div key={gasto.id} className="flex flex-col gap-2 px-2 text-gray-800">
+                                        <div className="flex justify-between items-center">
+                                            <h3>Costo indirecto {index + 3}</h3>
+                                        </div>
+
+                                        <div className="relative flex justify-between gap-x-4">
+                                            <input
+                                                type="text"
+                                                placeholder="Nombre del gasto"
+                                                value={gasto.nombre}
+                                                onChange={e => {
+                                                    updateGasto(gasto.id, "nombre", e.target.value);
+                                                    setDirty(true);
+                                                }}
+                                                className="flex-1 p-2 border rounded-md border-[var(--primary-color-300)] text-[var(--primary-color-500)] bg-[var(--background-light)]"
+                                                required
+                                            />
+
+                                            <div className="flex justify-between gap-x-2">
+                                                <div className="relative w-[60px]">
+                                                    <input
+                                                        type="number"
+                                                        placeholder="0"
+                                                        min={0}
+                                                        max={100}
+                                                        step="0.01"
+                                                        value={gasto.porcentaje || ''}
+                                                        onChange={e => {
+                                                            updateGasto(gasto.id, "porcentaje", e.target.value);
+                                                            setDirty(true);
+                                                        }}
+                                                        className="w-full p-2 pr-6 border rounded-md border-[var(--primary-color-300)] text-[var(--primary-color-500)] bg-[var(--background-light)]"
+                                                        required
+                                                    />
+                                                    <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--primary-color-500)] text-xl font-semibold pointer-events-none">
+                                                        %
+                                                    </span>
+                                                </div>
+
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleDeleteGasto(gasto.id)}
+                                                    className="mt-[-34px]"
+                                                >
+                                                    <Trash2 className="w-6 h-6 text-[#0F172A] bg-[#CEC2D6] border border-[#9D86AC] rounded-md font-bold text-xl p-1" />
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                ))}
                                 {/* ----------------------------- */}
                                 {/* GASTO 1 */}
                                 {/* ----------------------------- */}
@@ -195,62 +264,6 @@ export default function GastosNegocioPage() {
                                         </div>
                                     </div>
                                 )}
-
-                                {/* --------------------------------------- */}
-                                {/* MAP desde el gasto 3 en adelante */}
-                                {/* --------------------------------------- */}
-                                {gastosNegocio.slice(2).map((gasto, index) => (
-                                    <div key={gasto.id} className="flex flex-col gap-2 px-2 text-gray-800">
-                                        <div className="flex justify-between items-center">
-                                            <h3>Costo indirecto {index + 3}</h3>
-                                        </div>
-
-                                        <div className="relative flex justify-between gap-x-4">
-                                            <input
-                                                type="text"
-                                                placeholder="Nombre del gasto"
-                                                value={gasto.nombre}
-                                                onChange={e => {
-                                                    updateGasto(gasto.id, "nombre", e.target.value);
-                                                    setDirty(true);
-                                                }}
-                                                className="flex-1 p-2 border rounded-md border-[var(--primary-color-300)] text-[var(--primary-color-500)] bg-[var(--background-light)]"
-                                                required
-                                            />
-
-                                            <div className="flex justify-between gap-x-2">
-                                                <div className="relative w-[60px]">
-                                                    <input
-                                                        type="number"
-                                                        placeholder="0"
-                                                        min={0}
-                                                        max={100}
-                                                        step="0.01"
-                                                        value={gasto.porcentaje || ''}
-                                                        onChange={e => {
-                                                            updateGasto(gasto.id, "porcentaje", e.target.value);
-                                                            setDirty(true);
-                                                        }}
-                                                        className="w-full p-2 pr-6 border rounded-md border-[var(--primary-color-300)] text-[var(--primary-color-500)] bg-[var(--background-light)]"
-                                                        required
-                                                    />
-                                                    <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--primary-color-500)] text-xl font-semibold pointer-events-none">
-                                                        %
-                                                    </span>
-                                                </div>
-
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleDeleteGasto(gasto.id)}
-                                                    className="mt-[-34px]"
-                                                >
-                                                    <Trash2 className="w-6 h-6 text-[#0F172A] bg-[#CEC2D6] border border-[#9D86AC] rounded-md font-bold text-xl p-1" />
-                                                </button>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                ))}
                             </div>
 
                             {/* BOTÓN AGREGAR */}
@@ -279,7 +292,7 @@ export default function GastosNegocioPage() {
                             </div>
 
                             <div className="w-full pt-4 text-gray-800 flex-col px-4 border-b-[1px] border-[var(--primary-color-300)]">
-                                <h3>IVA</h3>
+                                <h3 className="font-semibold">IVA*</h3>
                                 <div className="flex justify-between items-center gap-x-4 mb-[20px] ">
                                     <div className="relative w-full">
                                         <input
