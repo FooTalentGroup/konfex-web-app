@@ -9,6 +9,7 @@ const server = createServer(app);
 
 initSocket(server);
 
-server.listen(port, "0.0.0.0", () => {
-  console.log(`Documentación de la API: http://0.0.0.0:${port}/api/v1/docs`);
+server.listen(port, () => {
+  console.log(`Health en http://localhost:${port}/api/v1/health`);
+  console.log(`Documentación de la API: http://localhost:${port}/api/v1/docs`);
 });
