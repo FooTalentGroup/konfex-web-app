@@ -2,7 +2,37 @@ import prisma from "../../config/prisma";
 import type { CreateProductoDtoDB } from "./producto.types";
 
 export const productoRepository = {
-  create: (data: CreateProductoDtoDB) => prisma.producto.create({ data }),
+  create: (data: CreateProductoDtoDB) => {
+    const { materiales, ...productoData } = data;
+
+    return prisma.producto.create({
+      data: {
+        ...productoData,
+        ...(materiales && materiales.length > 0
+          ? {
+              materiales: {
+                create: materiales.map((m) => ({
+                  materialId: m.materialId,
+                  cantidad: m.cantidad,
+                })),
+              },
+            }
+          : {}),
+      },
+      include: {
+        coleccion: true,
+        materiales: {
+          include: {
+            material: {
+              include: {
+                categoria: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  },
 
   update: (id: number, data: Partial<CreateProductoDtoDB>) =>
     prisma.producto.update({ where: { id }, data }),
