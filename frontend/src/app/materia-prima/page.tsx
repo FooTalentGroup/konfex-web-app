@@ -102,8 +102,9 @@ export default function MateriaPrimaPage() {
   };
 
   const handleConfirmAdd = async (nombre: string) => {
-    const success = await addCategory(nombre);
+    return await addCategory(nombre);
   };
+
 
   if (!mounted) {
     return null;

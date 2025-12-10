@@ -61,14 +61,21 @@ export function useCategories() {
 
             const json = await res.json();
 
-            if (!json.success) throw new Error(json.message || 'Error creating category');
+            if (!json.success) {
+                return { success: false, error: json.message || 'Error creando categoría' };
+            }
 
-            fetchCategories();
-            return true;
-        } catch (err) {
-            return false;
+            await fetchCategories();
+            return { success: true };
+
+        } catch (err: any) {
+            return {
+                success: false,
+                error: err.message ?? 'Error desconocido'
+            };
         }
     }, [fetchCategories]);
+
 
     const deleteCategory = useCallback(async (id: string | number) => {
         try {

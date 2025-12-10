@@ -6,7 +6,7 @@ import { X } from 'lucide-react';
 interface AddCategoryModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onConfirm: (nombre: string) => Promise<boolean>;
+    onConfirm: (nombre: string) => Promise<{ success: boolean; error?: string }>;
 }
 
 export default function AddCategoryModal({
@@ -31,16 +31,15 @@ export default function AddCategoryModal({
         setIsSubmitting(true);
         setError('');
 
-        const success = await onConfirm(nombre.trim());
+        const result = await onConfirm(nombre.trim());
 
-        setIsSubmitting(false);
-
-        if (success) {
+        if (result.success) {
             setNombre('');
             onClose();
         } else {
-            setError('Error al crear la categoría');
+            setError(result.error || 'Error al crear la categoría');
         }
+
     };
 
     const handleClose = () => {
@@ -55,7 +54,7 @@ export default function AddCategoryModal({
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             {/* Overlay */}
             <div
-                className="absolute inset-0 bg-black bg-opacity-50"
+                className="absolute inset-0 bg-[#00000094]"
                 onClick={handleClose}
             />
 
@@ -71,52 +70,46 @@ export default function AddCategoryModal({
                 </button>
 
                 {/* Título */}
-                <h2 className="text-xl font-bold text-center text-gray-900 mb-6">
-                    Agregar nueva categoría
+                <h2 className="text-xl font-bold text-center text-[var(--secondary-color-300)] mb-6">
+                    Materia prima
                 </h2>
 
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-2">
-                            Nombre de la categoría
+                            Tipo
                         </label>
                         <input
                             id="nombre"
                             type="text"
                             value={nombre}
                             onChange={(e) => setNombre(e.target.value)}
-                            placeholder="Ej: Hilos, Botones, Telas..."
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            placeholder="Nombre de materia prima"
+                            className="w-full px-4 py-1 text-[var(--primary-color-300)] text-md border border-gray-300 rounded-lg focus:outline-none focus:ring-2 "
                             disabled={isSubmitting}
                             autoFocus
                         />
                     </div>
 
-                    {/* Error message */}
-                    {error && (
-                        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                            {error}
-                        </div>
-                    )}
-
                     {/* Botones */}
-                    <div className="flex gap-3 pt-2">
+                    <div className="flex flex-col gap-3 pt-2">
+                        <button
+                            type="submit"
+                            disabled={isSubmitting || !nombre.trim()}
+                            className=" py-2 px-2 bg-[var(--secondary-color-500)] text-white rounded-full font-medium transition-colors"
+                        >
+                            {isSubmitting ? 'Creando...' : 'Crear'}
+                        </button>
                         <button
                             type="button"
                             onClick={handleClose}
                             disabled={isSubmitting}
-                            className="flex-1 py-3 px-4 bg-gray-200 hover:bg-gray-300 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className=" py-2 px-2 bg-[#EAD0FB] text-[#5A0B8E] rounded-full border-[#5A0B8E] border-[1px] font-medium transition-colors"
                         >
                             Cancelar
                         </button>
-                        <button
-                            type="submit"
-                            disabled={isSubmitting || !nombre.trim()}
-                            className="flex-1 py-3 px-4 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors"
-                        >
-                            {isSubmitting ? 'Creando...' : 'Crear'}
-                        </button>
+
                     </div>
                 </form>
             </div>
