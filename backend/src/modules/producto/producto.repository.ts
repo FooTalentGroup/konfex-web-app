@@ -34,8 +34,14 @@ export const productoRepository = {
     });
   },
 
-  update: (id: number, data: Partial<CreateProductoDtoDB>) =>
-    prisma.producto.update({ where: { id }, data }),
+  update: (id: number, data: Partial<CreateProductoDtoDB>) => {
+    const { materiales, ...productoData } = data;
+
+    return prisma.producto.update({
+      where: { id },
+      data: productoData,
+    });
+  },
 
   findAll: () =>
     prisma.producto.findMany({
