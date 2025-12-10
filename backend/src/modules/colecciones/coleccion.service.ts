@@ -71,7 +71,13 @@ export const coleccionService = {
     try {
       return await coleccionRepository.delete(id);
     } catch (error: unknown) {
-      if (error?.code === "P2003" || error?.code === "23001") {
+      // Type guard para verificar si el error tiene la propiedad 'code'
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        (error.code === "P2003" || error.code === "23001")
+      ) {
         throw new AppError(
           `No se puede eliminar la colección "${coleccion.nombre}" porque tiene productos asociados. Elimine primero los productos de esta colección.`,
           409
