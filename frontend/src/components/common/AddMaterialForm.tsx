@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import ImageUploadField from "../ui/ImageUploadField";
+import { useImageUpload } from "@/hooks";
+import { useToast } from "@/contexts/ToastContext";
 
 interface MaterialData {
     id?: number;
@@ -23,6 +26,7 @@ interface AddMaterialFormProps {
 }
 
 export default function AddMaterialForm({ data, onSubmit, onReset }: AddMaterialFormProps) {
+    const { showError } = useToast();
     const [form, setForm] = useState({
         nombre: "",
         url_imagen: "",
@@ -33,6 +37,31 @@ export default function AddMaterialForm({ data, onSubmit, onReset }: AddMaterial
         proveedor: "",
         precio: "",
     });
+
+    const {
+        imagePreview,
+        isUploading,
+        uploadError,
+        fileInputRef,
+        handleImageClick,
+        handleImageChange,
+        handleRemoveImage,
+        resetUpload,
+    } = useImageUpload({
+        onUploadSuccess: (url) => {
+            setForm((prev) => ({ ...prev, url_imagen: url }));
+        },
+        onUploadError: (error) => {
+            showError(`Error al subir la imagen: ${error}`);
+        }
+    })
+
+
+    const onRemoveImage = () => {
+        handleRemoveImage(() => {
+            setForm((prev) => ({ ...prev, url_imagen: "" }));
+        })
+    }
 
     useEffect(() => {
         if (data) {
@@ -74,6 +103,7 @@ export default function AddMaterialForm({ data, onSubmit, onReset }: AddMaterial
             proveedor: "",
             precio: "",
         });
+        resetUpload();
         onReset && onReset();
     };
 
@@ -118,17 +148,17 @@ export default function AddMaterialForm({ data, onSubmit, onReset }: AddMaterial
                 Editado: {displayDate.toLocaleDateString("es-UY")}
             </div>
             {/* Imagen */}
-            {form.url_imagen ? (
-                <img
-                    src={form.url_imagen}
-                    alt="Imagen"
-                    className="w-full h-32 object-cover rounded-md mb-4"
+            <div className="space-y-6">
+                <ImageUploadField
+                    imagePreview={imagePreview || form.url_imagen || null}
+                    isUploading={isUploading}
+                    uploadError={uploadError}
+                    fileInputRef={fileInputRef}
+                    onImageClick={handleImageClick}
+                    onImageChange={handleImageChange}
+                    onRemoveImage={onRemoveImage}
                 />
-            ) : (
-                <div className="w-full h-32 rounded-md bg-gray-200 mb-4 flex items-center justify-center text-sm text-gray-500">
-                    Sin imagen
-                </div>
-            )}
+            </div>
 
             {/* Nombre */}
             <div className="mb-4 text-gray-800">
