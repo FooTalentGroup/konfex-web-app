@@ -3,13 +3,13 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { GarmentFormData } from '@/types/IGarment';
-import CustomInput from './CustomInput';
 import CustomSelect from './CustomSelect';
 import CustomInputWithSelect from './CustomInputWithSelect';
 import PriceDisplay from './PriceDisplay';
-import { Plus, Trash2 } from 'lucide-react';
+import { AlertCircle, ExternalLink, Plus, Trash2 } from 'lucide-react';
 import { useMaterials } from '@/hooks/useMaterialsForService';
 import { useToast } from '@/contexts/ToastContext';
+import { useRouter } from 'next/navigation';
 
 interface RawMaterialTabFormProps {
     form: UseFormReturn<GarmentFormData>;
@@ -17,13 +17,14 @@ interface RawMaterialTabFormProps {
 
 const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
     const { register, watch, setValue, formState: { errors } } = form;
-    const { materials, isLoading: loadingMaterials } = useMaterials();
+    const { materials } = useMaterials();
     const toast = useToast();
+    const router = useRouter();
     
     const rawMaterials = watch('rawMaterials') || [];
     
-    const fabricMaterialsFromDB = materials.filter(m => m.categoria?.nombre.toUpperCase() === 'TELA');
-    const supplyMaterialsFromDB = materials.filter(m => m.categoria?.nombre.toUpperCase() !== 'TELA');
+    const fabricMaterialsFromDB = materials.filter(m => m.categoria?.nombre?.toLowerCase() === 'tela');
+    const supplyMaterialsFromDB = materials.filter(m => m.categoria?.nombre?.toLowerCase() !== 'tela');
     
     const fabricMaterials = rawMaterials.filter(m => m.type === 'fabric');
     const supplyMaterials = rawMaterials.filter(m => m.type === 'supply');
@@ -45,7 +46,6 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
         const materialIdStr = watch('tempFabricName');
         const consumption = watch('tempFabricConsumption');
         const unit = watch('tempFabricUnit');
-        const price = watch('tempFabricPrice');
 
         if (!materialIdStr || !consumption || !unit) {
             toast.showWarning('Por favor completa todos los campos de tela');
@@ -58,12 +58,14 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
         }
 
 
-        const selectedMaterial = materials.find(m => m.id === parseInt(materialIdStr));
+        const selectedMaterial = materials.find(m => m.id === parseInt(materialIdStr, 10));
 
         if (!selectedMaterial) {
             toast.showWarning('Material no encontrado');
             return;
         }
+
+        if (rawMaterials.some(m => m.id === materialIdStr)) { toast.showWarning('Este material ya ha sido agregado'); return; }
 
         const newMaterial = {
             id: materialIdStr,
@@ -86,7 +88,6 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
         const materialIdStr = watch('tempSupplyName');
         const consumption = watch('tempSupplyConsumption');
         const unit = watch('tempSupplyUnit');
-        // const price = watch('tempSupplyPrice');
 
         if (!materialIdStr || !consumption || !unit) {
             toast.showWarning('Por favor completa todos los campos de insumo');
@@ -99,7 +100,7 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
         }
 
 
-        const selectedMaterial = materials.find(m => m.id === parseInt(materialIdStr));
+        const selectedMaterial = materials.find(m => m.id === parseInt(materialIdStr, 10));
 
         if (!selectedMaterial) {
             toast.showWarning('Material no encontrado');
@@ -127,6 +128,28 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
         setValue('rawMaterials', rawMaterials.filter(m => m.id !== id));
     };
 
+    const EmptyMaterialsAlert = ({ type }: { type: 'fabric' | 'supply' }) => (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+                <h4 className="text-sm font-semibold text-amber-800 mb-1">
+                    No hay {type === 'fabric' ? 'telas' : 'insumos'} registrados
+                </h4>
+                <p className="text-sm text-amber-700 mb-2">
+                    Debes crear {type === 'fabric' ? 'telas' : 'insumos'} en el sistema antes de poder agregarlos a una prenda.
+                </p>
+                <button
+                    type="button"
+                    onClick={() => router.push('/materia-prima')}
+                    className="inline-flex items-center gap-1 text-sm font-medium text-amber-700 hover:text-amber-900 underline"
+                >
+                    Ir a crear materiales
+                    <ExternalLink className="w-4 h-4" />
+                </button>
+            </div>
+        </div>
+    );
+
     return (
         <section className="space-y-6">
 
@@ -137,6 +160,7 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
 
             <div className="space-y-4">
 
+
                 <CustomSelect
                     id="tempFabricName"
                     label="Tela"
@@ -146,6 +170,7 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                     placeholder="Ej. Algodón"
                     className="bg-white"
                 />
+                {fabricOptions.length === 0 && <EmptyMaterialsAlert type="fabric" />}
 
                 <CustomInputWithSelect
                     id="tempFabricConsumption"
@@ -209,11 +234,11 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                                     {material.consumption} {material.unit}
                                 </span>
                                 <span className="text-sm font-semibold text-gray-800">
-                                    $ {material.price}
+                                    $ {material.price ?? 0}
                                 </span>
                                 <button
                                     type="button"
-                                    onClick={() => removeMaterial(material.id)}
+                                    onClick={() => removeMaterial((material.id) as string)}
                                     className="bg-primary-200 p-1 text-gray-500 hover:text-gray-700 border border-primary-500 rounded-md transition-colors"
                                 >
                                     <Trash2 className="w-4 h-4" />
@@ -225,6 +250,7 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
             )}
 
             <div className="space-y-4">
+
                 <CustomSelect
                     id="tempSupplyName"
                     label="Insumos"
@@ -234,6 +260,7 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                     placeholder="Ej. Botones L24 + cortesía"
                     className="bg-white"
                 />
+                {supplyOptions.length === 0 && <EmptyMaterialsAlert type="supply" />}
 
                 <CustomInputWithSelect
                     id="tempSupplyConsumption"
@@ -296,11 +323,11 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                                         {material.consumption} {material.unit}
                                     </span>
                                     <span className="text-sm font-semibold text-gray-800">
-                                        $ {material.price}
+                                        $ {material.price ?? 0}
                                     </span>
                                     <button
                                         type="button"
-                                        onClick={() => removeMaterial(material.id)}
+                                        onClick={() => removeMaterial((material.id) as string)}
                                         className="bg-primary-200 p-1 text-gray-500 hover:text-gray-700 border border-primary-500 rounded-md transition-colors"
                                     >
                                         <Trash2 className="w-4 h-4" />

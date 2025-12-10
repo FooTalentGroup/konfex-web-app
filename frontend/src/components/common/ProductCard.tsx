@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Shirt, Palette, DollarSign } from 'lucide-react';
+import { Shirt } from 'lucide-react';
 
 interface ProductCardProps {
     id: number;

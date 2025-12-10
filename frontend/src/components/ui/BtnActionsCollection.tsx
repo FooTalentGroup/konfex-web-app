@@ -13,11 +13,11 @@ export default function BtnActionsCollections({  isDeleteMode, toggleDeleteMode,
 
 
   return (
-    <div className="fixed bg-primary-300 p-2 bottom-20 right-1/2 transform translate-x-1/2 flex gap-3 rounded-full z-50">
+    <div className="fixed bg-primary-200 px-4 py-2 bottom-20 right-1/2 transform translate-x-1/2 flex gap-3 rounded-full z-10">
       <button
         type="button"
         onClick={onAddCollection}
-        className="px-4 py-2 bg-secondary-500 hover:bg-secondary-600 rounded-full text-white shadow-lg transition-colors font-medium text-sm flex items-center gap-2 whitespace-nowrap"
+        className="px-4 py-2 bg-primary-500 hover:bg-secondary-600 rounded-full text-white shadow-lg transition-colors font-medium text-sm flex items-center gap-2 whitespace-nowrap"
       >
         <Plus className="w-4 h-4" />
       </button>

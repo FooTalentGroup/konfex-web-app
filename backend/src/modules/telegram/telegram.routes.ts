@@ -1,5 +1,7 @@
 import { Router } from "express";
 
+import { authMiddleware } from "@/middleware/authMiddleware";
+
 import {
   getChatMessagesController,
   getChatsController,
@@ -8,7 +10,6 @@ import {
   sendMessageToTelegram,
   telegramWebhookController,
 } from "./telegram.controller";
-import { authMiddleware } from "@/middleware/authMiddleware";
 
 const telegramRoutes = Router();
 

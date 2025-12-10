@@ -1,6 +1,8 @@
 import "dotenv/config";
-import { Pool } from "pg";
+
 import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
+
 import { PrismaClient } from "../../generated/prisma/client";
 
 const adapter = () => {
@@ -26,7 +28,7 @@ const adapter = () => {
 };
 
 declare global {
-  // eslint-disable-next-line no-var
+   
   var prismaGlobal: undefined | ReturnType<typeof adapter>;
 }
 

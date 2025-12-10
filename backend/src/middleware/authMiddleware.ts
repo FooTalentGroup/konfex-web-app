@@ -1,6 +1,7 @@
-import jwt from "jsonwebtoken";
-import { AppError } from "@/common/errors";
 import type { NextFunction, Request, Response } from "express";
+import jwt from "jsonwebtoken";
+
+import { AppError } from "@/common/errors";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
@@ -12,7 +13,7 @@ export const authMiddleware = (req: Request, _res: Response, next: NextFunction)
   }
 
   const token = authHeader.split(" ")[1];
-  if (!token) throw new AppError("Token inválido", 401);
+  if (!token) {throw new AppError("Token inválido", 401);}
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as {

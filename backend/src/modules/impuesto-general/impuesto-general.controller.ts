@@ -1,10 +1,11 @@
-import { Request } from "express";
+import type { Request } from "express";
+
 import { controllerHandler } from "../../common/handlers";
-import { impuestoGeneralService } from "./impuesto-general.service";
-import {
+import type {
   CreateImpuestoGeneralDto,
   UpdateImpuestoGeneralDto,
 } from "./impuesto-general.schema";
+import { impuestoGeneralService } from "./impuesto-general.service";
 
 export const createImpuestoGeneralController = controllerHandler(
   async (req: Request) => {
