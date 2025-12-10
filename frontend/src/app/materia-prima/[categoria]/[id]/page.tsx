@@ -31,7 +31,10 @@ export default function EditarMaterialPage() {
             .then((res) => res.json())
             .then((json) => {
                 console.log("Material recibido:", json);
-                setMaterial(json.data?.data?.[0] ?? null);
+
+                // CORRECCIÓN IMPORTANTE:
+                // json.data ES el material, no json.data.data[0]
+                setMaterial(json.data ?? null);
             })
             .finally(() => setLoading(false));
     }, [id]);

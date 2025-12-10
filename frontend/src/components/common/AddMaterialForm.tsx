@@ -37,14 +37,22 @@ export default function AddMaterialForm({ data, onSubmit, onReset }: AddMaterial
     useEffect(() => {
         if (data) {
             setForm({
-                nombre: data.nombre || "",
-                url_imagen: data.url_imagen || "",
-                ancho: data.ancho?.toString() || "",
-                unidadMedida: data.unidadMedida || "cm",
-                peso: data.peso?.toString() || "",
-                colores: data.colores?.join(", ") || "",
-                proveedor: data.proveedor || "",
-                precio: data.precio?.toString() || "",
+                nombre: data.nombre ?? "",
+                url_imagen: data.url_imagen ?? "",
+                ancho: data.ancho?.toString() ?? "",
+                // 🔥 Fix principal: normalizar unidadMedida
+                unidadMedida: (() => {
+                    const raw = data.unidadMedida?.toLowerCase();
+                    if (!raw) return "cm";
+                    if (["m", "metro", "metros"].includes(raw)) return "m";
+                    if (["cm", "centimetro", "centimetros"].includes(raw)) return "cm";
+                    if (["yds", "yd", "yardas"].includes(raw)) return "yds";
+                    return "cm";
+                })(),
+                peso: data.peso?.toString() ?? "",
+                colores: data.colores?.join(", ") ?? "",
+                proveedor: data.proveedor ?? "",
+                precio: data.precio?.toString() ?? "",
             });
         } else {
             resetForm();
