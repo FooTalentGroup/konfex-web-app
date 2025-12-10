@@ -1,8 +1,13 @@
+"use client";
+
 import { useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { MoreVertical, FileDown, Send, X } from "lucide-react";
+import { pdf } from "@react-pdf/renderer";
 import NavigationTabs from "../ui/NavigationTabs";
 import { useGastosNegocio } from "@/hooks/useGastosNegocio";
+import { useToast } from "@/contexts/ToastContext";
+import BudgetPDF from "./BudgetPDF";
 
 interface BudgetSummaryHeaderProps {
   presupuestoId?: number;
@@ -35,6 +40,7 @@ export default function BudgetSummaryHeader({
 }: BudgetSummaryHeaderProps = {}) {
   const { control, getValues, watch } = useFormContext();
   const { gastosNegocio } = useGastosNegocio();
+  const { showError, showInfo } = useToast();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -74,9 +80,66 @@ export default function BudgetSummaryHeader({
   const profit = (directCost * desiredProfit) / 100;
   const grandTotal = directCost + indirectCosts + profit;
 
-  const handleDownloadPDF = () => {
-    window.print();
-    setIsMenuOpen(false);
+  const handleDownloadPDF = async () => {
+    // Validar campos obligatorios
+    const currentData = getValues();
+
+    if (!currentData.title?.trim()) {
+      showError("Por favor ingresa un título para el presupuesto");
+      setIsMenuOpen(false);
+      return;
+    }
+
+    if (!currentData.clientName?.trim()) {
+      showError("Por favor ingresa el nombre del cliente");
+      setIsMenuOpen(false);
+      return;
+    }
+
+    if (!materials || materials.length === 0) {
+      showError(
+        "Por favor agrega al menos un material/prenda antes de descargar el PDF"
+      );
+      setIsMenuOpen(false);
+      return;
+    }
+
+    try {
+      showInfo("Generando PDF...");
+      setIsMenuOpen(false);
+
+      // Crear el documento PDF usando @react-pdf/renderer
+      const blob = await pdf(
+        <BudgetPDF
+          formData={currentData}
+          materials={materials}
+          extras={extras}
+          totalMaterialsCost={totalMaterialsCost}
+          grandTotal={grandTotal}
+        />
+      ).toBlob();
+
+      // Crear un enlace temporal para descargar el PDF
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Presupuesto_${currentData.clientName.replace(
+        /\s+/g,
+        "_"
+      )}_${new Date().toLocaleDateString("es-AR").replace(/\//g, "-")}.pdf`;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Liberar el objeto URL
+      URL.revokeObjectURL(url);
+
+      showInfo("PDF descargado exitosamente");
+    } catch (error) {
+      console.error("Error al generar PDF:", error);
+      showError("Error al generar el PDF. Por favor intenta nuevamente.");
+    }
   };
 
   const handleSendToTelegram = () => {

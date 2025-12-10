@@ -34,7 +34,14 @@ export default function BudgetExtras({
   isEditMode = false,
   origen = "manual",
 }: BudgetExtrasProps) {
-  const { control, watch, register, setValue, getValues } = useFormContext();
+  const {
+    control,
+    watch,
+    register,
+    setValue,
+    getValues,
+    formState: { errors },
+  } = useFormContext();
   const router = useRouter();
   const { gastosNegocio } = useGastosNegocio();
   const { showSuccess, showError, showInfo } = useToast();
@@ -312,7 +319,7 @@ export default function BudgetExtras({
                 setShippingFee("0");
               }
             }}
-            placeholder="000.000"
+            placeholder="Ingresa la tarifa de envío"
             className="w-full h-[40px] bg-[#FEFCFF] border border-[#CEC2D6] rounded-[10px] px-3 pr-9 text-sm outline-none font-normal text-[#B5A4C1] text-left focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all placeholder:text-[#B5A4C1]"
             min="0"
             step="0.01"
@@ -336,8 +343,14 @@ export default function BudgetExtras({
           <input
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              // Limitar a 100 caracteres
+              if (e.target.value.length <= 100) {
+                setName(e.target.value);
+              }
+            }}
             placeholder="Ej.: Estampado, botones adicionales"
+            maxLength={100}
             className="w-full h-[40px] bg-[#FEFCFF] border border-[#CEC2D6] rounded-[10px] px-3 text-sm outline-none font-normal text-[#B5A4C1] placeholder:text-[#B5A4C1] focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all"
           />
         </div>
@@ -367,6 +380,8 @@ export default function BudgetExtras({
                   const val = parseInt(e.target.value);
                   if (isNaN(val) || val < 1) {
                     setQty(1);
+                  } else if (val > 9999) {
+                    setQty(9999);
                   } else {
                     setQty(val);
                   }
@@ -375,11 +390,15 @@ export default function BudgetExtras({
                   const val = parseInt(e.target.value);
                   if (isNaN(val) || val < 1) {
                     setQty(1);
+                  } else if (val > 9999) {
+                    setQty(9999);
                   }
                 }}
+                onWheel={(e) => e.currentTarget.blur()}
                 placeholder="00"
                   className="w-12 bg-[#FEFCFF] text-center text-sm outline-none font-normal text-[#B5A4C1] placeholder:text-[#B5A4C1]"
                 min="1"
+                max="9999"
                 step="1"
               />
               <button
@@ -424,7 +443,8 @@ export default function BudgetExtras({
                     setAmount("");
                   }
                 }}
-                placeholder="000.000"
+                onWheel={(e) => e.currentTarget.blur()}
+                placeholder="Ingresa el monto"
                 className="w-full sm:w-[206px] h-[40px] bg-[#FEFCFF] border border-[#CEC2D6] rounded-[6px] px-3 pr-9 text-sm outline-none font-normal text-[#B5A4C1] text-left focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all placeholder:text-[#B5A4C1]"
                 min="0"
                 step="0.01"
@@ -498,11 +518,22 @@ export default function BudgetExtras({
           Observaciones
         </label>
         <textarea
-          {...register("observations")}
+          {...register("observations", {
+            maxLength: {
+              value: 500,
+              message: "Las observaciones no pueden exceder 500 caracteres",
+            },
+          })}
           rows={4}
           placeholder="Ej.: Estampado, bordado, botones extra"
+          maxLength={500}
           className="w-full bg-[#FEFCFF] border border-[#CEC2D6] rounded-[6px] px-3 py-2 text-sm text-[#B5A4C1] outline-none resize-none placeholder:text-[#B5A4C1] focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all"
         ></textarea>
+        {errors.observations && (
+          <p className="text-xs text-red-500 mt-1">
+            {errors.observations.message as string}
+          </p>
+        )}
       </div>
 
       {/* Botón Revisar */}

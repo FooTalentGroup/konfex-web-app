@@ -152,9 +152,8 @@ export default function CollectionDetailPage() {
                         nombre={product.nombre}
                         colores={product.colores}
                         tallas={product.tallas}
-                        precio={product.mermaPrecio}
+                        precio={product.precio}
                         imagen={product.imagen}
-                        onClick={() => handleProductClick(product.id)}
                       />
                     ))}
                   </div>
@@ -172,6 +171,7 @@ export default function CollectionDetailPage() {
         </div>
       </div>
       <BtnActionsProducts
+        isDeleteMode={false}
         onAddProduct={() => handleAddProduct(currentCollection.id)}
       />
       <Footer />

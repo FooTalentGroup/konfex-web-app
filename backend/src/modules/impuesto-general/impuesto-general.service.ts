@@ -1,6 +1,7 @@
 import { AppError } from "@/common/errors";
+
 import { impuestoGeneralRepository } from "./impuesto-general.repository";
-import {
+import type {
   CreateImpuestoGeneralDto,
   UpdateImpuestoGeneralDto,
 } from "./impuesto-general.schema";

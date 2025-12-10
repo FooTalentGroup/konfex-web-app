@@ -1,7 +1,7 @@
 import { AppError } from "../../common/errors";
 import prisma from "../../config/prisma";
 import { pedidoRepository } from "./pedido.repository";
-import { PedidoUpdateInput } from "./pedido.types";
+import type { PedidoUpdateInput } from "./pedido.types";
 
 export const pedidoService = {
   // Obtener todos los pedidos

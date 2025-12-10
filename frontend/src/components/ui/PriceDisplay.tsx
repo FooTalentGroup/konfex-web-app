@@ -13,9 +13,6 @@ const PriceDisplay: React.FC<PriceDisplayProps> = ({
   amount,
   className = '',
 }) => {
-  const formattedAmount = typeof amount === 'number'
-    ? amount.toLocaleString('es-CO')
-    : amount;
 
   return (
     <div className={`flex flex-col items-center justify-between ${className}`}>
@@ -23,7 +20,7 @@ const PriceDisplay: React.FC<PriceDisplayProps> = ({
         {label}
       </span>
       <span className="text-base sm:text-lg font-[var(--font-lato),sans-serif] font-bold text-[#B65CF2]">
-        $ {formattedAmount}
+        $ {amount}
       </span>
     </div>
   );

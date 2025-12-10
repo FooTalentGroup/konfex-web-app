@@ -1,9 +1,7 @@
-import { io } from "@/config/socket";
 import prisma from "@/config/prisma";
-import { telegramMessageRepository } from "./telegram.repository";
+import { io } from "@/config/socket";
 import { uploadFile } from "@/utils/uploadFile";
-import { LeadForm, LeadStep, questions } from "../ai/types";
-import { extractLeadField } from "../ai/extractores/lead";
+import { telegramMessageRepository } from "./telegram.repository";
 
 const TELEGRAM_API = (token: string) => `https://api.telegram.org/bot${token}`;
 
@@ -17,7 +15,9 @@ type TelegramGetFileResponse = {
 };
 
 export const handleIncomingUpdate = async (update: any) => {
-  if (!update.message) return;
+  if (!update.message) {
+    return;
+  }
 
   const { message } = update;
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
@@ -75,7 +75,9 @@ export const handleIncomingUpdate = async (update: any) => {
         `https://api.telegram.org/bot${botToken}/getFile?file_id=${payload.fileId}`
       ).then((res) => res.json())) as TelegramGetFileResponse;
 
-      if (!fileInfo.ok) throw new Error("No se pudo obtener el archivo de Telegram");
+      if (!fileInfo.ok) {
+        throw new Error("No se pudo obtener el archivo de Telegram");
+      }
 
       const telegramFileUrl = `https://api.telegram.org/file/bot${botToken}/${fileInfo.result.file_path}`;
 
@@ -113,62 +115,10 @@ export const handleIncomingUpdate = async (update: any) => {
     await telegramMessageRepository.save(payload);
     io.emit("telegram_message", payload);
 
-    // manejo de IA
-    const chatId = payload.chatId;
-
-    // Revisar si hay conversación activa
-    let conversation = await prisma.telegramConversation.findUnique({ where: { chatId } });
-    if (!conversation) {
-      conversation = await prisma.telegramConversation.create({ data: { chatId } });
-      return sendTextMessage(chatId, questions[LeadStep.PRENDA], "Konfex", "Usuario", "");
-    }
-    const currentStep = conversation.currentStep as LeadStep;
-    let partialData: LeadForm = {
-      prenda: "",
-      tipoCliente: null,
-      cantidad: null,
-      fecha: null,
-      diseno: null,
-      contacto: null,
-    };
-    if (conversation.formData && typeof conversation.formData === "object" && !Array.isArray(conversation.formData)) {
-      partialData = { ...partialData, ...(conversation.formData as LeadForm) };
-    }
-
-    const updatedData = await extractLeadField(
-      questions[currentStep],
-      payload.text || "",
-      partialData
-    );
-
-    // Avanzar al siguiente paso
-    let nextStep = currentStep + 1;
-    if (nextStep > LeadStep.CONTACTO) nextStep = LeadStep.DONE;
-
-    await prisma.telegramConversation.update({
-      where: { chatId },
-      data: {
-        currentStep: nextStep,
-        formData: updatedData,
-        lastMessageAt: new Date()
-      }
-    });
-
-    if (nextStep === LeadStep.DONE) {
-      await sendTextMessage(chatId, questions[LeadStep.DONE], "Konfex", "Usuario", "");
-      await prisma.telegramConversation.update({
-        where: { chatId },
-        data: { manualMode: true }
-      });
-    } else {
-      await sendTextMessage(chatId, questions[nextStep as LeadStep], "Konfex", "Usuario", "");
-    }
-    return
-    
-
+    return;
   } catch (err) {
     console.error("Error procesando mensaje de Telegram:", err);
-    return
+    return;
   }
 };
 
@@ -290,14 +240,22 @@ export const getChatsList = async (userId?: number) => {
   const allMessages = await telegramMessageRepository.findAll();
 
   const getLastMessageText = (msg: (typeof allMessages)[number]): string => {
-    if (msg.text) return msg.text;
+    if (msg.text) {
+      return msg.text;
+    }
     switch (msg.type) {
-      case "photo": return "Foto";
-      case "video": return "Video";
-      case "audio": return "Audio";
-      case "document": return "Documento";
-      case "voice": return "Nota de voz";
-      default: return "Mensaje sin contenido";
+      case "photo":
+        return "Foto";
+      case "video":
+        return "Video";
+      case "audio":
+        return "Audio";
+      case "document":
+        return "Documento";
+      case "voice":
+        return "Nota de voz";
+      default:
+        return "Mensaje sin contenido";
     }
   };
 
@@ -346,7 +304,7 @@ export const getChatsList = async (userId?: number) => {
       );
 
       const firstName = telegramMessage?.firstName || chat.firstName;
-      const lastName  = telegramMessage?.lastName  || chat.lastName;
+      const lastName = telegramMessage?.lastName || chat.lastName;
 
       const name =
         firstName && lastName
@@ -365,7 +323,6 @@ export const getChatsList = async (userId?: number) => {
     })
   );
 };
-
 
 export const markChatAsRead = async (chatId: string) => {
   return telegramMessageRepository.markChatAsRead(chatId);

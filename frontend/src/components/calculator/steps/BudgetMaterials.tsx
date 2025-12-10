@@ -135,10 +135,16 @@ export default function BudgetMaterials() {
           </label>
           <GarmentAutocomplete
             value={tempName}
-            onChange={setTempName}
+            onChange={(value) => {
+              // Limitar a 100 caracteres
+              if (value.length <= 100) {
+                setTempName(value);
+              }
+            }}
             onSelect={(producto: Producto) => {
               // Guardar el productoId y nombre
-              setTempName(producto.nombre);
+              const nombre = producto.nombre.substring(0, 100);
+              setTempName(nombre);
               setTempProductoId(producto.id);
               // Si el producto tiene tallas disponibles, podemos pre-seleccionar la primera
               if (producto.tallas && producto.tallas.length > 0) {
@@ -178,7 +184,16 @@ export default function BudgetMaterials() {
           <input
             type="number"
             value={tempPrice}
-            onChange={(e) => setTempPrice(e.target.value)}
+            onChange={(e) => {
+              const val = parseFloat(e.target.value);
+              if (!isNaN(val) && val >= 0 && val <= 999999999) {
+                setTempPrice(e.target.value);
+              } else if (e.target.value === "") {
+                setTempPrice("0");
+              }
+            }}
+            min="0"
+            max="999999999"
             className="hidden"
           />
         </div>

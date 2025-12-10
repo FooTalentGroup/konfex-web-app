@@ -16,12 +16,17 @@ if (!databaseUrl) {
   throw new Error("Missing required environment variable: DATABASE_URL");
 }
 
-const pool = new Pool({ connectionString: databaseUrl });
-const adapter = new PrismaPg(pool);
-
-const prisma = new PrismaClient({
-  adapter,
+const pool = new Pool({
+  connectionString: databaseUrl,
+  max: 1, // Solo una conexión para el seed
+  idleTimeoutMillis: 0, // No cerrar conexiones inactivas
+  connectionTimeoutMillis: 60000, // 60 segundos de timeout
+  keepAlive: true, // Mantener conexión viva
+  keepAliveInitialDelayMillis: 10000,
 });
+
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log("Seeding database...");
@@ -125,40 +130,6 @@ async function main() {
       const existe = await clienteRepository.findByName(cliente.nombre);
       if (!existe) {
         await clienteRepository.create(cliente);
-      }
-    } catch (error: any) {
-      if (error.code !== "P2002") {
-        throw error;
-      }
-    }
-  }
-
-  const manoDeObra = [
-    {
-      nombre: "Costurera Principal",
-      costoHora: 15000.0,
-    },
-    {
-      nombre: "Diseñador de Patrones",
-      costoHora: 20000.0,
-    },
-    {
-      nombre: "Cortador",
-      costoHora: 12000.0,
-    },
-    {
-      nombre: "Terminador",
-      costoHora: 10000.0,
-    },
-  ];
-
-  for (const mano of manoDeObra) {
-    try {
-      const existe = await prisma.manoDeObra.findFirst({
-        where: { nombre: mano.nombre },
-      });
-      if (!existe) {
-        await prisma.manoDeObra.create({ data: mano });
       }
     } catch (error: any) {
       if (error.code !== "P2002") {
@@ -415,15 +386,12 @@ async function main() {
           { materialId: 2, cantidad: 0.2 },
         ],
       },
-      manoDeObra: {
-        create: [
-          { manoDeObraId: 1, cantidadHoras: 0.5 },
-          { manoDeObraId: 2, cantidadHoras: 0.3 },
-        ],
-      },
       mermaCantidad: 0.1,
       mermaUnidad: "m",
       mermaPrecio: 500,
+      tarifaCosto: 12000,
+      tarifaHoras: 0.8,
+      precio: 15000,
     },
     {
       codigo: 2,
@@ -438,15 +406,12 @@ async function main() {
       materiales: {
         create: [{ materialId: 1, cantidad: 2.0 }],
       },
-      manoDeObra: {
-        create: [
-          { manoDeObraId: 1, cantidadHoras: 0.6 },
-          { manoDeObraId: 2, cantidadHoras: 0.4 },
-        ],
-      },
       mermaCantidad: 0.2,
       mermaUnidad: "m",
       mermaPrecio: 800,
+      tarifaCosto: 18000,
+      tarifaHoras: 1.0,
+      precio: 28000,
     },
     {
       codigo: 3,
@@ -461,15 +426,12 @@ async function main() {
       materiales: {
         create: [{ materialId: 3, cantidad: 1.2 }],
       },
-      manoDeObra: {
-        create: [
-          { manoDeObraId: 1, cantidadHoras: 0.7 },
-          { manoDeObraId: 3, cantidadHoras: 0.5 },
-        ],
-      },
       mermaCantidad: 0.15,
       mermaUnidad: "m",
       mermaPrecio: 600,
+      tarifaCosto: 20000,
+      tarifaHoras: 1.2,
+      precio: 35000,
     },
 
     // Colección 2
@@ -489,15 +451,12 @@ async function main() {
           { materialId: 2, cantidad: 0.2 },
         ],
       },
-      manoDeObra: {
-        create: [
-          { manoDeObraId: 1, cantidadHoras: 0.5 },
-          { manoDeObraId: 2, cantidadHoras: 0.3 },
-        ],
-      },
       mermaCantidad: 0.1,
       mermaUnidad: "m",
       mermaPrecio: 500,
+      tarifaCosto: 11000,
+      tarifaHoras: 0.8,
+      precio: 14000,
     },
     {
       codigo: 5,
@@ -512,15 +471,12 @@ async function main() {
       materiales: {
         create: [{ materialId: 1, cantidad: 2.0 }],
       },
-      manoDeObra: {
-        create: [
-          { manoDeObraId: 1, cantidadHoras: 0.5 },
-          { manoDeObraId: 2, cantidadHoras: 0.3 },
-        ],
-      },
       mermaCantidad: 0.2,
       mermaUnidad: "m",
       mermaPrecio: 800,
+      tarifaCosto: 16000,
+      tarifaHoras: 0.8,
+      precio: 25000,
     },
     {
       codigo: 6,
@@ -535,15 +491,12 @@ async function main() {
       materiales: {
         create: [{ materialId: 3, cantidad: 1.0 }],
       },
-      manoDeObra: {
-        create: [
-          { manoDeObraId: 1, cantidadHoras: 0.4 },
-          { manoDeObraId: 3, cantidadHoras: 0.3 },
-        ],
-      },
       mermaCantidad: 0.12,
       mermaUnidad: "m",
       mermaPrecio: 400,
+      tarifaCosto: 14000,
+      tarifaHoras: 0.7,
+      precio: 22000,
     },
   ];
 
@@ -665,7 +618,6 @@ async function main() {
   const clientesCreados = await clienteRepository.findAll();
   const productosCreados = await productoRepository.findAll();
   const materialesCreados = await materialRepository.findAll();
-  const manoDeObraCreada = await prisma.manoDeObra.findMany();
   const gastosNegocioCreados = await gastosNegocioRepository.findAll();
 
   const presupuestos = [
@@ -1028,90 +980,6 @@ async function main() {
     }
   }
 
-  if (productosCreados.length > 0 && manoDeObraCreada.length > 0) {
-    const manoDeObraPorProducto = [
-      {
-        productoId: productosCreados[0]?.id || 1,
-        manoDeObraId: manoDeObraCreada[1]?.id || 2,
-        cantidadHoras: 2.0,
-      },
-      {
-        productoId: productosCreados[0]?.id || 1,
-        manoDeObraId: manoDeObraCreada[2]?.id || 3,
-        cantidadHoras: 1.5,
-      },
-      {
-        productoId: productosCreados[0]?.id || 1,
-        manoDeObraId: manoDeObraCreada[0]?.id || 1,
-        cantidadHoras: 4.0,
-      },
-      {
-        productoId: productosCreados[0]?.id || 1,
-        manoDeObraId: manoDeObraCreada[3]?.id || 4,
-        cantidadHoras: 1.0,
-      },
-      {
-        productoId: productosCreados[1]?.id || 2,
-        manoDeObraId: manoDeObraCreada[1]?.id || 2,
-        cantidadHoras: 1.5,
-      },
-      {
-        productoId: productosCreados[1]?.id || 2,
-        manoDeObraId: manoDeObraCreada[2]?.id || 3,
-        cantidadHoras: 1.0,
-      },
-      {
-        productoId: productosCreados[1]?.id || 2,
-        manoDeObraId: manoDeObraCreada[0]?.id || 1,
-        cantidadHoras: 2.5,
-      },
-      {
-        productoId: productosCreados[1]?.id || 2,
-        manoDeObraId: manoDeObraCreada[3]?.id || 4,
-        cantidadHoras: 0.5,
-      },
-      {
-        productoId: productosCreados[3]?.id || 4,
-        manoDeObraId: manoDeObraCreada[1]?.id || 2,
-        cantidadHoras: 3.0,
-      },
-      {
-        productoId: productosCreados[3]?.id || 4,
-        manoDeObraId: manoDeObraCreada[4]?.id || 5,
-        cantidadHoras: 1.5,
-      },
-      {
-        productoId: productosCreados[4]?.id || 5,
-        manoDeObraId: manoDeObraCreada[1]?.id || 2,
-        cantidadHoras: 2.5,
-      },
-      {
-        productoId: productosCreados[4]?.id || 5,
-        manoDeObraId: manoDeObraCreada[5]?.id || 6,
-        cantidadHoras: 0.5,
-      },
-    ];
-
-    for (const relacion of manoDeObraPorProducto) {
-      const productoExiste = productosCreados.some((p) => p.id === relacion.productoId);
-      const manoDeObraExiste = manoDeObraCreada.some((m) => m.id === relacion.manoDeObraId);
-
-      if (!productoExiste || !manoDeObraExiste) {
-        continue;
-      }
-
-      try {
-        await prisma.manoDeObraPorProducto.create({
-          data: relacion,
-        });
-      } catch (error: any) {
-        if (error.code !== "P2002" && error.code !== "P2003") {
-          throw error;
-        }
-      }
-    }
-  }
-
   const presupuestosAceptados = await prisma.presupuesto.findMany({
     where: { estado: EstadoPresupuesto.ACEPTADO },
     include: { detalles: true },
@@ -1280,9 +1148,15 @@ async function main() {
 }
 
 main()
-  .then(() => prisma.$disconnect())
+  .then(async () => {
+    await prisma.$disconnect();
+    await pool.end();
+    console.log("✅ Seed completed successfully!");
+  })
   .catch(async (e) => {
+    console.error("❌ Seed failed:");
     console.error(e);
     await prisma.$disconnect();
+    await pool.end();
     process.exit(1);
   });
