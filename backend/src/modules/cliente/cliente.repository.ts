@@ -1,5 +1,4 @@
-import type { Prisma } from "@prisma/client";
-
+import type { Prisma } from "../../../generated/prisma/client";
 import prisma from "../../config/prisma";
 
 export const clienteRepository = {
@@ -21,7 +20,7 @@ export const clienteRepository = {
     }),
 
   findByName: (nombre: string) =>
-    prisma.cliente.findUnique({
+    prisma.cliente.findFirst({
       where: { nombre },
     }),
 
