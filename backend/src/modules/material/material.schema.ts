@@ -38,7 +38,6 @@ export const updateMaterialWithIdSchema = z.object({
 
 // Validar parámetros de ruta (ID)
 export const materialIdSchema = z.object({
-  body: z.object({}),
   params: z.object({
     id: z.string().regex(/^\d+$/, "El ID debe ser un número entero").transform(Number),
   }),
