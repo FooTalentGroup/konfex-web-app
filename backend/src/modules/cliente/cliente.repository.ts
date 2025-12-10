@@ -1,5 +1,5 @@
 import prisma from "../../config/prisma";
-import { ClienteCreateInput, ClienteUpdateInput } from "./cliente.types";
+import type { ClienteCreateInput, ClienteUpdateInput } from "./cliente.types";
 
 export const clienteRepository = {
     create: (data: ClienteCreateInput) =>

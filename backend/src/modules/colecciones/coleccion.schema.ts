@@ -25,6 +25,5 @@ export const updateColeccionSchema = z.object({
   body: createColeccionSchema.shape.body.partial(),
 });
 
-
 export type CreateColeccionDto = z.infer<typeof createColeccionSchema>["body"];
 export type UpdateColeccionDto = z.infer<typeof updateColeccionSchema>["body"];

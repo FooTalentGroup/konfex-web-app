@@ -1,5 +1,5 @@
 import prisma from "../../config/prisma";
-import { CreateColeccionDtoDb, UpdateColeccionDtoDb } from "./coleccion.types";
+import type { CreateColeccionDtoDb, UpdateColeccionDtoDb } from "./coleccion.types";
 
 export const coleccionRepository = {
 // Crear colección
