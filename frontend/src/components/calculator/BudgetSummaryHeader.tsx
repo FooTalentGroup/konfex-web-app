@@ -95,20 +95,20 @@ export default function BudgetSummaryHeader({
 
   return (
     <>
-      <div className="relative print:hidden">
-        <div className="absolute inset-0 bg-[#8B709D] rounded-b-[30px] shadow-lg z-0 pointer-events-none" />
+      <div className="relative print:hidden -mx-3 px-3 sm:mx-0 sm:px-0">
+        <div className="absolute inset-0 bg-[#8B709D] rounded-b-[26px] sm:rounded-b-none shadow-lg z-0 pointer-events-none" />
 
-        <div className="relative z-20 text-white pt-2 pb-12">
+        <div className="relative z-20 text-white pt-3 pb-10 sm:pb-12">
           <div className="px-6 mb-6">
             <NavigationTabs />
           </div>
 
           <div className="text-center px-6 relative">
-            <p className="text-white/80 text-xs font-medium mb-1 uppercase tracking-wider">
+            <p className="text-white text-sm font-normal leading-[1.31] mb-1">
               Total presupuesto
             </p>
 
-            <h2 className="text-4xl font-bold tracking-tight mb-6">
+            <h2 className="text-white text-[32px] font-bold leading-[1.31] tracking-tight mb-6">
               ${" "}
               {grandTotal.toLocaleString("es-AR", {
                 minimumFractionDigits: 0,
@@ -116,63 +116,21 @@ export default function BudgetSummaryHeader({
               })}
             </h2>
 
-            <div className="absolute right-0 top-8">
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className={`p-2 rounded-full transition-all duration-200 relative z-50 ${
-                  isMenuOpen
-                    ? "bg-white/20 text-white"
-                    : "hover:bg-white/10 text-white"
-                }`}
-              >
-                {isMenuOpen ? <X size={24} /> : <MoreVertical size={24} />}
-              </button>
-
-              {isMenuOpen && (
-                <>
-                  <div
-                    className="fixed inset-0 z-40"
-                    onClick={() => setIsMenuOpen(false)}
-                  />
-                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl ring-1 ring-black/5 p-2 z-50 text-left animate-in fade-in zoom-in-95 duration-200 origin-top-right">
-                    <button
-                      onClick={handleDownloadPDF}
-                      className="flex items-center gap-3 w-full p-3 hover:bg-[#F4E7FD] rounded-lg text-sm text-gray-700 transition-colors font-medium mt-1 group"
-                    >
-                      <div className="p-2 bg-[#F3F0F5] text-[#8B709D] rounded-lg group-hover:bg-white group-hover:shadow-sm transition-all">
-                        <FileDown size={18} />
-                      </div>
-                      <span>Descargar PDF</span>
-                    </button>
-                    <button
-                      onClick={handleSendToTelegram}
-                      className="flex items-center gap-3 w-full p-3 hover:bg-[#F4E7FD] rounded-lg text-sm text-gray-700 transition-colors font-medium mt-1 group"
-                    >
-                      <div className="p-2 bg-[#F3F0F5] text-[#0088cc] rounded-lg group-hover:bg-white group-hover:shadow-sm transition-all">
-                        <Send size={18} className="ml-0.5" />
-                      </div>
-                      <span>Enviar a Telegram</span>
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-
-            <div className="flex justify-center gap-8 text-sm border-t border-white/20 pt-4 mx-4">
-              <div>
-                <p className="text-white/70 text-xs mb-1 uppercase">
-                  Gastos del Negocio
+            <div className="relative mx-auto w-full max-w-[260px] flex justify-between text-sm pt-4">
+              <div className="absolute left-1/2 top-2 h-10 w-px bg-white/25 -translate-x-1/2" />
+              <div className="text-left w-[120px] -translate-x-1">
+                <p className="text-white text-[12px] font-normal leading-[1.31] mb-1 tracking-wide -translate-x-[8px]">
+                  Gastos del negocio
                 </p>
-                <p className="font-bold text-lg">
+                <p className="text-white font-bold text-[18px] translate-x-[10px]">
                   $ {indirectCosts.toLocaleString("es-AR")}
                 </p>
               </div>
-              <div className="h-10 w-px bg-white/20"></div>
-              <div>
-                <p className="text-white/70 text-xs mb-1 uppercase">
+              <div className="text-left w-[120px] translate-x-10">
+                <p className="text-white text-[12px] font-normal leading-[1.31] mb-1 tracking-wide">
                   Ganancias
                 </p>
-                <p className="font-bold text-lg">
+                <p className="text-white font-bold text-[18px]">
                   $ {profit.toLocaleString("es-AR")}
                 </p>
               </div>

@@ -25,10 +25,10 @@ export default function CalculatorPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
+    <div className="min-h-screen flex flex-col bg-[#FEFCFF]">
       <Header onMenuClick={openSidebar} />
       <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
-      <main className="flex-1 p-4 sm:p-6">
+      <main className="flex-1 pt-0 pb-6 px-0 sm:pt-0 sm:px-6">
         <CalculatorTemplate />
       </main>
       <Footer />
