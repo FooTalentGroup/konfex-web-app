@@ -1,5 +1,5 @@
 import React from "react";
-import { CircleDollarSign } from "lucide-react";
+import Image from "next/image";
 
 interface BudgetTotalBadgeProps {
   amount: number;
@@ -14,15 +14,17 @@ export default function BudgetTotalBadge({
 }: BudgetTotalBadgeProps) {
   return (
     <div
-      className={`flex items-center gap-2 bg-[#F4E7FD] px-3 py-1.5 rounded-lg border border-[#F4E7FD] ${className}`}
+      className={`flex items-center gap-2 bg-[#F4E7FD] px-3 py-1.5 rounded-lg border border-[#F4E7FD] text-[#8B709D] ${className}`}
     >
-      <CircleDollarSign
-        size={iconSize}
-        className="text-[#8B709D]"
-        strokeWidth={2.5}
+      <Image
+        src="/presupuestoPrecio.png"
+        alt="Precio"
+        width={iconSize}
+        height={iconSize}
+        className="object-contain"
       />
-      <span className="font-bold text-[#8B709D] text-lg font-lato">
-        $ {amount.toLocaleString("es-AR")}
+      <span className="font-bold text-lg font-lato text-current">
+        {amount.toLocaleString("es-AR")}
       </span>
     </div>
   );
