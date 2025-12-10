@@ -3,12 +3,12 @@ import { createServer } from "http";
 
 import { app } from "./app";
 
-const PORT = process.env.PORT || 3001;
+const port = process.env.PORT || 3001;
 
 const server = createServer(app);
 
 initSocket(server);
 
-server.listen(PORT, () => {
-  console.log(`Documentación de la API: http://localhost:${PORT}/api/v1/docs`);
+server.listen(port, "0.0.0.0", () => {
+  console.log(`Documentación de la API: http://0.0.0.0:${port}/api/v1/docs`);
 });
