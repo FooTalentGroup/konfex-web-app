@@ -8,9 +8,9 @@ const getApiBaseUrl = (): string => {
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
     
-    // Si estamos en localhost, usar localhost:3000/api/v1 (puerto del backend)
+    // Si estamos en localhost, usar localhost:3001/api/v1 (puerto del backend)
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      return 'http://localhost:3000/api/v1';
+      return 'http://localhost:3001/api/v1';
     }
     
     // Si estamos en producción, usar el backend de Render
