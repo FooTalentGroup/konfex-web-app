@@ -1,10 +1,11 @@
-import { Request } from "express";
+import type { Request } from "express";
+
 import { controllerHandler } from "../../common/handlers";
-import { gastosNegocioService } from "./gastos-negocio.service";
-import {
+import type {
   CreateGastosNegocioDto,
   UpdateGastosNegocioDto,
 } from "./gastos-negocio.schema";
+import { gastosNegocioService } from "./gastos-negocio.service";
 
 export const createGastosNegocioController = controllerHandler(
   async (req: Request) => {

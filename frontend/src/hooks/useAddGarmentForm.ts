@@ -17,7 +17,8 @@ export interface AddGarmentFormState {
 const tabs = ['Detalle prenda', 'Materia prima', 'Producción'] as const;
 
 const generateId = () => {
-    return Math.floor(1000 + Math.random() * 9000).toString();
+    const code = Math.floor(1000 + Math.random() * 9000).toString();
+    return Number(code);
 };
 
 export const useAddGarmentForm = (collectionId?: number) => {
@@ -89,8 +90,6 @@ export const useAddGarmentForm = (collectionId?: number) => {
         setSubmitError(null);
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-
             const payload: CreateGarmentPayload = {
                 codigo: data.id || generateId(),
                 nombre: data.commercialName,
@@ -99,18 +98,17 @@ export const useAddGarmentForm = (collectionId?: number) => {
                 imagen: data.image,
                 tallas: data.sizes.split(',').map((size) => size.trim()),
                 colores: data.colors.split(',').map((color) => color.trim()),
+                precio: data.price,
 
                 coleccionId: collectionId || 0,
 
                 materiales: data.rawMaterials?.map((m) => ({
-                    materialId: parseInt(m.id),
-                    cantidad: m.consumption
+                    materialId: parseInt(String(m.id), 10),
+                    cantidad: Number(m.consumption),
                 })) || [],
 
-                manoDeObra: data.laborHours && data.laborHours > 0 ? [{
-                    accionId: 1,              
-                    horas: data.laborHours    
-                }] : [],
+                tarifaCosto: data.laborRate || 0,
+                tarifaHoras: data.laborHours || 0,
 
                 mermaCantidad: data.wasteMaterial || 0,
                 mermaUnidad: data.wasteUnit || 'm',
@@ -118,8 +116,6 @@ export const useAddGarmentForm = (collectionId?: number) => {
             };
 
             await garmentService.create(payload);
-
-            console.log('✅ Producto creado exitosamente');
 
             toast.showSuccess('✅ Producto creado exitosamente!');
             setActiveTab(0);
