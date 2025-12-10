@@ -1,8 +1,9 @@
 [phases.setup]
-nixPkgs = ["nodejs"]
+nixPkgs = ["nodejs-23_x"]
+nixpkgsArchive = "nixpkgs-unstable"
 
 [phases.install]
-cmds = ["npm i && npm ci --omit=dev"]
+cmds = ["npm ci --omit=dev"]
 
 [phases.build]
 cmds = ["npx tsc && npx tsc-alias"]
