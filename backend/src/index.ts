@@ -3,7 +3,7 @@ import { createServer } from "http";
 
 import { app } from "./app";
 
-const port = process.env.PORT || 3001;
+const port = Number(process.env.PORT) || 3001;
 
 const server = createServer(app);
 
