@@ -1,6 +1,7 @@
 import { useFormContext, Controller } from "react-hook-form";
 import { Hand, Send } from "lucide-react";
 import DatePicker from "@/components/common/DatePicker";
+import { useBudgetMetadata } from "@/hooks/useBudgetMetadata";
 
 interface BudgetDetailsProps {
   source?: "telegram" | "manual";
@@ -14,11 +15,12 @@ export default function BudgetDetails({
     control,
     formState: { errors },
   } = useFormContext();
+  const { id: budgetId } = useBudgetMetadata();
 
   return (
     <div className="space-y-4 p-5 bg-[#F3F0F5] rounded-b-2xl min-h-[400px]">
       <div className="flex justify-between items-center mb-4 text-sm text-gray-600">
-        <span className="font-bold text-gray-800">ID: XXXX</span>
+        <span className="font-bold text-gray-800">ID: {budgetId}</span>
         <div className="flex items-center gap-2">
           {source === "telegram" ? (
             <button className="flex items-center gap-1 bg-[#C9ECFF] px-2 py-1 rounded text-xs font-medium hover:bg-[#BBDEFB] transition-colors">
@@ -31,7 +33,14 @@ export default function BudgetDetails({
               <span>Manual</span>
             </button>
           )}
-          <span>Fecha: DD/MM/YYYY</span>
+          <span>
+            Fecha:{" "}
+            {new Date().toLocaleDateString("es-AR", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })}
+          </span>
         </div>
       </div>
 
