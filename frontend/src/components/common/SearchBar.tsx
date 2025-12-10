@@ -27,8 +27,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <div className={`relative ${className}`}>
-      <div className="w-full flex items-center rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 min-h-[40px] sm:min-h-[44px] md:min-h-[48px] gap-1.5 sm:gap-2 bg-[#B5A4C1] border border-[#B5A4C1]">
+    <div className={`relative w-full ${className}`}>
+      <div className="w-full flex items-center rounded-2xl px-4 py-3 min-h-[48px] gap-2 bg-[#9E8DAA] border border-[#F3F0F5]/40">
         <svg
           width="20"
           height="20"
@@ -50,7 +50,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           value={value}
           onChange={handleChange}
           placeholder={placeholder}
-          className="flex-1 bg-transparent outline-none text-xs sm:text-sm md:text-base font-normal leading-[131%] tracking-[0%] text-[#CEC2D6] placeholder:text-white placeholder:opacity-100 font-[var(--font-lato),sans-serif]"
+          className="flex-1 bg-[#9E8DAA] outline-none text-[16px] font-lato font-normal text-[#F3F0F5] placeholder:text-[#F3F0F5] placeholder:opacity-100"
         />
         <button
           onClick={handleClear}
