@@ -8,7 +8,6 @@ import TabNavigation from '../ui/TabNavigation';
 import GarmentInfoCard from '../ui/GarmentInfoCard';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { useToast } from '@/contexts/ToastContext';
-import { useMemo } from 'react';
 
 interface GarmentFormProps {
     collectionId?: number; 
