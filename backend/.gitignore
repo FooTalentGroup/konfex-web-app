@@ -28,9 +28,6 @@ pnpm-debug.log*
 coverage/
 .nyc_output/
 
-# Prisma
-prisma/migrations/
-
 # Misc
 .history/
 .cache/

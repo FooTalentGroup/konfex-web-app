@@ -15,7 +15,9 @@ type TelegramGetFileResponse = {
 };
 
 export const handleIncomingUpdate = async (update: any) => {
-  if (!update.message) {return;}
+  if (!update.message) {
+    return;
+  }
 
   const { message } = update;
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
@@ -73,7 +75,9 @@ export const handleIncomingUpdate = async (update: any) => {
         `https://api.telegram.org/bot${botToken}/getFile?file_id=${payload.fileId}`
       ).then((res) => res.json())) as TelegramGetFileResponse;
 
-      if (!fileInfo.ok) {throw new Error("No se pudo obtener el archivo de Telegram");}
+      if (!fileInfo.ok) {
+        throw new Error("No se pudo obtener el archivo de Telegram");
+      }
 
       const telegramFileUrl = `https://api.telegram.org/file/bot${botToken}/${fileInfo.result.file_path}`;
 
@@ -111,11 +115,10 @@ export const handleIncomingUpdate = async (update: any) => {
     await telegramMessageRepository.save(payload);
     io.emit("telegram_message", payload);
 
-    return
-
+    return;
   } catch (err) {
     console.error("Error procesando mensaje de Telegram:", err);
-    return
+    return;
   }
 };
 
@@ -237,14 +240,22 @@ export const getChatsList = async (userId?: number) => {
   const allMessages = await telegramMessageRepository.findAll();
 
   const getLastMessageText = (msg: (typeof allMessages)[number]): string => {
-    if (msg.text) {return msg.text;}
+    if (msg.text) {
+      return msg.text;
+    }
     switch (msg.type) {
-      case "photo": return "Foto";
-      case "video": return "Video";
-      case "audio": return "Audio";
-      case "document": return "Documento";
-      case "voice": return "Nota de voz";
-      default: return "Mensaje sin contenido";
+      case "photo":
+        return "Foto";
+      case "video":
+        return "Video";
+      case "audio":
+        return "Audio";
+      case "document":
+        return "Documento";
+      case "voice":
+        return "Nota de voz";
+      default:
+        return "Mensaje sin contenido";
     }
   };
 
@@ -293,7 +304,7 @@ export const getChatsList = async (userId?: number) => {
       );
 
       const firstName = telegramMessage?.firstName || chat.firstName;
-      const lastName  = telegramMessage?.lastName  || chat.lastName;
+      const lastName = telegramMessage?.lastName || chat.lastName;
 
       const name =
         firstName && lastName
