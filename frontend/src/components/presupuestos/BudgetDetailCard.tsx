@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Image from 'next/image';
-import { ChevronUp } from 'lucide-react';
+import React from "react";
+import Image from "next/image";
+import { ChevronUp } from "lucide-react";
+import { formatDateLocalized } from "@/utils/dateUtils";
 
 export interface BudgetDetailData {
   id: string;
@@ -21,29 +22,22 @@ interface BudgetDetailCardProps {
   onTelegramClick?: () => void;
 }
 
-const BudgetDetailCard: React.FC<BudgetDetailCardProps> = ({ data, onTelegramClick }) => {
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('es-AR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    }).format(date);
-  };
-
+const BudgetDetailCard: React.FC<BudgetDetailCardProps> = ({
+  data,
+  onTelegramClick,
+}) => {
   const getEstadoColor = (estado: string) => {
     switch (estado.toUpperCase()) {
-      case 'ENVIADO':
-        return 'bg-[#683BFD]';
-      case 'VENCIDO':
-        return 'bg-[#C40841]';
-      case 'ACEPTADO':
-        return 'bg-green-500';
-      case 'RECHAZADO':
-        return 'bg-red-500';
+      case "ENVIADO":
+        return "bg-[#683BFD]";
+      case "VENCIDO":
+        return "bg-[#C40841]";
+      case "ACEPTADO":
+        return "bg-green-500";
+      case "RECHAZADO":
+        return "bg-red-500";
       default:
-        return 'bg-gray-500';
+        return "bg-gray-500";
     }
   };
 
@@ -57,7 +51,11 @@ const BudgetDetailCard: React.FC<BudgetDetailCardProps> = ({ data, onTelegramCli
                 <span className="font-[var(--font-lato),sans-serif] font-bold text-sm sm:text-base md:text-lg text-[#000000] leading-[131%] tracking-[0%]">
                   ID: {data.id}
                 </span>
-                <span className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-[var(--font-lato),sans-serif] font-normal text-[#FEFCFF] leading-[131%] tracking-[0%] ${getEstadoColor(data.estado)}`}>
+                <span
+                  className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-[11px] font-[var(--font-lato),sans-serif] font-normal text-[#FEFCFF] leading-[131%] tracking-[0%] ${getEstadoColor(
+                    data.estado
+                  )}`}
+                >
                   {data.estado}
                 </span>
               </div>
@@ -65,13 +63,12 @@ const BudgetDetailCard: React.FC<BudgetDetailCardProps> = ({ data, onTelegramCli
             <div className="ml-2 shrink-0 flex flex-col items-end">
               <ChevronUp className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 mb-1" />
               <span className="font-[var(--font-lato),sans-serif] font-normal text-xs sm:text-sm text-[#000000] leading-[131%] tracking-[0%] whitespace-nowrap">
-                Fecha: {formatDate(data.fechaCreacion)}
+                Fecha: {formatDateLocalized(data.fechaCreacion)}
               </span>
             </div>
           </div>
           <div className="h-px bg-gray-300 w-full mt-2 mb-4 sm:mb-5"></div>
           <div className="flex-1 min-w-0">
-
             <div className="flex flex-row items-start justify-between gap-2 mb-2 sm:mb-3">
               <div className="flex-1 min-w-0">
                 <p className="font-[var(--font-lato),sans-serif] font-normal text-xs text-[#1A151E] leading-[131%] tracking-[0%] mb-1">
@@ -91,7 +88,7 @@ const BudgetDetailCard: React.FC<BudgetDetailCardProps> = ({ data, onTelegramCli
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
+                    if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
                       e.stopPropagation();
                       onTelegramClick();
@@ -145,7 +142,7 @@ const BudgetDetailCard: React.FC<BudgetDetailCardProps> = ({ data, onTelegramCli
                 </p>
                 <div className="flex items-center gap-2">
                   <span className="font-[var(--font-lato),sans-serif] font-bold text-xs sm:text-sm text-[#0D0A0F] leading-[131%] tracking-[0%]">
-                    {formatDate(data.fechaFinalizacion)}
+                    {formatDateLocalized(data.fechaFinalizacion)}
                   </span>
                   <Image
                     src="/calendarioPresupuesto.png"
@@ -168,4 +165,3 @@ const BudgetDetailCard: React.FC<BudgetDetailCardProps> = ({ data, onTelegramCli
 };
 
 export default BudgetDetailCard;
-

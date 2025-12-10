@@ -8,6 +8,7 @@ export interface Producto {
   activo: boolean;
   tallas: string[];
   colores: string[];
+  precio?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -25,42 +26,41 @@ export function useProductos() {
   const [error, setError] = useState<string | null>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const searchProductos = useCallback(async (query: string): Promise<Producto[]> => {
-    // Limpiar timeout anterior
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
+  const searchProductos = useCallback(
+    async (query: string): Promise<Producto[]> => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
 
-    // Si el query está vacío, retornar array vacío
-    if (!query || query.trim().length < 2) {
-      return [];
-    }
+      if (!query || query.trim().length < 2) {
+        return [];
+      }
 
-    return new Promise((resolve) => {
-      // Debounce: esperar 300ms antes de hacer la búsqueda
-      searchTimeoutRef.current = setTimeout(async () => {
-        try {
-          setLoading(true);
-          setError(null);
-          
-          const searchQuery = encodeURIComponent(query.trim());
-          const response = await apiClient<ApiResponse>(
-            `/productos/search?search=${searchQuery}&limit=10`
-          );
-          
-          resolve(response.data || []);
-        } catch (err) {
-          console.error("Error searching productos", err);
-          setError("Error al buscar productos");
-          resolve([]);
-        } finally {
-          setLoading(false);
-        }
-      }, 300);
-    });
-  }, []);
+      return new Promise((resolve) => {
+        searchTimeoutRef.current = setTimeout(async () => {
+          try {
+            setLoading(true);
+            setError(null);
 
-  // Limpiar timeout al desmontar
+            const searchQuery = encodeURIComponent(query.trim());
+            const response = await apiClient<ApiResponse>(
+              `/productos/search?search=${searchQuery}&limit=10`
+            );
+
+            resolve(response.data || []);
+          } catch (err) {
+            console.error("Error searching productos", err);
+            setError("Error al buscar productos");
+            resolve([]);
+          } finally {
+            setLoading(false);
+          }
+        }, 300);
+      });
+    },
+    []
+  );
+
   useEffect(() => {
     return () => {
       if (searchTimeoutRef.current) {
@@ -76,4 +76,3 @@ export function useProductos() {
     searchProductos,
   };
 }
-

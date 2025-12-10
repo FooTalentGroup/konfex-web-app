@@ -1,20 +1,22 @@
-import { useState, useMemo, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Budget, PresupuestoResponseDto } from '@/types/presupuesto.types';
-import { presupuestoService } from '@/services/presupuesto.service';
+import { useState, useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Budget, PresupuestoResponseDto } from "@/types/presupuesto.types";
+import { presupuestoService } from "@/services/presupuesto.service";
 
 const formatNumeroPresupuesto = (numero: number): string => {
   const year = new Date().getFullYear();
-  const numeroFormateado = numero.toString().padStart(4, '0');
+  const numeroFormateado = numero.toString().padStart(4, "0");
   return `P-${year}-${numeroFormateado}`;
 };
 
-const mapPresupuestoToBudget = (presupuesto: PresupuestoResponseDto): Budget => {
+const mapPresupuestoToBudget = (
+  presupuesto: PresupuestoResponseDto
+): Budget => {
   return {
     id: presupuesto.id,
     numeroPresupuesto: formatNumeroPresupuesto(presupuesto.numeroPresupuesto),
-    clienteNombre: presupuesto.cliente?.nombre || 'Sin cliente',
-    totalVenta: presupuesto.totalVenta,
+    clienteNombre: presupuesto.cliente?.nombre || "Sin cliente",
+    totalFinal: presupuesto.totalFinal,
     fechaVencimiento: presupuesto.fechaVencimiento,
     estado: presupuesto.estado,
   };
@@ -23,7 +25,7 @@ const mapPresupuestoToBudget = (presupuesto: PresupuestoResponseDto): Budget => 
 export const useBudgets = () => {
   const router = useRouter();
   const [budgets, setBudgets] = useState<Budget[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,11 +39,10 @@ export const useBudgets = () => {
         const budgetsMapeados = presupuestos.map(mapPresupuestoToBudget);
         setBudgets(budgetsMapeados);
       } catch (err) {
-        const errorMessage = err instanceof Error 
-          ? err.message 
-          : 'Error al cargar presupuestos';
+        const errorMessage =
+          err instanceof Error ? err.message : "Error al cargar presupuestos";
         setError(errorMessage);
-        console.error('Error al cargar presupuestos:', err);
+        console.error("Error al cargar presupuestos:", err);
       } finally {
         setIsLoading(false);
       }
@@ -82,4 +83,3 @@ export const useBudgets = () => {
     error,
   };
 };
-

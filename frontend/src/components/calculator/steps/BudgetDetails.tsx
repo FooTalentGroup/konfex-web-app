@@ -3,6 +3,7 @@ import { Send } from "lucide-react";
 import Image from "next/image";
 import DatePicker from "@/components/common/DatePicker";
 import { useBudgetMetadata } from "@/hooks/useBudgetMetadata";
+import { getCurrentDateFormatted } from "@/utils/dateUtils";
 
 interface BudgetDetailsProps {
   source?: "telegram" | "manual";
@@ -17,14 +18,16 @@ export default function BudgetDetails({
     formState: { errors },
   } = useFormContext();
   const formId =
-    (useWatch({control, name: "id" as never}) as unknown as string) || "000025";
+    (useWatch({ control, name: "id" as never }) as unknown as string) ||
+    "000025";
+
   const deliveryDateValue =
-    (useWatch({ control, name: "deliveryDate" }) as string) || "00/00/0000";
+    (useWatch({ control, name: "deliveryDate" }) as string) ||
+    getCurrentDateFormatted();
   const { id: budgetId } = useBudgetMetadata();
 
   return (
     <div className="space-y-5 p-5 sm:p-6 bg-[#F4E7FD] rounded-b-[22px] min-h-[480px] text-[#51405F]">
-      {/* Header con ID, Manual/Telegram y Fecha */}
       <div className="flex items-center mb-3 text-xs text-[#5A4A66]">
         <span className="text-[16px] font-bold leading-[1.31] text-black mr-auto">
           ID: {budgetId}
@@ -55,7 +58,6 @@ export default function BudgetDetails({
 
       <div className="h-px bg-[#CEC2D6]"></div>
 
-      {/* Instrucciones */}
       <p className="text-[13px] font-normal leading-[1.31] text-[#4F3E5B]">
         Completa los datos principales del presupuesto.
       </p>
@@ -149,7 +151,6 @@ export default function BudgetDetails({
         )}
       </div>
 
-      {/* Teléfono y Fecha entrega */}
       <div className="grid grid-cols-2 gap-5">
         <div>
           <label className="block text-[14px] font-bold leading-[1.31] text-[#1A151E] mb-1.5">
@@ -168,7 +169,7 @@ export default function BudgetDetails({
               },
             })}
             type="tel"
-            placeholder="X-XXXX-XXXX"
+            placeholder="+54 0 11 XXXXX XXXX"
             maxLength={16}
             className={`w-full bg-[#F9F6FF] border border-[#DCCBEB] rounded-lg h-10 px-3 text-sm text-[#B5A4C1] outline-none focus:border-[#9C7AB8] focus:ring-1 focus:ring-[#9C7AB8] placeholder:text-[#B7A6C6] ${
               errors.clientPhone
@@ -193,9 +194,9 @@ export default function BudgetDetails({
             render={({ field, fieldState }) => (
               <div>
                 <DatePicker
-                  value={field.value || ""}
+                  value={field.value || getCurrentDateFormatted()}
                   onChange={field.onChange}
-                  placeholder="00/00/0000"
+                  placeholder={getCurrentDateFormatted()}
                   error={!!fieldState.error}
                   minDate={new Date()}
                   className="!w-full !h-10 !px-3 !bg-[#F9F6FF] !border !border-[#DCCBEB] !rounded-lg !text-sm !leading-[1.31] !text-[#B5A4C1] !placeholder:text-[#B7A6C6] !outline-none !focus:border-[#9C7AB8] !focus:ring-1 !focus:ring-[#9C7AB8]"
@@ -211,7 +212,6 @@ export default function BudgetDetails({
         </div>
       </div>
 
-      {/* Nota sobre fecha de entrega */}
       <p className="text-[12px] font-normal leading-[1.31] text-[#8B709D] mt-1">
         *La fecha de entrega se confirmará una vez aprobado el presupuesto.
       </p>
@@ -243,7 +243,7 @@ export default function BudgetDetails({
             className={`w-full bg-[#F9F6FF] border rounded-lg h-10 px-3 pr-10 text-sm text-[#B5A4C1] outline-none focus:ring-1 placeholder:text-[#B7A6C6] ${
               errors.desiredProfit
                 ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                  : "border-[#DCCBEB] focus:border-[#9C7AB8] focus:ring-[#9C7AB8]"
+                : "border-[#DCCBEB] focus:border-[#9C7AB8] focus:ring-[#9C7AB8]"
             }`}
           />
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#7A6B8A] text-sm font-semibold pointer-events-none">
