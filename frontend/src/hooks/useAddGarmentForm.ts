@@ -17,7 +17,8 @@ export interface AddGarmentFormState {
 const tabs = ['Detalle prenda', 'Materia prima', 'Producción'] as const;
 
 const generateId = () => {
-    return Math.floor(1000 + Math.random() * 9000).toString();
+    const code = Math.floor(1000 + Math.random() * 9000).toString();
+    return Number(code);
 };
 
 export const useAddGarmentForm = (collectionId?: number) => {
@@ -114,7 +115,6 @@ export const useAddGarmentForm = (collectionId?: number) => {
                 mermaPrecio: data.wastePrice || 0,
             };
 
-            
             await garmentService.create(payload);
 
             toast.showSuccess('✅ Producto creado exitosamente!');

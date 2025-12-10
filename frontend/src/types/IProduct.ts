@@ -14,6 +14,8 @@ export const productAPISchema = z.object({
     mermaUnidad: z.string(),
     mermaPrecio: z.number(),
     coleccionId: z.number(),
+    tarifaCosto: z.number(),
+    tarifaHoras: z.number(),
     createdAt: z.string().datetime(),
     updatedAt: z.string().datetime(),
 })
@@ -28,21 +30,27 @@ export interface ProductsAPIResponse {
 }
 
 export interface Product {
-    id: number
-    codigo: number
-    nombre: string
-    descripcion: string
-    activo: boolean
-    imagen: string
-    tallas: string[]
-    colores: string[]
-    precio: number
-    mermaCantidad: number
-    mermaUnidad: string
-    mermaPrecio: number
-    coleccionId: number
-    createdAt?: string
-    updatedAt?: string
+    id:                  number;
+    codigo:              number;
+    nombre:              string;
+    descripcion:         string;
+    activo:              boolean;
+    imagen:              string;
+    tallas:              string[];
+    colores:             string[];
+    mermaCantidad:       number;
+    mermaUnidad:         string;
+    mermaPrecio:         number;
+    tarifaCosto:         number;
+    tarifaHoras:         number;
+    precio:              number;
+    coleccionId:         number;
+    createdAt:           Date;
+    updatedAt:           Date;
+    coleccion:           Coleccion;
+    materiales:          Materiales[];
+    pedidos:             Pedido[];
+    presupuestoDetalles: PresupuestoDetalle[];
 }
 
 export interface CreateProductRequest {
@@ -57,6 +65,12 @@ export interface CreateProductRequest {
     mermaUnidad: string
     mermaPrecio: number
     coleccionId: number
+    tarifaCosto?: number
+    tarifaHoras?: number
+    materiales?: {
+        materialId: number
+        cantidad: number
+    }[]
 }
 
 export interface UpdateProductRequest {
@@ -71,4 +85,66 @@ export interface UpdateProductRequest {
     mermaUnidad?: string
     mermaPrecio?: number
     coleccionId?: number
+    tarifaCosto?: number
+    tarifaHoras?: number
+    materiales?: {
+        materialId: number
+        cantidad: number
+    }[]
+
+}
+
+export interface Coleccion {
+    id:        number;
+    codigo:    number;
+    nombre:    string;
+    imagen:    null | string;
+    icono:     null | string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface Materiales {
+    id:         number;
+    productoId: number;
+    materialId: number;
+    cantidad:   number;
+    material:   Material;
+}
+
+export interface Material {
+    id:           number;
+    nombre:       string;
+    url_imagen:   null;
+    categoriaId:  number;
+    unidadMedida: string;
+    ancho:        number | null;
+    peso:         number | null;
+    colores:      string[];
+    proveedor:    string;
+    precio:       number;
+    createdAt:    Date;
+    updatedAt:    Date;
+}
+
+
+export interface Pedido {
+    id:             number;
+    pedidoId:       number;
+    productoId:     number;
+    cantidad:       number;
+    talle:          string;
+    color:          string;
+    costoUnitario:  number;
+    precioUnitario: number;
+    subtotal:       number;
+}
+
+export interface PresupuestoDetalle {
+    id:            number;
+    presupuestoId: number;
+    productoId:    number;
+    descripcion:   string;
+    cantidad:      number;
+    costoUnitario: number;
 }

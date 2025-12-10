@@ -8,7 +8,7 @@ export const GarmentSchema = z.object({
         .string({ error: 'La imagen es requerida' })
         .min(1, 'La imagen es requerida'),
 
-    id: z.string().optional(),
+    id: z.number().optional(),
     season: z.string().optional(),
     price: z.number().min(0, 'El precio debe ser mayor o igual a 0'),
 
@@ -60,7 +60,7 @@ export const GarmentSchema = z.object({
 export type GarmentFormData = z.infer<typeof GarmentSchema>;
 
 export interface CreateGarmentPayload {
-    codigo: string;
+    codigo: number;
     nombre: string;
     descripcion?: string;
     activo: boolean;
