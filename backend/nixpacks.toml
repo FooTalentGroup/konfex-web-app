@@ -2,10 +2,10 @@
 nixPkgs = ["nodejs"]
 
 [phases.install]
-cmds = ["npm ci --omit=dev"]
+cmds = ["npm i && npm ci --omit=dev"]
 
 [phases.build]
-cmds = ["npm i && npx tsc && npx tsc-alias"]
+cmds = ["npx tsc && npx tsc-alias"]
 
 [start]
 cmd = "npx prisma generate && npx prisma migrate deploy && node dist/src/index.js"
