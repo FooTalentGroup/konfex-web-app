@@ -16,7 +16,12 @@ if (!databaseUrl) {
   throw new Error("Missing required environment variable: DATABASE_URL");
 }
 
-const pool = new Pool({ connectionString: databaseUrl });
+const pool = new Pool({
+  connectionString: databaseUrl,
+  max: 20, // Máximo de conexiones en el pool
+  idleTimeoutMillis: 30000, // Tiempo antes de cerrar conexiones inactivas
+  connectionTimeoutMillis: 10000, // Tiempo de espera para obtener una conexión
+});
 const adapter = new PrismaPg(pool);
 
 const prisma = new PrismaClient({
@@ -1143,9 +1148,13 @@ async function main() {
 }
 
 main()
-  .then(() => prisma.$disconnect())
+  .then(async () => {
+    await prisma.$disconnect();
+    await pool.end();
+  })
   .catch(async (e) => {
     console.error(e);
     await prisma.$disconnect();
+    await pool.end();
     process.exit(1);
   });
