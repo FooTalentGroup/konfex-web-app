@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface AddCategoryModalProps {
     isOpen: boolean;
@@ -18,6 +19,8 @@ export default function AddCategoryModal({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
 
+    const router = useRouter();
+
     if (!isOpen) return null;
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -28,8 +31,9 @@ export default function AddCategoryModal({
             return;
         }
 
-        setIsSubmitting(true);
+        setIsSubmitting(false);
         setError('');
+        router.refresh();
 
         const result = await onConfirm(nombre.trim());
 

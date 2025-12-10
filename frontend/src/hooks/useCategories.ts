@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 
 interface Category {
     id: number;
@@ -21,6 +21,7 @@ const generateSlug = (nombre: string): string => {
 
 export function useCategories() {
     const [categories, setCategories] = useState<Category[]>([]);
+    const [searchQuery, setSearchQuery] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -50,6 +51,22 @@ export function useCategories() {
             setIsLoading(false);
         }
     }, []);
+
+    useEffect(() => {
+        fetchCategories();
+    }, [fetchCategories]);
+
+    const filteredCategories = useMemo(() => {
+        if(searchQuery.trim()) {
+            const q = searchQuery.toLowerCase();
+            return categories.filter(c => c.nombre.toLowerCase().includes(q));
+        }
+        return categories;
+    }, [categories, searchQuery]);
+
+    const handleSearch = (value: string) => {
+        setSearchQuery(value);
+    };
 
     const addCategory = useCallback(async (nombre: string) => {
         try {
@@ -112,5 +129,9 @@ export function useCategories() {
         fetchCategories,
         deleteCategory,
         addCategory,
+
+        filteredCategories,
+        searchQuery,
+        handleSearch
     };
 }

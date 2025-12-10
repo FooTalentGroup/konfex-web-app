@@ -7,15 +7,11 @@ import Footer from '@/components/common/Footer';
 import Sidebar from '@/components/common/Sidebar';
 import SearchBar from '@/components/common/SearchBar';
 import CategoryButton from '@/components/common/CategoryButton';
-import UploadButton from '@/components/common/UploadButton';
 import DeleteButton from '@/components/common/DeleteButton';
 import ConfirmDeleteModal from '@/components/common/ConfirmDeleteModal';
 import AddCategoryModal from '@/components/common/AddCategoryModal';
-import UploadPDFModal from '@/components/common/UploadPDFModal';
 import { useAuth } from '@/hooks/useAuth';
 import { useSidebar } from '@/hooks/useSidebar';
-import { useMaterials } from '@/hooks/useMaterials';
-import { usePDFUpload } from '@/hooks/usePDFUpload';
 import { useCategoryDelete } from '@/hooks/useCategoryDelete';
 import { useCategories } from '@/hooks/useCategories';
 import { Plus } from 'lucide-react';
@@ -24,21 +20,6 @@ export default function MateriaPrimaPage() {
   const { user, mounted } = useAuth();
   const { isOpen: isSidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar();
   const router = useRouter();
-  const {
-    searchQuery,
-    handleSearch,
-    handleAddMaterial,
-  } = useMaterials();
-  const {
-    fileInputRef,
-    handleFileSelect,
-    isModalOpen,
-    handleCloseModal,
-    handleRetry,
-    handleUploadPDF,
-    uploadInfo,
-    uploadState
-  } = usePDFUpload();
 
   const {
     isDeleteMode,
@@ -51,6 +32,9 @@ export default function MateriaPrimaPage() {
     error: categoriesError,
     deleteCategory,
     addCategory,
+    filteredCategories,
+    searchQuery,
+    handleSearch
   } = useCategories();
 
   // Estado modal agregar categoría
@@ -102,6 +86,8 @@ export default function MateriaPrimaPage() {
   };
 
   const handleConfirmAdd = async (nombre: string) => {
+    setAddModalOpen(false);
+    router.refresh();
     return await addCategory(nombre);
   };
 
@@ -119,14 +105,6 @@ export default function MateriaPrimaPage() {
       <Header onMenuClick={openSidebar} />
       <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
 
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="application/pdf"
-        onChange={handleFileSelect}
-        className="hidden"
-      />
-
       <div className="flex-1 flex flex-col">
 
         <div className="w-full px-5 sm:px-4 md:px-6 py-3 sm:py-4 bg-[var(--primary-color-500)]">
@@ -138,7 +116,7 @@ export default function MateriaPrimaPage() {
           </p>
           <SearchBar
             placeholder="Buscar material..."
-            value={searchQuery}
+            value={ searchQuery }
             onChange={handleSearch}
             className=" mx-auto"
           />
@@ -166,20 +144,29 @@ export default function MateriaPrimaPage() {
 
               {/* Grid de categorías dinámico */}
               {!isLoadingCategories && !categoriesError && (
-                <div className="grid grid-cols-2 gap-x-3 sm:gap-x-4 md:gap-x-5 gap-y-4 sm:gap-y-5 md:gap-y-6 mb-6 sm:mb-8">
-                  {categories.map((category) => (
-                    <CategoryButton
-                      key={category.id}
-                      label={category.nombre}
-                      iconPath={category.iconPath}
-                      onClick={() => handleCategoryClick(category.slug)}
-                      isDeleteMode={isDeleteMode}
-                      isSelected={false}
-                      onDeleteClick={() => handleDeleteCategory(category.id, category.nombre)}
-                      canDelete={true}
-                    />
-                  ))}
-                </div>
+                <>
+                  {filteredCategories.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-x-3 sm:gap-x-4 md:gap-x-5 gap-y-4 sm:gap-y-5 md:gap-y-6 mb-6 sm:mb-8">
+                      {filteredCategories.map((category) => (
+                        <CategoryButton
+                          key={category.id}
+                          label={category.nombre}
+                          iconPath={category.iconPath}
+                          onClick={() => handleCategoryClick(category.slug)}
+                          isDeleteMode={isDeleteMode}
+                          isSelected={false}
+                          onDeleteClick={() => handleDeleteCategory(category.id, category.nombre)}
+                          canDelete={true}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-12 text-center">
+                      <p className="text-gray-500 text-lg mb-2">No se encontraron materiales</p>
+                      <p className="text-gray-400 text-sm">Intenta con otra búsqueda</p>
+                    </div>
+                  )}
+                </>
               )}
 
             </div>
@@ -208,10 +195,7 @@ export default function MateriaPrimaPage() {
             />
           </div>
 
-          {/* Botón de upload a la derecha */}
-          <div className="sm:w-[calc((100%-1rem)/2)] md:w-[calc((100%-1.25rem)/2)]">
-            <UploadButton onClick={handleUploadPDF} className="w-full" />
-          </div>
+
         </div>
       </div>
 
@@ -233,17 +217,6 @@ export default function MateriaPrimaPage() {
         onCancel={handleCancelDelete}
       />
 
-      {/* Modal de subir PDF */}
-      <UploadPDFModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        state={uploadState === 'idle' ? 'uploading' : uploadState}
-        fileName={uploadInfo.fileName}
-        fileSize={uploadInfo.fileSize}
-        progress={uploadInfo.progress}
-        uploadSpeed={uploadInfo.uploadSpeed}
-        onRetry={handleRetry}
-      />
       <Footer />
     </div>
   );
