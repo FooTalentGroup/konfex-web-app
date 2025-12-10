@@ -1,10 +1,6 @@
 import prisma from "@/config/prisma";
 import { io } from "@/config/socket";
 import { uploadFile } from "@/utils/uploadFile";
-
-import { extractLeadField } from "../ai/extractores/lead";
-import type { LeadForm} from "../ai/types";
-import { LeadStep, questions } from "../ai/types";
 import { telegramMessageRepository } from "./telegram.repository";
 
 const TELEGRAM_API = (token: string) => `https://api.telegram.org/bot${token}`;
