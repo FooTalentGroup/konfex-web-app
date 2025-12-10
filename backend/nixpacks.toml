@@ -9,4 +9,4 @@ cmds = ["npm ci"]
 cmds = ["npx prisma generate", "npx tsc && npx tsc-alias"]
 
 [start]
-cmd = "npx prisma generate && npx prisma migrate deploy && node dist/src/index.js"
+cmd = "npx prisma generate && node dist/src/index.js"
