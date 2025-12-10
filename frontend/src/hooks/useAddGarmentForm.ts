@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { GarmentSchema, GarmentFormData, CreateGarmentPayload } from '@/types/IGarment';
@@ -38,6 +38,7 @@ export const useAddGarmentForm = (collectionId?: number) => {
 
     const toast = useToast();
     const router = useRouter();
+    const formValues = form.watch();
 
     const [activeTab, setActiveTab] = useState(0);
 
@@ -76,6 +77,38 @@ export const useAddGarmentForm = (collectionId?: number) => {
 
         return () => subscription.unsubscribe();
     }, [form]);
+
+    const isFormComplete = useMemo(() => {
+        const {
+            image,
+            commercialName,
+            sizes,
+            colors,
+            rawMaterials,
+            laborHours,
+            laborRate,
+            wasteMaterial,
+            wastePrice,
+            wasteUnit
+        } = formValues;
+
+        const hasRequiredFields = !!(
+            image &&
+            commercialName &&
+            sizes &&
+            colors &&
+            laborHours &&
+            laborRate &&
+            wasteMaterial &&
+            wastePrice &&
+            wasteUnit
+        );
+
+        const hasMaterials = rawMaterials && rawMaterials.length > 0;
+
+        return hasRequiredFields && hasMaterials;
+
+    }, [formValues]);
 
     const nextTab = () => {
         setActiveTab((prev) => (prev < tabs.length - 1 ? prev + 1 : prev));
@@ -137,6 +170,7 @@ export const useAddGarmentForm = (collectionId?: number) => {
         form,
         activeTab,
         tabs: [...tabs],
+        isFormComplete,
         setActiveTab,
         nextTab,
         prevTab,
@@ -146,6 +180,5 @@ export const useAddGarmentForm = (collectionId?: number) => {
         isSubmitting,
         submitError,
         submit: form.handleSubmit(handleSubmit),
-
     };
 };

@@ -16,6 +16,7 @@ interface CustomInputWithSelectProps {
     error?: string
     placeholder?: string
     className?: string
+    style?: React.CSSProperties;
     selectId: string
     selectRegister: UseFormRegisterReturn
     selectOptions: SelectOption[]
@@ -30,6 +31,7 @@ const CustomInputWithSelect: React.FC<CustomInputWithSelectProps> = ({
     type = 'number',
     placeholder = '',
     className = '',
+    style,
     selectId,
     selectRegister,
     selectOptions,
@@ -53,6 +55,7 @@ const CustomInputWithSelect: React.FC<CustomInputWithSelectProps> = ({
                                 : 'border-primary-300 focus:ring-purple-300 focus-visible:border-purple-300'
                             } focus:border-purple-300 focus:ring-1 focus-visible:ring-purple-300 outline-none`}
                         placeholder={placeholder}
+                        style={style}
                     />
                 </div>
 
@@ -65,6 +68,7 @@ const CustomInputWithSelect: React.FC<CustomInputWithSelectProps> = ({
                                 ? 'border-red-500 focus:ring-red-500'
                                 : 'border-primary-300 focus:ring-purple-300 focus-visible:border-purple-300'
                             } focus:border-purple-300 focus:ring-1 focus-visible:ring-purple-300 outline-none bg-bg-gray-500`}
+                        style={style}
                     >
                         {selectOptions.map((option) => (
                             <option key={option.value} value={option.value}>
