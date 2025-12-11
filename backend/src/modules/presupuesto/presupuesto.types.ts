@@ -42,6 +42,7 @@ export interface PresupuestoResponseDto {
     id: number;
     nombre: string;
     email: string | null;
+    telefono: string | null;
   } | null;
   pedido?: {
     id: number;

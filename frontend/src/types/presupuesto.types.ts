@@ -28,6 +28,7 @@ export interface AdicionalResponseDto {
 export interface PresupuestoResponseDto {
   id: number;
   numeroPresupuesto: number;
+  nombre?: string | null;
   clienteId: number | null;
   fechaCreacion: string;
   fechaVencimiento: string | null;
@@ -35,15 +36,18 @@ export interface PresupuestoResponseDto {
   margenGananciaPorcentaje: number;
   gastosIndirectosPorcentaje: number;
   totalCosto: number;
+  costosIndirectos: number;
+  ganancias: number;
+  iva: number;
   totalFinal: number;
   notas: string | null;
-  origen: "telegram" | "manual";
   detalles: PresupuestoDetalleResponseDto[];
   adicionales?: AdicionalResponseDto[];
   cliente?: {
     id: number;
     nombre: string;
     email: string | null;
+    telefono?: string | null;
   } | null;
   pedido?: {
     id: number;

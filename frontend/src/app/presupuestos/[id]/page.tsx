@@ -5,61 +5,20 @@ import { useRouter, useParams } from "next/navigation";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import Sidebar from "@/components/common/Sidebar";
-import BudgetDetailCard, {
-  BudgetDetailData,
-} from "@/components/presupuestos/BudgetDetailCard";
-import BudgetItemsTable, {
-  BudgetItem,
-} from "@/components/presupuestos/BudgetItemsTable";
+import BudgetDetailCard from "@/components/presupuestos/BudgetDetailCard";
+import BudgetItemsTable from "@/components/presupuestos/BudgetItemsTable";
 import { useAuth } from "@/hooks/useAuth";
 import { useSidebar } from "@/hooks/useSidebar";
+import { useBudgetDetail } from "@/hooks/useBudgetDetail";
 import Image from "next/image";
 import BtnActionsCollection from "@/components/ui/BtnActionsCollection";
 import BudgetPDF from "@/components/calculator/BudgetPDF";
 import { pdf } from "@react-pdf/renderer";
-
-const mockBudgetData: BudgetDetailData = {
-  id: "000025",
-  estado: "Enviado",
-  fechaCreacion: "2026-01-02",
-  titulo: "Pingui Go - Camisetas Verano",
-  clienteNombre: "Fútbol Pingui Go",
-  telefono: "+35 261 458 6918",
-  email: "fupingui@gmail.com",
-  fechaFinalizacion: "2025-10-02",
-  validezDias: 7,
-};
-
-const mockItems: BudgetItem[] = [
-  {
-    nombre: 'Camiseta verano "Lirios"',
-    talla: "M",
-    unidades: 2,
-    precioUnitario: 9000,
-    total: 18000,
-  },
-  {
-    nombre: "Vectorizar logo",
-    talla: "-",
-    unidades: 1,
-    precioUnitario: 3000,
-    total: 3000,
-  },
-  {
-    nombre: "Estampado logo",
-    talla: "-",
-    unidades: 2,
-    precioUnitario: 1250,
-    total: 2500,
-  },
-  {
-    nombre: "Envío Mendoza",
-    talla: "-",
-    unidades: 1,
-    precioUnitario: 1250,
-    total: 1250,
-  },
-];
+import {
+  mapPresupuestoToBudgetDetail,
+  mapPresupuestoToBudgetItems,
+  calcularIVAPorcentaje,
+} from "@/utils/presupuestoDetailMapper";
 
 export default function BudgetDetailPage() {
   const router = useRouter();
@@ -71,6 +30,9 @@ export default function BudgetDetailPage() {
     close: closeSidebar,
   } = useSidebar();
 
+  const budgetId = Number(params.id);
+  const { budget, isLoading, error } = useBudgetDetail(budgetId);
+
   const [isEditMode, setIsEditMode] = useState(false);
 
   if (!mounted) {
@@ -81,13 +43,13 @@ export default function BudgetDetailPage() {
     return null;
   }
 
-  const handleTelegramClick = () => {
-    console.log("Telegram button clicked");
-  };
-
   const handleDownload = async () => {
+    if (!budget) return;
+
     try {
-      const materials = mockItems
+      const items = mapPresupuestoToBudgetItems(budget);
+
+      const materials = items
         .filter((item) => item.talla !== "-")
         .map((item) => ({
           name: item.nombre,
@@ -100,7 +62,7 @@ export default function BudgetDetailPage() {
           ],
         }));
 
-      const extras = mockItems
+      const extras = items
         .filter((item) => item.talla === "-")
         .map((item) => ({
           name: item.nombre,
@@ -108,20 +70,18 @@ export default function BudgetDetailPage() {
           amount: item.precioUnitario,
         }));
 
-      const totalMaterialsCost = mockItems
+      const totalMaterialsCost = items
         .filter((item) => item.talla !== "-")
         .reduce((sum, item) => sum + item.total, 0);
 
-      const grandTotal = mockItems.reduce((sum, item) => sum + item.total, 0);
-
       const formData = {
-        id: parseInt(mockBudgetData.id),
-        title: mockBudgetData.titulo,
-        clientName: mockBudgetData.clienteNombre,
-        clientEmail: mockBudgetData.email,
-        clientPhone: mockBudgetData.telefono,
-        deliveryDate: mockBudgetData.fechaFinalizacion,
-        observations: "",
+        id: budget.numeroPresupuesto,
+        title: budget.nombre || "Sin título",
+        clientName: budget.cliente?.nombre || "Sin cliente",
+        clientEmail: budget.cliente?.email || "",
+        clientPhone: budget.cliente?.telefono || "",
+        deliveryDate: budget.fechaVencimiento || budget.fechaCreacion,
+        observations: budget.notas || "",
       };
 
       const blob = await pdf(
@@ -130,17 +90,16 @@ export default function BudgetDetailPage() {
           materials={materials}
           extras={extras}
           totalMaterialsCost={totalMaterialsCost}
-          grandTotal={grandTotal}
+          grandTotal={budget.totalFinal}
         />
       ).toBlob();
 
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `Presupuesto_${mockBudgetData.titulo.replace(
-        /\s+/g,
-        "_"
-      )}_${mockBudgetData.id}.pdf`;
+      link.download = `Presupuesto_${
+        budget.nombre?.replace(/\s+/g, "_") || "Sin_titulo"
+      }_${budget.numeroPresupuesto.toString().padStart(6, "0")}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -160,6 +119,7 @@ export default function BudgetDetailPage() {
   const confirmEdit = () => {
     console.log("Confirmar edición");
     setIsEditMode(false);
+    // TODO: Implementar lógica de edición
   };
 
   return (
@@ -207,25 +167,57 @@ export default function BudgetDetailPage() {
 
         <main className="flex-1 px-0 pt-2 pb-4 sm:pt-2 sm:pb-6 overflow-y-auto sm:overflow-hidden min-h-0">
           <div className="w-full max-w-[430px] mx-auto">
-            <BudgetDetailCard
-              data={mockBudgetData}
-              onTelegramClick={handleTelegramClick}
-            />
+            {isLoading && (
+              <div className="text-center py-12">
+                <p
+                  className="text-gray-500 text-sm"
+                  style={{ fontFamily: "var(--font-lato), sans-serif" }}
+                >
+                  Cargando presupuesto...
+                </p>
+              </div>
+            )}
 
-            <BudgetItemsTable
-              items={mockItems}
-              ivaPorcentaje={16}
-              total={28710}
-            />
+            {error && (
+              <div className="text-center py-12">
+                <p
+                  className="text-red-500 text-sm mb-4"
+                  style={{ fontFamily: "var(--font-lato), sans-serif" }}
+                >
+                  {error}
+                </p>
+                <button
+                  onClick={() => router.back()}
+                  className="px-4 py-2 bg-[#9D86AC] text-white rounded-lg hover:opacity-80 transition-opacity"
+                  style={{ fontFamily: "var(--font-lato), sans-serif" }}
+                >
+                  Volver
+                </button>
+              </div>
+            )}
+
+            {!isLoading && !error && budget && (
+              <>
+                <BudgetDetailCard data={mapPresupuestoToBudgetDetail(budget)} />
+
+                <BudgetItemsTable
+                  items={mapPresupuestoToBudgetItems(budget)}
+                  ivaPorcentaje={calcularIVAPorcentaje(budget)}
+                  total={budget.totalFinal}
+                />
+              </>
+            )}
           </div>
         </main>
 
-        <BtnActionsCollection.fichaMode
-          isDeleteMode={isEditMode}
-          toggleDeleteMode={toggleEditMode}
-          confirmDeletion={confirmEdit}
-          onAddCollection={handleDownload}
-        />
+        {!isLoading && !error && budget && (
+          <BtnActionsCollection.fichaMode
+            isDeleteMode={isEditMode}
+            toggleDeleteMode={toggleEditMode}
+            confirmDeletion={confirmEdit}
+            onAddCollection={handleDownload}
+          />
+        )}
       </div>
 
       <Footer />

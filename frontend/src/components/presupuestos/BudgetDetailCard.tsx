@@ -19,13 +19,9 @@ export interface BudgetDetailData {
 
 interface BudgetDetailCardProps {
   data: BudgetDetailData;
-  onTelegramClick?: () => void;
 }
 
-const BudgetDetailCard: React.FC<BudgetDetailCardProps> = ({
-  data,
-  onTelegramClick,
-}) => {
+const BudgetDetailCard: React.FC<BudgetDetailCardProps> = ({ data }) => {
   const getEstadoColor = (estado: string) => {
     switch (estado.toUpperCase()) {
       case "ENVIADO":
@@ -78,33 +74,16 @@ const BudgetDetailCard: React.FC<BudgetDetailCardProps> = ({
                   {data.titulo}
                 </p>
               </div>
-              {onTelegramClick && (
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onTelegramClick();
-                  }}
-                  className="flex items-center justify-center gap-1.5 bg-[#C9ECFF] text-[#000000] w-[90px] h-[22px] rounded-lg text-xs font-[var(--font-lato),sans-serif] font-medium hover:bg-[#BBDEFB] transition-colors shrink-0 cursor-pointer"
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      onTelegramClick();
-                    }
-                  }}
-                >
-                  <Image
-                    src="/telegram.png"
-                    alt="Telegram"
-                    width={14}
-                    height={14}
-                    className="w-3.5 h-3.5"
-                  />
-                  <span>Telegram</span>
-                </div>
-              )}
+              <div className="flex items-center justify-center gap-1.5 bg-[#C9ECFF] text-[#000000] w-[90px] h-[22px] rounded-lg text-xs font-[var(--font-lato),sans-serif] font-medium shrink-0">
+                <Image
+                  src="/telegram.png"
+                  alt="Telegram"
+                  width={14}
+                  height={14}
+                  className="w-3.5 h-3.5"
+                />
+                <span>Telegram</span>
+              </div>
             </div>
 
             <div className="mb-2 sm:mb-3">
