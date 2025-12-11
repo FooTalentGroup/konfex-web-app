@@ -7,8 +7,8 @@ export interface PageHeaderProps {
   title: string;
   description: string;
   searchPlaceholder?: string;
-  searchValue: string;
-  onSearchChange: (value: string) => void;
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
   backgroundColor?: string;
   className?: string;
 }
@@ -56,11 +56,13 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         >
           {description}
         </p>
-        <SearchBar
-          placeholder={searchPlaceholder}
-          value={searchValue}
-          onChange={onSearchChange}
-        />
+        {searchValue !== undefined && onSearchChange && (
+          <SearchBar
+            placeholder={searchPlaceholder}
+            value={searchValue}
+            onChange={onSearchChange}
+          />
+        )}
       </div>
     </div>
   );
