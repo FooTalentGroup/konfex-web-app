@@ -16,9 +16,10 @@ const UploadButton: React.FC<UploadButtonProps> = ({
   return (
     <button
       onClick={onClick}
-      className={`flex items-center justify-center gap-2 px-6 py-3 rounded-lg transition-all hover:opacity-90 ${className}`}
+      className={`flex items-center justify-center gap-2 px-3 py-3 rounded-r-3xl rounded-l-3xl transition-all hover:opacity-90 ${className}`}
       style={{
         backgroundColor: '#B65CF2',
+        width: 'auto',
       }}
     >
       <svg

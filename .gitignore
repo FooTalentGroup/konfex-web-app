@@ -58,3 +58,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Ignorar código generado por Prisma
+backend/generated/
+backend/generated/prisma/
