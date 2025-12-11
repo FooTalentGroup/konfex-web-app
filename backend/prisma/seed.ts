@@ -13,7 +13,7 @@ import { PresupuestoRepository } from "../src/modules/presupuesto/presupuesto.re
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
-  throw new Error("Missing required environment variable: DATABASE_URL");
+  throw new Error("Falta la variable de entorno DATABASE_URL");
 }
 
 const pool = new Pool({
