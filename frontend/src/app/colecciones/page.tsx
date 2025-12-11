@@ -61,12 +61,12 @@ export default function CollectionsPage() {
             <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
 
             <div className="flex-1 flex flex-col">
-                <div className="w-full px-3 sm:px-4 md:px-6 py-3 sm:py-4 bg-primary-500 mt-8">
-                    <div className='flex flex-col text-white max-w-xs sm:max-w-md md:max-w-2xl mx-auto'>
-                        <h1 className="text-lg sm:text-xl md:text-2xl mb-2 font-[var(--font-lato),sans-serif] font-bold leading-[131%] tracking-[0%]">
+                <div className="w-full px-5 sm:px-6 md:px-8 py-3 sm:py-4 bg-primary-500 mt-8">
+                    <div className='flex flex-col text-white w-full '>
+                        <h1 className="text-2xl sm:text-3xl md:text-4xl mb-2 font-[var(--font-lato),sans-serif] font-bold leading-[131%] tracking-[0%]">
                             Tus colecciones
                         </h1>
-                        <p className="text-xs sm:text-sm md:text-base mb-4 sm:mb-6 font-[var(--font-lato),sans-serif]">
+                        <p className="text-base sm:text-sm md:text-base mb-4 sm:mb-6 font-[var(--font-lato),sans-serif]">
                             Organiza tus prendas por colecciones, temporadas, años...
                         </p>
                     </div>
@@ -74,12 +74,12 @@ export default function CollectionsPage() {
                         placeholder="Buscar material..."
                         value={searchQuery}
                         onChange={handleSearch}
-                        className="max-w-xs sm:max-w-md md:max-w-2xl mx-auto"
+                        className="w-full"
                     />
                 </div>
 
-                <main className="flex-1 rounded-t-3xl p-4 sm:p-6 bg-white">
-                    <div className="w-full max-w-xs sm:max-w-sm mx-auto">
+                <main className="flex-1 rounded-t-3xl p-5 sm:p-6 bg-white">
+                    <div className="w-full">
 
                         {isLoading && (
                             <div className="text-center py-12">
