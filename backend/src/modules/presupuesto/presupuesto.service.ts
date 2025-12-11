@@ -542,13 +542,15 @@ export const PresupuestoService = {
     const margenGananciaPorcentaje =
       payload.margenGananciaPorcentaje ?? existing.margenGananciaPorcentaje;
     const totalCostoFromMerged =
-      typeof payload.totalCosto === "number" ? payload.totalCosto : Number(existing.totalCosto);
+      typeof payload.totalCosto === "number"
+        ? payload.totalCosto
+        : Number(existing.totalCosto) || 0;
     const costosIndirectosFromMerged =
       typeof payload.costosIndirectos === "number"
         ? payload.costosIndirectos
-        : Number(existing.costosIndirectos);
+        : Number(existing.costosIndirectos) || 0;
     const gananciasFromMerged =
-      typeof payload.ganancias === "number" ? payload.ganancias : Number(existing.ganancias);
+      typeof payload.ganancias === "number" ? payload.ganancias : Number(existing.ganancias) || 0;
 
     let totalCosto: number = totalCostoFromMerged;
     let costosIndirectos: number = costosIndirectosFromMerged;

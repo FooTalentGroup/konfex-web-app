@@ -21,10 +21,9 @@ export interface Order {
   status: "pagado" | "deposito";
   operativoStatus?: "no visto" | "en compra" | "en produccion" | "entregado";
   telegramChatId?: string;
-  pedidoId: number; // Necesario para actualizar el pedido
+  pedidoId: number;
 }
 
-// Función para mapear el estado del backend al estado operativo del frontend
 const mapEstadoToOperativoStatus = (
   estado: Pedido["estado"]
 ): "no visto" | "en compra" | "en produccion" | "entregado" => {
@@ -42,7 +41,6 @@ const mapEstadoToOperativoStatus = (
   }
 };
 
-// Función para mapear Pedido del backend a Order del frontend
 const mapPedidoToOrder = (pedido: Pedido): Order => {
   const garmentType =
     pedido.detalles.length > 0

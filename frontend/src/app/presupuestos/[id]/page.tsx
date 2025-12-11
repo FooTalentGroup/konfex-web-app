@@ -136,29 +136,27 @@ export default function BudgetDetailPage() {
   const handleConvertToPedido = async () => {
     if (!budget) return;
 
-    // Verificar si el presupuesto ya tiene un pedido asociado
     if (budget.pedido) {
       showInfo("Este presupuesto ya tiene un pedido asociado. Redirigiendo...");
       router.push(`/pedidos/${budget.pedido.id}`);
       return;
     }
 
-    // Verificar que el presupuesto esté en estado ACEPTADO
-    if (budget.estado !== "ACEPTADO") {
-      showError(
-        "El presupuesto debe estar en estado ACEPTADO para convertirlo en pedido"
-      );
-      return;
-    }
-
     try {
-      showInfo("Convirtiendo presupuesto en pedido...");
+      if (budget.estado !== "ACEPTADO") {
+        showInfo("Aceptando presupuesto y convirtiéndolo en pedido...");
 
-      await presupuestoService.partialUpdate(budget.id, {
-        estado: "ACEPTADO",
-      });
+        await presupuestoService.partialUpdate(budget.id, {
+          estado: "ACEPTADO",
+        });
+      } else {
+        showInfo("Convirtiendo presupuesto en pedido...");
 
-      // Recargar el presupuesto para obtener el pedido creado
+        await presupuestoService.partialUpdate(budget.id, {
+          estado: "ACEPTADO",
+        });
+      }
+
       const updatedBudget = await presupuestoService.getById(budget.id);
 
       if (updatedBudget.pedido) {
