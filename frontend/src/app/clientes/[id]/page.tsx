@@ -54,6 +54,7 @@ export default function ClientDetailPage() {
       email: "",
       telefono: "",
       direccion: "",
+      numeroIdentificacion: "",
     },
   });
 
@@ -69,11 +70,11 @@ export default function ClientDetailPage() {
             email: clientData.email || "",
             telefono: clientData.telefono || "",
             direccion: clientData.direccion || "",
+            numeroIdentificacion: clientData.numeroIdentificacion || "",
           });
         }
       } catch (err) {
         setError("Error al cargar cliente");
-        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -97,7 +98,6 @@ export default function ClientDetailPage() {
       );
       setHistory(clientBudgets);
     } catch (err) {
-      console.error("Error al cargar historial:", err);
     } finally {
       setHistoryLoading(false);
     }
@@ -118,6 +118,7 @@ export default function ClientDetailPage() {
         email: pendingData.email,
         telefono: pendingData.telefono,
         direccion: pendingData.direccion,
+        numeroIdentificacion: pendingData.numeroIdentificacion,
       });
 
       const updatedClient = await getClientById(clientId);
@@ -131,7 +132,6 @@ export default function ClientDetailPage() {
         router.push("/clientes");
       }, 1500);
     } catch (err) {
-      console.error("Error al guardar:", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -148,15 +148,30 @@ export default function ClientDetailPage() {
       setIsDeleteDialogOpen(false);
       router.push("/clientes");
     } catch (error) {
-      console.error("Error al eliminar:", error);
       setIsDeleting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#F3F0F5] font-sans pb-10">
-      <div className="relative z-50">
+    <div className="min-h-screen flex flex-col bg-gray-100">
+      <div className="bg-primary-500">
         <Header onMenuClick={() => setIsSidebarOpen(true)} />
+      </div>
+
+      <div className="w-full px-4 py-3 bg-white rounded-b-3xl shadow-sm">
+        <div className="flex items-center justify-between gap-2 max-w-2xl mx-auto">
+          <button
+            onClick={() => router.back()}
+            className="w-9 h-9 flex items-center justify-center bg-primary-500 text-white rounded-full hover:bg-primary-600 transition-colors flex-shrink-0"
+          >
+            <ArrowLeft size={18} />
+          </button>
+          <div className="flex items-center gap-1 text-base ml-auto">
+            <span className="text-[#D9B7E8]">Cliente</span>
+            <ChevronRight size={16} className="text-[#D9B7E8]" />
+            <span className="text-[#9D52B8] font-bold">Detalle cliente</span>
+          </div>
+        </div>
       </div>
 
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
@@ -188,220 +203,180 @@ export default function ClientDetailPage() {
         }}
       />
 
-      <div className="bg-white px-5 pt-4 pb-2 sticky top-0 z-20">
-        <div className="flex items-center gap-4 mb-2">
-          <button
-            onClick={() => router.back()}
-            className="w-10 h-10 flex items-center justify-center bg-[#8B709D]/10 text-[#8B709D] rounded-full hover:bg-[#8B709D]/20 transition-colors"
-          >
-            <ArrowLeft size={22} />
-          </button>
+      {/* Contenido */}
+      <div className="flex-1 w-full px-4 py-6 bg-gray-100">
+        <div className="max-w-2xl mx-auto space-y-4">
+          <div className="bg-gray-100 border border-[#D9B7E8] rounded-lg px-3 py-4">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex flex-col gap-2 min-w-0">
+                <p className="text-gray-700 text-base font-normal">Nombre:</p>
+                <p className="text-gray-700 text-base font-normal">ID:</p>
+              </div>
+              <div className="flex flex-col gap-2 text-right flex-shrink-0">
+                <p className="text-gray-900 font-bold text-base">
+                  {client?.nombre || "-"}
+                </p>
+                <p className="text-gray-900 font-bold text-base">
+                  {client ? String(client.id).padStart(6, "0") : "-"}
+                </p>
+              </div>
+            </div>
+          </div>
 
-          <div className="flex items-center gap-2 text-sm ml-auto">
-            <span className="text-gray-400 font-medium">Cliente</span>
-            <ChevronRight size={16} className="text-gray-300" />
-            <span className="text-[#C071F4] font-bold text-lg">
-              Detalle cliente
-            </span>
-          </div>
-        </div>
-      </div>
+          <div className="w-full bg-gray-100 rounded-lg overflow-hidden">
+            {/* Tabs */}
+            <div className="w-full border-b border-gray-200">
+              <div className="flex">
+                <button
+                  onClick={() => setActiveTab("detail")}
+                  className={`flex-1 py-4 text-center text-sm font-bold transition-colors relative ${
+                    activeTab === "detail" ? "text-[#C071F4]" : "text-gray-400"
+                  }`}
+                >
+                  Detalle
+                  {activeTab === "detail" && (
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#C071F4]"></div>
+                  )}
+                </button>
+                <div className="w-px bg-[#E8E5ED] h-8 my-auto"></div>
+                <button
+                  onClick={() => setActiveTab("history")}
+                  className={`flex-1 py-4 text-center text-sm font-bold transition-colors relative ${
+                    activeTab === "history" ? "text-[#C071F4]" : "text-gray-400"
+                  }`}
+                >
+                  Historial
+                  {activeTab === "history" && (
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#C071F4]"></div>
+                  )}
+                </button>
+              </div>
+            </div>
 
-      <div className="px-5 pt-2 relative z-0">
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-[#C071F4]" />
-          </div>
-        ) : error ? (
-          <div className="bg-red-50 text-red-700 p-4 rounded-xl mb-6">
-            {error}
-          </div>
-        ) : client ? (
-          <>
-            <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-6 mt-2">
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex-1">
-                  <p className="text-gray-400 text-xs mb-1">Nombre:</p>
-                  <p className="text-gray-900 font-bold">{client.nombre}</p>
+            <div className="px-4 py-6">
+              {loading ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-[#C071F4]" />
                 </div>
-                <div className="flex items-center gap-2">
-                  {client.origen?.toLowerCase() === "telegram" ? (
-                    <div className="flex items-center gap-1 bg-blue-50 px-3 py-1.5 rounded-full">
-                      <svg
-                        className="w-4 h-4 text-blue-500"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.14-.257.27-.529.27l.214-3.053 5.56-5.023c.242-.22-.054-.338-.373-.118l-6.869 4.332-2.97-.924c-.645-.207-.658-.645.14-.953l11.591-4.471c.537-.196 1.006.128.832.941z" />
-                      </svg>
-                      <span className="text-xs font-bold text-blue-700">
-                        Telegram
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-1 bg-gray-50 px-3 py-1.5 rounded-full">
-                      <svg
-                        className="w-4 h-4 text-gray-500"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      <span className="text-xs font-bold text-gray-700">
-                        Manual
-                      </span>
+              ) : error ? (
+                <div className="bg-red-50 text-red-700 p-4 rounded-xl mb-6">
+                  {error}
+                </div>
+              ) : client ? (
+                <>
+                  {activeTab === "detail" && (
+                    <form
+                      onSubmit={handleSubmit(onSubmit)}
+                      className="animate-in fade-in duration-300 space-y-4"
+                    >
+                      <div className="bg-gray-100 border border-[#D9B7E8] rounded-lg p-3 space-y-3">
+                        <div className="space-y-2">
+                          <label className="text-sm font-normal text-gray-700">
+                            Nombre del cliente
+                          </label>
+                          <input
+                            {...register("nombre")}
+                            className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-normal text-gray-700">
+                            Nº de Identificación
+                          </label>
+                          <input
+                            {...register("numeroIdentificacion")}
+                            className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-normal text-gray-700">
+                            E-mail
+                          </label>
+                          <input
+                            {...register("email")}
+                            className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-normal text-gray-700">
+                            Dirección
+                          </label>
+                          <input
+                            {...register("direccion")}
+                            className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-normal text-gray-700">
+                            Teléfono
+                          </label>
+                          <input
+                            {...register("telefono")}
+                            className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="pt-4 flex gap-3">
+                        <button
+                          type="button"
+                          onClick={handleDelete}
+                          className="flex-1 bg-[#E8D5F2] text-[#9D52B8] font-bold py-4 rounded-full border-2 border-[#9D52B8] hover:bg-[#dcc5ee] transition-colors text-base"
+                        >
+                          Eliminar
+                        </button>
+
+                        <button
+                          type="submit"
+                          disabled={isSubmitting}
+                          className="flex-1 bg-[#C071F4] text-white font-bold py-4 rounded-full border-2 border-[#9D52B8] hover:bg-[#ae5ce6] transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base"
+                        >
+                          {isSubmitting ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              Guardando...
+                            </>
+                          ) : (
+                            "Guardar"
+                          )}
+                        </button>
+                      </div>
+                    </form>
+                  )}
+
+                  {activeTab === "history" && (
+                    <div className="animate-in fade-in duration-300">
+                      {historyLoading ? (
+                        <div className="flex items-center justify-center py-12">
+                          <Loader2 className="w-8 h-8 animate-spin text-[#C071F4]" />
+                        </div>
+                      ) : history.length === 0 ? (
+                        <div className="text-center py-12 text-gray-500">
+                          <p>
+                            No hay presupuestos registrados para este cliente
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          {history.map((presupuesto) => (
+                            <HistoryAccordion
+                              key={presupuesto.id}
+                              presupuesto={presupuesto}
+                            />
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
-                </div>
-              </div>
-              <div>
-                <p className="text-gray-400 text-xs mb-1">ID:</p>
-                <p className="text-gray-900 font-bold">{client.id}</p>
-              </div>
-              <button
-                onClick={() => router.push(`/presupuestos?cliente=${clientId}`)}
-                className="flex items-center gap-1.5 bg-[#F2BB5C] text-white px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm hover:bg-[#d9a54a] transition-all whitespace-nowrap"
-              >
-                <svg
-                  className="w-3 h-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                <span>Presupuesto</span>
-              </button>
+                </>
+              ) : null}
             </div>
-
-            <div className="flex border-b border-gray-200 mb-6 relative">
-              <button
-                onClick={() => setActiveTab("detail")}
-                className={`flex-1 pb-3 text-center text-sm font-bold transition-colors relative ${
-                  activeTab === "detail" ? "text-[#C071F4]" : "text-gray-400"
-                }`}
-              >
-                Detalle
-                {activeTab === "detail" && (
-                  <div className="absolute bottom-0 left-0 w-full h-1 bg-[#C071F4] rounded-t-full shadow-[0_-2px_6px_rgba(192,113,244,0.4)]"></div>
-                )}
-              </button>
-              <button
-                onClick={() => setActiveTab("history")}
-                className={`flex-1 pb-3 text-center text-sm font-bold transition-colors relative ${
-                  activeTab === "history" ? "text-[#C071F4]" : "text-gray-400"
-                }`}
-              >
-                Historial
-                {activeTab === "history" && (
-                  <div className="absolute bottom-0 left-0 w-full h-1 bg-[#C071F4] rounded-t-full shadow-[0_-2px_6px_rgba(192,113,244,0.4)]"></div>
-                )}
-              </button>
-            </div>
-
-            {activeTab === "detail" && (
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="space-y-5 animate-in fade-in duration-300"
-              >
-                <div className="space-y-1.5">
-                  <label className="text-sm text-gray-600 ml-1">
-                    Nombre del cliente
-                  </label>
-                  <input
-                    {...register("nombre")}
-                    className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-800 outline-none focus:border-[#C071F4] focus:ring-1 focus:ring-[#C071F4] transition-all"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-sm text-gray-600 ml-1">E-mail</label>
-                  <input
-                    {...register("email")}
-                    className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-800 outline-none focus:border-[#C071F4] focus:ring-1 focus:ring-[#C071F4] transition-all"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-sm text-gray-600 ml-1">Teléfono</label>
-                  <input
-                    {...register("telefono")}
-                    className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-800 outline-none focus:border-[#C071F4] focus:ring-1 focus:ring-[#C071F4] transition-all"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-sm text-gray-600 ml-1">
-                    Dirección
-                  </label>
-                  <input
-                    {...register("direccion")}
-                    className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-800 outline-none focus:border-[#C071F4] focus:ring-1 focus:ring-[#C071F4] transition-all"
-                  />
-                </div>
-
-                <div className="pt-6 flex gap-4">
-                  <button
-                    type="button"
-                    onClick={handleDelete}
-                    className="flex-1 bg-[#EADCF5] text-[#8B709D] font-bold py-3.5 rounded-full hover:bg-[#dcc5ee] transition-colors"
-                  >
-                    Eliminar
-                  </button>
-
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="flex-1 bg-[#C071F4] text-white font-bold py-3.5 rounded-full hover:bg-[#ae5ce6] shadow-lg shadow-purple-200 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        Guardando...
-                      </>
-                    ) : (
-                      "Guardar"
-                    )}
-                  </button>
-                </div>
-              </form>
-            )}
-
-            {activeTab === "history" && (
-              <div className="animate-in fade-in duration-300">
-                {historyLoading ? (
-                  <div className="flex items-center justify-center py-12">
-                    <Loader2 className="w-8 h-8 animate-spin text-[#C071F4]" />
-                  </div>
-                ) : history.length === 0 ? (
-                  <div className="text-center py-12 text-gray-500">
-                    <p>No hay presupuestos registrados para este cliente</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {history.map((presupuesto) => (
-                      <HistoryAccordion
-                        key={presupuesto.id}
-                        presupuesto={presupuesto}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </>
-        ) : null}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -482,7 +457,7 @@ function HistoryAccordion({
                 </p>
               </div>
               <div>
-                <p className="text-gray-400 text-xs">Total Venta</p>
+                <p className="text-gray-400 text-xs">Total Final</p>
                 <p className="text-gray-800 font-bold">
                   {formatCurrency(presupuesto.totalFinal)}
                 </p>

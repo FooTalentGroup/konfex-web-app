@@ -1,5 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
-import { clienteService, Cliente, CreateClienteDto } from "@/services/cliente.service";
+import {
+  clienteService,
+  Cliente,
+  CreateClienteDto,
+} from "@/services/cliente.service";
 
 export function useClients() {
   const [clients, setClients] = useState<Cliente[]>([]);
@@ -12,10 +16,15 @@ export function useClients() {
       setLoading(true);
       setError(null);
       const data = await clienteService.getAll();
-      setClients(data);
-      setFiltered(data);
+      const sortedData = [...data].sort(
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      );
+      setClients(sortedData);
+      setFiltered(sortedData);
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Error al cargar clientes';
+      const errorMsg =
+        err instanceof Error ? err.message : "Error al cargar clientes";
       setError(errorMsg);
       console.error("Error loading clients", err);
     } finally {
@@ -29,45 +38,62 @@ export function useClients() {
 
   const filterClients = (query: string) => {
     const q = query.toLowerCase();
-    setFiltered(
-      clients.filter((c) => c.nombre.toLowerCase().includes(q))
-    );
+    setFiltered(clients.filter((c) => c.nombre.toLowerCase().includes(q)));
   };
 
-  const getClientById = useCallback(async (id: number): Promise<Cliente | null> => {
-    try {
-      return await clienteService.getById(id);
-    } catch (err) {
-      console.error('Error getting client:', err);
-      return null;
-    }
-  }, []);
+  const getClientById = useCallback(
+    async (id: number): Promise<Cliente | null> => {
+      try {
+        return await clienteService.getById(id);
+      } catch (err) {
+        console.error("Error getting client:", err);
+        return null;
+      }
+    },
+    []
+  );
 
-  const createClient = async (data: CreateClienteDto): Promise<Cliente | null> => {
+  const createClient = async (
+    data: CreateClienteDto
+  ): Promise<Cliente | null> => {
     try {
       const newClient = await clienteService.create(data);
-      setClients([...clients, newClient]);
-      setFiltered([...clients, newClient]);
+      const updatedClients = [...clients, newClient].sort(
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      );
+      setClients(updatedClients);
+      setFiltered(updatedClients);
       return newClient;
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Error al crear cliente';
+      const errorMsg =
+        err instanceof Error ? err.message : "Error al crear cliente";
       setError(errorMsg);
-      console.error('Error creating client:', err);
+      console.error("Error creating client:", err);
       return null;
     }
   };
 
-  const updateClient = async (id: number, data: Partial<CreateClienteDto>): Promise<Cliente | null> => {
+  const updateClient = async (
+    id: number,
+    data: Partial<CreateClienteDto>
+  ): Promise<Cliente | null> => {
     try {
       const response = await clienteService.update(id, data);
-      const updatedClients = clients.map(c => c.id === id ? response : c);
+      const updatedClients = clients
+        .map((c) => (c.id === id ? response : c))
+        .sort(
+          (a, b) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        );
       setClients(updatedClients);
       setFiltered(updatedClients);
       return response;
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Error al actualizar cliente';
+      const errorMsg =
+        err instanceof Error ? err.message : "Error al actualizar cliente";
       setError(errorMsg);
-      console.error('Error updating client:', err);
+      console.error("Error updating client:", err);
       return null;
     }
   };
@@ -75,22 +101,23 @@ export function useClients() {
   const deleteClient = async (id: number): Promise<boolean> => {
     try {
       await clienteService.delete(id);
-      const updatedClients = clients.filter(c => c.id !== id);
+      const updatedClients = clients.filter((c) => c.id !== id);
       setClients(updatedClients);
       setFiltered(updatedClients);
       return true;
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Error al eliminar cliente';
+      const errorMsg =
+        err instanceof Error ? err.message : "Error al eliminar cliente";
       setError(errorMsg);
-      console.error('Error deleting client:', err);
+      console.error("Error deleting client:", err);
       return false;
     }
   };
 
-  return { 
-    clients: filtered, 
+  return {
+    clients: filtered,
     allClients: clients,
-    filterClients, 
+    filterClients,
     loading,
     error,
     getClientById,
