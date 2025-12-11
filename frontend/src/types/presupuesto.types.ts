@@ -1,4 +1,9 @@
-export type EstadoPresupuesto = 'BORRADOR' | 'ENVIADO' | 'ACEPTADO' | 'RECHAZADO' | 'VENCIDO';
+export type EstadoPresupuesto =
+  | "BORRADOR"
+  | "DESCARGADO"
+  | "ACEPTADO"
+  | "RECHAZADO"
+  | "VENCIDO";
 
 export interface PresupuestoDetalleResponseDto {
   id: number;
@@ -23,6 +28,7 @@ export interface AdicionalResponseDto {
 export interface PresupuestoResponseDto {
   id: number;
   numeroPresupuesto: number;
+  nombre?: string | null;
   clienteId: number | null;
   fechaCreacion: string;
   fechaVencimiento: string | null;
@@ -30,15 +36,19 @@ export interface PresupuestoResponseDto {
   margenGananciaPorcentaje: number;
   gastosIndirectosPorcentaje: number;
   totalCosto: number;
-  totalVenta: number;
+  costosIndirectos: number;
+  ganancias: number;
+  iva: number;
+  totalFinal: number;
   notas: string | null;
-  origen: "telegram" | "manual";
+  origen?: "telegram" | "manual";
   detalles: PresupuestoDetalleResponseDto[];
   adicionales?: AdicionalResponseDto[];
   cliente?: {
     id: number;
     nombre: string;
     email: string | null;
+    telefono?: string | null;
   } | null;
   pedido?: {
     id: number;
@@ -50,8 +60,7 @@ export interface Budget {
   id: number;
   numeroPresupuesto: string;
   clienteNombre: string;
-  totalVenta: number;
+  totalFinal: number;
   fechaVencimiento: string | null;
   estado: string;
 }
-

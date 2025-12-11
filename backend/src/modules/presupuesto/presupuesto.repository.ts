@@ -1,3 +1,5 @@
+import type { Prisma } from "@prisma/client";
+
 import prisma from "../../config/prisma";
 import type { EstadoPresupuesto } from "./presupuesto.schema";
 
@@ -58,106 +60,106 @@ interface UpdatePresupuestoData {
   };
 }
 
+interface FindManyParams {
+  where?: Prisma.PresupuestoWhereInput;
+  include?: Prisma.PresupuestoInclude;
+  orderBy?: Prisma.PresupuestoOrderByWithRelationInput;
+  skip?: number;
+  take?: number;
+}
+
+interface FindByIdOptions {
+  include?: Prisma.PresupuestoInclude;
+}
+
+const defaultInclude: Prisma.PresupuestoInclude = {
+  detalles: true,
+  adicionales: true,
+  cliente: true,
+  pedido: true,
+  gastosNegocio: true,
+};
+
 export const PresupuestoRepository = {
   create: async ({ data }: CreatePresupuestoData) => {
-    const { detalles, adicionales, clienteId, costosIndirectos, ...presupuestoData } = data;
+    const { detalles, adicionales, clienteId, gastosNegocioId, ...presupuestoData } = data;
+
+    const createData: Prisma.PresupuestoCreateInput = {
+      ...presupuestoData,
+      cliente: clienteId ? { connect: { id: clienteId } } : undefined,
+      gastosNegocio: { connect: { id: gastosNegocioId } },
+      detalles: detalles
+        ? {
+            create: detalles.map((detalle) => ({
+              productoId: detalle.productoId,
+              descripcion: detalle.descripcion,
+              cantidad: detalle.cantidad,
+              costoUnitario: detalle.costoUnitario,
+            })),
+          }
+        : undefined,
+      adicionales: adicionales
+        ? {
+            create: adicionales.map((adicional) => ({
+              nombre: adicional.nombre,
+              cantidad: adicional.cantidad,
+              monto: adicional.monto,
+              totalCosto: adicional.totalCosto,
+              tarifaEnvio: adicional.tarifaEnvio ?? null,
+              observaciones: adicional.observaciones,
+            })),
+          }
+        : undefined,
+    };
+
     return prisma.presupuesto.create({
-      data: {
-        ...presupuestoData,
-        clienteId: clienteId ?? null,
-        detalles: detalles
-          ? {
-              create: detalles.map((detalle) => ({
-                productoId: detalle.productoId,
-                descripcion: detalle.descripcion,
-                cantidad: detalle.cantidad,
-                costoUnitario: detalle.costoUnitario,
-              })),
-            }
-          : undefined,
-        adicionales: adicionales
-          ? {
-              create: adicionales.map((adicional) => ({
-                nombre: adicional.nombre,
-                cantidad: adicional.cantidad,
-                monto: adicional.monto,
-                totalCosto: adicional.totalCosto,
-                tarifaEnvio: adicional.tarifaEnvio ?? null,
-                observaciones: adicional.observaciones,
-              })),
-            }
-          : undefined,
-      } as any,
-      include: {
-        detalles: true,
-        adicionales: true,
-        cliente: true,
-        pedido: true,
-        gastosNegocio: true,
-      },
+      data: createData,
+      include: defaultInclude,
     });
   },
 
-  findMany: async (params?: {
-    where?: any;
-    include?: any;
-    orderBy?: any;
-    skip?: number;
-    take?: number;
-  }) => {
+  findMany: async (params?: FindManyParams) => {
     return prisma.presupuesto.findMany({
       ...params,
       include: {
-        detalles: true,
-        adicionales: true,
-        cliente: true,
-        pedido: true,
-        gastosNegocio: true,
+        ...defaultInclude,
         ...params?.include,
       },
     });
   },
 
-  count: (filters?: any) => {
+  count: (filters?: Prisma.PresupuestoWhereInput) => {
     return prisma.presupuesto.count({
       where: filters,
     });
   },
 
-  findById: async (id: number, options?: { include?: any }) => {
+  findById: async (id: number, options?: FindByIdOptions) => {
     return prisma.presupuesto.findUnique({
       where: { id },
       include: {
-        detalles: true,
-        adicionales: true,
-        cliente: true,
-        pedido: true,
-        gastosNegocio: true,
+        ...defaultInclude,
         ...options?.include,
       },
     });
   },
 
   update: async (id: number, { data }: UpdatePresupuestoData) => {
-    const { detalles, adicionales, clienteId, costosIndirectos, ...presupuestoData } = data;
+    const { detalles, adicionales, clienteId, gastosNegocioId, ...presupuestoData } = data;
 
-    // Si hay detalles definidos (incluso si es array vacío), eliminamos los existentes
     if (detalles !== undefined) {
-      // Eliminar detalles existentes
       await prisma.presupuestoDetalle.deleteMany({
         where: { presupuestoId: id },
       });
     }
 
-    // Si hay adicionales definidos (incluso si es array vacío), eliminamos los existentes
     if (adicionales !== undefined) {
-      // Eliminar adicionales existentes
       await prisma.adicional.deleteMany({
         where: { presupuestoId: id },
       });
     }
 
-    const updateData: any = {
+    const updateData: Prisma.PresupuestoUpdateInput = {
       ...presupuestoData,
       detalles:
         detalles !== undefined
@@ -170,8 +172,8 @@ export const PresupuestoRepository = {
                   costoUnitario: detalle.costoUnitario,
                 })),
               }
-            : undefined // Si es array vacío, no creamos nada (ya se eliminaron)
-          : undefined, // Si no se pasa, no tocamos los detalles
+            : undefined
+          : undefined,
       adicionales:
         adicionales !== undefined
           ? adicionales.length > 0
@@ -185,25 +187,24 @@ export const PresupuestoRepository = {
                   observaciones: adicional.observaciones,
                 })),
               }
-            : undefined // Si es array vacío, no creamos nada (ya se eliminaron)
-          : undefined, // Si no se pasa, no tocamos los adicionales
+            : undefined
+          : undefined,
     };
 
-    // Manejar clienteId explícitamente para permitir null
     if (clienteId !== undefined) {
-      updateData.clienteId = clienteId;
+      updateData.cliente = clienteId ? { connect: { id: clienteId } } : { disconnect: true };
+    }
+
+    if (gastosNegocioId !== undefined) {
+      updateData.gastosNegocio = {
+        connect: { id: gastosNegocioId },
+      };
     }
 
     return prisma.presupuesto.update({
       where: { id },
       data: updateData,
-      include: {
-        detalles: true,
-        adicionales: true,
-        cliente: true,
-        pedido: true,
-        gastosNegocio: true,
-      },
+      include: defaultInclude,
     });
   },
 

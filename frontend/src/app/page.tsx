@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Input from "@/components/common/Input";
@@ -9,9 +9,8 @@ import { useLogin } from "@/hooks/useLogin";
 import { useAuth } from "@/hooks/useAuth";
 
 const LoginPage: React.FC = () => {
-  const [mounted, setMounted] = useState(false);
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, mounted } = useAuth();
   const {
     register,
     handleSubmit,
@@ -23,23 +22,31 @@ const LoginPage: React.FC = () => {
   } = useLogin();
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Si el usuario ya está autenticado, redirigir a inbox
-  useEffect(() => {
     if (mounted && user) {
       router.push("/inbox");
     }
   }, [mounted, user, router]);
 
   if (!mounted) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F5F5F5]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#B65CF2] mx-auto mb-4"></div>
+          <p className="text-gray-600">Cargando...</p>
+        </div>
+      </div>
+    );
   }
 
-  // Si ya está autenticado, no mostrar nada (está siendo redirigido)
   if (user) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F5F5F5]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#B65CF2] mx-auto mb-4"></div>
+          <p className="text-gray-600">Redirigiendo...</p>
+        </div>
+      </div>
+    );
   }
 
   return (

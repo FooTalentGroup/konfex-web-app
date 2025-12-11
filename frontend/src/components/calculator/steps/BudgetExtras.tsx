@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useFormContext, useFieldArray, useWatch } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Trash2, Plus, Minus } from "lucide-react";
 import CircularAddButton from "@/components/common/CircularAddButton";
 import BudgetTotalBadge from "../BudgetTotalBadge";
@@ -56,7 +57,6 @@ export default function BudgetExtras({
   const [qty, setQty] = useState(1);
   const [amount, setAmount] = useState("");
 
-  // Obtener shippingFee del formulario en lugar de estado local
   const shippingFee = useWatch({ control, name: "shippingFee" }) || "";
   const setShippingFee = (value: string) => {
     const numValue = parseFloat(value) || 0;
@@ -93,7 +93,6 @@ export default function BudgetExtras({
       setIsSaving(true);
       const currentBudgetData = getValues();
 
-      // Validaciones básicas
       if (!currentBudgetData.title?.trim()) {
         showError("Por favor ingresa un título para el presupuesto");
         return;
@@ -104,10 +103,9 @@ export default function BudgetExtras({
         return;
       }
 
-      // Obtener automáticamente el primer gasto de negocio si no hay uno seleccionado
       let finalGastosNegocioId = gastosNegocioId;
       if (!finalGastosNegocioId && gastosNegocio.length > 0) {
-        finalGastosNegocioId = gastosNegocio[0].id;
+        finalGastosNegocioId = Number(gastosNegocio[0].id);
         setValue("gastosNegocioId", finalGastosNegocioId, {
           shouldValidate: false,
         });
@@ -125,7 +123,6 @@ export default function BudgetExtras({
         return;
       }
 
-      // Validar que todos los materiales tengan productoId
       const materialesSinProductoId = materials.filter(
         (m: Material) => !m.productoId
       );
@@ -140,7 +137,6 @@ export default function BudgetExtras({
         return;
       }
 
-      // Obtener o crear cliente
       let clienteId = currentBudgetData.clienteId;
       if (!clienteId) {
         try {
@@ -164,7 +160,6 @@ export default function BudgetExtras({
         }
       }
 
-      // Validar que haya gastos de negocio disponibles
       if (!gastosNegocio || gastosNegocio.length === 0) {
         showError(
           "No se encontraron gastos de negocio configurados. Por favor contacta al administrador."
@@ -172,7 +167,6 @@ export default function BudgetExtras({
         return;
       }
 
-      // Mapear datos del formulario al formato del backend
       const payload = mapFormDataToBackend(
         {
           ...currentBudgetData,
@@ -181,11 +175,13 @@ export default function BudgetExtras({
           materials: (currentBudgetData.materials || []) as Material[],
           extras: (currentBudgetData.extras || []) as Extra[],
         } as Parameters<typeof mapFormDataToBackend>[0],
-        gastosNegocio,
+        gastosNegocio.map((g) => ({
+          id: Number(g.id),
+          porcentaje: g.porcentaje,
+        })),
         origen
       );
 
-      // Crear o actualizar presupuesto en el backend
       if (isEditMode && presupuestoId) {
         showInfo("Actualizando presupuesto...");
         const updatedPresupuesto = await presupuestoService.update(
@@ -203,9 +199,8 @@ export default function BudgetExtras({
           4000
         );
 
-        // Redirigir a presupuestos después de un breve delay
         setTimeout(() => {
-          router.push("/presupuestos");
+          router.push(`/presupuestos/${updatedPresupuesto.id}`);
         }, 1500);
       } else {
         showInfo("Creando presupuesto...");
@@ -218,21 +213,18 @@ export default function BudgetExtras({
           4000
         );
 
-        // Redirigir a presupuestos después de un breve delay para que se vea el toast
         setTimeout(() => {
-          router.push("/presupuestos");
+          router.push(`/presupuestos/${createdPresupuesto.id}`);
         }, 1500);
       }
     } catch (error) {
       console.error("Error al crear presupuesto:", error);
 
-      // Mejorar mensajes de error específicos
       let errorMessage = "Error desconocido al crear presupuesto";
 
       if (error instanceof Error) {
         const message = error.message;
 
-        // Mensajes específicos según el tipo de error
         if (message.includes("productoId")) {
           errorMessage =
             "Uno o más materiales no tienen producto asociado. Por favor selecciónalos desde el autocomplete.";
@@ -267,7 +259,6 @@ export default function BudgetExtras({
 
   return (
     <div className="p-5 pb-10 font-lato">
-      {/* Encabezado */}
       <div className="mb-4 px-[14px] -mt-4">
         <div className="flex justify-between items-center">
           <span className="font-bold text-[16px] leading-[1.31] text-[#000000]">
@@ -284,7 +275,6 @@ export default function BudgetExtras({
         </p>
       </div>
 
-      {/* Tarifa de envío */}
       <div className="mb-6 bg-[#F3F0F5] border-[0.5px] border-[#CEC2D6] rounded-[10px] px-2 pt-2 pb-5 max-w-[390px] sm:max-w-[430px] mx-auto space-y-2">
         <label className="block text-[13px] leading-[1.31] font-bold text-[#1A151E] ml-1">
           Tarifa de envío
@@ -297,20 +287,16 @@ export default function BudgetExtras({
             }
             onChange={(e) => {
               const inputValue = e.target.value;
-              // Permitir campo vacío o solo el signo menos para poder borrar
               if (inputValue === "" || inputValue === "-") {
-                // No permitir que se escriba el signo menos solo
                 if (inputValue === "-") {
                   return;
                 }
                 setShippingFee("0");
               } else {
                 const val = parseFloat(inputValue);
-                // Solo permitir valores válidos >= 0
                 if (!isNaN(val) && val >= 0) {
                   setShippingFee(inputValue);
                 }
-                // Si es negativo o inválido, no actualizar
               }
             }}
             onBlur={(e) => {
@@ -320,21 +306,22 @@ export default function BudgetExtras({
               }
             }}
             placeholder="Ingresa la tarifa de envío"
-            className="w-full h-[40px] bg-[#FEFCFF] border border-[#CEC2D6] rounded-[10px] px-3 pr-9 text-sm outline-none font-normal text-[#B5A4C1] text-left focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all placeholder:text-[#B5A4C1]"
+            className="w-full h-[40px] bg-white border border-[#CEC2D6] rounded-[10px] px-3 pr-9 text-sm outline-none font-normal text-[#1A151E] text-left focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all placeholder:text-[#B5A4C1]"
             min="0"
             step="0.01"
           />
           <span className="absolute right-2.5 top-1/2 -translate-y-1/2">
-            <img
+            <Image
               src="/presupuestoPrecio.png"
               alt="$"
+              width={20}
+              height={20}
               className="w-5 h-5"
             />
           </span>
         </div>
       </div>
 
-      {/* Formulario de Costo adicional */}
       <div className="bg-[#F3F0F5] border border-[#CEC2D6] rounded-[10px] px-2 pt-2 pb-[30px] max-w-[390px] sm:max-w-[480px] mx-auto space-y-3">
         <div className="space-y-2">
           <label className="block text-[13px] leading-[1.31] font-bold text-[#1A151E] ml-1">
@@ -344,14 +331,13 @@ export default function BudgetExtras({
             type="text"
             value={name}
             onChange={(e) => {
-              // Limitar a 100 caracteres
               if (e.target.value.length <= 100) {
                 setName(e.target.value);
               }
             }}
             placeholder="Ej.: Estampado, botones adicionales"
             maxLength={100}
-            className="w-full h-[40px] bg-[#FEFCFF] border border-[#CEC2D6] rounded-[10px] px-3 text-sm outline-none font-normal text-[#B5A4C1] placeholder:text-[#B5A4C1] focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all"
+            className="w-full h-[40px] bg-white border border-[#CEC2D6] rounded-[10px] px-3 text-sm outline-none font-normal text-[#1A151E] placeholder:text-[#B5A4C1] focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all"
           />
         </div>
 
@@ -360,16 +346,16 @@ export default function BudgetExtras({
             <label className="block text-[13px] leading-[1.31] font-bold text-[#1A151E] mb-1.5 ml-1">
               Cantidad
             </label>
-              <div className="flex items-center bg-[#FEFCFF] rounded-[6px] h-[40px] px-3 justify-between border border-[#CEC2D6] w-full sm:w-[144px]">
+            <div className="flex items-center bg-white rounded-[6px] h-[40px] px-3 justify-between border border-[#CEC2D6] w-full sm:w-[144px]">
               <button
                 type="button"
                 onClick={() => setQty(Math.max(1, qty - 1))}
                 disabled={qty <= 1}
-                  className={`p-2 rounded-lg transition-all ${
-                    qty <= 1
-                      ? "text-[#0F172A] opacity-85 cursor-not-allowed"
-                      : "text-[#0F172A] hover:text-[#0F172A] hover:bg-white"
-                  }`}
+                className={`p-2 rounded-lg transition-all ${
+                  qty <= 1
+                    ? "text-[#0F172A] opacity-85 cursor-not-allowed"
+                    : "text-[#0F172A] hover:text-[#0F172A] hover:bg-white"
+                }`}
               >
                 <Minus size={16} />
               </button>
@@ -396,7 +382,7 @@ export default function BudgetExtras({
                 }}
                 onWheel={(e) => e.currentTarget.blur()}
                 placeholder="00"
-                  className="w-12 bg-[#FEFCFF] text-center text-sm outline-none font-normal text-[#B5A4C1] placeholder:text-[#B5A4C1]"
+                className="w-12 bg-white text-center text-sm outline-none font-normal text-[#1A151E] placeholder:text-[#B5A4C1]"
                 min="1"
                 max="9999"
                 step="1"
@@ -421,20 +407,16 @@ export default function BudgetExtras({
                 value={amount}
                 onChange={(e) => {
                   const inputValue = e.target.value;
-                  // Permitir campo vacío para poder borrar
                   if (inputValue === "" || inputValue === "-") {
-                    // No permitir que se escriba el signo menos solo
                     if (inputValue === "-") {
                       return;
                     }
                     setAmount("");
                   } else {
                     const val = parseFloat(inputValue);
-                    // Solo permitir valores válidos >= 0
                     if (!isNaN(val) && val >= 0) {
                       setAmount(inputValue);
                     }
-                    // Si es negativo o inválido, no actualizar
                   }
                 }}
                 onBlur={(e) => {
@@ -445,21 +427,22 @@ export default function BudgetExtras({
                 }}
                 onWheel={(e) => e.currentTarget.blur()}
                 placeholder="Ingresa el monto"
-                className="w-full sm:w-[206px] h-[40px] bg-[#FEFCFF] border border-[#CEC2D6] rounded-[6px] px-3 pr-9 text-sm outline-none font-normal text-[#B5A4C1] text-left focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all placeholder:text-[#B5A4C1]"
+                className="w-full sm:w-[206px] h-[40px] bg-white border border-[#CEC2D6] rounded-[6px] px-3 pr-9 text-sm outline-none font-normal text-[#1A151E] text-left focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all placeholder:text-[#B5A4C1]"
                 min="0"
                 step="0.01"
               />
               <span className="absolute right-2.5 top-1/2 -translate-y-1/2">
-                <img
+                <Image
                   src="/presupuestoPrecio.png"
                   alt="$"
+                  width={20}
+                  height={20}
                   className="w-5 h-5"
                 />
               </span>
             </div>
           </div>
         </div>
-
       </div>
 
       <div className="flex justify-center -mt-4 mb-6">
@@ -474,7 +457,6 @@ export default function BudgetExtras({
         />
       </div>
 
-      {/* Lista de prendas agregadas */}
       <div className="mb-6">
         <label className="block text-[14px] font-bold leading-[1.31] text-[#4F3E5B] mb-3 ml-1">
           Lista de prendas agregadas:
@@ -512,7 +494,6 @@ export default function BudgetExtras({
         </div>
       </div>
 
-      {/* Observaciones */}
       <div className="mb-8">
         <label className="block text-[14px] font-bold leading-[1.31] text-[#1A151E] mb-2 ml-1">
           Observaciones
@@ -527,7 +508,7 @@ export default function BudgetExtras({
           rows={4}
           placeholder="Ej.: Estampado, bordado, botones extra"
           maxLength={500}
-          className="w-full bg-[#FEFCFF] border border-[#CEC2D6] rounded-[6px] px-3 py-2 text-sm text-[#B5A4C1] outline-none resize-none placeholder:text-[#B5A4C1] focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all"
+          className="w-full bg-white border border-[#CEC2D6] rounded-[6px] px-3 py-2 text-sm text-[#1A151E] outline-none resize-none placeholder:text-[#B5A4C1] focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all"
         ></textarea>
         {errors.observations && (
           <p className="text-xs text-red-500 mt-1">
@@ -536,7 +517,6 @@ export default function BudgetExtras({
         )}
       </div>
 
-      {/* Botón Revisar */}
       <button
         type="button"
         onClick={handleRevisar}

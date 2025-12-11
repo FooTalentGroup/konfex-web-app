@@ -1,64 +1,40 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import Header from '@/components/common/Header';
-import Footer from '@/components/common/Footer';
-import Sidebar from '@/components/common/Sidebar';
-import BudgetDetailCard, { BudgetDetailData } from '@/components/presupuestos/BudgetDetailCard';
-import BudgetItemsTable, { BudgetItem } from '@/components/presupuestos/BudgetItemsTable';
-import { useAuth } from '@/hooks/useAuth';
-import { useSidebar } from '@/hooks/useSidebar';
-import Image from 'next/image';
-
-const mockBudgetData: BudgetDetailData = {
-  id: '000025',
-  estado: 'Enviado',
-  fechaCreacion: '2026-01-02',
-  titulo: 'Pingui Go - Camisetas Verano',
-  clienteNombre: 'Fútbol Pingui Go',
-  telefono: '+35 261 458 6918',
-  email: 'fupingui@gmail.com',
-  fechaFinalizacion: '2025-10-02',
-  validezDias: 7,
-};
-
-const mockItems: BudgetItem[] = [
-  {
-    nombre: 'Camiseta verano "Lirios"',
-    talla: 'M',
-    unidades: 2,
-    precioUnitario: 9000,
-    total: 18000,
-  },
-  {
-    nombre: 'Vectorizar logo',
-    talla: '-',
-    unidades: 1,
-    precioUnitario: 3000,
-    total: 3000,
-  },
-  {
-    nombre: 'Estampado logo',
-    talla: '-',
-    unidades: 2,
-    precioUnitario: 1250,
-    total: 2500,
-  },
-  {
-    nombre: 'Envío Mendoza',
-    talla: '-',
-    unidades: 1,
-    precioUnitario: 1250,
-    total: 1250,
-  },
-];
+import React from "react";
+import { useRouter, useParams } from "next/navigation";
+import Header from "@/components/common/Header";
+import Footer from "@/components/common/Footer";
+import Sidebar from "@/components/common/Sidebar";
+import BudgetDetailCard from "@/components/presupuestos/BudgetDetailCard";
+import BudgetItemsTable from "@/components/presupuestos/BudgetItemsTable";
+import { useAuth } from "@/hooks/useAuth";
+import { useSidebar } from "@/hooks/useSidebar";
+import { useBudgetDetail } from "@/hooks/useBudgetDetail";
+import Image from "next/image";
+import BtnActionsCollection from "@/components/ui/BtnActionsCollection";
+import BudgetPDF from "@/components/calculator/BudgetPDF";
+import { pdf } from "@react-pdf/renderer";
+import {
+  mapPresupuestoToBudgetDetail,
+  mapPresupuestoToBudgetItems,
+  calcularIVAPorcentaje,
+} from "@/utils/presupuestoDetailMapper";
+import { presupuestoService } from "@/services/presupuesto.service";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function BudgetDetailPage() {
   const router = useRouter();
   const params = useParams();
   const { user, mounted } = useAuth();
-  const { isOpen: isSidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar();
+  const {
+    isOpen: isSidebarOpen,
+    open: openSidebar,
+    close: closeSidebar,
+  } = useSidebar();
+  const { showSuccess, showError, showInfo } = useToast();
+
+  const budgetId = Number(params.id);
+  const { budget, isLoading, error } = useBudgetDetail(budgetId);
 
   if (!mounted) {
     return null;
@@ -68,16 +44,133 @@ export default function BudgetDetailPage() {
     return null;
   }
 
-  const handleTelegramClick = () => {
-    console.log('Telegram button clicked');
+  const handleDownload = async () => {
+    if (!budget) return;
+
+    try {
+      const items = mapPresupuestoToBudgetItems(budget);
+
+      const materials = items
+        .filter((item) => item.talla !== "-")
+        .map((item) => ({
+          name: item.nombre,
+          unitPrice: item.precioUnitario,
+          variants: [
+            {
+              size: item.talla,
+              quantity: item.unidades,
+            },
+          ],
+        }));
+
+      const extras = items
+        .filter((item) => item.talla === "-")
+        .map((item) => ({
+          name: item.nombre,
+          quantity: item.unidades,
+          amount: item.precioUnitario,
+        }));
+
+      const totalMaterialsCost = items
+        .filter((item) => item.talla !== "-")
+        .reduce((sum, item) => sum + item.total, 0);
+
+      const formData = {
+        id: budget.numeroPresupuesto,
+        title: budget.nombre || "Sin título",
+        clientName: budget.cliente?.nombre || "Sin cliente",
+        clientEmail: budget.cliente?.email || "",
+        clientPhone: budget.cliente?.telefono || "",
+        deliveryDate: budget.fechaVencimiento || budget.fechaCreacion,
+        observations: budget.notas || "",
+      };
+
+      const blob = await pdf(
+        <BudgetPDF
+          formData={formData}
+          materials={materials}
+          extras={extras}
+          totalMaterialsCost={totalMaterialsCost}
+          grandTotal={budget.totalFinal}
+        />
+      ).toBlob();
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Presupuesto_${
+        budget.nombre?.replace(/\s+/g, "_") || "Sin_titulo"
+      }_${budget.numeroPresupuesto.toString().padStart(6, "0")}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      console.log("PDF descargado exitosamente");
+    } catch (error) {
+      console.error("Error al generar el PDF:", error);
+    }
   };
 
-  const handleEnviar = () => {
-    console.log('Enviar clicked');
+  const handleEdit = () => {
+    if (!budget) return;
+    router.push(`/calculator?id=${budget.id}`);
   };
 
-  const handleEditar = () => {
-    console.log('Editar clicked');
+  const handleOpenTelegram = async () => {
+    if (!budget) return;
+
+    if (budget.origen === "telegram") {
+      await handleDownload();
+
+      if (budget.clienteId) {
+        router.push(`/inbox/chat/${budget.clienteId}`);
+      } else {
+        router.push("/inbox");
+      }
+    } else {
+      handleDownload();
+    }
+  };
+
+  const handleConvertToPedido = async () => {
+    if (!budget) return;
+
+    if (budget.pedido) {
+      showInfo("Este presupuesto ya tiene un pedido asociado. Redirigiendo...");
+      router.push("/pedidos");
+      return;
+    }
+
+    try {
+      if (budget.estado !== "ACEPTADO") {
+        showInfo("Aceptando presupuesto y convirtiéndolo en pedido...");
+
+        await presupuestoService.partialUpdate(budget.id, {
+          estado: "ACEPTADO",
+        });
+      } else {
+        showInfo("Convirtiendo presupuesto en pedido...");
+
+        await presupuestoService.partialUpdate(budget.id, {
+          estado: "ACEPTADO",
+        });
+      }
+
+      const updatedBudget = await presupuestoService.getById(budget.id);
+
+      if (updatedBudget.pedido) {
+        showSuccess("¡Pedido creado exitosamente!");
+        setTimeout(() => {
+          router.push("/pedidos");
+        }, 1000);
+      } else {
+        showError("Error al crear el pedido. Por favor intenta nuevamente.");
+      }
+    } catch (error) {
+      console.error("Error al convertir presupuesto en pedido:", error);
+      showError("Error al convertir el presupuesto en pedido");
+    }
   };
 
   return (
@@ -102,7 +195,7 @@ export default function BudgetDetailPage() {
                     className="w-4 h-4 sm:w-5 sm:h-5"
                   />
                 </button>
-                
+
                 <div className="flex items-center gap-1.5 sm:gap-2 ml-auto">
                   <span className="font-[var(--font-lato),sans-serif] font-normal text-xs sm:text-sm text-[#9D86AC] leading-[131%] tracking-[0%]">
                     Presupuesto
@@ -125,49 +218,61 @@ export default function BudgetDetailPage() {
 
         <main className="flex-1 px-0 pt-2 pb-4 sm:pt-2 sm:pb-6 overflow-y-auto sm:overflow-hidden min-h-0">
           <div className="w-full max-w-[430px] mx-auto">
-            <BudgetDetailCard data={mockBudgetData} onTelegramClick={handleTelegramClick} />
+            {isLoading && (
+              <div className="text-center py-12">
+                <p
+                  className="text-gray-500 text-sm"
+                  style={{ fontFamily: "var(--font-lato), sans-serif" }}
+                >
+                  Cargando presupuesto...
+                </p>
+              </div>
+            )}
 
-            <BudgetItemsTable items={mockItems} ivaPorcentaje={16} total={28710} />
+            {error && (
+              <div className="text-center py-12">
+                <p
+                  className="text-red-500 text-sm mb-4"
+                  style={{ fontFamily: "var(--font-lato), sans-serif" }}
+                >
+                  {error}
+                </p>
+                <button
+                  onClick={() => router.back()}
+                  className="px-4 py-2 bg-[#9D86AC] text-white rounded-lg hover:opacity-80 transition-opacity"
+                  style={{ fontFamily: "var(--font-lato), sans-serif" }}
+                >
+                  Volver
+                </button>
+              </div>
+            )}
 
-            <div className="flex flex-row gap-2 sm:gap-3 mt-0 sm:-mt-2 px-4 sm:px-6">
-              <button
-                onClick={handleEnviar}
-                className="flex-1 bg-[#EAD0FB] py-2 px-3 sm:py-3 sm:px-4 rounded-lg border-[0.5px] border-[#5A0B8E] font-[var(--font-lato),sans-serif] font-medium hover:bg-[#E0C0F9] transition-colors min-h-[40px] sm:min-h-[45px] shadow-[0_1px_2px_0_rgba(15,23,42,0.06)]"
-              >
-                <div className="flex items-center justify-center gap-1.5 sm:gap-2">
-                  <Image
-                    src="/enviarBoton.png"
-                    alt="Enviar"
-                    width={16}
-                    height={16}
-                    className="w-3.5 h-3.5 sm:w-[18px] sm:h-[18px]"
-                  />
-                  <span className="text-xs font-[var(--font-lato),sans-serif] font-normal text-[#5A0B8E] leading-[131%] tracking-[0%]">Enviar</span>
-                </div>
-              </button>
+            {!isLoading && !error && budget && (
+              <>
+                <BudgetDetailCard data={mapPresupuestoToBudgetDetail(budget)} />
 
-              <button
-                onClick={handleEditar}
-                className="flex-1 bg-[#B65CF2] text-white py-2 px-3 sm:py-3 sm:px-4 rounded-lg border-[0.5px] border-[#770FBD] font-[var(--font-lato),sans-serif] font-medium hover:bg-[#9D4EDD] transition-colors min-h-[40px] sm:min-h-[45px] shadow-[0_1px_2px_0_rgba(15,23,42,0.06)]"
-              >
-                <div className="flex items-center justify-center gap-1.5 sm:gap-2">
-                  <Image
-                    src="/editarBoton.png"
-                    alt="Editar"
-                    width={16}
-                    height={16}
-                    className="w-3.5 h-3.5 sm:w-[18px] sm:h-[18px]"
-                  />
-                  <span className="text-xs sm:text-sm font-[var(--font-lato),sans-serif] font-normal text-[#FEFCFF] leading-[131%] tracking-[0%]">Editar</span>
-                </div>
-              </button>
-            </div>
+                <BudgetItemsTable
+                  items={mapPresupuestoToBudgetItems(budget)}
+                  ivaPorcentaje={calcularIVAPorcentaje(budget)}
+                  total={budget.totalFinal}
+                />
+              </>
+            )}
           </div>
         </main>
+
+        {!isLoading && !error && budget && (
+          <BtnActionsCollection.fichaMode
+            toggleDeleteMode={handleEdit}
+            onAddCollection={handleOpenTelegram}
+            isTelegramBudget={budget.origen === "telegram"}
+            isDeleteMode={false}
+            confirmDeletion={handleConvertToPedido}
+          />
+        )}
       </div>
 
       <Footer />
     </div>
   );
 }
-

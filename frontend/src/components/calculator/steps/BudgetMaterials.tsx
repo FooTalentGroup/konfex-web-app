@@ -31,19 +31,18 @@ export default function BudgetMaterials() {
   const [tempProductoId, setTempProductoId] = useState<number | undefined>(
     undefined
   );
-  const [tempPrice, setTempPrice] = useState("35000");
+  const [tempPrice, setTempPrice] = useState("0");
   const [tempVariants, setTempVariants] = useState<
     { size: string; quantity: number }[]
   >([]);
 
-  const [currentSize, setCurrentSize] = useState("M");
+  const [currentSize, setCurrentSize] = useState("Elige una talla");
   const [currentQty, setCurrentQty] = useState(1);
   const [sizeOpen, setSizeOpen] = useState(false);
   const availableSizes = ["S", "M", "L", "XL"];
 
   const addVariant = () => {
     if (currentQty >= 1) {
-      // Comportamiento original: si la talla existe, reemplaza su cantidad; si no, agrega
       const existingIndex = tempVariants.findIndex(
         (v) => v.size === currentSize
       );
@@ -75,7 +74,6 @@ export default function BudgetMaterials() {
 
     if (!tempPrice || finalVariants.length === 0) return;
 
-    // Validar que tenga productoId si se seleccionó desde el autocomplete
     if (!tempProductoId && tempName.trim()) {
       console.warn(
         "⚠️ Material agregado sin productoId. Se recomienda seleccionar desde el autocomplete."
@@ -91,7 +89,7 @@ export default function BudgetMaterials() {
 
     setTempName("");
     setTempProductoId(undefined);
-    setTempPrice("35000");
+    setTempPrice("0");
     setTempVariants([]);
     setCurrentQty(1);
     setCurrentSize("M");
@@ -109,26 +107,19 @@ export default function BudgetMaterials() {
 
   return (
     <div className="p-5 pb-12 font-lato bg-[#F4E7FD] rounded-b-[22px] space-y-5 overflow-x-hidden">
-      {/* Total detalle header */}
       <div className="flex justify-between items-center mb-2 px-1 -mt-3 pl-2 sm:pl-3">
         <span className="font-bold text-[16px] leading-[1.31] text-black">
           Total detalle:
         </span>
-        <BudgetTotalBadge
-          amount={totalMaterials}
-          className="text-[#C071F4]!"
-        />
+        <BudgetTotalBadge amount={totalMaterials} className="text-[#C071F4]!" />
       </div>
       <div className="h-px bg-[#CEC2D6] mb-3 -mt-2 mx-[6px] sm:mx-[10px]"></div>
 
-      {/* Instruction text */}
       <p className="text-[13px] text-[#8B709D] px-1 leading-normal pl-2 sm:pl-3">
         Agrega las prendas y tallas del pedido.
       </p>
 
-      {/* Form container */}
       <div className="bg-[#F3F0F5] px-[8px] pt-[8px] pb-[30px] rounded-[10px] border-[0.5px] border-[#CEC2D6] relative space-y-[20px] w-full max-w-[390px] sm:max-w-[520px] lg:max-w-[640px] mx-auto -mt-2">
-        {/* Nombre prenda */}
         <div className="space-y-2">
           <label className="block text-[14px] font-bold leading-[1.31] text-[#1A151E] ml-1">
             Nombre prenda
@@ -136,27 +127,32 @@ export default function BudgetMaterials() {
           <GarmentAutocomplete
             value={tempName}
             onChange={(value) => {
-              // Limitar a 100 caracteres
               if (value.length <= 100) {
                 setTempName(value);
+
+                if (value.trim() === "") {
+                  setTempPrice("0");
+                  setTempProductoId(undefined);
+                }
               }
             }}
             onSelect={(producto: Producto) => {
-              // Guardar el productoId y nombre
               const nombre = producto.nombre.substring(0, 100);
               setTempName(nombre);
               setTempProductoId(producto.id);
-              // Si el producto tiene tallas disponibles, podemos pre-seleccionar la primera
+
+              if (producto.precio !== undefined && producto.precio !== null) {
+                setTempPrice(producto.precio.toString());
+              }
+
               if (producto.tallas && producto.tallas.length > 0) {
                 setCurrentSize(producto.tallas[0]);
               }
-              // Aquí podrías cargar el precio desde colecciones si está disponible
             }}
             placeholder="Ej.: Blusa manga larga - azul"
           />
         </div>
 
-        {/* Precio unitario section */}
         <div className="space-y-1">
           <div className="flex items-center justify-between">
             <label className="block text-[14px] font-bold leading-[1.31] text-[#4F3E5B]">
@@ -198,7 +194,6 @@ export default function BudgetMaterials() {
           />
         </div>
 
-        {/* Talla and Cantidad inputs in framed container */}
         <div className="bg-[#F3F0F5] border-[0.5px] border-[#CEC2D6] rounded-[10px] px-[10px] pt-[10px] pb-[20px] flex flex-col gap-4 w-full max-w-[374px] sm:max-w-[440px] lg:max-w-[520px] mx-auto">
           <div className="flex justify-between gap-[6px] w-full">
             <div className="w-[135px] sm:w-[180px] lg:w-[200px]">
@@ -209,11 +204,13 @@ export default function BudgetMaterials() {
                 <button
                   type="button"
                   onClick={() => setSizeOpen((v) => !v)}
-                  className="w-full bg-white rounded-lg h-10 px-3 text-sm text-[#B5A4C1] appearance-none outline-none font-normal cursor-pointer border border-[#DCCBEB] flex items-center justify-between"
+                  className="w-full bg-white rounded-lg h-10 px-3 text-sm text-[#1A151E] appearance-none outline-none font-normal cursor-pointer border border-[#DCCBEB] flex items-center justify-between"
                 >
                   <span>{currentSize}</span>
                   <ChevronDown
-                    className={`text-[#B5A4C1] transition-transform ${sizeOpen ? "rotate-180" : ""}`}
+                    className={`text-[#B5A4C1] transition-transform ${
+                      sizeOpen ? "rotate-180" : ""
+                    }`}
                     size={16}
                   />
                 </button>
@@ -272,7 +269,7 @@ export default function BudgetMaterials() {
                       setCurrentQty(1);
                     }
                   }}
-                  className="w-16 bg-transparent text-center text-sm outline-none font-normal text-[#B5A4C1] appearance-none [-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="w-16 bg-transparent text-center text-sm outline-none font-normal text-[#1A151E] appearance-none [-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   min="1"
                   step="1"
                 />
@@ -288,7 +285,6 @@ export default function BudgetMaterials() {
           </div>
         </div>
 
-        {/* Agregar talla button (restaurado) */}
         <div className="mb-5">
           <CircularAddButton
             onClick={addVariant}
@@ -301,7 +297,6 @@ export default function BudgetMaterials() {
           />
         </div>
 
-        {/* Lista de tallas agregadas */}
         {tempVariants.length > 0 && (
           <div className="mb-5">
             <p className="text-[14px] font-bold text-[#4F3E5B] mb-2 ml-1">
@@ -339,10 +334,8 @@ export default function BudgetMaterials() {
             </div>
           </div>
         )}
-
       </div>
 
-      {/* Agregar prenda fuera del contenedor */}
       <div className="mt-2 mb-5">
         <CircularAddButton
           onClick={handleAddMaterial}
@@ -355,7 +348,6 @@ export default function BudgetMaterials() {
         />
       </div>
 
-      {/* Lista de prendas agregadas */}
       <div className="space-y-3">
         {fields.length > 0 && (
           <p className="text-[14px] font-bold leading-[1.31] text-[#4F3E5B] mb-2 ml-1">
@@ -374,17 +366,13 @@ export default function BudgetMaterials() {
               </span>
               <div className="text-sm flex flex-col gap-1 text-[#000000] font-normal ml-auto text-right pr-3 sm:min-w-[70px]">
                 {material.variants?.map((v: MaterialVariant, i: number) => (
-                  <span key={i}>
-                    {v.size}
-                  </span>
+                  <span key={i}>{v.size}</span>
                 ))}
               </div>
 
               <div className="text-sm flex flex-col gap-1 text-[#000000] font-normal ml-auto text-right pr-2 sm:min-w-[80px]">
                 {material.variants?.map((v: MaterialVariant, i: number) => (
-                  <span key={i}>
-                    {v.quantity} uds.
-                  </span>
+                  <span key={i}>{v.quantity} uds.</span>
                 ))}
               </div>
 

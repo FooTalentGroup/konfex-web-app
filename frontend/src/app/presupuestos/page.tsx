@@ -1,18 +1,22 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Header from '@/components/common/Header';
-import Footer from '@/components/common/Footer';
-import Sidebar from '@/components/common/Sidebar';
-import PageHeader from '@/components/common/PageHeader';
-import BudgetCard from '@/components/common/BudgetCard';
-import { useAuth } from '@/hooks/useAuth';
-import { useSidebar } from '@/hooks/useSidebar';
-import { useBudgets } from '@/hooks/useBudgets';
+import React from "react";
+import Header from "@/components/common/Header";
+import Footer from "@/components/common/Footer";
+import Sidebar from "@/components/common/Sidebar";
+import PageHeader from "@/components/common/PageHeader";
+import BudgetCard from "@/components/common/BudgetCard";
+import { useAuth } from "@/hooks/useAuth";
+import { useSidebar } from "@/hooks/useSidebar";
+import { useBudgets } from "@/hooks/useBudgets";
 
 export default function PresupuestosPage() {
   const { user, mounted } = useAuth();
-  const { isOpen: isSidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar();
+  const {
+    isOpen: isSidebarOpen,
+    open: openSidebar,
+    close: closeSidebar,
+  } = useSidebar();
   const {
     filteredBudgets,
     searchQuery,
@@ -34,7 +38,7 @@ export default function PresupuestosPage() {
     <div className="min-h-screen flex flex-col bg-[#9D86AC]">
       <Header onMenuClick={openSidebar} />
       <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
-      
+
       <div className="flex-1 flex flex-col">
         <PageHeader
           title="Presupuestos"
@@ -49,9 +53,9 @@ export default function PresupuestosPage() {
           <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto">
             {isLoading && (
               <div className="text-center py-12">
-                <p 
+                <p
                   className="text-gray-500 text-sm"
-                  style={{ fontFamily: 'var(--font-lato), sans-serif' }}
+                  style={{ fontFamily: "var(--font-lato), sans-serif" }}
                 >
                   Cargando presupuestos...
                 </p>
@@ -59,9 +63,9 @@ export default function PresupuestosPage() {
             )}
             {error && (
               <div className="text-center py-12">
-                <p 
+                <p
                   className="text-red-500 text-sm"
-                  style={{ fontFamily: 'var(--font-lato), sans-serif' }}
+                  style={{ fontFamily: "var(--font-lato), sans-serif" }}
                 >
                   {error}
                 </p>
@@ -76,7 +80,7 @@ export default function PresupuestosPage() {
                       id={budget.id}
                       numeroPresupuesto={budget.numeroPresupuesto}
                       clienteNombre={budget.clienteNombre}
-                      totalVenta={budget.totalVenta}
+                      totalFinal={budget.totalFinal}
                       fechaVencimiento={budget.fechaVencimiento}
                       estado={budget.estado}
                       onClick={() => handleBudgetClick(budget.id)}
@@ -85,9 +89,9 @@ export default function PresupuestosPage() {
                 </div>
                 {filteredBudgets.length === 0 && (
                   <div className="text-center py-12">
-                    <p 
+                    <p
                       className="text-gray-500 text-sm"
-                      style={{ fontFamily: 'var(--font-lato), sans-serif' }}
+                      style={{ fontFamily: "var(--font-lato), sans-serif" }}
                     >
                       No se encontraron presupuestos
                     </p>
@@ -103,4 +107,3 @@ export default function PresupuestosPage() {
     </div>
   );
 }
-

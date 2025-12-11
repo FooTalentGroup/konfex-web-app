@@ -5,7 +5,6 @@ import { toUserSignInResponseDto, toUserSignUpResponseDto } from "../user/user.m
 import type { UserSignInRequestDto, UserSignUpRequestDto } from "./auth.schema";
 import { AuthService } from "./auth.service";
 
-// Crear usuario
 export const signUpController = controllerHandler(
   async (req: Request) => {
     const { email, name, role, password }: UserSignUpRequestDto = req.body;
@@ -24,6 +23,21 @@ export const signInController = controllerHandler(
   },
   "Login exitoso",
   201
+);
+
+export const refreshController = controllerHandler(
+  async (req: Request) => {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken || typeof refreshToken !== "string") {
+      throw new Error("Refresh token requerido");
+    }
+
+    const tokens = await AuthService.refresh(refreshToken);
+    return tokens;
+  },
+  "Token renovado exitosamente",
+  200
 );
 
 export const signOutController = controllerHandler(

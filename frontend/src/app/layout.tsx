@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { lato, poppins } from "./fonts";
 import "./styles/globals.css";
 import ToastProvider from "@/components/providers/ToastProvider";
+import AuthProvider from "@/components/providers/AuthProvider";
+import { UnsavedChangesProvider } from "@/contexts/UnsavedChangesContext";
 
 export const metadata: Metadata = {
   title: "KONFEX",
@@ -24,7 +26,11 @@ export default function RootLayout({
         className={`${lato.variable} ${poppins.variable} ${lato.className} antialiased`}
         suppressHydrationWarning
       >
-        <ToastProvider>{children}</ToastProvider>
+        <AuthProvider>
+          <UnsavedChangesProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </UnsavedChangesProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -1,12 +1,12 @@
-import { PresupuestoResponseDto } from '@/types/presupuesto.types';
-import { ApiResponse } from '@/types/auth.types';
-import { apiClient } from '@/config/apiClient';
+import { PresupuestoResponseDto } from "@/types/presupuesto.types";
+import { ApiResponse } from "@/types/auth.types";
+import { apiClient } from "@/config/apiClient";
 
 export interface CreatePresupuestoDto {
   nombre?: string;
   clienteId?: number | null;
   fechaVencimiento?: string;
-  estado: "BORRADOR" | "ENVIADO" | "ACEPTADO" | "RECHAZADO" | "VENCIDO";
+  estado: "BORRADOR" | "DESCARGADO" | "ACEPTADO" | "RECHAZADO" | "VENCIDO";
   margenGananciaPorcentaje: number;
   gastosNegocioId: number;
   totalCosto: number;
@@ -32,52 +32,61 @@ export interface CreatePresupuestoDto {
 
 export const presupuestoService = {
   getAll: async (): Promise<PresupuestoResponseDto[]> => {
-    const response = await apiClient<ApiResponse<PresupuestoResponseDto[]>>('/presupuestos');
-    
+    const response = await apiClient<ApiResponse<PresupuestoResponseDto[]>>(
+      "/presupuestos"
+    );
+
     if (!response.success || !response.data) {
-      throw new Error(response.message || 'Error al obtener presupuestos');
+      throw new Error(response.message || "Error al obtener presupuestos");
     }
 
     return response.data;
   },
 
   getById: async (id: number): Promise<PresupuestoResponseDto> => {
-    const response = await apiClient<ApiResponse<PresupuestoResponseDto>>(`/presupuestos/${id}`);
-    
+    const response = await apiClient<ApiResponse<PresupuestoResponseDto>>(
+      `/presupuestos/${id}`
+    );
+
     if (!response.success || !response.data) {
-      throw new Error(response.message || 'Error al obtener presupuesto');
+      throw new Error(response.message || "Error al obtener presupuesto");
     }
 
     return response.data;
   },
 
-  create: async (data: CreatePresupuestoDto): Promise<PresupuestoResponseDto> => {
+  create: async (
+    data: CreatePresupuestoDto
+  ): Promise<PresupuestoResponseDto> => {
     const response = await apiClient<ApiResponse<PresupuestoResponseDto>>(
-      '/presupuestos',
+      "/presupuestos",
       {
-        method: 'POST',
+        method: "POST",
         body: data,
       }
     );
 
     if (!response.success || !response.data) {
-      throw new Error(response.message || 'Error al crear presupuesto');
+      throw new Error(response.message || "Error al crear presupuesto");
     }
 
     return response.data;
   },
 
-  update: async (id: number, data: CreatePresupuestoDto): Promise<PresupuestoResponseDto> => {
+  update: async (
+    id: number,
+    data: CreatePresupuestoDto
+  ): Promise<PresupuestoResponseDto> => {
     const response = await apiClient<ApiResponse<PresupuestoResponseDto>>(
       `/presupuestos/${id}`,
       {
-        method: 'PUT',
+        method: "PUT",
         body: data,
       }
     );
 
     if (!response.success || !response.data) {
-      throw new Error(response.message || 'Error al actualizar presupuesto');
+      throw new Error(response.message || "Error al actualizar presupuesto");
     }
 
     return response.data;
@@ -90,29 +99,25 @@ export const presupuestoService = {
     const response = await apiClient<ApiResponse<PresupuestoResponseDto>>(
       `/presupuestos/${id}`,
       {
-        method: 'PATCH',
+        method: "PATCH",
         body: data,
       }
     );
 
     if (!response.success || !response.data) {
-      throw new Error(response.message || 'Error al actualizar presupuesto');
+      throw new Error(response.message || "Error al actualizar presupuesto");
     }
 
     return response.data;
   },
 
   delete: async (id: number): Promise<void> => {
-    const response = await apiClient<ApiResponse<null>>(
-      `/presupuestos/${id}`,
-      {
-        method: 'DELETE',
-      }
-    );
+    const response = await apiClient<ApiResponse<null>>(`/presupuestos/${id}`, {
+      method: "DELETE",
+    });
 
     if (!response.success) {
-      throw new Error(response.message || 'Error al eliminar presupuesto');
+      throw new Error(response.message || "Error al eliminar presupuesto");
     }
   },
 };
-

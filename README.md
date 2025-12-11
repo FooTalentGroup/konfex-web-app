@@ -4,7 +4,7 @@ Este repositorio contiene el código fuente para el sistema de gestión de EOS I
 
 ## Tabla de Contenidos
 
-- [Proyecto EOS Indumentaria (Konfex Web App)](#proyecto-eos-indumentaria-konfex-web-app)
+- [Proyecto Konfex Web App](#proyecto-konfex-web-app)
   - [Tabla de Contenidos](#tabla-de-contenidos)
   - [Estructura del Proyecto](#estructura-del-proyecto)
     - [Descripción de Carpetas](#descripción-de-carpetas)
@@ -27,6 +27,36 @@ Este repositorio contiene el código fuente para el sistema de gestión de EOS I
   - [Enlaces de Producción](#enlaces-de-producción)
   - [Documentación Adicional](#documentación-adicional)
     - [Detalles Técnicos](#detalles-técnicos)
+- [Configuración de Autenticación JWT](#configuración-de-autenticación-jwt)
+  - [Descripción General](#descripción-general)
+  - [Componentes Principales](#componentes-principales)
+    - [1. Middleware de Next.js (`src/middleware.ts`)](#1-middleware-de-nextjs-srcmiddlewarets)
+    - [2. Utilidades de Token (`src/utils/token.utils.ts`)](#2-utilidades-de-token-srcutilstokenutilsts)
+    - [3. Componente de Protección (`src/components/common/ProtectedRoute.tsx`)](#3-componente-de-protección-srccomponentscommonprotectedroutetsx)
+    - [4. Hooks de Autenticación](#4-hooks-de-autenticación)
+      - [`useAuth`](#useauth)
+      - [`useLogin`](#uselogin)
+    - [5. Servicio de Autenticación (`src/services/auth.service.ts`)](#5-servicio-de-autenticación-srcservicesauthservicets)
+  - [Flujo de Autenticación](#flujo-de-autenticación)
+    - [Login](#login)
+    - [Acceso a Rutas Protegidas](#acceso-a-rutas-protegidas)
+    - [Logout](#logout)
+  - [Almacenamiento de Tokens](#almacenamiento-de-tokens)
+  - [Seguridad](#seguridad)
+    - [Validación del Token](#validación-del-token)
+    - [Protección de Rutas](#protección-de-rutas)
+    - [Cookies Seguras](#cookies-seguras)
+  - [Configuración](#configuración-1)
+    - [Variables de Entorno](#variables-de-entorno)
+    - [Rutas Públicas](#rutas-públicas)
+  - [Uso en Componentes](#uso-en-componentes)
+    - [Proteger una Página](#proteger-una-página)
+    - [Obtener Datos del Usuario](#obtener-datos-del-usuario)
+    - [Verificar Autenticación](#verificar-autenticación)
+  - [Troubleshooting](#troubleshooting)
+    - [El usuario puede acceder sin login](#el-usuario-puede-acceder-sin-login)
+    - [Redirección infinita](#redirección-infinita)
+    - [Token no se guarda](#token-no-se-guarda)
   - [Licencia](#licencia)
   - [Equipo](#equipo)
   - [Soporte](#soporte)
@@ -70,8 +100,8 @@ konfex-web-app/
 ## 🛠 Tecnologías
 
 ### Frontend
-- **Framework**: Next.js 16.0.3
-- **Librería UI**: React 19.2.0
+- **Framework**: Next.js 16.0.7
+- **Librería UI**: React 18.2.0
 - **Lenguaje**: TypeScript 5
 - **Estilos**: Tailwind CSS 4
 - **Formularios**: React Hook Form 7.66.1 + Zod 4.1.12
@@ -79,20 +109,23 @@ konfex-web-app/
 - **Iconos**: Lucide React 0.554.0
 - **Comunicación en Tiempo Real**: Socket.io-client 4.8.1
 - **Gestión de Archivos**: Integración con Cloudinary
+- **Generación de PDFs**: React PDF Renderer 4.3.1
+- **Emojis**: Emoji Mart 5.6.0
+- **Zoom de Imágenes**: React Medium Image Zoom 5.4.0
 
 ### Backend
 - **Framework**: Express.js 5.1.0
 - **Lenguaje**: TypeScript 5.9.3
-- **ORM**: Prisma 7.0.1
-- **Base de Datos**: PostgreSQL
+- **ORM**: Prisma 7.0.1 con Prisma Adapter PG
+- **Base de Datos**: PostgreSQL 12+
 - **Autenticación**: JWT (jsonwebtoken 9.0.2)
-- **Documentación**: Swagger (swagger-jsdoc, swagger-ui-express)
-- **Logging**: Pino 10.1.0
+- **Documentación**: Swagger (swagger-jsdoc 6.2.8, swagger-ui-express 5.0.1)
+- **Logging**: Pino 10.1.0 con Pino HTTP 11.0.0
 - **Validación**: Zod 4.1.12
 - **Comunicación en Tiempo Real**: Socket.io 4.8.1
 - **Gestión de Archivos**: Cloudinary 2.8.0
 - **Hashing**: bcrypt 6.0.0
-- **Integración**: Telegram Bot API
+- **Integración**: Telegram Bot API con Axios 1.13.2
 
 ## Prerrequisitos
 
@@ -174,8 +207,8 @@ El frontend estará disponible en: `http://localhost:3000`
 
 ## Enlaces de Producción
 
-- **Frontend (Vercel)**: [konfex-web-app.vercel.app](https://konfex-web-app.vercel.app)
-- **Backend**: Consultar configuración de deployment en [README del Backend](./backend/README.md)
+- **Frontend (Railway)**: [https://surprising-wholeness-production.up.railway.app/](https://surprising-wholeness-production.up.railway.app/)
+- **Backend**: Consultar configuración de deployment en [https://konfex-web-app-production.up.railway.app/api/v1/docs/](https://konfex-web-app-production.up.railway.app/api/v1/docs/)
 
 > **Nota**: El backend debe estar desplegado y configurado con las variables de entorno necesarias para que el frontend funcione correctamente.
 
@@ -186,17 +219,205 @@ El frontend estará disponible en: `http://localhost:3000`
 
 ### Detalles Técnicos
 
-- **Dominio (Frontend)**: `https://konfex-web-app.vercel.app`
-- **HTTPS (Frontend)**: Sí, gestionado automáticamente por Vercel
+- **Dominio (Frontend)**: `https://surprising-wholeness-production.up.railway.app/`
+- **HTTPS (Frontend)**: Sí, gestionado automáticamente por Railway
 - **Puertos (Local)**: 
   - `3000` - Frontend (Next.js)
   - `3001` - Backend (Express.js)
 - **Comandos Build**: 
-  - Frontend: `npm run build` (se ejecuta automáticamente en Vercel)
+  - Frontend: `npm run build` (se ejecuta automáticamente en Railway)
   - Backend: `npm run build` (compila TypeScript y genera cliente Prisma)
 - **Base de Datos**: PostgreSQL
 - **ORM**: Prisma 7.0.1
 - **Comunicación**: REST API + WebSocket (Socket.io)
+
+# Configuración de Autenticación JWT
+
+## Descripción General
+
+Este documento describe la implementación de autenticación JWT en la aplicación KONFEX. El sistema protege todas las rutas excepto la página de login, requiriendo que los usuarios inicien sesión antes de acceder a cualquier funcionalidad.
+
+## Componentes Principales
+
+### 1. Middleware de Next.js (`src/middleware.ts`)
+
+El middleware intercepta todas las peticiones y verifica la autenticación antes de permitir el acceso:
+
+- **Rutas públicas**: Solo `/` (página de login) es accesible sin autenticación
+- **Verificación de token**: Comprueba la presencia y validez del token JWT
+- **Redirección automática**: Redirige a login si no hay token válido
+- **Preservación de ruta**: Guarda la ruta original en query params para redirigir después del login
+
+### 2. Utilidades de Token (`src/utils/token.utils.ts`)
+
+Funciones centralizadas para manejar tokens JWT:
+
+- `decodeToken(token)`: Decodifica el payload del JWT
+- `isTokenExpired(token)`: Verifica si el token ha expirado
+- `getTokenExpirationTime(token)`: Obtiene el tiempo restante de validez
+- `saveToken(token)`: Guarda el token en localStorage y cookies
+- `saveRefreshToken(refreshToken)`: Guarda el refresh token
+- `getToken()`: Obtiene el token de localStorage
+- `getRefreshToken()`: Obtiene el refresh token
+- `clearTokens()`: Limpia todos los tokens (localStorage y cookies)
+- `isAuthenticated()`: Verifica si el usuario está autenticado
+
+### 3. Componente de Protección (`src/components/common/ProtectedRoute.tsx`)
+
+Componente React que proporciona una capa adicional de protección:
+
+```tsx
+<ProtectedRoute>
+  <YourProtectedContent />
+</ProtectedRoute>
+```
+
+- Verifica autenticación en el cliente
+- Muestra loading mientras verifica
+- Redirige a login si no está autenticado
+
+### 4. Hooks de Autenticación
+
+#### `useAuth`
+- Maneja el estado del usuario
+- Proporciona función de logout
+- Sincroniza el estado entre pestañas
+
+#### `useLogin`
+- Maneja el formulario de login
+- Guarda tokens después del login exitoso
+- Redirige a la ruta original o a inbox
+
+### 5. Servicio de Autenticación (`src/services/auth.service.ts`)
+
+Maneja las peticiones al backend:
+
+- `signIn(credentials)`: Inicia sesión
+- `signUp(credentials)`: Registra nuevo usuario
+- `signOut()`: Cierra sesión y limpia tokens
+
+## Flujo de Autenticación
+
+### Login
+1. Usuario ingresa credenciales en `/`
+2. `useLogin` envía petición al backend
+3. Backend responde con token, refreshToken y datos del usuario
+4. Tokens se guardan usando `saveToken()` y `saveRefreshToken()`
+5. Usuario se redirige a la ruta original o a `/inbox`
+
+### Acceso a Rutas Protegidas
+1. Usuario intenta acceder a una ruta protegida (ej: `/inbox`)
+2. Middleware verifica el token
+3. Si el token es válido, permite el acceso
+4. Si no hay token o es inválido, redirige a `/?redirect=/inbox`
+
+### Logout
+1. Usuario hace click en logout
+2. `useAuth.logout()` llama a `authService.signOut()`
+3. `authService.signOut()` limpia tokens usando `clearTokens()`
+4. Usuario es redirigido a `/`
+
+## Almacenamiento de Tokens
+
+Los tokens se almacenan en dos lugares:
+
+1. **localStorage**: Para persistencia entre sesiones
+   - `token`: JWT de acceso
+   - `refreshToken`: Token para renovar el JWT
+   - `user`: Datos del usuario
+
+2. **Cookies**: Para que el middleware pueda acceder
+   - `token`: JWT de acceso con fecha de expiración
+
+## Seguridad
+
+### Validación del Token
+- El middleware verifica la expiración del token antes de permitir el acceso
+- Los tokens expirados son rechazados automáticamente
+- La verificación se hace decodificando el payload (campo `exp`)
+
+### Protección de Rutas
+- **Nivel 1**: Middleware de Next.js (server-side)
+- **Nivel 2**: Componente ProtectedRoute (client-side)
+- **Nivel 3**: Hooks de autenticación (estado de la aplicación)
+
+### Cookies Seguras
+- `SameSite=Strict`: Previene ataques CSRF
+- `path=/`: Disponible en toda la aplicación
+- Fecha de expiración sincronizada con el token
+
+## Configuración
+
+### Variables de Entorno
+Asegúrate de tener configurada la URL del backend:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
+
+### Rutas Públicas
+Para agregar más rutas públicas, edita el array en `src/middleware.ts`:
+
+```typescript
+const publicRoutes = ['/', '/public-route'];
+```
+
+## Uso en Componentes
+
+### Proteger una Página
+```tsx
+import ProtectedRoute from '@/components/common/ProtectedRoute';
+
+export default function MyPage() {
+  return (
+    <ProtectedRoute>
+      <div>Contenido protegido</div>
+    </ProtectedRoute>
+  );
+}
+```
+
+### Obtener Datos del Usuario
+```tsx
+import { useAuth } from '@/hooks/useAuth';
+
+export default function MyComponent() {
+  const { user, logout } = useAuth();
+  
+  return (
+    <div>
+      <p>Hola, {user?.name}</p>
+      <button onClick={logout}>Cerrar Sesión</button>
+    </div>
+  );
+}
+```
+
+### Verificar Autenticación
+```tsx
+import { isAuthenticated } from '@/utils/token.utils';
+
+if (isAuthenticated()) {
+  // Usuario autenticado
+}
+```
+
+## Troubleshooting
+
+### El usuario puede acceder sin login
+- Verifica que el middleware esté en `src/middleware.ts`
+- Revisa que las rutas estén en el `matcher` del middleware
+- Comprueba que los tokens se estén guardando correctamente
+
+### Redirección infinita
+- Verifica que `/` esté en `publicRoutes`
+- Comprueba que el token no esté expirado
+- Revisa la consola del navegador para errores
+
+### Token no se guarda
+- Verifica que `saveToken()` se esté llamando después del login
+- Comprueba que localStorage esté habilitado en el navegador
+- Revisa que las cookies no estén bloqueadas
 
 ## Licencia
 

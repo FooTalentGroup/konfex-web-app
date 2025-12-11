@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Image from 'next/image';
-import { useRouter, usePathname } from 'next/navigation';
+import React from "react";
+import Image from "next/image";
+import { useRouter, usePathname } from "next/navigation";
+import { useUnsavedChangesContext } from "@/contexts/UnsavedChangesContext";
 
 interface MenuItem {
   id: string;
@@ -17,66 +18,70 @@ export interface SidebarProps {
   onClose: () => void;
 }
 
-
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const { requestNavigation } = useUnsavedChangesContext();
 
   const menuItems: MenuItem[] = [
     {
-      id: 'inbox',
-      label: 'Inbox',
-      iconPath: '/inbox.png',
-      path: '/inbox',
+      id: "inbox",
+      label: "Inbox",
+      iconPath: "/inbox.png",
+      path: "/inbox",
     },
     {
-      id: 'clientes',
-      label: 'Clientes',
-      iconPath: '/clientes.png',
-      path: '/clientes',
+      id: "clientes",
+      label: "Clientes",
+      iconPath: "/clientes.png",
+      path: "/clientes",
     },
     {
-      id: 'calculadora',
-      label: 'Calculadora',
-      iconPath: '/calculadora.png',
-      path: '/calculator',
+      id: "calculadora",
+      label: "Calculadora",
+      iconPath: "/calculadora.png",
+      path: "/calculator",
     },
     {
-      id: 'presupuestos',
-      label: 'Presupuestos',
-      iconPath: '/presupuesto.png',
-      path: '/presupuestos',
+      id: "presupuestos",
+      label: "Presupuestos",
+      iconPath: "/presupuesto.png",
+      path: "/presupuestos",
     },
     {
-      id: 'colecciones',
-      label: 'Colecciones',
-      iconPath: '/colecciones.png',
-      path: '/colecciones',
+      id: "colecciones",
+      label: "Colecciones",
+      iconPath: "/colecciones.png",
+      path: "/colecciones",
     },
     {
-      id: 'materia-prima',
-      label: 'Materia Prima',
-      iconPath: '/materiaPrima.png',
-      path: '/materia-prima',
+      id: "materia-prima",
+      label: "Materia Prima",
+      iconPath: "/materiaPrima.png",
+      path: "/materia-prima",
     },
     {
-      id: 'pedidos',
-      label: 'Pedidos',
-      iconPath: '/pedidos.png',
-      path: '/pedidos',
+      id: "pedidos",
+      label: "Pedidos",
+      iconPath: "/pedidos.png",
+      path: "/pedidos",
     },
     {
-      id: 'gastos-negocio',
-      label: 'Gastos del negocio',
-      iconPath: '/negocio.png',
-      path: '/gastos-negocio',
-
+      id: "gastos-negocio",
+      label: "Gastos del negocio",
+      iconPath: "/negocio.png",
+      path: "/gastos-negocio",
     },
   ];
 
   const handleMenuItemClick = (item: MenuItem) => {
     if (item.path) {
-      router.push(item.path);
+      // Check if we're on the calculator page
+      if (pathname === "/calculator") {
+        requestNavigation(item.path);
+      } else {
+        router.push(item.path);
+      }
     }
     onClose();
   };
@@ -87,17 +92,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         <div
           className="fixed inset-0 z-40"
           style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            backgroundColor: "rgba(0, 0, 0, 0.3)",
           }}
           onClick={onClose}
         />
       )}
       <aside
-        className={`fixed top-0 left-0 h-full z-50 transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
-          }`}
+        className={`fixed top-0 left-0 h-full z-50 transition-transform duration-300 ease-in-out ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
         style={{
-          width: '280px',
-          backgroundColor: '#6A5379',
+          width: "280px",
+          backgroundColor: "#6A5379",
         }}
       >
         <div className="flex flex-col h-full">
@@ -114,7 +120,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               onClick={onClose}
               className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
               style={{
-                backgroundColor: '#B65CF2',
+                backgroundColor: "#B65CF2",
               }}
               aria-label="Cerrar menú"
             >
@@ -145,37 +151,39 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     onClick={() => handleMenuItemClick(item)}
                     className="w-full flex items-center gap-3 px-4 py-3 transition-colors"
                     style={{
-                      backgroundColor: isActive ? '#D5A1F7' : 'transparent',
-                      color: isActive ? '#000000' : '#FFFFFF',
-                      fontFamily: 'var(--font-lato), sans-serif',
+                      backgroundColor: isActive ? "#D5A1F7" : "transparent",
+                      color: isActive ? "#000000" : "#FFFFFF",
+                      fontFamily: "var(--font-lato), sans-serif",
                     }}
                     onMouseEnter={(e) => {
                       if (!isActive) {
-                        e.currentTarget.style.backgroundColor = '#D5A1F7';
-                        e.currentTarget.style.color = '#000000';
-                        const icon = e.currentTarget.querySelector('svg');
+                        e.currentTarget.style.backgroundColor = "#D5A1F7";
+                        e.currentTarget.style.color = "#000000";
+                        const icon = e.currentTarget.querySelector("svg");
                         if (icon) {
-                          icon.style.stroke = '#000000';
-                          icon.style.fill = '#000000';
+                          icon.style.stroke = "#000000";
+                          icon.style.fill = "#000000";
                         }
-                        const img = e.currentTarget.querySelector('img');
+                        const img = e.currentTarget.querySelector("img");
                         if (img) {
-                          img.style.filter = 'brightness(0) invert(0) contrast(1)';
+                          img.style.filter =
+                            "brightness(0) invert(0) contrast(1)";
                         }
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (!isActive) {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                        e.currentTarget.style.color = '#FFFFFF';
-                        const icon = e.currentTarget.querySelector('svg');
+                        e.currentTarget.style.backgroundColor = "transparent";
+                        e.currentTarget.style.color = "#FFFFFF";
+                        const icon = e.currentTarget.querySelector("svg");
                         if (icon) {
-                          icon.style.stroke = '#FFFFFF';
-                          icon.style.fill = 'none';
+                          icon.style.stroke = "#FFFFFF";
+                          icon.style.fill = "none";
                         }
-                        const img = e.currentTarget.querySelector('img');
+                        const img = e.currentTarget.querySelector("img");
                         if (img) {
-                          img.style.filter = 'brightness(0) invert(1) contrast(2)';
+                          img.style.filter =
+                            "brightness(0) invert(1) contrast(2)";
                         }
                       }
                     }}
@@ -190,8 +198,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                           className="object-contain brightness-0 invert"
                           style={{
                             filter: isActive
-                              ? 'brightness(0) invert(0) contrast(1)'
-                              : 'brightness(0) invert(1) contrast(2)',
+                              ? "brightness(0) invert(0) contrast(1)"
+                              : "brightness(0) invert(1) contrast(2)",
                           }}
                         />
                       ) : (
@@ -204,8 +212,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     <div
                       className="mx-4 my-1"
                       style={{
-                        height: '1px',
-                        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                        height: "1px",
+                        backgroundColor: "rgba(255, 255, 255, 0.2)",
                       }}
                     />
                   )}
