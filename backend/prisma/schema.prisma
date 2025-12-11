@@ -168,7 +168,7 @@ model Presupuesto {
   createdAt                DateTime             @default(now())
   updatedAt                DateTime             @updatedAt
   pedido                   Pedido?
-  cliente                  Cliente?             @relation(fields: [clienteId], references: [id], onDelete: Restrict)
+  cliente                  Cliente?             @relation(fields: [clienteId], references: [id], onDelete: Cascade)
   gastosNegocio            GastosNegocio        @relation(fields: [gastosNegocioId], references: [id], onDelete: Restrict)
   detalles                 PresupuestoDetalle[]
   adicionales              Adicional[]
@@ -233,8 +233,8 @@ model Pedido {
   fechaEntregaReal     DateTime?
   createdAt            DateTime          @default(now())
   updatedAt            DateTime          @updatedAt
-  cliente              Cliente           @relation(fields: [clienteId], references: [id])
-  presupuesto          Presupuesto       @relation(fields: [presupuestoId], references: [id])
+  cliente              Cliente           @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  presupuesto          Presupuesto       @relation(fields: [presupuestoId], references: [id], onDelete: Cascade)
   detalles             PedidoDetalle[]
   etapas               ProduccionEtapa[]
 }
