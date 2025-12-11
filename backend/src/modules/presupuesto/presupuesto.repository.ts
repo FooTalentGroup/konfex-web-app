@@ -82,12 +82,12 @@ const defaultInclude: Prisma.PresupuestoInclude = {
 
 export const PresupuestoRepository = {
   create: async ({ data }: CreatePresupuestoData) => {
-    const { detalles, adicionales, clienteId, ...presupuestoData } = data;
+    const { detalles, adicionales, clienteId, gastosNegocioId, ...presupuestoData } = data;
 
     const createData: Prisma.PresupuestoCreateInput = {
       ...presupuestoData,
       cliente: clienteId ? { connect: { id: clienteId } } : undefined,
-      gastosNegocio: { connect: { id: presupuestoData.gastosNegocioId } },
+      gastosNegocio: { connect: { id: gastosNegocioId } },
       detalles: detalles
         ? {
             create: detalles.map((detalle) => ({

@@ -123,6 +123,7 @@ CREATE TABLE "Presupuesto" (
     "estado" "EstadoPresupuesto" NOT NULL,
     "margenGananciaPorcentaje" DOUBLE PRECISION NOT NULL,
     "totalCosto" DOUBLE PRECISION NOT NULL,
+    "costosIndirectos" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "gastosNegocioId" INTEGER NOT NULL,
     "ganancias" DOUBLE PRECISION NOT NULL,
     "iva" DOUBLE PRECISION NOT NULL DEFAULT 0,
