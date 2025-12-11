@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { authService } from '@/services/auth.service';
-import { useToast } from '@/contexts/ToastContext';
-import { isValid } from 'zod/v3';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { authService } from "@/services/auth.service";
+import { useToast } from "@/contexts/ToastContext";
+import { saveToken, saveRefreshToken } from "@/utils/token.utils";
 
 interface LoginFormData {
   usuario: string;
@@ -22,8 +22,8 @@ export const useLogin = () => {
     formState: { errors, isValid },
     setError: setFormError,
   } = useForm<LoginFormData>({
-    mode: 'onChange'
-  });;
+    mode: "onChange",
+  });
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
@@ -35,29 +35,37 @@ export const useLogin = () => {
         password: data.contraseña,
       });
 
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('refreshToken', response.refreshToken);
-        localStorage.setItem('user', JSON.stringify(response.user));
-        window.dispatchEvent(new Event('userUpdated'));
+      if (typeof window !== "undefined") {
+        saveToken(response.token);
+        saveRefreshToken(response.refreshToken);
+        localStorage.setItem("user", JSON.stringify(response.user));
+        window.dispatchEvent(new Event("userUpdated"));
       }
 
-      showSuccess('¡Sesión iniciada correctamente!');
+      showSuccess("¡Sesión iniciada correctamente!");
 
       setTimeout(() => {
-        router.push('/inbox');
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectUrl = urlParams.get("redirect");
+
+        router.push(redirectUrl || "/inbox");
       }, 500);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Error al iniciar sesión';
+      const errorMessage =
+        err instanceof Error ? err.message : "Error al iniciar sesión";
       setError(errorMessage);
 
       showError(errorMessage);
 
-      if (errorMessage.includes('email') || errorMessage.includes('Email')) {
-        setFormError('usuario', { type: 'manual', message: errorMessage });
+      if (errorMessage.includes("email") || errorMessage.includes("Email")) {
+        setFormError("usuario", { type: "manual", message: errorMessage });
       }
-      if (errorMessage.includes('contraseña') || errorMessage.includes('password') || errorMessage.includes('Credenciales')) {
-        setFormError('contraseña', { type: 'manual', message: errorMessage });
+      if (
+        errorMessage.includes("contraseña") ||
+        errorMessage.includes("password") ||
+        errorMessage.includes("Credenciales")
+      ) {
+        setFormError("contraseña", { type: "manual", message: errorMessage });
       }
     } finally {
       setIsLoading(false);
@@ -74,4 +82,3 @@ export const useLogin = () => {
     onSubmit,
   };
 };
-
