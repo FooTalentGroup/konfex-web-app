@@ -38,6 +38,7 @@ const GarmentDetailTabForm: React.FC<GarmentDetailTabProps> = ({ form }) => {
                     error={errors.commercialName?.message}
                     placeholder='Ej: Camiseta "Lirios"'
                     className='bg-white'
+                    style={{ borderColor: '#6A5379' }}
                 />
             </div>
 
@@ -46,7 +47,7 @@ const GarmentDetailTabForm: React.FC<GarmentDetailTabProps> = ({ form }) => {
                 <textarea
                     {...register('description')}
                     placeholder="Ej: Camiseta de algodón para mujeres"
-                    className="w-full px-3 py-2 border text-black bg-white border-gray-300 rounded-md shadow-sm focus:border-purple-300 focus:ring-1 focus-visible:ring-purple-300 outline-none focus:outline-none"
+                    className="w-full px-3 py-2 border text-black bg-white border-[#6A5379] rounded-md shadow-sm focus:border-purple-300 focus:ring-1 focus-visible:ring-purple-300 outline-none focus:outline-none resize-none"
                     rows={3}
                 />
                 {errors.description && <p className="text-xs text-red-500">{errors.description.message}</p>}
@@ -61,6 +62,7 @@ const GarmentDetailTabForm: React.FC<GarmentDetailTabProps> = ({ form }) => {
                     error={errors.sizes?.message}
                     placeholder='S, M, L'
                     className='bg-white'
+                    style={{ borderColor: '#6A5379' }}
                 />
             </div>
 
@@ -73,6 +75,7 @@ const GarmentDetailTabForm: React.FC<GarmentDetailTabProps> = ({ form }) => {
                     error={errors.colors?.message}
                     placeholder='Ej: Rojo, Azul, Negro'
                     className='bg-white'
+                    style={{ borderColor: '#6A5379' }}
                 />
             </div>
 

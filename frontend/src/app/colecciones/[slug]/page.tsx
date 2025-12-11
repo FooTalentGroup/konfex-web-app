@@ -35,7 +35,6 @@ export default function CollectionDetailPage() {
     error: productsError,
     searchQuery,
     handleSearch,
-    handleProductClick,
     handleAddProduct,
   } = useProducts({
     collectionId: collectionId ? Number(collectionId) : undefined
@@ -160,13 +159,6 @@ export default function CollectionDetailPage() {
                 )}
               </>
             )}
-
-            {/* <div className="pt-4 sm:pt-5 md:pt-6 pb-6 sm:pb-8 md:pb-10">
-              <AddFloatingButton 
-                onClick={() => handleAddProduct(currentCollection.id)} 
-                isStatic={true} 
-              />
-            </div> */}
           </div>
         </div>
       </div>

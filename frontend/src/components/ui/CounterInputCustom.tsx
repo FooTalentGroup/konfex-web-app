@@ -58,12 +58,12 @@ const CounterInputCustom: React.FC<CounterInputCustomProps> = ({
                 className="hidden"
             />
 
-            <div className="flex items-center justify-center gap-3 sm:gap-4">
+            <div className="flex items-center justify-center gap-8 bg-white p-2 rounded-lg border border-[#6A5379]">
                 <button
                     type="button"
                     onClick={decrease}
                     disabled={value <= min}
-                    className="w-8 h-8 sm:w-10 sm:h-10 bg-white border border-gray-300 rounded-lg flex items-center justify-center text-xl font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                    className="w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-lg flex items-center justify-center text-xl font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                 >
                     −
                 </button>
@@ -76,7 +76,7 @@ const CounterInputCustom: React.FC<CounterInputCustomProps> = ({
                     type="button"
                     onClick={increase}
                     disabled={value >= max}
-                    className="w-8 h-8 sm:w-10 sm:h-10 bg-white border border-gray-300 rounded-lg flex items-center justify-center text-xl font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                    className="w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-lg flex items-center justify-center text-xl font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                 >
                     +
                 </button>
