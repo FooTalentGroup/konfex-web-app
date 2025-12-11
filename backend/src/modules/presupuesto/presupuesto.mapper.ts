@@ -69,6 +69,7 @@ export const toPresupuestoResponseDto = (
     iva: presupuesto.iva,
     totalFinal: presupuesto.totalFinal,
     notas: presupuesto.notas,
+    origen: presupuesto.origen as "telegram" | "manual",
 
     detalles: presupuesto.detalles?.map(toPresupuestoDetalleResponseDto) ?? [],
     adicionales: presupuesto.adicionales?.map(toAdicionalResponseDto) ?? [],

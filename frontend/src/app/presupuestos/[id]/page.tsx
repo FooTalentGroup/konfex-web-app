@@ -19,6 +19,8 @@ import {
   mapPresupuestoToBudgetItems,
   calcularIVAPorcentaje,
 } from "@/utils/presupuestoDetailMapper";
+import { presupuestoService } from "@/services/presupuesto.service";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function BudgetDetailPage() {
   const router = useRouter();
@@ -29,6 +31,7 @@ export default function BudgetDetailPage() {
     open: openSidebar,
     close: closeSidebar,
   } = useSidebar();
+  const { showSuccess, showError, showInfo } = useToast();
 
   const budgetId = Number(params.id);
   const { budget, isLoading, error } = useBudgetDetail(budgetId);
@@ -112,6 +115,64 @@ export default function BudgetDetailPage() {
   const handleEdit = () => {
     if (!budget) return;
     router.push(`/calculator?id=${budget.id}`);
+  };
+
+  const handleOpenTelegram = async () => {
+    if (!budget) return;
+
+    if (budget.origen === "telegram") {
+      await handleDownload();
+
+      if (budget.clienteId) {
+        router.push(`/inbox/chat/${budget.clienteId}`);
+      } else {
+        router.push("/inbox");
+      }
+    } else {
+      handleDownload();
+    }
+  };
+
+  const handleConvertToPedido = async () => {
+    if (!budget) return;
+
+    // Verificar si el presupuesto ya tiene un pedido asociado
+    if (budget.pedido) {
+      showInfo("Este presupuesto ya tiene un pedido asociado. Redirigiendo...");
+      router.push(`/pedidos/${budget.pedido.id}`);
+      return;
+    }
+
+    // Verificar que el presupuesto esté en estado ACEPTADO
+    if (budget.estado !== "ACEPTADO") {
+      showError(
+        "El presupuesto debe estar en estado ACEPTADO para convertirlo en pedido"
+      );
+      return;
+    }
+
+    try {
+      showInfo("Convirtiendo presupuesto en pedido...");
+
+      await presupuestoService.partialUpdate(budget.id, {
+        estado: "ACEPTADO",
+      });
+
+      // Recargar el presupuesto para obtener el pedido creado
+      const updatedBudget = await presupuestoService.getById(budget.id);
+
+      if (updatedBudget.pedido) {
+        showSuccess("¡Pedido creado exitosamente!");
+        setTimeout(() => {
+          router.push(`/pedidos/${updatedBudget.pedido!.id}`);
+        }, 1000);
+      } else {
+        showError("Error al crear el pedido. Por favor intenta nuevamente.");
+      }
+    } catch (error) {
+      console.error("Error al convertir presupuesto en pedido:", error);
+      showError("Error al convertir el presupuesto en pedido");
+    }
   };
 
   return (
@@ -205,9 +266,10 @@ export default function BudgetDetailPage() {
         {!isLoading && !error && budget && (
           <BtnActionsCollection.fichaMode
             toggleDeleteMode={handleEdit}
-            onAddCollection={handleDownload}
+            onAddCollection={handleOpenTelegram}
+            isTelegramBudget={budget.origen === "telegram"}
             isDeleteMode={false}
-            confirmDeletion={() => {}}
+            confirmDeletion={handleConvertToPedido}
           />
         )}
       </div>

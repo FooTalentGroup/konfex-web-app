@@ -41,6 +41,7 @@ export interface PresupuestoResponseDto {
   iva: number;
   totalFinal: number;
   notas: string | null;
+  origen?: "telegram" | "manual";
   detalles: PresupuestoDetalleResponseDto[];
   adicionales?: AdicionalResponseDto[];
   cliente?: {
