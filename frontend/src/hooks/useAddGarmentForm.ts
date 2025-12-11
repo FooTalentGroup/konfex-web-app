@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { GarmentSchema, GarmentFormData, CreateGarmentPayload } from '@/types/IGarment';
@@ -17,7 +17,8 @@ export interface AddGarmentFormState {
 const tabs = ['Detalle prenda', 'Materia prima', 'Producción'] as const;
 
 const generateId = () => {
-    return Math.floor(1000 + Math.random() * 9000).toString();
+    const code = Math.floor(1000 + Math.random() * 9000).toString();
+    return Number(code);
 };
 
 export const useAddGarmentForm = (collectionId?: number) => {
@@ -37,6 +38,7 @@ export const useAddGarmentForm = (collectionId?: number) => {
 
     const toast = useToast();
     const router = useRouter();
+    const formValues = form.watch();
 
     const [activeTab, setActiveTab] = useState(0);
 
@@ -76,6 +78,38 @@ export const useAddGarmentForm = (collectionId?: number) => {
         return () => subscription.unsubscribe();
     }, [form]);
 
+    const isFormComplete = useMemo(() => {
+        const {
+            image,
+            commercialName,
+            sizes,
+            colors,
+            rawMaterials,
+            laborHours,
+            laborRate,
+            wasteMaterial,
+            wastePrice,
+            wasteUnit
+        } = formValues;
+
+        const hasRequiredFields = !!(
+            image &&
+            commercialName &&
+            sizes &&
+            colors &&
+            laborHours &&
+            laborRate &&
+            wasteMaterial &&
+            wastePrice &&
+            wasteUnit
+        );
+
+        const hasMaterials = rawMaterials && rawMaterials.length > 0;
+
+        return hasRequiredFields && hasMaterials;
+
+    }, [formValues]);
+
     const nextTab = () => {
         setActiveTab((prev) => (prev < tabs.length - 1 ? prev + 1 : prev));
     };
@@ -89,8 +123,6 @@ export const useAddGarmentForm = (collectionId?: number) => {
         setSubmitError(null);
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-
             const payload: CreateGarmentPayload = {
                 codigo: data.id || generateId(),
                 nombre: data.commercialName,
@@ -99,18 +131,17 @@ export const useAddGarmentForm = (collectionId?: number) => {
                 imagen: data.image,
                 tallas: data.sizes.split(',').map((size) => size.trim()),
                 colores: data.colors.split(',').map((color) => color.trim()),
+                precio: data.price,
 
                 coleccionId: collectionId || 0,
 
                 materiales: data.rawMaterials?.map((m) => ({
-                    materialId: parseInt(m.id),
-                    cantidad: m.consumption
+                    materialId: parseInt(String(m.id), 10),
+                    cantidad: Number(m.consumption),
                 })) || [],
 
-                manoDeObra: data.laborHours && data.laborHours > 0 ? [{
-                    accionId: 1,              
-                    horas: data.laborHours    
-                }] : [],
+                tarifaCosto: data.laborRate || 0,
+                tarifaHoras: data.laborHours || 0,
 
                 mermaCantidad: data.wasteMaterial || 0,
                 mermaUnidad: data.wasteUnit || 'm',
@@ -118,8 +149,6 @@ export const useAddGarmentForm = (collectionId?: number) => {
             };
 
             await garmentService.create(payload);
-
-            console.log('✅ Producto creado exitosamente');
 
             toast.showSuccess('✅ Producto creado exitosamente!');
             setActiveTab(0);
@@ -141,6 +170,7 @@ export const useAddGarmentForm = (collectionId?: number) => {
         form,
         activeTab,
         tabs: [...tabs],
+        isFormComplete,
         setActiveTab,
         nextTab,
         prevTab,
@@ -150,6 +180,5 @@ export const useAddGarmentForm = (collectionId?: number) => {
         isSubmitting,
         submitError,
         submit: form.handleSubmit(handleSubmit),
-
     };
 };

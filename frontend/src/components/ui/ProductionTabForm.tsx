@@ -24,10 +24,17 @@ const ProductionTabForm: React.FC<ProductionTabFormProps> = ({ form }) => {
     return (
         <section className="space-y-6">
             <div className="space-y-4">
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center mb-2">
                     <h3 className="text-lg font-semibold text-gray-800">Mano obra</h3>
-                    <PriceDisplay label="" amount={laborCost} />
+                    <span className="flex items-center gap-1 text-base text-[#B65CF2] font-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-gray-800 flex-shrink-0">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    {laborCost}
+                </span>
                 </div>
+
+                <div className="flex-1 border-t border-gray-400"></div>
 
                 <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
                     <div className='flex flex-col gap-1'>
@@ -39,12 +46,13 @@ const ProductionTabForm: React.FC<ProductionTabFormProps> = ({ form }) => {
                             error={errors.laborRate?.message}
                             placeholder="000.000"
                             className="bg-white"
+                            style={{ borderColor: '#6A5379' }}
                             unit="$"
                         />
                         <span className="text-xs text-primary-500">Costo por hora del trabajo</span>
                     </div>
 
-                    <div className='flex flex-col gap-6'>
+                    <div className='flex flex-col gap-1.5'>
                         <CounterInputCustom
                             id="laborHours"
                             label="Cantidad"
@@ -60,10 +68,17 @@ const ProductionTabForm: React.FC<ProductionTabFormProps> = ({ form }) => {
             </div>
 
             <div className="space-y-4">
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center mb-2">
                     <h3 className="text-lg font-semibold text-gray-800">Merma</h3>
-                    <PriceDisplay label="" amount={wastePrice} />
+                    <span className="flex items-center gap-1 text-base text-[#B65CF2] font-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-gray-800 flex-shrink-0">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    {wastePrice}
+                </span>
                 </div>
+
+                <div className="flex-1 border-t border-gray-400"></div>
 
                 <div className="grid grid-cols-2 gap-4">
                     <CustomInputWithSelect
@@ -81,6 +96,7 @@ const ProductionTabForm: React.FC<ProductionTabFormProps> = ({ form }) => {
                         ]}
                         selectError={errors.wasteUnit?.message}
                         className="bg-white"
+                        style={{ borderColor: '#6A5379' }}
                     />
 
                     <CustomInput
@@ -91,6 +107,7 @@ const ProductionTabForm: React.FC<ProductionTabFormProps> = ({ form }) => {
                         error={errors.wastePrice?.message}
                         placeholder="2.500"
                         className="bg-white"
+                        style={{ borderColor: '#6A5379' }}
                         unit="$"
                     />
                 </div>

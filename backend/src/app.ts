@@ -21,6 +21,13 @@ app.use(pinoHttp({ logger }));
 
 setupSwagger(app);
 
+app.use("/api/v1/health", (_req: Request, res: Response) => {
+  res.json({
+    message: "Esta andando",
+    version: "1.0.0",
+  });
+});
+
 app.use("/api/v1", routes);
 app.use((_req: Request, res: Response) => {
   sendError(res, {

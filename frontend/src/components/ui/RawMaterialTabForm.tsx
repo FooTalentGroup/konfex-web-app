@@ -3,13 +3,12 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { GarmentFormData } from '@/types/IGarment';
-import CustomInput from './CustomInput';
 import CustomSelect from './CustomSelect';
 import CustomInputWithSelect from './CustomInputWithSelect';
-import PriceDisplay from './PriceDisplay';
-import { Plus, Trash2 } from 'lucide-react';
+import { AlertCircle, ExternalLink, Plus, Trash2 } from 'lucide-react';
 import { useMaterials } from '@/hooks/useMaterialsForService';
 import { useToast } from '@/contexts/ToastContext';
+import { useRouter } from 'next/navigation';
 
 interface RawMaterialTabFormProps {
     form: UseFormReturn<GarmentFormData>;
@@ -17,20 +16,21 @@ interface RawMaterialTabFormProps {
 
 const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
     const { register, watch, setValue, formState: { errors } } = form;
-    const { materials, isLoading: loadingMaterials } = useMaterials();
+    const { materials } = useMaterials();
     const toast = useToast();
-    
+    const router = useRouter();
+
     const rawMaterials = watch('rawMaterials') || [];
-    
-    const fabricMaterialsFromDB = materials.filter(m => m.categoria?.nombre.toUpperCase() === 'TELA');
-    const supplyMaterialsFromDB = materials.filter(m => m.categoria?.nombre.toUpperCase() !== 'TELA');
-    
+
+    const fabricMaterialsFromDB = materials.filter(m => m.categoria?.nombre?.toLowerCase() === 'tela');
+    const supplyMaterialsFromDB = materials.filter(m => m.categoria?.nombre?.toLowerCase() !== 'tela');
+
     const fabricMaterials = rawMaterials.filter(m => m.type === 'fabric');
     const supplyMaterials = rawMaterials.filter(m => m.type === 'supply');
-    
-    const totalPrice = rawMaterials.reduce((sum, material) => sum + (material.price ?? 0), 0);
-    
-    
+
+    const totalPriceMaterials = rawMaterials.reduce((sum, material) => sum + (material.price ?? 0), 0);
+
+
     const fabricOptions = fabricMaterialsFromDB.map(m => ({
         value: m.id.toString(),
         label: m.nombre
@@ -45,7 +45,6 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
         const materialIdStr = watch('tempFabricName');
         const consumption = watch('tempFabricConsumption');
         const unit = watch('tempFabricUnit');
-        const price = watch('tempFabricPrice');
 
         if (!materialIdStr || !consumption || !unit) {
             toast.showWarning('Por favor completa todos los campos de tela');
@@ -58,12 +57,14 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
         }
 
 
-        const selectedMaterial = materials.find(m => m.id === parseInt(materialIdStr));
+        const selectedMaterial = materials.find(m => m.id === parseInt(materialIdStr, 10));
 
         if (!selectedMaterial) {
             toast.showWarning('Material no encontrado');
             return;
         }
+
+        if (rawMaterials.some(m => m.id === materialIdStr)) { toast.showWarning('Este material ya ha sido agregado'); return; }
 
         const newMaterial = {
             id: materialIdStr,
@@ -86,7 +87,6 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
         const materialIdStr = watch('tempSupplyName');
         const consumption = watch('tempSupplyConsumption');
         const unit = watch('tempSupplyUnit');
-        // const price = watch('tempSupplyPrice');
 
         if (!materialIdStr || !consumption || !unit) {
             toast.showWarning('Por favor completa todos los campos de insumo');
@@ -99,7 +99,7 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
         }
 
 
-        const selectedMaterial = materials.find(m => m.id === parseInt(materialIdStr));
+        const selectedMaterial = materials.find(m => m.id === parseInt(materialIdStr, 10));
 
         if (!selectedMaterial) {
             toast.showWarning('Material no encontrado');
@@ -127,13 +127,42 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
         setValue('rawMaterials', rawMaterials.filter(m => m.id !== id));
     };
 
+    const EmptyMaterialsAlert = ({ type }: { type: 'fabric' | 'supply' }) => (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+                <h4 className="text-sm font-semibold text-amber-800 mb-1">
+                    No hay {type === 'fabric' ? 'telas' : 'insumos'} registrados
+                </h4>
+                <p className="text-sm text-amber-700 mb-2">
+                    Debes crear {type === 'fabric' ? 'telas' : 'insumos'} en el sistema antes de poder agregarlos a una prenda.
+                </p>
+                <button
+                    type="button"
+                    onClick={() => router.push('/materia-prima')}
+                    className="inline-flex items-center gap-1 text-sm font-medium text-amber-700 hover:text-amber-900 underline"
+                >
+                    Ir a crear materiales
+                    <ExternalLink className="w-4 h-4" />
+                </button>
+            </div>
+        </div>
+    );
+
     return (
         <section className="space-y-6">
 
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center mb-2">
                 <h3 className="text-lg font-semibold text-gray-800">Materia prima</h3>
-                <PriceDisplay label="" amount={totalPrice} />
+                <span className="flex items-center gap-1 text-base text-[#B65CF2] font-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-gray-800 flex-shrink-0">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    {totalPriceMaterials}
+                </span>
             </div>
+
+            <div className="flex-1 border-t border-gray-400"></div>
 
             <div className="space-y-4">
 
@@ -145,7 +174,9 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                     error={errors.tempFabricName?.message}
                     placeholder="Ej. Algodón"
                     className="bg-white"
+                    style={{ borderColor: '#6A5379' }}
                 />
+                {fabricOptions.length === 0 && <EmptyMaterialsAlert type="fabric" />}
 
                 <CustomInputWithSelect
                     id="tempFabricConsumption"
@@ -161,35 +192,26 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                     ]}
                     selectError={errors.tempFabricUnit?.message}
                     className="bg-white"
+                    style={{ borderColor: '#6A5379' }}
                 />
 
                 <div className="grid grid-cols-2 gap-4">
 
-                    {/* <CustomInput
-                        id="tempFabricPrice"
-                        label="Precio"
-                        type="number"
-                        register={register('tempFabricPrice', { valueAsNumber: true })}
-                        error={errors.tempFabricPrice?.message}
-                        placeholder="25.000"
-                        className="bg-white"
-                        unit="$"
-                    /> */}
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <div className="flex-1 border-t border-gray-300"></div>
+                    <div className="flex-1 border-t border-gray-400"></div>
                     <div className='grid grid-cols-1 gap-1 items-center justify-items-center'>
                         <button
                             type="button"
                             onClick={addFabric}
-                            className="flex items-center justify-center w-10 h-10 bg-[#F59E0B] border-2 border-primary-300 rounded-full hover:bg-[#D97706] transition-colors"
+                            className="flex items-center justify-center w-10 h-10 bg-[#F59E0B] border border-primary-300 rounded-full hover:bg-[#D97706] transition-colors"
                         >
                             <Plus className="w-5 h-5 text-gray-700" />
                         </button>
                         <span className="text-sm text-gray-600">Agregar tela</span>
                     </div>
-                    <div className="flex-1 border-t border-gray-300"></div>
+                    <div className="flex-1 border-t border-gray-400"></div>
                 </div>
             </div>
 
@@ -209,11 +231,11 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                                     {material.consumption} {material.unit}
                                 </span>
                                 <span className="text-sm font-semibold text-gray-800">
-                                    $ {material.price}
+                                    $ {material.price ?? 0}
                                 </span>
                                 <button
                                     type="button"
-                                    onClick={() => removeMaterial(material.id)}
+                                    onClick={() => removeMaterial((material.id) as string)}
                                     className="bg-primary-200 p-1 text-gray-500 hover:text-gray-700 border border-primary-500 rounded-md transition-colors"
                                 >
                                     <Trash2 className="w-4 h-4" />
@@ -225,6 +247,7 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
             )}
 
             <div className="space-y-4">
+
                 <CustomSelect
                     id="tempSupplyName"
                     label="Insumos"
@@ -233,7 +256,9 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                     error={errors.tempSupplyName?.message}
                     placeholder="Ej. Botones L24 + cortesía"
                     className="bg-white"
+                    style={{ borderColor: '#6A5379' }}
                 />
+                {supplyOptions.length === 0 && <EmptyMaterialsAlert type="supply" />}
 
                 <CustomInputWithSelect
                     id="tempSupplyConsumption"
@@ -250,34 +275,24 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                     ]}
                     selectError={errors.tempSupplyUnit?.message}
                     className="bg-white"
+                    style={{ borderColor: '#6A5379' }}
                 />
                 <div className="grid grid-cols-2 gap-4">
-
-                    {/* <CustomInput
-                        id="tempSupplyPrice"
-                        label="Precio"
-                        type="number"
-                        register={register('tempSupplyPrice', { valueAsNumber: true })}
-                        error={errors.tempSupplyPrice?.message}
-                        placeholder="35.000"
-                        className="bg-white"
-                        unit="$"
-                    /> */}
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <div className="flex-1 border-t border-gray-300"></div>
+                    <div className="flex-1 border-t border-gray-400"></div>
                     <div className='grid grid-cols-1 gap-1 justify-items-center'>
                         <button
                             type="button"
                             onClick={addSupply}
-                            className="flex items-center justify-center w-10 h-10 bg-[#F59E0B] border-2 border-primary-300 rounded-full hover:bg-[#D97706] transition-colors"
+                            className="flex items-center justify-center w-10 h-10 bg-[#F59E0B] border border-primary-300 rounded-full hover:bg-[#D97706] transition-colors"
                         >
                             <Plus className="w-5 h-5 text-gray-700" />
                         </button>
                         <span className="text-sm text-gray-600">Agregar insumo</span>
                     </div>
-                    <div className="flex-1 border-t border-gray-300"></div>
+                    <div className="flex-1 border-t border-gray-400"></div>
                 </div>
 
                 {supplyMaterials.length > 0 && (
@@ -296,11 +311,11 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                                         {material.consumption} {material.unit}
                                     </span>
                                     <span className="text-sm font-semibold text-gray-800">
-                                        $ {material.price}
+                                        $ {material.price ?? 0}
                                     </span>
                                     <button
                                         type="button"
-                                        onClick={() => removeMaterial(material.id)}
+                                        onClick={() => removeMaterial((material.id) as string)}
                                         className="bg-primary-200 p-1 text-gray-500 hover:text-gray-700 border border-primary-500 rounded-md transition-colors"
                                     >
                                         <Trash2 className="w-4 h-4" />

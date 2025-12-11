@@ -1,0 +1,12 @@
+[phases.setup]
+nixPkgs = ["nodejs_latest"]
+nixpkgsArchive = "nixpkgs-unstable"
+
+[phases.install]
+cmds = ["npm ci"]
+
+[phases.build]
+cmds = ["npx prisma generate", "npx tsc && npx tsc-alias"]
+
+[start]
+cmd = "npx prisma generate && node dist/src/index.js"

@@ -152,17 +152,17 @@ export default function CalculatorTemplate({
 
   return (
     <FormProvider {...methods}>
-      <div className="w-full max-w-md mx-auto font-lato pb-10">
+      <div className="w-full max-w-full sm:max-w-[480px] mx-auto font-lato pb-12 px-0 sm:px-0 overflow-x-hidden">
         <BudgetSummaryHeader
           presupuestoId={presupuestoId}
           isEditMode={isEditMode}
           origen={budgetSource}
         />
 
-        <div className="-mt-6 relative z-10 shadow-xl rounded-t-[30px] bg-white overflow-hidden">
+        <div className="-mt-5 relative z-10 shadow-lg rounded-t-[20px] bg-white/95 backdrop-blur-sm overflow-hidden">
           <CalculatorTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-          <div className="bg-[#F3F0F5] min-h-[500px]">
+          <div className="bg-[#F4E7FD] min-h-[640px] sm:min-h-[520px]">
             {activeTab === "details" && <BudgetDetails source={budgetSource} />}
             {activeTab === "materials" && <BudgetMaterials />}
             {activeTab === "extras" && (

@@ -3,10 +3,9 @@ import { z } from "zod";
 export const createProductoSchema = z.object({
   body: z.object({
     codigo: z
-      .string()
-      .trim()
-      .min(1, "El código no puede estar vacío")
-      .transform((val) => parseInt(val, 10)),
+      .number()
+      .int("El código debe ser un número entero")
+      .positive("El código debe ser un número positivo"),
     nombre: z.string().trim().min(1, "El nombre no puede estar vacío"),
     descripcion: z.string().optional().nullable(),
     activo: z.boolean().optional().default(true),
@@ -23,18 +22,14 @@ export const createProductoSchema = z.object({
         })
       )
       .default([]),
-    manoDeObra: z
-      .array(
-        z.object({
-          accionId: z.number(),
-          horas: z.number().min(0.1),
-        })
-      )
-      .default([]),
 
-    wasteMaterial: z.number().optional(),
-    wasteUnit: z.string().trim().min(1).optional(),
-    wastePrice: z.number().optional(),
+    mermaCantidad: z.number().optional(),
+    mermaUnidad: z.string().trim().min(1).optional(),
+    mermaPrecio: z.number().optional(),
+
+    tarifaCosto: z.number().optional(),
+    tarifaHoras: z.number().optional(),
+    precio: z.number().optional(),
   }),
 });
 

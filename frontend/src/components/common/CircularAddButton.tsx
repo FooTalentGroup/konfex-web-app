@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Plus } from 'lucide-react';
+import Image from 'next/image';
 
 export interface CircularAddButtonProps {
   onClick?: () => void;
@@ -9,6 +9,8 @@ export interface CircularAddButtonProps {
   className?: string;
   variant?: 'floating' | 'centered';
   iconSize?: number;
+  hideLines?: boolean;
+  labelClassName?: string;
 }
 
 const CircularAddButton: React.FC<CircularAddButtonProps> = ({
@@ -16,9 +18,11 @@ const CircularAddButton: React.FC<CircularAddButtonProps> = ({
   label,
   className = '',
   variant = 'centered',
-  iconSize = 28,
+  iconSize = 64,
+  hideLines = false,
+  labelClassName = 'text-gray-700 text-sm font-medium mt-2 text-center',
 }) => {
-  const buttonClasses = `w-14 h-14 bg-[#F2BB5C] rounded-full flex items-center justify-center text-white shadow-[0_4px_14px_0_rgba(242,187,92,0.39)] hover:bg-[#E0A84B] transition-all hover:scale-105 border-[6px] border-[#F3F0F5] ${className}`;
+  const buttonClasses = `inline-flex items-center justify-center bg-transparent p-0 m-0 transition-transform hover:scale-105 ${className}`;
 
   const button = (
     <button
@@ -27,7 +31,13 @@ const CircularAddButton: React.FC<CircularAddButtonProps> = ({
       className={buttonClasses}
       aria-label={label || 'Agregar'}
     >
-      <Plus size={iconSize} strokeWidth={3} />
+      <Image
+        src="/ImagenSumar.png"
+        alt="Agregar"
+        width={iconSize}
+        height={iconSize}
+        className="pointer-events-none"
+      />
     </button>
   );
 
@@ -35,6 +45,17 @@ const CircularAddButton: React.FC<CircularAddButtonProps> = ({
     return (
       <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 z-10">
         {button}
+      </div>
+    );
+  }
+
+  if (hideLines) {
+    return (
+      <div className="flex flex-col items-center w-full">
+        {button}
+        {label && (
+          <p className={labelClassName}>{label}</p>
+        )}
       </div>
     );
   }
@@ -47,9 +68,7 @@ const CircularAddButton: React.FC<CircularAddButtonProps> = ({
         <div className="flex-1 h-px bg-gray-200"></div>
       </div>
       {label && (
-        <p className="text-center text-gray-700 text-sm font-medium mt-2">
-          {label}
-        </p>
+        <p className={labelClassName}>{label}</p>
       )}
     </div>
   );

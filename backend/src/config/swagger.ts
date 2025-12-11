@@ -4,14 +4,15 @@ import swaggerUi from "swagger-ui-express";
 
 import { authDocs } from "../modules/auth";
 import { categoriaDocs } from "../modules/categoria";
-import { materialDocs } from "../modules/material";
 import { clienteDocs } from "../modules/cliente";
-import { presupuestoDocs } from "../modules/presupuesto";
-import { telegramDocs } from "../modules/telegram";
+import { coleccionDocs } from "../modules/colecciones";
 import { gastosNegocioDocs } from "../modules/gastos-negocio";
 import { impuestoGeneralDocs } from "../modules/impuesto-general";
-import { productoDocs } from "../modules/producto";
+import { materialDocs } from "../modules/material";
 import { pedidoDocs } from "../modules/pedido";
+import { presupuestoDocs } from "../modules/presupuesto";
+import { productoDocs } from "../modules/producto";
+import { telegramDocs } from "../modules/telegram";
 
 const options = {
   definition: {
@@ -34,6 +35,7 @@ const options = {
         ...gastosNegocioDocs.components.schemas,
         ...impuestoGeneralDocs.components.schemas,
         ...pedidoDocs.components.schemas,
+        ...coleccionDocs.components.schemas,
       },
       parameters: {
         ...productoDocs.components.parameters,
@@ -46,6 +48,7 @@ const options = {
         ...gastosNegocioDocs.components.parameters,
         ...impuestoGeneralDocs.components.parameters,
         ...pedidoDocs.components.parameters,
+        ...coleccionDocs.components.parameters,
       },
     },
 
@@ -60,6 +63,7 @@ const options = {
       ...gastosNegocioDocs.paths,
       ...impuestoGeneralDocs.paths,
       ...pedidoDocs.paths,
+      ...coleccionDocs.paths,
     },
   },
 
