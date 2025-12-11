@@ -140,6 +140,7 @@ model Presupuesto {
   estado                   EstadoPresupuesto
   margenGananciaPorcentaje Float
   totalCosto               Float
+  costosIndirectos         Float                @default(0)
   gastosNegocioId          Int
   ganancias                Float
   iva                      Float                @default(0)
