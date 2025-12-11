@@ -1,5 +1,7 @@
-"use client"
-import { Plus, Trash2, XCircleIcon } from "lucide-react";
+"use client";
+import { Plus, Trash2, XCircleIcon, CheckSquare } from "lucide-react";
+import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
 
 interface BtnActionsCollectionProps {
   collectionsToDelete?: Set<number>;
@@ -9,9 +11,11 @@ interface BtnActionsCollectionProps {
   onAddCollection?: () => void;
 }
 
-export default function BtnActionsCollections({  isDeleteMode, toggleDeleteMode, onAddCollection }: BtnActionsCollectionProps) {
-
-
+const BtnActionsCollectionDefault = ({
+  isDeleteMode,
+  toggleDeleteMode,
+  onAddCollection,
+}: BtnActionsCollectionProps) => {
   return (
     <div className="fixed bg-primary-200 px-4 py-2 bottom-20 right-1/2 transform translate-x-1/2 flex gap-3 rounded-full z-10">
       <button
@@ -38,5 +42,52 @@ export default function BtnActionsCollections({  isDeleteMode, toggleDeleteMode,
         </button>
       )}
     </div>
-  )
-}
+  );
+};
+
+const BtnActionsCollectionFichaMode = ({
+  isDeleteMode,
+  toggleDeleteMode,
+  confirmDeletion,
+  onAddCollection,
+}: BtnActionsCollectionProps) => {
+  return (
+    <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 flex items-center gap-3 z-10">
+      <div className="flex items-center gap-3 bg-[#D4C4DD] px-3 py-2 rounded-full shadow-lg">
+        <button
+          type="button"
+          onClick={onAddCollection}
+          className="w-14 h-14 bg-[#9D86AC] hover:bg-[#8B7499] rounded-full flex items-center justify-center text-white shadow-md transition-all"
+          title="Descargar"
+        >
+          <ArrowDownTrayIcon className="w-6 h-6" />
+        </button>
+
+        <button
+          type="button"
+          onClick={toggleDeleteMode}
+          className="w-14 h-14 bg-[#9D86AC] hover:bg-[#8B7499] rounded-full flex items-center justify-center text-white shadow-md transition-all"
+          title={isDeleteMode ? "Modo edición" : "Enviar"}
+        >
+          <PencilSquareIcon className="w-6 h-6" />
+        </button>
+      </div>
+
+      <button
+        type="button"
+        onClick={confirmDeletion}
+        className="px-8 py-4 bg-[#B65CF2] hover:bg-[#9D4EDD] rounded-full text-white shadow-lg transition-all font-[var(--font-lato),sans-serif] font-medium text-base flex items-center gap-3"
+      >
+        <CheckSquare className="w-5 h-5" />
+        <span>Guardar</span>
+      </button>
+    </div>
+  );
+};
+
+const BtnActionsCollections = {
+  default: BtnActionsCollectionDefault,
+  fichaMode: BtnActionsCollectionFichaMode,
+};
+
+export default BtnActionsCollections;
