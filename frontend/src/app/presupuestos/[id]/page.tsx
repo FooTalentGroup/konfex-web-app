@@ -138,7 +138,7 @@ export default function BudgetDetailPage() {
 
     if (budget.pedido) {
       showInfo("Este presupuesto ya tiene un pedido asociado. Redirigiendo...");
-      router.push(`/pedidos/${budget.pedido.id}`);
+      router.push("/pedidos");
       return;
     }
 
@@ -162,7 +162,7 @@ export default function BudgetDetailPage() {
       if (updatedBudget.pedido) {
         showSuccess("¡Pedido creado exitosamente!");
         setTimeout(() => {
-          router.push(`/pedidos/${updatedBudget.pedido!.id}`);
+          router.push("/pedidos");
         }, 1000);
       } else {
         showError("Error al crear el pedido. Por favor intenta nuevamente.");
