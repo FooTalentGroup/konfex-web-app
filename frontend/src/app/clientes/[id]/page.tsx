@@ -157,10 +157,10 @@ export default function ClientDetailPage() {
       <div className="bg-primary-500">
         <Header onMenuClick={() => setIsSidebarOpen(true)} />
       </div>
-      
+
       <div className="w-full px-4 py-3 bg-white rounded-b-3xl shadow-sm">
         <div className="flex items-center justify-between gap-2 max-w-2xl mx-auto">
-          <button 
+          <button
             onClick={() => router.back()}
             className="w-9 h-9 flex items-center justify-center bg-primary-500 text-white rounded-full hover:bg-primary-600 transition-colors flex-shrink-0"
           >
@@ -213,8 +213,12 @@ export default function ClientDetailPage() {
                 <p className="text-gray-700 text-base font-normal">ID:</p>
               </div>
               <div className="flex flex-col gap-2 text-right flex-shrink-0">
-                <p className="text-gray-900 font-bold text-base">{client?.nombre || '-'}</p>
-                <p className="text-gray-900 font-bold text-base">{client ? String(client.id).padStart(6, '0') : '-'}</p>
+                <p className="text-gray-900 font-bold text-base">
+                  {client?.nombre || "-"}
+                </p>
+                <p className="text-gray-900 font-bold text-base">
+                  {client ? String(client.id).padStart(6, "0") : "-"}
+                </p>
               </div>
             </div>
           </div>
@@ -235,8 +239,8 @@ export default function ClientDetailPage() {
                   )}
                 </button>
                 <div className="w-px bg-[#E8E5ED] h-8 my-auto"></div>
-                <button 
-                  onClick={() => setActiveTab('history')}
+                <button
+                  onClick={() => setActiveTab("history")}
                   className={`flex-1 py-4 text-center text-sm font-bold transition-colors relative ${
                     activeTab === "history" ? "text-[#C071F4]" : "text-gray-400"
                   }`}
@@ -260,45 +264,58 @@ export default function ClientDetailPage() {
                 </div>
               ) : client ? (
                 <>
-                  {activeTab === 'detail' && (
-                    <form onSubmit={handleSubmit(onSubmit)} className="animate-in fade-in duration-300 space-y-4">
+                  {activeTab === "detail" && (
+                    <form
+                      onSubmit={handleSubmit(onSubmit)}
+                      className="animate-in fade-in duration-300 space-y-4"
+                    >
                       <div className="bg-gray-100 border border-[#D9B7E8] rounded-lg p-3 space-y-3">
                         <div className="space-y-2">
-                          <label className="text-sm font-normal text-gray-700">Nombre del cliente</label>
-                          <input 
-                            {...register('nombre')}
+                          <label className="text-sm font-normal text-gray-700">
+                            Nombre del cliente
+                          </label>
+                          <input
+                            {...register("nombre")}
                             className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
                           />
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-normal text-gray-700">Nº de Identificación</label>
-                          <input 
-                            {...register('numeroIdentificacion')}
+                          <label className="text-sm font-normal text-gray-700">
+                            Nº de Identificación
+                          </label>
+                          <input
+                            {...register("numeroIdentificacion")}
                             className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
                           />
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-normal text-gray-700">E-mail</label>
-                          <input 
-                            {...register('email')}
+                          <label className="text-sm font-normal text-gray-700">
+                            E-mail
+                          </label>
+                          <input
+                            {...register("email")}
                             className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
                           />
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-normal text-gray-700">Dirección</label>
-                          <input 
-                            {...register('direccion')}
+                          <label className="text-sm font-normal text-gray-700">
+                            Dirección
+                          </label>
+                          <input
+                            {...register("direccion")}
                             className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
                           />
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-normal text-gray-700">Teléfono</label>
-                          <input 
-                            {...register('telefono')}
+                          <label className="text-sm font-normal text-gray-700">
+                            Teléfono
+                          </label>
+                          <input
+                            {...register("telefono")}
                             className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
                           />
                         </div>
@@ -373,7 +390,7 @@ function HistoryAccordion({
   const [isOpen, setIsOpen] = useState(false);
   const statusColorMap: Record<string, string> = {
     BORRADOR: "bg-gray-400",
-    ENVIADO: "bg-blue-400",
+    DESCARGADO: "bg-blue-400",
     ACEPTADO: "bg-green-400",
     RECHAZADO: "bg-red-400",
     VENCIDO: "bg-orange-400",

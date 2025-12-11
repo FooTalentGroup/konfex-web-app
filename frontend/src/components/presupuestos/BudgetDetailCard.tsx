@@ -24,7 +24,7 @@ interface BudgetDetailCardProps {
 const BudgetDetailCard: React.FC<BudgetDetailCardProps> = ({ data }) => {
   const getEstadoColor = (estado: string) => {
     switch (estado.toUpperCase()) {
-      case "ENVIADO":
+      case "DESCARGADO":
         return "bg-[#683BFD]";
       case "VENCIDO":
         return "bg-[#C40841]";

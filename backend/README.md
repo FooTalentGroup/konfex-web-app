@@ -38,15 +38,16 @@ Backend API REST para el sistema de gestión de producción en industria textil,
 - **Runtime**: Node.js 18+
 - **Framework**: Express.js 5.1.0
 - **Lenguaje**: TypeScript 5.9.3
-- **ORM**: Prisma 7.0.1
-- **Base de Datos**: PostgreSQL 12+
+- **ORM**: Prisma 7.0.1 con Prisma Adapter PG 7.0.1
+- **Base de Datos**: PostgreSQL 12+ (con driver pg 8.16.3)
 - **Autenticación**: JWT (jsonwebtoken 9.0.2)
 - **Validación**: Zod 4.1.12
 - **Documentación**: Swagger (swagger-jsdoc 6.2.8, swagger-ui-express 5.0.1)
-- **Logging**: Pino 10.1.0
+- **Logging**: Pino 10.1.0 con Pino HTTP 11.0.0
 - **Hashing**: bcrypt 6.0.0
 - **Comunicación en Tiempo Real**: Socket.io 4.8.1
 - **Gestión de Archivos**: Cloudinary 2.8.0
+- **HTTP Client**: Axios 1.13.2 (para integración con Telegram Bot API)
 
 ## Prerrequisitos
 

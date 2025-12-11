@@ -1,6 +1,6 @@
 export type EstadoPresupuesto =
   | "BORRADOR"
-  | "ENVIADO"
+  | "DESCARGADO"
   | "ACEPTADO"
   | "RECHAZADO"
   | "VENCIDO";

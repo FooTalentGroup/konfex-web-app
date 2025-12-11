@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Send, X, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import Image from "next/image";
-import { useOrderCard } from "@/hooks/useOrderCard";
 import { pedidoService } from "@/services/pedido.service";
 
 interface OrderCardProps {
@@ -43,7 +42,6 @@ export default function OrderCard({
   const [isSelected, setIsSelected] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Función para mapear estado del frontend al backend
   const mapOperativoStatusToBackend = (
     status: "no visto" | "en compra" | "en produccion" | "entregado"
   ): "NO_VISTO" | "EN_COMPRA" | "EN_PRODUCCION" | "ENTREGADO" => {
@@ -61,7 +59,6 @@ export default function OrderCard({
     }
   };
 
-  // Función para actualizar el estado operativo
   const handleOperativoStatusChange = async (
     newStatus: "no visto" | "en compra" | "en produccion" | "entregado"
   ) => {
@@ -79,8 +76,9 @@ export default function OrderCard({
     }
   };
 
-  // Función para actualizar el estado de pago
-  const handlePaymentStatusChange = async (newStatus: "pagado" | "deposito") => {
+  const handlePaymentStatusChange = async (
+    newStatus: "pagado" | "deposito"
+  ) => {
     try {
       setIsUpdating(true);
       const pagado = newStatus === "pagado";
@@ -89,22 +87,13 @@ export default function OrderCard({
       setIsPaymentDropdownOpen(false);
     } catch (error) {
       console.error("Error al actualizar estado de pago:", error);
-      alert("Error al actualizar el estado de pago. Por favor, intenta nuevamente.");
+      alert(
+        "Error al actualizar el estado de pago. Por favor, intenta nuevamente."
+      );
     } finally {
       setIsUpdating(false);
     }
   };
-
-  const {
-    showMessageInput,
-    message,
-    setMessage,
-    isSending,
-    sendTelegramMessage,
-    handleTelegramClick,
-    handleCancel,
-    handleKeyPress,
-  } = useOrderCard({ telegramChatId });
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -312,253 +301,172 @@ export default function OrderCard({
       </div>
 
       <div className="flex items-center gap-2 flex-wrap">
-        {!showMessageInput ? (
-          <>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleTelegramClick();
-              }}
-              disabled={!telegramChatId}
-              className={`rounded-xl flex items-center whitespace-nowrap py-0.5 px-1.5 gap-1.5 font-lato text-xs sm:text-sm font-normal leading-[131%] tracking-normal text-black bg-[#E3F2FD] border border-[#BBDEFB] transition-colors ${
-                telegramChatId
-                  ? "hover:bg-[#BBDEFB] cursor-pointer"
-                  : "opacity-50 cursor-not-allowed"
-              }`}
-              title={
-                !telegramChatId
-                  ? "ChatId de Telegram no disponible"
-                  : "Enviar mensaje por Telegram"
-              }
+        {telegramChatId && (
+          <div className="rounded-xl flex items-center whitespace-nowrap py-0.5 px-1.5 gap-1.5 font-lato text-xs sm:text-sm font-normal leading-[131%] tracking-normal text-black bg-[#E3F2FD] border border-[#BBDEFB]">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-3 h-3 shrink-0"
             >
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-3 h-3 shrink-0"
-              >
-                <path
-                  d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM16.64 8.8C16.49 10.38 15.84 14.22 15.51 15.99C15.37 16.74 15.09 16.99 14.83 17.02C14.25 17.07 13.81 16.64 13.25 16.27C12.37 15.69 11.87 15.33 11.02 14.77C10.03 14.12 10.67 13.76 11.24 13.18C11.39 13.03 14.95 9.7 15.02 9.37C15.03 9.3 15.03 9.13 14.93 9.05C14.84 8.97 14.7 9 14.58 9.02C14.41 9.05 12.15 10.3 8.78 12.23C8.18 12.57 7.63 12.73 7.13 12.72C6.58 12.7 5.52 12.4 4.7 12.14C3.75 11.83 3.01 11.66 3.07 11.12C3.1 10.85 3.41 10.58 3.9 10.33C6.31 9.19 8.13 8.4 9.36 7.97C11.83 7.2 12.5 7.01 12.94 7C13.01 7 13.15 7.01 13.25 7.09C13.33 7.16 13.36 7.26 13.37 7.33C13.38 7.4 13.39 7.53 13.38 7.63C13.36 8.08 13.2 9.38 13.06 10.78C12.85 12.78 12.66 14.58 12.61 14.95C12.54 15.5 12.35 15.68 12.17 15.71C11.72 15.78 11.38 15.44 10.95 15.05L16.64 8.8Z"
-                  fill="#0088cc"
-                />
-              </svg>
-              Telegram
-            </button>
-
-            <div className="relative ml-auto" ref={operativoDropdownRef}>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsOperativoDropdownOpen(!isOperativoDropdownOpen);
-                }}
-                className="flex items-center whitespace-nowrap bg-[#8B68FD] text-[#FEFCFF] font-lato font-normal text-[12px] leading-[131%] tracking-normal rounded-xl h-[26px] px-3 gap-2 w-[140px]"
-              >
-                {currentOperativoStatus === "no visto" && (
-                  <>
-                    <Image
-                      src="/iconoPresupuesto.png"
-                      alt="No visto"
-                      width={18}
-                      height={18}
-                      className="w-[18px] h-[18px] object-contain shrink-0 filter:brightness(0) invert(1)"
-                    />
-                    <span className="text-[12px] leading-[131%] text-[#FEFCFF]">
-                      No visto
-                    </span>
-                  </>
-                )}
-                {currentOperativoStatus === "en compra" && (
-                  <>
-                    <Image
-                      src="/iconoCompra.png"
-                      alt="En compra"
-                      width={18}
-                      height={18}
-                      className="w-[18px] h-[18px] object-contain shrink-0 filter:brightness(0) invert(1)"
-                    />
-                    En compra
-                  </>
-                )}
-                {currentOperativoStatus === "en produccion" && (
-                  <>
-                    <Image
-                      src="/iconoProduccion.png"
-                      alt="En producción"
-                      width={18}
-                      height={18}
-                      className="w-[18px] h-[18px] object-contain shrink-0 filter:brightness(0) invert(1)"
-                    />
-                    En producción
-                  </>
-                )}
-                {currentOperativoStatus === "entregado" && (
-                  <>
-                    <Image
-                      src="/iconoEntregado.png"
-                      alt="Entregado"
-                      width={18}
-                      height={18}
-                      className="w-[18px] h-[18px] object-contain shrink-0 filter:brightness(0) invert(1)"
-                    />
-                    <span className="text-[12px] leading-[131%] text-[#FEFCFF]">
-                      Entregado
-                    </span>
-                  </>
-                )}
-                <ChevronDown size={12} className="w-3 h-3 text-[#FEFCFF]" />
-              </button>
-
-              {isOperativoDropdownOpen && (
-                <div
-                  className="absolute left-0 mt-1 w-[140px] bg-[#D8CDFE] rounded-[12px] shadow-md border border-[#B59DF9] z-50 overflow-hidden"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOperativoStatusChange("no visto");
-                    }}
-                    disabled={isUpdating}
-                    className="w-full flex items-center gap-2 h-[30px] px-3 text-left bg-[#D8CDFE] hover:bg-[#CFC4FD] text-[#6A5379] rounded-t-[12px] font-lato text-[11px] leading-[131%] border-b border-[#B59DF9] disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <Image
-                      src="/iconoPresupuesto.png"
-                      alt="No visto"
-                      width={18}
-                      height={18}
-                      className="w-[18px] h-[18px] object-contain filter:brightness(0) saturate(100%) invert(33%) sepia(15%) saturate(458%) hue-rotate(252deg) brightness(95%) contrast(86%)"
-                    />
-                    <span className="text-[11px] font-lato leading-[131%]">
-                      No visto
-                    </span>
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOperativoStatusChange("en compra");
-                    }}
-                    disabled={isUpdating}
-                    className="w-full flex items-center gap-2 h-[30px] px-3 text-left bg-[#D8CDFE] hover:bg-[#CFC4FD] text-[#6A5379] font-lato text-[11px] leading-[131%] border-b border-[#B59DF9] disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <Image
-                      src="/iconoCompra.png"
-                      alt="En compra"
-                      width={18}
-                      height={18}
-                      className="w-[18px] h-[18px] object-contain filter:brightness(0) saturate(100%) invert(33%) sepia(15%) saturate(458%) hue-rotate(252deg) brightness(95%) contrast(86%)"
-                    />
-                    <span className="text-[11px] font-lato leading-[131%]">
-                      En compra
-                    </span>
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOperativoStatusChange("en produccion");
-                    }}
-                    disabled={isUpdating}
-                    className="w-full flex items-center gap-2 h-[30px] px-3 text-left bg-[#D8CDFE] hover:bg-[#CFC4FD] text-[#6A5379] font-lato text-[11px] leading-[131%] border-b border-[#B59DF9] disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <Image
-                      src="/iconoProduccion.png"
-                      alt="En producción"
-                      width={18}
-                      height={18}
-                      className="w-[18px] h-[18px] object-contain filter:brightness(0) saturate(100%) invert(33%) sepia(15%) saturate(458%) hue-rotate(252deg) brightness(95%) contrast(86%)"
-                    />
-                    <span className="text-[11px] font-lato leading-[131%]">
-                      En producción
-                    </span>
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOperativoStatusChange("entregado");
-                    }}
-                    disabled={isUpdating}
-                    className="w-full flex items-center gap-2 h-[30px] px-3 text-left bg-[#D8CDFE] hover:bg-[#CFC4FD] text-[#6A5379] rounded-b-[12px] font-lato text-[11px] leading-[131%] disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <Image
-                      src="/iconoEntregado.png"
-                      alt="Entregado"
-                      width={18}
-                      height={18}
-                      className="w-[18px] h-[18px] object-contain filter:brightness(0) saturate(100%) invert(33%) sepia(15%) saturate(458%) hue-rotate(252deg) brightness(95%) contrast(86%)"
-                    />
-                    <span className="text-[11px] font-lato leading-[131%]">
-                      Entregado
-                    </span>
-                  </button>
-                </div>
-              )}
-            </div>
-          </>
-        ) : (
-          <div
-            className="w-full bg-white rounded-xl border border-[#BBDEFB] p-3 sm:p-4 space-y-2 sm:space-y-3"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs sm:text-sm font-semibold text-gray-700">
-                Enviar mensaje por Telegram
-              </span>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleCancel();
-                }}
-                className="text-gray-400 hover:text-gray-600 transition-colors p-1 -mr-1"
-                disabled={isSending}
-                aria-label="Cerrar"
-              >
-                <X size={16} className="w-4 h-4" />
-              </button>
-            </div>
-            <textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Escribe tu mensaje..."
-              className="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0088cc] focus:border-transparent resize-none"
-              rows={3}
-              disabled={isSending}
-            />
-            <div className="flex flex-col sm:flex-row gap-2 sm:justify-end">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleCancel();
-                }}
-                className="w-full sm:w-auto px-4 py-2 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors disabled:opacity-50"
-                disabled={isSending}
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  sendTelegramMessage();
-                }}
-                disabled={isSending || !message.trim()}
-                className="w-full sm:w-auto px-4 py-2 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium bg-[#0088cc] text-white rounded-lg hover:bg-[#0077b3] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 sm:gap-1"
-              >
-                {isSending ? (
-                  <>
-                    <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Enviando...
-                  </>
-                ) : (
-                  <>
-                    <Send size={12} className="w-3 h-3" />
-                    Enviar
-                  </>
-                )}
-              </button>
-            </div>
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM16.64 8.8C16.49 10.38 15.84 14.22 15.51 15.99C15.37 16.74 15.09 16.99 14.83 17.02C14.25 17.07 13.81 16.64 13.25 16.27C12.37 15.69 11.87 15.33 11.02 14.77C10.03 14.12 10.67 13.76 11.24 13.18C11.39 13.03 14.95 9.7 15.02 9.37C15.03 9.3 15.03 9.13 14.93 9.05C14.84 8.97 14.7 9 14.58 9.02C14.41 9.05 12.15 10.3 8.78 12.23C8.18 12.57 7.63 12.73 7.13 12.72C6.58 12.7 5.52 12.4 4.7 12.14C3.75 11.83 3.01 11.66 3.07 11.12C3.1 10.85 3.41 10.58 3.9 10.33C6.31 9.19 8.13 8.4 9.36 7.97C11.83 7.2 12.5 7.01 12.94 7C13.01 7 13.15 7.01 13.25 7.09C13.33 7.16 13.36 7.26 13.37 7.33C13.38 7.4 13.39 7.53 13.38 7.63C13.36 8.08 13.2 9.38 13.06 10.78C12.85 12.78 12.66 14.58 12.61 14.95C12.54 15.5 12.35 15.68 12.17 15.71C11.72 15.78 11.38 15.44 10.95 15.05L16.64 8.8Z"
+                fill="#0088cc"
+              />
+            </svg>
+            Telegram
           </div>
         )}
+
+        <div className="relative ml-auto" ref={operativoDropdownRef}>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsOperativoDropdownOpen(!isOperativoDropdownOpen);
+            }}
+            className="flex items-center whitespace-nowrap bg-[#8B68FD] text-[#FEFCFF] font-lato font-normal text-[12px] leading-[131%] tracking-normal rounded-xl h-[26px] px-3 gap-2 w-[140px]"
+          >
+            {currentOperativoStatus === "no visto" && (
+              <>
+                <Image
+                  src="/iconoPresupuesto.png"
+                  alt="No visto"
+                  width={18}
+                  height={18}
+                  className="w-[18px] h-[18px] object-contain shrink-0 filter:brightness(0) invert(1)"
+                />
+                <span className="text-[12px] leading-[131%] text-[#FEFCFF]">
+                  No visto
+                </span>
+              </>
+            )}
+            {currentOperativoStatus === "en compra" && (
+              <>
+                <Image
+                  src="/iconoCompra.png"
+                  alt="En compra"
+                  width={18}
+                  height={18}
+                  className="w-[18px] h-[18px] object-contain shrink-0 filter:brightness(0) invert(1)"
+                />
+                En compra
+              </>
+            )}
+            {currentOperativoStatus === "en produccion" && (
+              <>
+                <Image
+                  src="/iconoProduccion.png"
+                  alt="En producción"
+                  width={18}
+                  height={18}
+                  className="w-[18px] h-[18px] object-contain shrink-0 filter:brightness(0) invert(1)"
+                />
+                En producción
+              </>
+            )}
+            {currentOperativoStatus === "entregado" && (
+              <>
+                <Image
+                  src="/iconoEntregado.png"
+                  alt="Entregado"
+                  width={18}
+                  height={18}
+                  className="w-[18px] h-[18px] object-contain shrink-0 filter:brightness(0) invert(1)"
+                />
+                <span className="text-[12px] leading-[131%] text-[#FEFCFF]">
+                  Entregado
+                </span>
+              </>
+            )}
+            <ChevronDown size={12} className="w-3 h-3 text-[#FEFCFF]" />
+          </button>
+
+          {isOperativoDropdownOpen && (
+            <div
+              className="absolute left-0 mt-1 w-[140px] bg-[#D8CDFE] rounded-[12px] shadow-md border border-[#B59DF9] z-50 overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleOperativoStatusChange("no visto");
+                }}
+                disabled={isUpdating}
+                className="w-full flex items-center gap-2 h-[30px] px-3 text-left bg-[#D8CDFE] hover:bg-[#CFC4FD] text-[#6A5379] rounded-t-[12px] font-lato text-[11px] leading-[131%] border-b border-[#B59DF9] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Image
+                  src="/iconoPresupuesto.png"
+                  alt="No visto"
+                  width={18}
+                  height={18}
+                  className="w-[18px] h-[18px] object-contain filter:brightness(0) saturate(100%) invert(33%) sepia(15%) saturate(458%) hue-rotate(252deg) brightness(95%) contrast(86%)"
+                />
+                <span className="text-[11px] font-lato leading-[131%]">
+                  No visto
+                </span>
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleOperativoStatusChange("en compra");
+                }}
+                disabled={isUpdating}
+                className="w-full flex items-center gap-2 h-[30px] px-3 text-left bg-[#D8CDFE] hover:bg-[#CFC4FD] text-[#6A5379] font-lato text-[11px] leading-[131%] border-b border-[#B59DF9] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Image
+                  src="/iconoCompra.png"
+                  alt="En compra"
+                  width={18}
+                  height={18}
+                  className="w-[18px] h-[18px] object-contain filter:brightness(0) saturate(100%) invert(33%) sepia(15%) saturate(458%) hue-rotate(252deg) brightness(95%) contrast(86%)"
+                />
+                <span className="text-[11px] font-lato leading-[131%]">
+                  En compra
+                </span>
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleOperativoStatusChange("en produccion");
+                }}
+                disabled={isUpdating}
+                className="w-full flex items-center gap-2 h-[30px] px-3 text-left bg-[#D8CDFE] hover:bg-[#CFC4FD] text-[#6A5379] font-lato text-[11px] leading-[131%] border-b border-[#B59DF9] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Image
+                  src="/iconoProduccion.png"
+                  alt="En producción"
+                  width={18}
+                  height={18}
+                  className="w-[18px] h-[18px] object-contain filter:brightness(0) saturate(100%) invert(33%) sepia(15%) saturate(458%) hue-rotate(252deg) brightness(95%) contrast(86%)"
+                />
+                <span className="text-[11px] font-lato leading-[131%]">
+                  En producción
+                </span>
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleOperativoStatusChange("entregado");
+                }}
+                disabled={isUpdating}
+                className="w-full flex items-center gap-2 h-[30px] px-3 text-left bg-[#D8CDFE] hover:bg-[#CFC4FD] text-[#6A5379] rounded-b-[12px] font-lato text-[11px] leading-[131%] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Image
+                  src="/iconoEntregado.png"
+                  alt="Entregado"
+                  width={18}
+                  height={18}
+                  className="w-[18px] h-[18px] object-contain filter:brightness(0) saturate(100%) invert(33%) sepia(15%) saturate(458%) hue-rotate(252deg) brightness(95%) contrast(86%)"
+                />
+                <span className="text-[11px] font-lato leading-[131%]">
+                  Entregado
+                </span>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

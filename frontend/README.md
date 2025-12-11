@@ -35,13 +35,16 @@ Aplicación web frontend para el sistema de gestión de producción en industria
 
 ## 🛠 Tecnologías
 
-- **Framework**: Next.js 16.0.3
-- **Librería UI**: React 19.2.0
+- **Framework**: Next.js 16.0.7
+- **Librería UI**: React 18.2.0
 - **Lenguaje**: TypeScript 5
 - **Estilos**: Tailwind CSS 4
 - **Formularios**: React Hook Form 7.66.1 + Zod 4.1.12
-- **Iconos**: Lucide React 0.554.0
+- **Iconos**: Lucide React 0.554.0 + Heroicons 2.2.0
 - **Comunicación en Tiempo Real**: Socket.io-client 4.8.1
+- **Generación de PDFs**: React PDF Renderer 4.3.1
+- **Emojis**: Emoji Mart 5.6.0
+- **Zoom de Imágenes**: React Medium Image Zoom 5.4.0
 - **Build Tool**: Next.js (Turbopack)
 
 ## Prerrequisitos
@@ -146,7 +149,8 @@ frontend/
 │   │   ├── apiClient.ts   # Cliente HTTP con interceptores
 │   │   └── socket.config.ts  # Configuración de Socket.io
 │   ├── contexts/          # Context API
-│   │   └── ToastContext.tsx
+│   │   ├── ToastContext.tsx
+│   │   └── UnsavedChangesContext.tsx  # Gestión de cambios no guardados
 │   ├── hooks/             # Custom Hooks
 │   │   ├── useAuth.ts
 │   │   ├── useBudgets.ts
@@ -292,6 +296,8 @@ frontend/
 - **GarmentAutocomplete**: Autocompletado de prendas
 - **BudgetSummaryHeader**: Encabezado de resumen
 - **BudgetTotalBadge**: Badge con total
+- **BudgetPDF**: Generación de PDF de presupuesto
+- **UnsavedChangesModal**: Modal de confirmación para cambios no guardados
 - **Steps**: Componentes para los pasos del cálculo
 
 ### Componentes UI (`components/ui/`)
@@ -345,6 +351,7 @@ frontend/
 - **`usePlataformaStyles`**: Estilos según plataforma de mensajería
 - **`useOrderCard`**: Lógica para tarjeta de pedido
 - **`useAddGarmentForm`**: Formulario para agregar prenda
+- **`useUnsavedChanges`**: Gestión de cambios no guardados en formularios
 
 ## Scripts Disponibles
 

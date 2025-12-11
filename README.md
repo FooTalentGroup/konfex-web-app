@@ -4,7 +4,7 @@ Este repositorio contiene el código fuente para el sistema de gestión de EOS I
 
 ## Tabla de Contenidos
 
-- [Proyecto EOS Indumentaria (Konfex Web App)](#proyecto-eos-indumentaria-konfex-web-app)
+- [Proyecto Konfex Web App](#proyecto-konfex-web-app)
   - [Tabla de Contenidos](#tabla-de-contenidos)
   - [Estructura del Proyecto](#estructura-del-proyecto)
     - [Descripción de Carpetas](#descripción-de-carpetas)
@@ -70,8 +70,8 @@ konfex-web-app/
 ## 🛠 Tecnologías
 
 ### Frontend
-- **Framework**: Next.js 16.0.3
-- **Librería UI**: React 19.2.0
+- **Framework**: Next.js 16.0.7
+- **Librería UI**: React 18.2.0
 - **Lenguaje**: TypeScript 5
 - **Estilos**: Tailwind CSS 4
 - **Formularios**: React Hook Form 7.66.1 + Zod 4.1.12
@@ -79,20 +79,23 @@ konfex-web-app/
 - **Iconos**: Lucide React 0.554.0
 - **Comunicación en Tiempo Real**: Socket.io-client 4.8.1
 - **Gestión de Archivos**: Integración con Cloudinary
+- **Generación de PDFs**: React PDF Renderer 4.3.1
+- **Emojis**: Emoji Mart 5.6.0
+- **Zoom de Imágenes**: React Medium Image Zoom 5.4.0
 
 ### Backend
 - **Framework**: Express.js 5.1.0
 - **Lenguaje**: TypeScript 5.9.3
-- **ORM**: Prisma 7.0.1
-- **Base de Datos**: PostgreSQL
+- **ORM**: Prisma 7.0.1 con Prisma Adapter PG
+- **Base de Datos**: PostgreSQL 12+
 - **Autenticación**: JWT (jsonwebtoken 9.0.2)
-- **Documentación**: Swagger (swagger-jsdoc, swagger-ui-express)
-- **Logging**: Pino 10.1.0
+- **Documentación**: Swagger (swagger-jsdoc 6.2.8, swagger-ui-express 5.0.1)
+- **Logging**: Pino 10.1.0 con Pino HTTP 11.0.0
 - **Validación**: Zod 4.1.12
 - **Comunicación en Tiempo Real**: Socket.io 4.8.1
 - **Gestión de Archivos**: Cloudinary 2.8.0
 - **Hashing**: bcrypt 6.0.0
-- **Integración**: Telegram Bot API
+- **Integración**: Telegram Bot API con Axios 1.13.2
 
 ## Prerrequisitos
 
@@ -174,8 +177,8 @@ El frontend estará disponible en: `http://localhost:3000`
 
 ## Enlaces de Producción
 
-- **Frontend (Vercel)**: [konfex-web-app.vercel.app](https://konfex-web-app.vercel.app)
-- **Backend**: Consultar configuración de deployment en [README del Backend](./backend/README.md)
+- **Frontend (Railway)**: [https://surprising-wholeness-production.up.railway.app/](https://surprising-wholeness-production.up.railway.app/)
+- **Backend**: Consultar configuración de deployment en [https://konfex-web-app-production.up.railway.app/api/v1/docs/](https://konfex-web-app-production.up.railway.app/api/v1/docs/)
 
 > **Nota**: El backend debe estar desplegado y configurado con las variables de entorno necesarias para que el frontend funcione correctamente.
 
@@ -186,13 +189,13 @@ El frontend estará disponible en: `http://localhost:3000`
 
 ### Detalles Técnicos
 
-- **Dominio (Frontend)**: `https://konfex-web-app.vercel.app`
-- **HTTPS (Frontend)**: Sí, gestionado automáticamente por Vercel
+- **Dominio (Frontend)**: `https://surprising-wholeness-production.up.railway.app/`
+- **HTTPS (Frontend)**: Sí, gestionado automáticamente por Railway
 - **Puertos (Local)**: 
   - `3000` - Frontend (Next.js)
   - `3001` - Backend (Express.js)
 - **Comandos Build**: 
-  - Frontend: `npm run build` (se ejecuta automáticamente en Vercel)
+  - Frontend: `npm run build` (se ejecuta automáticamente en Railway)
   - Backend: `npm run build` (compila TypeScript y genera cliente Prisma)
 - **Base de Datos**: PostgreSQL
 - **ORM**: Prisma 7.0.1
