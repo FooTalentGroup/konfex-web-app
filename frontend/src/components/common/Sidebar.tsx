@@ -27,13 +27,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       id: 'inbox',
       label: 'Inbox',
       iconPath: '/inbox.png',
-      path: '/inbox', 
+      path: '/inbox',
     },
     {
       id: 'clientes',
       label: 'Clientes',
       iconPath: '/clientes.png',
-      path: '/clientes', 
+      path: '/clientes',
     },
     {
       id: 'calculadora',
@@ -51,7 +51,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       id: 'colecciones',
       label: 'Colecciones',
       iconPath: '/colecciones.png',
-      path: '/colecciones', 
+      path: '/colecciones',
     },
     {
       id: 'materia-prima',
@@ -63,12 +63,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       id: 'pedidos',
       label: 'Pedidos',
       iconPath: '/pedidos.png',
-      path: '/pedidos', 
+      path: '/pedidos',
     },
     {
       id: 'gastos-negocio',
       label: 'Gastos del negocio',
       iconPath: '/negocio.png',
+      path: '/gastos-negocio',
+
     },
   ];
 
@@ -91,9 +93,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         />
       )}
       <aside
-        className={`fixed top-0 left-0 h-full z-50 transition-transform duration-300 ease-in-out ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed top-0 left-0 h-full z-50 transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
         style={{
           width: '280px',
           backgroundColor: '#6A5379',
@@ -188,8 +189,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                           height={20}
                           className="object-contain brightness-0 invert"
                           style={{
-                            filter: isActive 
-                              ? 'brightness(0) invert(0) contrast(1)' 
+                            filter: isActive
+                              ? 'brightness(0) invert(0) contrast(1)'
                               : 'brightness(0) invert(1) contrast(2)',
                           }}
                         />

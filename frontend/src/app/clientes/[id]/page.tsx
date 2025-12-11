@@ -157,19 +157,19 @@ export default function ClientDetailPage() {
       <div className="bg-primary-500">
         <Header onMenuClick={() => setIsSidebarOpen(true)} />
       </div>
-
-      <div className="w-full px-4 py-3 bg-white rounded-t-3xl rounded-b-3xl shadow-sm">
-        <div className="flex items-center gap-2 max-w-2xl mx-auto">
-          <button
+      
+      <div className="w-full px-4 py-3 bg-white rounded-b-3xl shadow-sm">
+        <div className="flex items-center justify-between gap-2 max-w-2xl mx-auto">
+          <button 
             onClick={() => router.back()}
             className="w-9 h-9 flex items-center justify-center bg-primary-500 text-white rounded-full hover:bg-primary-600 transition-colors flex-shrink-0"
           >
             <ArrowLeft size={18} />
           </button>
-          <div className="flex items-center gap-1 text-base text-gray-600">
-            <span>Cliente</span>
-            <ChevronRight size={16} />
-            <span className="text-[#C071F4] font-bold">Detalle cliente</span>
+          <div className="flex items-center gap-1 text-base ml-auto">
+            <span className="text-[#D9B7E8]">Cliente</span>
+            <ChevronRight size={16} className="text-[#D9B7E8]" />
+            <span className="text-[#9D52B8] font-bold">Detalle cliente</span>
           </div>
         </div>
       </div>
@@ -206,26 +206,20 @@ export default function ClientDetailPage() {
       {/* Contenido */}
       <div className="flex-1 w-full px-4 py-6 bg-gray-100">
         <div className="max-w-2xl mx-auto space-y-4">
-          <div className="bg-white border border-gray-300 rounded-3xl p-4">
-            <div className="grid grid-cols-2 gap-8">
-              <div>
-                <p className="text-gray-500 text-xs font-medium mb-1">
-                  Nombre:
-                </p>
-                <p className="text-gray-900 font-bold text-sm">
-                  {client?.nombre || "-"}
-                </p>
+          <div className="bg-gray-100 border border-[#D9B7E8] rounded-lg px-3 py-4">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex flex-col gap-2 min-w-0">
+                <p className="text-gray-700 text-base font-normal">Nombre:</p>
+                <p className="text-gray-700 text-base font-normal">ID:</p>
               </div>
-              <div>
-                <p className="text-gray-500 text-xs font-medium mb-1">ID :</p>
-                <p className="text-gray-900 font-bold text-sm">
-                  {client ? String(client.id).padStart(6, "0") : "-"}
-                </p>
+              <div className="flex flex-col gap-2 text-right flex-shrink-0">
+                <p className="text-gray-900 font-bold text-base">{client?.nombre || '-'}</p>
+                <p className="text-gray-900 font-bold text-base">{client ? String(client.id).padStart(6, '0') : '-'}</p>
               </div>
             </div>
           </div>
 
-          <div className="w-full bg-white rounded-3xl overflow-hidden">
+          <div className="w-full bg-gray-100 rounded-lg overflow-hidden">
             {/* Tabs */}
             <div className="w-full border-b border-gray-200">
               <div className="flex">
@@ -240,9 +234,9 @@ export default function ClientDetailPage() {
                     <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#C071F4]"></div>
                   )}
                 </button>
-                <div className="w-px bg-gray-300 h-8 my-auto"></div>
-                <button
-                  onClick={() => setActiveTab("history")}
+                <div className="w-px bg-[#E8E5ED] h-8 my-auto"></div>
+                <button 
+                  onClick={() => setActiveTab('history')}
                   className={`flex-1 py-4 text-center text-sm font-bold transition-colors relative ${
                     activeTab === "history" ? "text-[#C071F4]" : "text-gray-400"
                   }`}
@@ -266,66 +260,55 @@ export default function ClientDetailPage() {
                 </div>
               ) : client ? (
                 <>
-                  {activeTab === "detail" && (
-                    <form
-                      onSubmit={handleSubmit(onSubmit)}
-                      className="animate-in fade-in duration-300 space-y-4"
-                    >
-                      <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700">
-                          Nombre del cliente
-                        </label>
-                        <input
-                          {...register("nombre")}
-                          className="w-full bg-white border border-gray-300 rounded-2xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
-                        />
-                      </div>
+                  {activeTab === 'detail' && (
+                    <form onSubmit={handleSubmit(onSubmit)} className="animate-in fade-in duration-300 space-y-4">
+                      <div className="bg-gray-100 border border-[#D9B7E8] rounded-lg p-3 space-y-3">
+                        <div className="space-y-2">
+                          <label className="text-sm font-normal text-gray-700">Nombre del cliente</label>
+                          <input 
+                            {...register('nombre')}
+                            className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
+                          />
+                        </div>
 
-                      <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700">
-                          Nº de Identificación
-                        </label>
-                        <input
-                          {...register("numeroIdentificacion")}
-                          className="w-full bg-white border border-gray-300 rounded-2xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
-                        />
-                      </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-normal text-gray-700">Nº de Identificación</label>
+                          <input 
+                            {...register('numeroIdentificacion')}
+                            className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
+                          />
+                        </div>
 
-                      <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700">
-                          E-mail
-                        </label>
-                        <input
-                          {...register("email")}
-                          className="w-full bg-white border border-gray-300 rounded-2xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
-                        />
-                      </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-normal text-gray-700">E-mail</label>
+                          <input 
+                            {...register('email')}
+                            className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
+                          />
+                        </div>
 
-                      <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700">
-                          Dirección
-                        </label>
-                        <input
-                          {...register("direccion")}
-                          className="w-full bg-white border border-gray-300 rounded-2xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
-                        />
-                      </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-normal text-gray-700">Dirección</label>
+                          <input 
+                            {...register('direccion')}
+                            className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
+                          />
+                        </div>
 
-                      <div className="space-y-2">
-                        <label className="text-sm font-semibold text-gray-700">
-                          Teléfono
-                        </label>
-                        <input
-                          {...register("telefono")}
-                          className="w-full bg-white border border-gray-300 rounded-2xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
-                        />
+                        <div className="space-y-2">
+                          <label className="text-sm font-normal text-gray-700">Teléfono</label>
+                          <input 
+                            {...register('telefono')}
+                            className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
+                          />
+                        </div>
                       </div>
 
                       <div className="pt-4 flex gap-3">
                         <button
                           type="button"
                           onClick={handleDelete}
-                          className="flex-1 bg-[#E8D5F2] text-[#8B709D] font-bold py-3 rounded-full hover:bg-[#dcc5ee] transition-colors text-sm"
+                          className="flex-1 bg-[#E8D5F2] text-[#9D52B8] font-bold py-4 rounded-full border-2 border-[#9D52B8] hover:bg-[#dcc5ee] transition-colors text-base"
                         >
                           Eliminar
                         </button>
@@ -333,7 +316,7 @@ export default function ClientDetailPage() {
                         <button
                           type="submit"
                           disabled={isSubmitting}
-                          className="flex-1 bg-[#C071F4] text-white font-bold py-3 rounded-full hover:bg-[#ae5ce6] transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+                          className="flex-1 bg-[#C071F4] text-white font-bold py-4 rounded-full border-2 border-[#9D52B8] hover:bg-[#ae5ce6] transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base"
                         >
                           {isSubmitting ? (
                             <>

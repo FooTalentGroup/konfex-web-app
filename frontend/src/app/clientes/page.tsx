@@ -98,12 +98,12 @@ export default function ClientsPage() {
       />
 
       <div className="flex-1 flex flex-col">
-        <div className="w-full px-3 sm:px-4 md:px-6 py-3 sm:py-4 bg-primary-500 mt-8">
-          <div className="flex flex-col text-white max-w-xs sm:max-w-md md:max-w-2xl mx-auto">
-            <h1 className="text-lg sm:text-xl md:text-2xl mb-2 font-[var(--font-lato),sans-serif] font-bold leading-[131%] tracking-[0%]">
+        <div className="w-full px-4 sm:px-6 md:px-8 py-4 sm:py-6 bg-primary-500 mt-8">
+          <div className="flex flex-col text-[#F3F0F5]">
+            <h1 className="text-[24px] font-lato font-normal mb-1 leading-tight">
               Cliente
             </h1>
-            <p className="text-xs sm:text-sm md:text-base mb-4 sm:mb-6 font-[var(--font-lato),sans-serif]">
+            <p className="text-[12px] font-lato font-normal mb-4 sm:mb-6">
               {isSelectionMode ? 'Selecciona los clientes a eliminar' : 'Gestiona a todos tus clientes desde aquí.'}
             </p>
           </div>
@@ -112,12 +112,12 @@ export default function ClientsPage() {
             value={searchTerm}
             onChange={handleSearch}
             onClear={() => handleSearch('')}
-            className="max-w-xs sm:max-w-md md:max-w-2xl mx-auto"
+            className="w-full"
           />
         </div>
 
         <main className="flex-1 rounded-t-3xl p-4 sm:p-6 bg-white">
-          <div className="w-full max-w-xs sm:max-w-sm mx-auto space-y-3 sm:space-y-4">
+          <div className="w-full max-w-md sm:max-w-lg mx-auto space-y-3 sm:space-y-4">
             {clients.length > 0 ? (
               clients.map((client) => (
                 <ClientCard 
@@ -141,33 +141,32 @@ export default function ClientsPage() {
         </main>
       </div>
 
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center bg-[#8B709D] p-1.5 rounded-full shadow-xl z-50 gap-1">
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center bg-[#C4B5D0] p-2.5 rounded-full shadow-xl z-50 gap-2.5">
         {isSelectionMode ? (
           <>
-            <button onClick={toggleSelectionMode} className="w-12 h-12 bg-white/10 rounded-full text-white flex items-center justify-center hover:bg-white/20 transition-colors">
-              <X size={24} />
+            <button onClick={toggleSelectionMode} className="w-12 h-12 bg-[#8B709D] rounded-full text-white flex items-center justify-center hover:bg-[#7A5F89] transition-colors">
+              <X size={22} />
             </button>
             <button 
               onClick={handleBulkDelete}
               disabled={selectedIds.length === 0}
               className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
-                selectedIds.length > 0 ? 'bg-red-400 text-white shadow-md' : 'bg-transparent text-white/30'
+                selectedIds.length > 0 ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-red-300 text-white/50'
               }`}
             >
-              <Trash2 size={24} />
+              <Trash2 size={22} />
             </button>
           </>
         ) : (
           <>
-            <button onClick={toggleSelectionMode} className="w-12 h-12 bg-transparent rounded-full text-white/80 hover:bg-white/10 flex items-center justify-center transition-colors">
-              <Trash2 size={24} />
-            </button>
-            <div className="w-[1px] h-6 bg-white/20"></div>
             <button 
               onClick={() => router.push('/clientes/nuevo')}
-              className="w-12 h-12 bg-transparent rounded-full text-white hover:bg-white/10 flex items-center justify-center transition-colors"
+              className="w-12 h-12 bg-[#8B709D] rounded-full text-white flex items-center justify-center hover:bg-[#7A5F89] transition-colors"
             >
-              <Plus size={32} />
+              <Plus size={24} />
+            </button>
+            <button onClick={toggleSelectionMode} className="w-12 h-12 bg-[#8B709D] rounded-full text-white flex items-center justify-center hover:bg-[#7A5F89] transition-colors">
+              <Trash2 size={22} />
             </button>
           </>
         )}
