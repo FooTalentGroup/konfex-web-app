@@ -10,7 +10,7 @@ const adapter = () => {
 
   if (!databaseUrl) {
     throw new Error(
-      "Missing required environment variable: DATABASE_URL. Please check your .env file.",
+      "Missing required environment variable: DATABASE_URL. Please check your .env file."
     );
   }
 
@@ -18,17 +18,13 @@ const adapter = () => {
   const prismaAdapter = new PrismaPg(pool);
 
   return new PrismaClient({
-    log:
-      process.env.NODE_ENV === "development"
-        ? ["query", "error", "warn"]
-        : ["error"],
+    log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
     adapter: prismaAdapter,
     errorFormat: "pretty",
   });
 };
 
 declare global {
-   
   var prismaGlobal: undefined | ReturnType<typeof adapter>;
 }
 

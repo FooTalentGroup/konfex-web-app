@@ -16,12 +16,17 @@ if (!databaseUrl) {
   throw new Error("Missing required environment variable: DATABASE_URL");
 }
 
-const pool = new Pool({ connectionString: databaseUrl });
-const adapter = new PrismaPg(pool);
-
-const prisma = new PrismaClient({
-  adapter,
+const pool = new Pool({
+  connectionString: databaseUrl,
+  max: 1, // Solo una conexión para el seed
+  idleTimeoutMillis: 0, // No cerrar conexiones inactivas
+  connectionTimeoutMillis: 60000, // 60 segundos de timeout
+  keepAlive: true, // Mantener conexión viva
+  keepAliveInitialDelayMillis: 10000,
 });
+
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log("Seeding database...");
@@ -1143,9 +1148,15 @@ async function main() {
 }
 
 main()
-  .then(() => prisma.$disconnect())
+  .then(async () => {
+    await prisma.$disconnect();
+    await pool.end();
+    console.log("✅ Seed completed successfully!");
+  })
   .catch(async (e) => {
+    console.error("❌ Seed failed:");
     console.error(e);
     await prisma.$disconnect();
+    await pool.end();
     process.exit(1);
   });

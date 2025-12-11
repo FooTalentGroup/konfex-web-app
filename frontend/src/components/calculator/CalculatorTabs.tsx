@@ -16,23 +16,26 @@ export default function CalculatorTabs({
   ];
 
   return (
-    <div className="flex bg-white rounded-t-3xl border-b border-gray-100 overflow-hidden">
+    <div className="relative flex bg-[#F4E7FD] rounded-t-[20px] overflow-hidden pb-0">
+      <div className="absolute bottom-[2px] left-[9%] right-[6%] h-px bg-[#8B709D] z-0" />
       {tabs.map((tab) => (
         <button
           key={tab.id}
           onClick={() =>
             onTabChange(tab.id as "details" | "materials" | "extras")
           }
-          className={`cursor-pointer flex-1 py-3 text-sm font-bold transition-colors relative ${
+          className={`cursor-pointer flex-1 py-3 transition-colors relative ${
             activeTab === tab.id
-              ? "text-[#8B709D]"
-              : "text-gray-400 hover:text-gray-600"
+              ? "text-[#B65CF2] font-bold text-[14px]"
+              : "text-[#8B709D] font-normal text-[13px]"
           }`}
         >
           {tab.label}
-
           {activeTab === tab.id && (
-            <div className="absolute bottom-0 left-0 w-full h-1 bg-[#8B709D] rounded-t-full" />
+            <span
+              className="pointer-events-none absolute bottom-[1px] left-[12%] right-[12%] h-[4px] bg-[#B65CF2] rounded-full z-20"
+              aria-hidden
+            />
           )}
         </button>
       ))}

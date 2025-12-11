@@ -1,6 +1,7 @@
 import { useState } from "react";
+import Image from "next/image";
 import { useFormContext, useFieldArray } from "react-hook-form";
-import { Trash2, Plus, Minus, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import CircularAddButton from "@/components/common/CircularAddButton";
 import GarmentAutocomplete from "../GarmentAutocomplete";
 import BudgetTotalBadge from "../BudgetTotalBadge";
@@ -37,20 +38,20 @@ export default function BudgetMaterials() {
 
   const [currentSize, setCurrentSize] = useState("M");
   const [currentQty, setCurrentQty] = useState(1);
+  const [sizeOpen, setSizeOpen] = useState(false);
+  const availableSizes = ["S", "M", "L", "XL"];
 
   const addVariant = () => {
     if (currentQty >= 1) {
-      // Check if size already exists
+      // Comportamiento original: si la talla existe, reemplaza su cantidad; si no, agrega
       const existingIndex = tempVariants.findIndex(
         (v) => v.size === currentSize
       );
       if (existingIndex >= 0) {
-        // Update existing variant
         const updated = [...tempVariants];
         updated[existingIndex].quantity = currentQty;
         setTempVariants(updated);
       } else {
-        // Add new variant
         setTempVariants([
           ...tempVariants,
           { size: currentSize, quantity: currentQty },
@@ -107,23 +108,29 @@ export default function BudgetMaterials() {
   }, 0);
 
   return (
-    <div className="p-5 pb-10 font-lato">
+    <div className="p-5 pb-12 font-lato bg-[#F4E7FD] rounded-b-[22px] space-y-5 overflow-x-hidden">
       {/* Total detalle header */}
-      <div className="flex justify-between items-center mb-4 px-1">
-        <span className="font-bold text-gray-900 text-base">Total detalle</span>
-        <BudgetTotalBadge amount={totalMaterials} />
+      <div className="flex justify-between items-center mb-2 px-1 -mt-3 pl-2 sm:pl-3">
+        <span className="font-bold text-[16px] leading-[1.31] text-black">
+          Total detalle:
+        </span>
+        <BudgetTotalBadge
+          amount={totalMaterials}
+          className="text-[#C071F4]!"
+        />
       </div>
+      <div className="h-px bg-[#CEC2D6] mb-3 -mt-2 mx-[6px] sm:mx-[10px]"></div>
 
       {/* Instruction text */}
-      <p className="text-sm text-gray-600 mb-6 px-1">
+      <p className="text-[13px] text-[#8B709D] px-1 leading-normal pl-2 sm:pl-3">
         Agrega las prendas y tallas del pedido.
       </p>
 
       {/* Form container */}
-      <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 relative mb-6">
+      <div className="bg-[#F3F0F5] px-[8px] pt-[8px] pb-[30px] rounded-[10px] border-[0.5px] border-[#CEC2D6] relative space-y-[20px] w-full max-w-[390px] sm:max-w-[520px] lg:max-w-[640px] mx-auto -mt-2">
         {/* Nombre prenda */}
-        <div className="mb-5">
-          <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">
+        <div className="space-y-2">
+          <label className="block text-[14px] font-bold leading-[1.31] text-[#1A151E] ml-1">
             Nombre prenda
           </label>
           <GarmentAutocomplete
@@ -150,20 +157,28 @@ export default function BudgetMaterials() {
         </div>
 
         {/* Precio unitario section */}
-        <div className="mb-5">
-          <div className="flex items-center justify-between mb-1">
-            <label className="block text-sm font-bold text-gray-700">
+        <div className="space-y-1">
+          <div className="flex items-center justify-between">
+            <label className="block text-[14px] font-bold leading-[1.31] text-[#4F3E5B]">
               Precio unitario:
             </label>
-            <span className="font-bold text-gray-800 text-sm">
-              ${" "}
-              {parseFloat(tempPrice || "0").toLocaleString("es-AR", {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              })}
-            </span>
+            <div className="flex items-center gap-1">
+              <span className="font-bold text-[13px] text-[#6A5379]">
+                {parseFloat(tempPrice || "0").toLocaleString("es-AR", {
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 0,
+                })}
+              </span>
+              <Image
+                src="/totalCal.png"
+                alt="Total"
+                width={18}
+                height={18}
+                className="shrink-0 -translate-y-px"
+              />
+            </div>
           </div>
-          <p className="text-xs text-gray-500 ml-1">
+          <p className="text-[12px] text-[#6A5379] ml-1 leading-[1.4]">
             Precio unitario de la prenda viene del precio de colecciones
           </p>
           <input
@@ -183,119 +198,140 @@ export default function BudgetMaterials() {
           />
         </div>
 
-        {/* Talla and Cantidad inputs */}
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="block text-xs font-bold text-gray-700 mb-1.5 ml-1">
-              Talla
-            </label>
-            <div className="relative">
-              <select
-                value={currentSize}
-                onChange={(e) => setCurrentSize(e.target.value)}
-                className="w-full bg-[#F3F0F5] rounded-xl p-3 text-sm appearance-none outline-none text-gray-700 font-medium cursor-pointer border border-black"
-              >
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-                <option value="XL">XL</option>
-              </select>
-              <ChevronDown
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-                size={16}
-              />
+        {/* Talla and Cantidad inputs in framed container */}
+        <div className="bg-[#F3F0F5] border-[0.5px] border-[#CEC2D6] rounded-[10px] px-[10px] pt-[10px] pb-[20px] flex flex-col gap-4 w-full max-w-[374px] sm:max-w-[440px] lg:max-w-[520px] mx-auto">
+          <div className="flex justify-between gap-[6px] w-full">
+            <div className="w-[135px] sm:w-[180px] lg:w-[200px]">
+              <label className="block text-[12px] font-bold text-[#1A151E] mb-1.5 ml-1">
+                Talla
+              </label>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setSizeOpen((v) => !v)}
+                  className="w-full bg-white rounded-lg h-10 px-3 text-sm text-[#B5A4C1] appearance-none outline-none font-normal cursor-pointer border border-[#DCCBEB] flex items-center justify-between"
+                >
+                  <span>{currentSize}</span>
+                  <ChevronDown
+                    className={`text-[#B5A4C1] transition-transform ${sizeOpen ? "rotate-180" : ""}`}
+                    size={16}
+                  />
+                </button>
+                {sizeOpen && (
+                  <div className="absolute z-10 mt-1 w-full bg-white border border-[#DCCBEB] rounded-lg overflow-hidden">
+                    {availableSizes.map((size) => (
+                      <button
+                        key={size}
+                        type="button"
+                        onClick={() => {
+                          setCurrentSize(size);
+                          setSizeOpen(false);
+                        }}
+                        className={`w-full text-left px-3 py-2 text-sm ${
+                          size === currentSize
+                            ? "bg-[#F4E7FD] text-[#1A151E] font-semibold"
+                            : "hover:bg-[#F9F6FF] text-[#1A151E]"
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-          <div>
-            <label className="block text-xs font-bold text-gray-700 mb-1.5 ml-1">
-              Cantidad
-            </label>
-            <div className="flex items-center bg-[#F3F0F5] rounded-xl p-1 justify-between border border-black">
-              <button
-                type="button"
-                onClick={() => setCurrentQty(Math.max(1, currentQty - 1))}
-                disabled={currentQty <= 1}
-                className={`p-2 rounded-lg transition-all ${
-                  currentQty <= 1
-                    ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-500 hover:text-gray-800 hover:bg-white"
-                }`}
-              >
-                <Minus size={16} />
-              </button>
-              <input
-                type="number"
-                value={currentQty}
-                onChange={(e) => {
-                  const val = parseInt(e.target.value);
-                  if (isNaN(val) || val < 1) {
-                    setCurrentQty(1);
-                  } else if (val > 9999) {
-                    setCurrentQty(9999);
-                  } else {
-                    setCurrentQty(val);
-                  }
-                }}
-                onBlur={(e) => {
-                  const val = parseInt(e.target.value);
-                  if (isNaN(val) || val < 1) {
-                    setCurrentQty(1);
-                  } else if (val > 9999) {
-                    setCurrentQty(9999);
-                  }
-                }}
-                onWheel={(e) => e.currentTarget.blur()}
-                className="w-12 bg-transparent text-center text-sm outline-none font-bold text-gray-800"
-                min="1"
-                max="9999"
-                step="1"
-              />
-              <button
-                type="button"
-                onClick={() => setCurrentQty(currentQty + 1)}
-                className="p-2 text-gray-500 hover:text-gray-800 hover:bg-white rounded-lg transition-all"
-              >
-                <Plus size={16} />
-              </button>
+            <div className="w-[140px] sm:w-[150px] ml-auto">
+              <label className="block text-[12px] font-bold text-[#1A151E] mb-1.5 ml-1">
+                Cantidad
+              </label>
+              <div className="flex items-center bg-white rounded-lg h-10 px-3 justify-between border border-[#DCCBEB]">
+                <button
+                  type="button"
+                  onClick={() => setCurrentQty(Math.max(1, currentQty - 1))}
+                  disabled={currentQty <= 1}
+                  className={`px-2.5 rounded-md bg-transparent transition-colors text-2xl font-normal leading-none text-[#1A151E] hover:text-[#6A5379] ${
+                    currentQty <= 1 ? "cursor-not-allowed" : ""
+                  }`}
+                >
+                  <span className="inline-block scale-x-125">-</span>
+                </button>
+                <input
+                  type="number"
+                  value={currentQty}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value);
+                    if (isNaN(val) || val < 1) {
+                      setCurrentQty(1);
+                    } else {
+                      setCurrentQty(val);
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const val = parseInt(e.target.value);
+                    if (isNaN(val) || val < 1) {
+                      setCurrentQty(1);
+                    }
+                  }}
+                  className="w-16 bg-transparent text-center text-sm outline-none font-normal text-[#B5A4C1] appearance-none [-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  min="1"
+                  step="1"
+                />
+                <button
+                  type="button"
+                  onClick={() => setCurrentQty(currentQty + 1)}
+                  className="px-2.5 rounded-md bg-transparent transition-colors text-2xl font-normal leading-none text-[#1A151E] hover:text-[#6A5379]"
+                >
+                  +
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Agregar talla button */}
+        {/* Agregar talla button (restaurado) */}
         <div className="mb-5">
           <CircularAddButton
             onClick={addVariant}
             label="Agregar talla"
             variant="centered"
-            iconSize={28}
+            iconSize={32}
+            hideLines
+            className="-mt-8"
+            labelClassName="text-[#6A5379] text-[13px] font-normal mt-2 text-center"
           />
         </div>
 
         {/* Lista de tallas agregadas */}
         {tempVariants.length > 0 && (
           <div className="mb-5">
-            <p className="text-xs font-bold text-gray-700 mb-2 ml-1">
+            <p className="text-[14px] font-bold text-[#4F3E5B] mb-2 ml-1">
               Lista de tallas agregadas:
             </p>
             <div className="space-y-2">
               {tempVariants.map((v, i) => (
                 <div
                   key={i}
-                  className="flex justify-between items-center bg-[#F3F0F5] p-3 rounded-xl text-sm border border-black"
+                  className="flex items-center justify-between bg-[#EDE9F1] h-[44px] w-full max-w-[374px] sm:max-w-[480px] rounded-[10px] text-sm border border-[#DCCBEB] px-[10px] gap-3 sm:gap-[27px] mx-auto"
                 >
-                  <span className="font-medium text-gray-700">
+                  <span className="font-medium text-[#1A151E]">
                     Talla: {v.size}
                   </span>
                   <div className="flex gap-4 items-center ">
-                    <span className="font-medium  text-gray-700">
+                    <span className="font-medium text-[#1A151E]">
                       Cantidad: {v.quantity}
                     </span>
                     <button
                       type="button"
                       onClick={() => removeVariant(i)}
-                      className="bg-[#F3F0F5] hover:bg-gray-200 rounded p-1.5 text-gray-400 hover:text-red-500 transition-colors"
+                      className="bg-transparent rounded p-1.5 ml-4 sm:ml-6"
                     >
-                      <Trash2 size={16} />
+                      <Image
+                        src="/trash.png"
+                        alt="Eliminar"
+                        width={28}
+                        height={28}
+                        className="pointer-events-none"
+                      />
                     </button>
                   </div>
                 </div>
@@ -304,21 +340,25 @@ export default function BudgetMaterials() {
           </div>
         )}
 
-        {/* Agregar prenda button */}
-        <div className="pt-2 pb-2">
-          <CircularAddButton
-            onClick={handleAddMaterial}
-            label="Agregar prenda"
-            variant="centered"
-            iconSize={28}
-          />
-        </div>
+      </div>
+
+      {/* Agregar prenda fuera del contenedor */}
+      <div className="mt-2 mb-5">
+        <CircularAddButton
+          onClick={handleAddMaterial}
+          label="Agregar prenda"
+          variant="centered"
+          iconSize={32}
+          hideLines
+          className="-mt-9 z-10"
+          labelClassName="text-[#6A5379] text-[13px] font-normal mt-2 text-center"
+        />
       </div>
 
       {/* Lista de prendas agregadas */}
       <div className="space-y-3">
         {fields.length > 0 && (
-          <p className="text-xs font-bold text-gray-700 mb-2 ml-1">
+          <p className="text-[14px] font-bold leading-[1.31] text-[#4F3E5B] mb-2 ml-1">
             Lista de prendas agregadas:
           </p>
         )}
@@ -327,34 +367,44 @@ export default function BudgetMaterials() {
           return (
             <div
               key={field.id}
-              className="bg-[#F3F0F5] p-4 rounded-xl flex justify-between items-center text-sm border border-black"
+              className="bg-[#EDE9F1] min-h-[44px] w-full max-w-full sm:max-w-[600px] mx-auto rounded-[10px] flex flex-nowrap sm:flex-wrap items-center border border-[#CEC2D6] px-[10px] gap-3 sm:gap-[27px] text-sm text-[#000000]"
             >
-              <span className="font-bold text-gray-800 text-base shrink-0">
+              <span className="font-normal text-base text-[#000000] leading-[1.31] truncate">
                 {material.name}
               </span>
-              <div className="text-gray-600 text-sm flex flex-col gap-1">
+              <div className="text-sm flex flex-col gap-1 text-[#000000] font-normal ml-auto text-right pr-3 sm:min-w-[70px]">
                 {material.variants?.map((v: MaterialVariant, i: number) => (
-                  <span key={i}>{v.size}</span>
+                  <span key={i}>
+                    {v.size}
+                  </span>
                 ))}
               </div>
 
-              <div className="text-gray-600 text-sm flex flex-col gap-1">
+              <div className="text-sm flex flex-col gap-1 text-[#000000] font-normal ml-auto text-right pr-2 sm:min-w-[80px]">
                 {material.variants?.map((v: MaterialVariant, i: number) => (
-                  <span key={i}>{v.quantity} uds.</span>
+                  <span key={i}>
+                    {v.quantity} uds.
+                  </span>
                 ))}
               </div>
 
               <button
                 onClick={() => remove(index)}
-                className="bg-[#F3F0F5] hover:bg-gray-200 rounded p-1.5 text-gray-400 hover:text-red-500 transition-colors shrink-0"
+                className="bg-transparent rounded p-1.5 shrink-0 ml-1"
               >
-                <Trash2 size={18} />
+                <Image
+                  src="/trash.png"
+                  alt="Eliminar"
+                  width={28}
+                  height={28}
+                  className="pointer-events-none"
+                />
               </button>
             </div>
           );
         })}
         {fields.length === 0 && (
-          <div className="text-center text-gray-400 text-sm py-4 italic font-light">
+          <div className="text-center text-[#B5A4C1] text-sm py-4 italic font-light">
             No hay prendas agregadas
           </div>
         )}

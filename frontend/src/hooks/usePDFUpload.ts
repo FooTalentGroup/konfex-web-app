@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { uploadPDFToCloudinary, validatePDFFile, formatFileSize } from '@/services/cloudinaryPDF.service';
+import { useToast } from '@/contexts/ToastContext';
 
 export type UploadState = 'idle' | 'uploading' | 'success' | 'error';
 
@@ -10,12 +10,7 @@ interface UploadInfo {
     uploadSpeed: string;
 }
 
-interface UsePDFUploadProps {
-    onUploadSuccess?: (url: string, publicId: string) => void;
-    onUploadError?: (error: string) => void;
-}
-
-export function usePDFUpload({ onUploadSuccess, onUploadError }: UsePDFUploadProps = {}) {
+export function usePDFUpload() {
     const [uploadState, setUploadState] = useState<UploadState>('idle');
     const [uploadInfo, setUploadInfo] = useState<UploadInfo>({
         fileName: '',
@@ -25,14 +20,24 @@ export function usePDFUpload({ onUploadSuccess, onUploadError }: UsePDFUploadPro
     });
     const [isModalOpen, setIsModalOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const currentFileRef = useRef<File | null>(null);
+    const toast = useToast();
 
-    const uploadFile = useCallback(async (file: File) => {
+    const formatFileSize = (bytes: number): string => {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + sizes[i].toLowerCase();
+    };
+
+    const simulateUpload = useCallback((file: File) => {
         setUploadState('uploading');
         setIsModalOpen(true);
-        
+
         const fileSize = formatFileSize(file.size);
-        currentFileRef.current = file;
+        let progress = 0;
+        const totalSize = file.size;
+        const chunkSize = totalSize / 100; 
 
         setUploadInfo({
             fileName: file.name,
@@ -41,62 +46,68 @@ export function usePDFUpload({ onUploadSuccess, onUploadError }: UsePDFUploadPro
             uploadSpeed: '0KB/sec',
         });
 
-        try {
-            const result = await uploadPDFToCloudinary(
-                file,
-                'materials/pdfs/',
-                (progress, speed) => {
-                    setUploadInfo((prev) => ({
-                        ...prev,
-                        progress,
-                        uploadSpeed: speed,
-                    }));
-                }
-            );
+        const interval = setInterval(() => {
+            progress += Math.random() * 15 + 5; 
 
-            setUploadState('success');
-            setUploadInfo((prev) => ({
-                ...prev,
-                progress: 100,
-                uploadSpeed: '0KB/sec',
-            }));
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(interval);
 
-            console.log('PDF subido exitosamente:', result);
-            onUploadSuccess?.(result.secure_url, result.public_id);
+                setTimeout(() => {
 
-        } catch (error) {
-            console.log('%cError al subir PDF: ' + error, 'color: white; background: red;');
-            setUploadState('error');
-            
-            const errorMsg = error instanceof Error 
-                ? error.message 
-                : 'Error al subir el PDF. Intenta de nuevo.';
-            
-            onUploadError?.(errorMsg);
+                    const shouldError = Math.random() < 0.2;
+
+                    if (shouldError) {
+                        setUploadState('error');
+                        setUploadInfo((prev) => ({
+                            ...prev,
+                            progress: 100,
+                            uploadSpeed: '0KB/sec',
+                        }));
+                    } else {
+                        setUploadState('success');
+                        setUploadInfo((prev) => ({
+                            ...prev,
+                            progress: 100,
+                            uploadSpeed: '0KB/sec',
+                        }));
+                    }
+                }, 300);
+            } else {
+
+                const speed = (chunkSize * (Math.random() * 50 + 100)) / 1024; // KB/sec aleatorio
+
+                setUploadInfo((prev) => ({
+                    ...prev,
+                    progress: Math.round(progress),
+                    uploadSpeed: `${Math.round(speed)}KB/sec`,
+                }));
+            }
+        }, 200); 
+    }, []);
+
+    const handleFileSelect = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+
+        if (!file) return;
+
+        if (file.type !== 'application/pdf') {
+            toast.showWarning('Por favor selecciona un archivo PDF');
+            return;
         }
-    }, [onUploadSuccess, onUploadError]);
 
-    const handleFileSelect = useCallback(
-        async (event: React.ChangeEvent<HTMLInputElement>) => {
-            const file = event.target.files?.[0];
-            
-            if (!file) return;
+        const maxSize = 20 * 1024 * 1024; 
+        if (file.size > maxSize) {
+            toast.showError('El archivo es demasiado grande. Máximo 20MB');
+            return;
+        }
 
-            const validation = validatePDFFile(file);
-            if (!validation.valid) {
-                alert(validation.error || 'Archivo no válido');
-                onUploadError?.(validation.error || 'Archivo no válido');
-                return;
-            }
+        simulateUpload(file);
 
-            await uploadFile(file);
-            
-            if (event.target) {
-                event.target.value = '';
-            }
-        },
-        [uploadFile, onUploadError]
-    );
+        if (event.target) {
+            event.target.value = '';
+        }
+    }, [simulateUpload]);
 
     const handleUploadPDF = useCallback(() => {
         if (fileInputRef.current) {
@@ -106,51 +117,44 @@ export function usePDFUpload({ onUploadSuccess, onUploadError }: UsePDFUploadPro
 
     const handleCloseModal = useCallback(() => {
         setIsModalOpen(false);
-
         setTimeout(() => {
-            if (uploadState === 'success' || uploadState === 'error') {
-                setUploadState('idle');
-                setUploadInfo({
-                    fileName: '',
-                    fileSize: '',
-                    progress: 0,
-                    uploadSpeed: '0KB/sec',
-                });
-                currentFileRef.current = null;
-            }
+            setUploadState('idle');
+            setUploadInfo({
+                fileName: '',
+                fileSize: '',
+                progress: 0,
+                uploadSpeed: '0KB/sec',
+            });
         }, 300);
-    }, [uploadState]);
-
-    const handleRetry = useCallback(async () => {
-        if (currentFileRef.current) {
-            await uploadFile(currentFileRef.current);
-        }
-    }, [uploadFile]);
-
-    const resetUpload = useCallback(() => {
-        setUploadState('idle');
-        setUploadInfo({
-            fileName: '',
-            fileSize: '',
-            progress: 0,
-            uploadSpeed: '0KB/sec',
-        });
-        setIsModalOpen(false);
-        currentFileRef.current = null;
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
     }, []);
 
+    const handleRetry = useCallback(() => {
+        if (uploadInfo.fileName) {
+
+            setUploadState('uploading');
+            setUploadInfo((prev) => ({
+                ...prev,
+                progress: 0,
+                uploadSpeed: '0KB/sec',
+            }));
+
+            setTimeout(() => {
+                const mockFile = new File([''], uploadInfo.fileName, { type: 'application/pdf' });
+                simulateUpload(mockFile);
+            }, 500);
+        }
+    }, [uploadInfo.fileName, simulateUpload]);
+
     return {
+
         uploadState,
         uploadInfo,
         isModalOpen,
         fileInputRef,
-        handleFileSelect,
+
         handleUploadPDF,
+        handleFileSelect,
         handleCloseModal,
         handleRetry,
-        resetUpload,
     };
 }

@@ -1,10 +1,10 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
-import { Socket } from 'socket.io-client';
-import { ChatItemProps } from '@/components/inbox/ChatItem';
-import { apiClient } from '@/config/apiClient';
-import { getSocket } from '@/services/socket.service';
+import { useState, useMemo, useEffect, useRef } from "react";
+import { Socket } from "socket.io-client";
+import { ChatItemProps } from "@/components/inbox/ChatItem";
+import { apiClient } from "@/config/apiClient";
+import { getSocket } from "@/services/socket.service";
 
-export type FilterType = 'todos' | 'no-leidos' | 'leidos';
+export type FilterType = "todos" | "no-leidos" | "leidos";
 
 interface TelegramChatResponse {
   chatId: string;
@@ -36,8 +36,8 @@ interface TelegramMessageData {
 export function useChatList() {
   const [chats, setChats] = useState<ChatItemProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState<FilterType>('todos');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState<FilterType>("todos");
   const socketRef = useRef<Socket | null>(null);
   const chatsMapRef = useRef<Map<string, ChatItemProps>>(new Map());
 
@@ -45,46 +45,47 @@ export function useChatList() {
     const fetchChats = async () => {
       setIsLoading(true);
       try {
-        const response = await apiClient<ApiResponse>('/telegram/chats');
-        
+        const response = await apiClient<ApiResponse>("/telegram/chats");
+
         const chatsData = response.data || [];
-        
+
         const chatsList: ChatItemProps[] = chatsData.map((chat) => {
-          const message = chat.lastMessageSource === 'konfex' 
-            ? `Tu:  ${chat.lastMessage || ''}`
-            : chat.lastMessage || '';
+          const message =
+            chat.lastMessageSource === "konfex"
+              ? `Tu:  ${chat.lastMessage || ""}`
+              : chat.lastMessage || "";
 
           const isRead = (chat.unreadCount ?? 0) === 0;
 
           const chatItem: ChatItemProps = {
             id: Number(chat.chatId) || 0,
-            avatar: '/imagenChat.png',
+            avatar: "/imagenChat.png",
             name: chat.name || `Chat ${chat.chatId}`,
             message,
             time: chat.timestamp
-              ? new Date(chat.timestamp).toLocaleTimeString('es-ES', { 
-                  hour: '2-digit', 
-                  minute: '2-digit' 
+              ? new Date(chat.timestamp).toLocaleTimeString("es-ES", {
+                  hour: "2-digit",
+                  minute: "2-digit",
                 })
-              : new Date().toLocaleTimeString('es-ES', { 
-                  hour: '2-digit', 
-                  minute: '2-digit' 
+              : new Date().toLocaleTimeString("es-ES", {
+                  hour: "2-digit",
+                  minute: "2-digit",
                 }),
             hasBudget: chat.hasBudget || false,
             isRead,
           };
-          
+
           return chatItem;
         });
-        
+
         chatsMapRef.current.clear();
-        chatsList.forEach(chat => {
+        chatsList.forEach((chat) => {
           chatsMapRef.current.set(String(chat.id), chat);
         });
-        
+
         setChats(chatsList);
       } catch (error) {
-        console.error('Error al obtener los chats:', error);
+        console.error("Error al obtener los chats:", error);
         setChats([]);
       } finally {
         setIsLoading(false);
@@ -94,26 +95,40 @@ export function useChatList() {
     fetchChats();
   }, []);
 
-  const createChatItemFromMessage = (messageData: TelegramMessageData, existingChat?: ChatItemProps): ChatItemProps => {
+  const createChatItemFromMessage = (
+    messageData: TelegramMessageData,
+    existingChat?: ChatItemProps
+  ): ChatItemProps => {
     const chatId = String(messageData.chatId);
-    const name = messageData.firstName && messageData.lastName
-      ? `${messageData.firstName} ${messageData.lastName}`.trim()
-      : messageData.firstName || messageData.lastName || existingChat?.name || `Chat ${chatId}`;
-    
-    const message = messageData.source === 'konfex'
-      ? `Tu:  ${messageData.text || ''}`
-      : messageData.text || '';
-    
-    const time = messageData.timestamp
-      ? new Date(messageData.timestamp).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
-      : new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    const name =
+      messageData.firstName && messageData.lastName
+        ? `${messageData.firstName} ${messageData.lastName}`.trim()
+        : messageData.firstName ||
+          messageData.lastName ||
+          existingChat?.name ||
+          `Chat ${chatId}`;
 
-    const isIncoming = messageData.source !== 'konfex';
-    const isRead = isIncoming ? false : (existingChat?.isRead ?? false);
+    const message =
+      messageData.source === "konfex"
+        ? `Tu:  ${messageData.text || ""}`
+        : messageData.text || "";
+
+    const time = messageData.timestamp
+      ? new Date(messageData.timestamp).toLocaleTimeString("es-ES", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : new Date().toLocaleTimeString("es-ES", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+    const isIncoming = messageData.source !== "konfex";
+    const isRead = isIncoming ? false : existingChat?.isRead ?? false;
 
     return {
       id: Number(chatId) || 0,
-      avatar: '/imagenChat.png',
+      avatar: "/imagenChat.png",
       name,
       message,
       time,
@@ -128,17 +143,19 @@ export function useChatList() {
     const chatItem = createChatItemFromMessage(messageData, existingChat);
 
     chatsMapRef.current.set(chatId, chatItem);
-    
+
     const allChats = Array.from(chatsMapRef.current.values());
-    
-    const updatedChatIndex = allChats.findIndex(chat => String(chat.id) === chatId);
+
+    const updatedChatIndex = allChats.findIndex(
+      (chat) => String(chat.id) === chatId
+    );
     if (updatedChatIndex > 0) {
       const [updatedChat] = allChats.splice(updatedChatIndex, 1);
       allChats.unshift(updatedChat);
     } else if (updatedChatIndex === -1) {
       allChats.unshift(chatItem);
     }
-    
+
     setChats(allChats);
   };
 
@@ -148,9 +165,11 @@ export function useChatList() {
     if (!existing || existing.isRead) return;
 
     try {
-      await apiClient.post(`/telegram/chats/${idStr}/messages/read`);
+      await apiClient(`/telegram/chats/${idStr}/messages/read`, {
+        method: "POST",
+      });
     } catch (error) {
-      console.warn('No se pudo marcar leído en backend:', error);
+      console.warn("No se pudo marcar leído en backend:", error);
     }
 
     const updated = { ...existing, isRead: true };
@@ -173,7 +192,9 @@ export function useChatList() {
 
     const setupListeners = () => {
       if (!socket.io.opts.autoConnect) {
-        console.warn('Socket deshabilitado (no auto-connect). Socket.IO no disponible.');
+        console.warn(
+          "Socket deshabilitado (no auto-connect). Socket.IO no disponible."
+        );
         return;
       }
 
@@ -181,37 +202,37 @@ export function useChatList() {
         const onConnect = () => {
           setupListeners();
         };
-        
-        socket.once('connect', onConnect);
+
+        socket.once("connect", onConnect);
         return;
       }
-      
-      socket.on('telegram_message', handleTelegramMessage);
-      socket.on('telegram:message', handleTelegramMessage);
-      socket.on('telegram:new_message', handleTelegramMessage);
-      socket.on('message:telegram', handleTelegramMessage);
+
+      socket.on("telegram_message", handleTelegramMessage);
+      socket.on("telegram:message", handleTelegramMessage);
+      socket.on("telegram:new_message", handleTelegramMessage);
+      socket.on("message:telegram", handleTelegramMessage);
     };
 
     if (socket.connected) {
       setupListeners();
     } else {
-      socket.once('connect', setupListeners);
-      
+      socket.once("connect", setupListeners);
+
       try {
         if (!socket.connected) {
           socket.connect();
         }
       } catch (error) {
-        console.warn('No se pudo conectar el socket:', error);
+        console.warn("No se pudo conectar el socket:", error);
       }
     }
 
     return () => {
       if (socket) {
-        socket.off('telegram_message', handleTelegramMessage);
-        socket.off('telegram:message', handleTelegramMessage);
-        socket.off('telegram:new_message', handleTelegramMessage);
-        socket.off('message:telegram', handleTelegramMessage);
+        socket.off("telegram_message", handleTelegramMessage);
+        socket.off("telegram:message", handleTelegramMessage);
+        socket.off("telegram:new_message", handleTelegramMessage);
+        socket.off("message:telegram", handleTelegramMessage);
       }
     };
   }, [updateChatFromMessage]);
@@ -226,9 +247,9 @@ export function useChatList() {
       );
     }
 
-    if (activeFilter === 'no-leidos') {
+    if (activeFilter === "no-leidos") {
       filtered = filtered.filter((chat) => !chat.isRead);
-    } else if (activeFilter === 'leidos') {
+    } else if (activeFilter === "leidos") {
       filtered = filtered.filter((chat) => chat.isRead);
     }
 
@@ -245,4 +266,3 @@ export function useChatList() {
     markChatAsRead,
   };
 }
-
