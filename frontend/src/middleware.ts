@@ -4,7 +4,6 @@ import type { NextRequest } from "next/server";
 const publicRoutes = ["/"];
 
 function isPublicRoute(pathname: string): boolean {
-  // Solo considerar exactamente "/" como ruta pública
   return publicRoutes.includes(pathname);
 }
 
@@ -40,7 +39,6 @@ export function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
 
-    // Solo agregar redirect si la ruta no es "/" y no tiene ya un redirect
     if (pathname !== "/" && !url.searchParams.has("redirect")) {
       url.searchParams.set("redirect", pathname);
     }

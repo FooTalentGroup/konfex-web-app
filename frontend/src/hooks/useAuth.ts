@@ -11,15 +11,12 @@ export const useAuth = () => {
 
   const loadUser = () => {
     if (typeof window !== "undefined") {
-      // Primero verificar si hay un token válido
       if (!isAuthenticated()) {
-        // Si no hay token válido, limpiar todo
         setUser(null);
         clearTokens();
         return;
       }
 
-      // Si hay token válido, cargar el usuario
       const userStr = localStorage.getItem("user");
       if (userStr) {
         try {
@@ -74,6 +71,7 @@ export const useAuth = () => {
     } finally {
       if (typeof window !== "undefined") {
         window.dispatchEvent(new Event("userUpdated"));
+        window.dispatchEvent(new Event("logout"));
         router.push("/");
       }
     }

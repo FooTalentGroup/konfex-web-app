@@ -21,7 +21,6 @@ const LoginPage: React.FC = () => {
     onSubmit,
   } = useLogin();
 
-  // Si el usuario ya está autenticado, redirigir a inbox
   useEffect(() => {
     if (mounted && user) {
       router.push("/inbox");
@@ -39,7 +38,6 @@ const LoginPage: React.FC = () => {
     );
   }
 
-  // Si ya está autenticado, mostrar loading mientras redirige
   if (user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F5F5F5]">
