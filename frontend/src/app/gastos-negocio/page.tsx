@@ -120,10 +120,7 @@ export default function GastosNegocioPage() {
                                     </p>
                                 )}
 
-                                {/* --------------------------------------- */}
-                                {/* MAP desde el gasto 3 en adelante */}
-                                {/* --------------------------------------- */}
-                                {gastosNegocio.slice(2).map((gasto, index) => (
+                                {gastosNegocio.map((gasto, index) => (
                                     <div key={gasto.id} className="flex flex-col gap-2 px-2 text-gray-800">
                                         <div className="flex justify-between items-center">
                                             <h3>Costo indirecto {index + 3}</h3>
@@ -175,95 +172,6 @@ export default function GastosNegocioPage() {
                                         </div>
                                     </div>
                                 ))}
-                                {/* ----------------------------- */}
-                                {/* GASTO 1 */}
-                                {/* ----------------------------- */}
-                                {gastosNegocio[0] && (
-                                    <div className="flex flex-col gap-2 px-2 text-gray-800">
-                                        <div className="flex justify-between items-center">
-                                            <h3>Costo indirecto 1</h3>
-                                        </div>
-
-                                        <div className="relative flex justify-between gap-x-4">
-                                            <input
-                                                type="text"
-                                                placeholder="Nombre del gasto"
-                                                value={gastosNegocio[0].nombre}
-                                                onChange={e => {
-                                                    updateGasto(gastosNegocio[0].id, "nombre", e.target.value);
-                                                    setDirty(true);
-                                                }}
-                                                className="flex-1 p-2 border rounded-md border-[var(--primary-color-300)] text-[var(--primary-color-500)] bg-[var(--background-light)]"
-                                                required
-                                            />
-
-                                            <div className="relative w-24">
-                                                <input
-                                                    type="number"
-                                                    placeholder="0"
-                                                    min={0}
-                                                    max={100}
-                                                    step="0.01"
-                                                    value={gastosNegocio[0].porcentaje || ''}
-                                                    onChange={e => {
-                                                        updateGasto(gastosNegocio[0].id, "porcentaje", e.target.value);
-                                                        setDirty(true);
-                                                    }}
-                                                    className="w-full p-2 pr-6 border rounded-md border-[var(--primary-color-300)] text-[var(--primary-color-500)] bg-[var(--background-light)]"
-                                                    required
-                                                />
-                                                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--primary-color-500)] text-xl font-semibold pointer-events-none">
-                                                    %
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* ----------------------------- */}
-                                {/* GASTO 2 */}
-                                {/* ----------------------------- */}
-                                {gastosNegocio[1] && (
-                                    <div className="flex flex-col gap-2 px-2 text-gray-800">
-                                        <div className="flex justify-between items-center">
-                                            <h3>Costo indirecto 2</h3>
-                                        </div>
-
-                                        <div className="relative flex justify-between gap-x-4">
-                                            <input
-                                                type="text"
-                                                placeholder="Nombre del gasto"
-                                                value={gastosNegocio[1].nombre}
-                                                onChange={e => {
-                                                    updateGasto(gastosNegocio[1].id, "nombre", e.target.value);
-                                                    setDirty(true);
-                                                }}
-                                                className="flex-1 p-2 border rounded-md border-[var(--primary-color-300)] text-[var(--primary-color-500)] bg-[var(--background-light)]"
-                                                required
-                                            />
-
-                                            <div className="relative">
-                                                <input
-                                                    type="number"
-                                                    placeholder="0"
-                                                    min={0}
-                                                    max={100}
-                                                    step="0.01"
-                                                    value={gastosNegocio[1].porcentaje || ''}
-                                                    onChange={e => {
-                                                        updateGasto(gastosNegocio[1].id, "porcentaje", e.target.value);
-                                                        setDirty(true);
-                                                    }}
-                                                    className="w-full p-2 pr-6 border rounded-md border-[var(--primary-color-300)] text-[var(--primary-color-500)] bg-[var(--background-light)]"
-                                                    required
-                                                />
-                                                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--primary-color-500)] text-xl font-semibold pointer-events-none">
-                                                    %
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
                             </div>
 
                             {/* BOTÓN AGREGAR */}
