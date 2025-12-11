@@ -1,6 +1,5 @@
 import { API_CONFIG } from "@/config/api.config";
 
-
 type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 interface ApiOptions<TBody> {
@@ -13,7 +12,6 @@ export async function apiClient<TResponse = unknown, TBody = unknown>(
   endpoint: string,
   options: ApiOptions<TBody> = {}
 ): Promise<TResponse> {
-
   const token = localStorage.getItem("token");
 
   const url = API_CONFIG.getApiUrl(endpoint);
@@ -35,14 +33,23 @@ export async function apiClient<TResponse = unknown, TBody = unknown>(
   const res = await fetch(url, config);
 
   if (!res.ok) {
-    const errorText = await res.text();
-    
-    if (res.status === 500) {
-      console.error('Backend error response:', errorText);
-      throw new Error(`Error del servidor: ${errorText || 'Error interno del servidor'}`);
+    let errorMessage = res.statusText;
+
+    try {
+      const errorData = await res.json();
+      if (errorData && errorData.message) {
+        errorMessage = errorData.message;
+      }
+    } catch {
+      try {
+        const errorText = await res.text();
+        if (errorText) {
+          errorMessage = errorText;
+        }
+      } catch {}
     }
-    
-    throw new Error(`API ${res.status}: ${errorText || res.statusText}`);
+
+    throw new Error(errorMessage);
   }
 
   try {
