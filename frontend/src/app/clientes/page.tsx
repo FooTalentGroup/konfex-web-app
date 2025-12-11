@@ -64,13 +64,14 @@ export default function ClientsPage() {
       setSelectedIds([]);
       setIsDeleteDialogOpen(false);
     } catch (error) {
+      console.error('Error al eliminar:', error);
       setIsDeleting(false);
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F3F0F5] font-sans">
+      <div className="min-h-screen bg-[#F3F0F5] font-sans relative">
         <Header onMenuClick={() => setIsSidebarOpen(true)} />
         <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
         <div className="flex items-center justify-center h-96">
@@ -81,7 +82,8 @@ export default function ClientsPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-primary-500">
+    <div className="min-h-screen bg-[#F3F0F5] font-sans relative">
+      
       <Header onMenuClick={() => setIsSidebarOpen(true)} />
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
@@ -97,30 +99,33 @@ export default function ClientsPage() {
         onCancel={() => setIsDeleteDialogOpen(false)}
       />
 
-      <div className="flex-1 flex flex-col">
-        <div className="w-full px-4 sm:px-6 md:px-8 py-4 sm:py-6 bg-primary-500 mt-8">
-          <div className="flex flex-col text-[#F3F0F5]">
-            <h1 className="text-[24px] font-lato font-normal mb-1 leading-tight">
-              Cliente
-            </h1>
-            <p className="text-[12px] font-lato font-normal mb-4 sm:mb-6">
-              {isSelectionMode ? 'Selecciona los clientes a eliminar' : 'Gestiona a todos tus clientes desde aquí.'}
-            </p>
-          </div>
-          <SearchBar 
-            placeholder="Buscar cliente por nombre"
-            value={searchTerm}
-            onChange={handleSearch}
-            onClear={() => handleSearch('')}
-            className="w-full"
-          />
+      <div className="bg-[#8B709D] px-6 pt-6 pb-8 shadow-md transition-all"> 
+        <div className="mb-6 flex justify-between items-end">
+            <div>
+                <h1 className="text-white text-2xl font-bold mb-1">Cliente</h1>
+                <p className="text-white/80 text-sm font-light">
+                    {isSelectionMode ? 'Selecciona los clientes a eliminar' : 'Gestiona a todos tus clientes desde aquí.'}
+                </p>
+            </div>
+            {isSelectionMode && (
+                <span className="bg-white/20 text-white px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm">
+                    {selectedIds.length} seleccionados
+                </span>
+            )}
         </div>
 
-        <main className="flex-1 rounded-t-3xl p-4 sm:p-6 bg-white">
-          <div className="w-full max-w-md sm:max-w-lg mx-auto space-y-3 sm:space-y-4">
-            {clients.length > 0 ? (
-              clients.map((client) => (
-                <ClientCard 
+        <SearchBar 
+          placeholder="Buscar cliente por nombre"
+          value={searchTerm}
+          onChange={handleSearch}
+          onClear={() => handleSearch('')}
+        />
+      </div>
+
+      <div className="px-5 pt-6 pb-32 space-y-3">
+        {clients.length > 0 ? (
+          clients.map((client) => (
+              <ClientCard 
                   key={client.id}
                   name={client.nombre}
                   source={client.origen?.toLowerCase() === 'telegram' ? 'telegram' : 'manual'}
@@ -128,49 +133,49 @@ export default function ClientsPage() {
                   isSelected={selectedIds.includes(client.id)}
                   onClick={() => handleCardInteraction(client.id)}
                   onBudgetClick={() => router.push(`/presupuestos?cliente=${client.id}`)}
-                  onTelegramClick={() => {}}
-                />
-              ))
-            ) : (
-              <div className="flex flex-col items-center justify-center py-12 text-gray-400 gap-2">
-                <Search size={40} className="opacity-20" />
-                <p className="text-sm">No se encontraron clientes.</p>
-              </div>
-            )}
-          </div>
-        </main>
-      </div>
-
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center bg-[#C4B5D0] p-2.5 rounded-full shadow-xl z-50 gap-2.5">
-        {isSelectionMode ? (
-          <>
-            <button onClick={toggleSelectionMode} className="w-12 h-12 bg-[#8B709D] rounded-full text-white flex items-center justify-center hover:bg-[#7A5F89] transition-colors">
-              <X size={22} />
-            </button>
-            <button 
-              onClick={handleBulkDelete}
-              disabled={selectedIds.length === 0}
-              className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
-                selectedIds.length > 0 ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-red-300 text-white/50'
-              }`}
-            >
-              <Trash2 size={22} />
-            </button>
-          </>
+                  onTelegramClick={() => console.log('Telegram', client.nombre)}
+              />
+          ))
         ) : (
-          <>
-            <button 
-              onClick={() => router.push('/clientes/nuevo')}
-              className="w-12 h-12 bg-[#8B709D] rounded-full text-white flex items-center justify-center hover:bg-[#7A5F89] transition-colors"
-            >
-              <Plus size={24} />
-            </button>
-            <button onClick={toggleSelectionMode} className="w-12 h-12 bg-[#8B709D] rounded-full text-white flex items-center justify-center hover:bg-[#7A5F89] transition-colors">
-              <Trash2 size={22} />
-            </button>
-          </>
+          <div className="flex flex-col items-center justify-center mt-12 text-gray-400 gap-2">
+              <Search size={40} className="opacity-20" />
+              <p className="text-sm">No se encontraron clientes.</p>
+          </div>
         )}
       </div>
+
+      <div className="fixed bottom-6 right-6 flex items-center bg-[#8B709D] p-1.5 rounded-full shadow-xl z-50 transition-all gap-1">
+          {isSelectionMode ? (
+            <>
+                <button onClick={toggleSelectionMode} className="w-12 h-12 bg-white/10 rounded-full text-white flex items-center justify-center hover:bg-white/20 transition-colors">
+                    <X size={24} />
+                </button>
+                <button 
+                    onClick={handleBulkDelete}
+                    disabled={selectedIds.length === 0}
+                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                        selectedIds.length > 0 ? 'bg-red-400 text-white shadow-md' : 'bg-transparent text-white/30'
+                    }`}
+                >
+                    <Trash2 size={24} />
+                </button>
+            </>
+          ) : (
+            <>
+                 <button onClick={toggleSelectionMode} className="w-12 h-12 bg-transparent rounded-full text-white/80 hover:bg-white/10 flex items-center justify-center transition-colors">
+                    <Trash2 size={24} />
+                </button>
+                <div className="w-[1px] h-6 bg-white/20"></div>
+                <button 
+                    onClick={() => router.push('/clientes/nuevo')}
+                    className="w-12 h-12 bg-transparent rounded-full text-white hover:bg-white/10 flex items-center justify-center transition-colors"
+                >
+                    <Plus size={32} />
+                </button>
+            </>
+          )}
+      </div>
+
     </div>
   );
 }
