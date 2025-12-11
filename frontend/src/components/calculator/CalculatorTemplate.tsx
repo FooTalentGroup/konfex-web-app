@@ -7,11 +7,14 @@ import { presupuestoService } from "@/services/presupuesto.service";
 import { loadPresupuestoToForm } from "@/utils/presupuestoLoader";
 import { useToast } from "@/contexts/ToastContext";
 import { useGastosNegocio } from "@/hooks/useGastosNegocio";
+import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
+import { useUnsavedChangesContext } from "@/contexts/UnsavedChangesContext";
 
 import CalculatorTabs from "./CalculatorTabs";
 import BudgetDetails from "./steps/BudgetDetails";
 import BudgetMaterials from "./steps/BudgetMaterials";
 import BudgetExtras from "./steps/BudgetExtras";
+import UnsavedChangesModal from "./UnsavedChangesModal";
 
 import BudgetSummaryHeader from "./BudgetSummaryHeader";
 
@@ -96,6 +99,29 @@ export default function CalculatorTemplate({
   });
 
   const { gastosNegocio } = useGastosNegocio();
+
+  const {
+    showModal,
+    markAsChanged,
+    handleContinueEditing,
+    handleExitWithoutSaving,
+    handleNavigation,
+  } = useUnsavedChanges();
+
+  const { setNavigationHandler } = useUnsavedChangesContext();
+
+  useEffect(() => {
+    setNavigationHandler(handleNavigation);
+  }, [handleNavigation, setNavigationHandler]);
+
+  useEffect(() => {
+    const subscription = methods.watch(() => {
+      if (!isEditMode) {
+        markAsChanged();
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [methods, isEditMode, markAsChanged]);
 
   useEffect(() => {
     if (gastosNegocio.length > 0 && !isEditMode) {
@@ -182,6 +208,12 @@ export default function CalculatorTemplate({
           </div>
         </div>
       </div>
+
+      <UnsavedChangesModal
+        isOpen={showModal}
+        onContinueEditing={handleContinueEditing}
+        onExitWithoutSaving={handleExitWithoutSaving}
+      />
     </FormProvider>
   );
 }
