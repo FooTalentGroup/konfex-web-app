@@ -79,7 +79,7 @@ const BtnActionsCollectionFichaMode = ({
         className="px-8 py-4 bg-[#B65CF2] hover:bg-[#9D4EDD] rounded-full text-white shadow-lg transition-all font-[var(--font-lato),sans-serif] font-medium text-base flex items-center gap-3"
       >
         <CheckSquare className="w-5 h-5" />
-        <span>Guardar</span>
+        <span>{isDeleteMode ? "Editar" : "Guardar"}</span>
       </button>
     </div>
   );

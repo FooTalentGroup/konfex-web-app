@@ -117,9 +117,9 @@ export default function BudgetDetailPage() {
   };
 
   const confirmEdit = () => {
-    console.log("Confirmar edición");
-    setIsEditMode(false);
-    // TODO: Implementar lógica de edición
+    if (!budget) return;
+
+    router.push(`/calculator?id=${budget.id}`);
   };
 
   return (
