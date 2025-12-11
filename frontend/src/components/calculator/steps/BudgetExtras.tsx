@@ -303,7 +303,7 @@ export default function BudgetExtras({
               }
             }}
             placeholder="Ingresa la tarifa de envío"
-            className="w-full h-[40px] bg-[#FEFCFF] border border-[#CEC2D6] rounded-[10px] px-3 pr-9 text-sm outline-none font-normal text-[#B5A4C1] text-left focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all placeholder:text-[#B5A4C1]"
+            className="w-full h-[40px] bg-white border border-[#CEC2D6] rounded-[10px] px-3 pr-9 text-sm outline-none font-normal text-[#1A151E] text-left focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all placeholder:text-[#B5A4C1]"
             min="0"
             step="0.01"
           />
@@ -334,7 +334,7 @@ export default function BudgetExtras({
             }}
             placeholder="Ej.: Estampado, botones adicionales"
             maxLength={100}
-            className="w-full h-[40px] bg-[#FEFCFF] border border-[#CEC2D6] rounded-[10px] px-3 text-sm outline-none font-normal text-[#B5A4C1] placeholder:text-[#B5A4C1] focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all"
+            className="w-full h-[40px] bg-white border border-[#CEC2D6] rounded-[10px] px-3 text-sm outline-none font-normal text-[#1A151E] placeholder:text-[#B5A4C1] focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all"
           />
         </div>
 
@@ -343,7 +343,7 @@ export default function BudgetExtras({
             <label className="block text-[13px] leading-[1.31] font-bold text-[#1A151E] mb-1.5 ml-1">
               Cantidad
             </label>
-            <div className="flex items-center bg-[#FEFCFF] rounded-[6px] h-[40px] px-3 justify-between border border-[#CEC2D6] w-full sm:w-[144px]">
+            <div className="flex items-center bg-white rounded-[6px] h-[40px] px-3 justify-between border border-[#CEC2D6] w-full sm:w-[144px]">
               <button
                 type="button"
                 onClick={() => setQty(Math.max(1, qty - 1))}
@@ -379,7 +379,7 @@ export default function BudgetExtras({
                 }}
                 onWheel={(e) => e.currentTarget.blur()}
                 placeholder="00"
-                className="w-12 bg-[#FEFCFF] text-center text-sm outline-none font-normal text-[#B5A4C1] placeholder:text-[#B5A4C1]"
+                className="w-12 bg-white text-center text-sm outline-none font-normal text-[#1A151E] placeholder:text-[#B5A4C1]"
                 min="1"
                 max="9999"
                 step="1"
@@ -424,7 +424,7 @@ export default function BudgetExtras({
                 }}
                 onWheel={(e) => e.currentTarget.blur()}
                 placeholder="Ingresa el monto"
-                className="w-full sm:w-[206px] h-[40px] bg-[#FEFCFF] border border-[#CEC2D6] rounded-[6px] px-3 pr-9 text-sm outline-none font-normal text-[#B5A4C1] text-left focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all placeholder:text-[#B5A4C1]"
+                className="w-full sm:w-[206px] h-[40px] bg-white border border-[#CEC2D6] rounded-[6px] px-3 pr-9 text-sm outline-none font-normal text-[#1A151E] text-left focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all placeholder:text-[#B5A4C1]"
                 min="0"
                 step="0.01"
               />
@@ -505,7 +505,7 @@ export default function BudgetExtras({
           rows={4}
           placeholder="Ej.: Estampado, bordado, botones extra"
           maxLength={500}
-          className="w-full bg-[#FEFCFF] border border-[#CEC2D6] rounded-[6px] px-3 py-2 text-sm text-[#B5A4C1] outline-none resize-none placeholder:text-[#B5A4C1] focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all"
+          className="w-full bg-white border border-[#CEC2D6] rounded-[6px] px-3 py-2 text-sm text-[#1A151E] outline-none resize-none placeholder:text-[#B5A4C1] focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all"
         ></textarea>
         {errors.observations && (
           <p className="text-xs text-red-500 mt-1">

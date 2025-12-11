@@ -74,7 +74,7 @@ export default function GarmentAutocomplete({
     onChange(producto.nombre);
     setIsOpen(false);
     setHighlightedIndex(-1);
-    
+
     // Si hay callback para manejar la selección, lo llamamos
     if (onSelect) {
       onSelect(producto);
@@ -126,7 +126,7 @@ export default function GarmentAutocomplete({
         onFocus={handleInputFocus}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        className="w-full h-10 bg-[#F9F6FF] rounded-lg px-3 pr-10 text-[13px] outline-none text-[#1A151E] placeholder:text-[#B5A4C1] border border-[#DCCBEB] transition-colors"
+        className="w-full h-10 bg-white rounded-lg px-3 pr-10 text-[13px] outline-none text-[#1A151E] placeholder:text-[#B5A4C1] border border-[#DCCBEB] transition-colors"
       />
       <ChevronDown
         className={`absolute right-3 top-1/2 -translate-y-1/2 text-[#B5A4C1] pointer-events-none transition-transform ${
@@ -203,4 +203,3 @@ export default function GarmentAutocomplete({
     </div>
   );
 }
-

@@ -204,7 +204,7 @@ export default function BudgetMaterials() {
                 <button
                   type="button"
                   onClick={() => setSizeOpen((v) => !v)}
-                  className="w-full bg-white rounded-lg h-10 px-3 text-sm text-[#B5A4C1] appearance-none outline-none font-normal cursor-pointer border border-[#DCCBEB] flex items-center justify-between"
+                  className="w-full bg-white rounded-lg h-10 px-3 text-sm text-[#1A151E] appearance-none outline-none font-normal cursor-pointer border border-[#DCCBEB] flex items-center justify-between"
                 >
                   <span>{currentSize}</span>
                   <ChevronDown
@@ -269,7 +269,7 @@ export default function BudgetMaterials() {
                       setCurrentQty(1);
                     }
                   }}
-                  className="w-16 bg-transparent text-center text-sm outline-none font-normal text-[#B5A4C1] appearance-none [-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="w-16 bg-transparent text-center text-sm outline-none font-normal text-[#1A151E] appearance-none [-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   min="1"
                   step="1"
                 />

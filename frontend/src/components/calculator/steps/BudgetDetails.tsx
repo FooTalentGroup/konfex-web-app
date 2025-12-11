@@ -76,7 +76,7 @@ export default function BudgetDetails({
           type="text"
           placeholder="Presupuesto para blusa verano"
           maxLength={200}
-          className={`w-full bg-[#F9F6FF] border border-[#DCCBEB] rounded-lg h-10 px-3 text-sm text-[#B5A4C1] outline-none focus:border-[#9C7AB8] focus:ring-1 focus:ring-[#9C7AB8] placeholder:text-[#B7A6C6] ${
+          className={`w-full bg-white border border-[#DCCBEB] rounded-lg h-10 px-3 text-sm text-[#1A151E] outline-none focus:border-[#9C7AB8] focus:ring-1 focus:ring-[#9C7AB8] placeholder:text-[#B7A6C6] ${
             errors.title
               ? "border-red-500 focus:border-red-500 focus:ring-red-500"
               : "border-[#D5A1F7] focus:border-[#B65CF2] focus:ring-[#B65CF2]"
@@ -107,7 +107,7 @@ export default function BudgetDetails({
           type="text"
           placeholder="Ingresa el nombre del cliente"
           maxLength={100}
-          className={`w-full bg-[#F9F6FF] border border-[#DCCBEB] rounded-lg h-10 px-3 text-sm text-[#B5A4C1] outline-none focus:border-[#9C7AB8] focus:ring-1 focus:ring-[#9C7AB8] placeholder:text-[#B7A6C6] ${
+          className={`w-full bg-white border border-[#DCCBEB] rounded-lg h-10 px-3 text-sm text-[#1A151E] outline-none focus:border-[#9C7AB8] focus:ring-1 focus:ring-[#9C7AB8] placeholder:text-[#B7A6C6] ${
             errors.clientName
               ? "border-red-500 focus:border-red-500 focus:ring-red-500"
               : "border-[#D5A1F7] focus:border-[#B65CF2] focus:ring-[#B65CF2]"
@@ -138,7 +138,7 @@ export default function BudgetDetails({
           type="email"
           placeholder="Ingresa el e-mail del cliente"
           maxLength={100}
-          className={`w-full bg-[#F9F6FF] border border-[#DCCBEB] rounded-lg h-10 px-3 text-sm text-[#B5A4C1] outline-none focus:border-[#9C7AB8] focus:ring-1 focus:ring-[#9C7AB8] placeholder:text-[#B7A6C6] ${
+          className={`w-full bg-white border border-[#DCCBEB] rounded-lg h-10 px-3 text-sm text-[#1A151E] outline-none focus:border-[#9C7AB8] focus:ring-1 focus:ring-[#9C7AB8] placeholder:text-[#B7A6C6] ${
             errors.clientEmail
               ? "border-red-500 focus:border-red-500 focus:ring-red-500"
               : "border-[#D5A1F7] focus:border-[#B65CF2] focus:ring-[#B65CF2]"
@@ -171,7 +171,7 @@ export default function BudgetDetails({
             type="tel"
             placeholder="+54 0 11 XXXXX XXXX"
             maxLength={16}
-            className={`w-full bg-[#F9F6FF] border border-[#DCCBEB] rounded-lg h-10 px-3 text-sm text-[#B5A4C1] outline-none focus:border-[#9C7AB8] focus:ring-1 focus:ring-[#9C7AB8] placeholder:text-[#B7A6C6] ${
+            className={`w-full bg-white border border-[#DCCBEB] rounded-lg h-10 px-3 text-sm text-[#1A151E] outline-none focus:border-[#9C7AB8] focus:ring-1 focus:ring-[#9C7AB8] placeholder:text-[#B7A6C6] ${
               errors.clientPhone
                 ? "border-red-500 focus:border-red-500 focus:ring-red-500"
                 : "border-[#D5A1F7] focus:border-[#B65CF2] focus:ring-[#B65CF2]"
@@ -199,7 +199,7 @@ export default function BudgetDetails({
                   placeholder={getCurrentDateFormatted()}
                   error={!!fieldState.error}
                   minDate={new Date()}
-                  className="!w-full !h-10 !px-3 !bg-[#F9F6FF] !border !border-[#DCCBEB] !rounded-lg !text-sm !leading-[1.31] !text-[#B5A4C1] !placeholder:text-[#B7A6C6] !outline-none !focus:border-[#9C7AB8] !focus:ring-1 !focus:ring-[#9C7AB8]"
+                  className="!w-full !h-10 !px-3 !bg-white !border !border-[#DCCBEB] !rounded-lg !text-sm !leading-[1.31] !text-[#1A151E] !placeholder:text-[#B7A6C6] !outline-none !focus:border-[#9C7AB8] !focus:ring-1 !focus:ring-[#9C7AB8]"
                 />
                 {fieldState.error && (
                   <p className="text-xs text-red-500 mt-1">
@@ -240,7 +240,7 @@ export default function BudgetDetails({
             step="0.01"
             placeholder="0-100"
             onWheel={(e) => e.currentTarget.blur()}
-            className={`w-full bg-[#F9F6FF] border rounded-lg h-10 px-3 pr-10 text-sm text-[#B5A4C1] outline-none focus:ring-1 placeholder:text-[#B7A6C6] ${
+            className={`w-full bg-white border rounded-lg h-10 px-3 pr-10 text-sm text-[#1A151E] outline-none focus:ring-1 placeholder:text-[#B7A6C6] ${
               errors.desiredProfit
                 ? "border-red-500 focus:border-red-500 focus:ring-red-500"
                 : "border-[#DCCBEB] focus:border-[#9C7AB8] focus:ring-[#9C7AB8]"

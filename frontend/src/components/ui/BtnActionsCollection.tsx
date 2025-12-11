@@ -1,5 +1,5 @@
 "use client";
-import { Plus, Trash2, XCircleIcon, CheckSquare } from "lucide-react";
+import { Plus, Trash2, XCircleIcon } from "lucide-react";
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 
@@ -46,9 +46,7 @@ const BtnActionsCollectionDefault = ({
 };
 
 const BtnActionsCollectionFichaMode = ({
-  isDeleteMode,
   toggleDeleteMode,
-  confirmDeletion,
   onAddCollection,
 }: BtnActionsCollectionProps) => {
   return (
@@ -58,7 +56,7 @@ const BtnActionsCollectionFichaMode = ({
           type="button"
           onClick={onAddCollection}
           className="w-14 h-14 bg-[#9D86AC] hover:bg-[#8B7499] rounded-full flex items-center justify-center text-white shadow-md transition-all"
-          title="Descargar"
+          title="Descargar PDF"
         >
           <ArrowDownTrayIcon className="w-6 h-6" />
         </button>
@@ -67,20 +65,11 @@ const BtnActionsCollectionFichaMode = ({
           type="button"
           onClick={toggleDeleteMode}
           className="w-14 h-14 bg-[#9D86AC] hover:bg-[#8B7499] rounded-full flex items-center justify-center text-white shadow-md transition-all"
-          title={isDeleteMode ? "Modo edición" : "Enviar"}
+          title="Editar presupuesto"
         >
           <PencilSquareIcon className="w-6 h-6" />
         </button>
       </div>
-
-      <button
-        type="button"
-        onClick={confirmDeletion}
-        className="px-8 py-4 bg-[#B65CF2] hover:bg-[#9D4EDD] rounded-full text-white shadow-lg transition-all font-[var(--font-lato),sans-serif] font-medium text-base flex items-center gap-3"
-      >
-        <CheckSquare className="w-5 h-5" />
-        <span>{isDeleteMode ? "Editar" : "Guardar"}</span>
-      </button>
     </div>
   );
 };

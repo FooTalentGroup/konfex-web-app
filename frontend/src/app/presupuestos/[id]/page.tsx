@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useRouter, useParams } from "next/navigation";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
@@ -32,8 +32,6 @@ export default function BudgetDetailPage() {
 
   const budgetId = Number(params.id);
   const { budget, isLoading, error } = useBudgetDetail(budgetId);
-
-  const [isEditMode, setIsEditMode] = useState(false);
 
   if (!mounted) {
     return null;
@@ -111,14 +109,8 @@ export default function BudgetDetailPage() {
     }
   };
 
-  const toggleEditMode = () => {
-    setIsEditMode(!isEditMode);
-    console.log("Toggle edit mode:", !isEditMode);
-  };
-
-  const confirmEdit = () => {
+  const handleEdit = () => {
     if (!budget) return;
-
     router.push(`/calculator?id=${budget.id}`);
   };
 
@@ -212,10 +204,10 @@ export default function BudgetDetailPage() {
 
         {!isLoading && !error && budget && (
           <BtnActionsCollection.fichaMode
-            isDeleteMode={isEditMode}
-            toggleDeleteMode={toggleEditMode}
-            confirmDeletion={confirmEdit}
+            toggleDeleteMode={handleEdit}
             onAddCollection={handleDownload}
+            isDeleteMode={false}
+            confirmDeletion={() => {}}
           />
         )}
       </div>
