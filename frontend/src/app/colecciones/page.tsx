@@ -61,12 +61,12 @@ export default function CollectionsPage() {
             <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
 
             <div className="flex-1 flex flex-col">
-                <div className="w-full px-5 sm:px-6 md:px-8 py-3 sm:py-4 bg-primary-500 mt-8">
+                <div className="w-full sm:max-w-md mx-auto px-5 sm:px-5 md:px-3 py-3 sm:py-4 bg-primary-500 mt-8">
                     <div className='flex flex-col text-white w-full '>
-                        <h1 className="text-2xl sm:text-3xl md:text-4xl mb-2 font-[var(--font-lato),sans-serif] font-bold leading-[131%] tracking-[0%]">
+                        <h1 className="text-2xl sm:text-2xl md:text-3xl mb-2 font-[var(--font-lato),sans-serif] font-bold leading-[131%] tracking-[0%]">
                             Tus colecciones
                         </h1>
-                        <p className="text-base sm:text-sm md:text-base mb-4 sm:mb-6 font-[var(--font-lato),sans-serif]">
+                        <p className="text-base sm:text-sm md:text-md mb-4 sm:mb-6 font-[var(--font-lato),sans-serif]">
                             Organiza tus prendas por colecciones, temporadas, años...
                         </p>
                     </div>
@@ -79,7 +79,7 @@ export default function CollectionsPage() {
                 </div>
 
                 <main className="flex-1 rounded-t-3xl p-5 sm:p-6 bg-white">
-                    <div className="w-full">
+                    <div className="w-full sm:max-w-md mx-auto">
 
                         {isLoading && (
                             <div className="text-center py-12">
