@@ -103,7 +103,7 @@ export default function CalculatorTemplate({
       if (!currentGastosNegocioId) {
         const firstGastosNegocio = gastosNegocio[0];
         if (firstGastosNegocio) {
-          methods.setValue("gastosNegocioId", firstGastosNegocio.id, {
+          methods.setValue("gastosNegocioId", Number(firstGastosNegocio.id), {
             shouldValidate: false,
           });
         }
@@ -118,7 +118,14 @@ export default function CalculatorTemplate({
           setIsLoading(true);
           showInfo("Cargando presupuesto...");
           const presupuesto = await presupuestoService.getById(presupuestoId);
-          const formData = loadPresupuestoToForm(presupuesto, gastosNegocio);
+          const gastosNegocioMapped = gastosNegocio.map((g) => ({
+            id: Number(g.id),
+            porcentaje: g.porcentaje,
+          }));
+          const formData = loadPresupuestoToForm(
+            presupuesto,
+            gastosNegocioMapped
+          );
 
           setBudgetSource(presupuesto.origen || "manual");
 

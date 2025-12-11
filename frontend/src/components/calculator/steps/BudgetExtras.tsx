@@ -105,7 +105,7 @@ export default function BudgetExtras({
 
       let finalGastosNegocioId = gastosNegocioId;
       if (!finalGastosNegocioId && gastosNegocio.length > 0) {
-        finalGastosNegocioId = gastosNegocio[0].id;
+        finalGastosNegocioId = Number(gastosNegocio[0].id);
         setValue("gastosNegocioId", finalGastosNegocioId, {
           shouldValidate: false,
         });
@@ -175,7 +175,10 @@ export default function BudgetExtras({
           materials: (currentBudgetData.materials || []) as Material[],
           extras: (currentBudgetData.extras || []) as Extra[],
         } as Parameters<typeof mapFormDataToBackend>[0],
-        gastosNegocio,
+        gastosNegocio.map((g) => ({
+          id: Number(g.id),
+          porcentaje: g.porcentaje,
+        })),
         origen
       );
 

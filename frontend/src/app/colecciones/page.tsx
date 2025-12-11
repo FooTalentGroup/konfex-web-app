@@ -13,94 +13,73 @@ import BtnActionsCollections from "@/components/ui/BtnActionsCollection";
 import DeleteCollectionModal from "@/components/ui/DeleteCollectionModal";
 
 export default function CollectionsPage() {
-    const { user, mounted } = useAuth();
-    const { isOpen: isSidebarOpen, open: openSidebar, close: closeSidebar } = useSidebar();
-    const {
-        searchQuery,
-        selectedCollection,
-        filteredCollections,
-        isLoading,
-        error,
-        handleSearch,
-        handleCollectionToggle,
+  const { user, mounted } = useAuth();
+  const {
+    isOpen: isSidebarOpen,
+    open: openSidebar,
+    close: closeSidebar,
+  } = useSidebar();
+  const {
+    searchQuery,
+    selectedCollection,
+    filteredCollections,
+    isLoading,
+    error,
+    handleSearch,
+    handleCollectionToggle,
 
-        isCreatingMode,
-        newCollectionName,
-        isCreating,
+    isCreatingMode,
+    newCollectionName,
+    isCreating,
 
-        isDeleteMode,
-        isDeleting,
-        collectionsToDelete,
-        toggleCollectionForDeletion,
-        toggleDeleteMode,
-        confirmDeletion,
+    isDeleteMode,
+    isDeleting,
+    collectionsToDelete,
+    toggleCollectionForDeletion,
+    toggleDeleteMode,
+    confirmDeletion,
 
-        startCreatingMode,
-        cancelCreatingMode,
-        handleNewCollectionNameChange,
-        createCollection,
+    startCreatingMode,
+    cancelCreatingMode,
+    handleNewCollectionNameChange,
+    createCollection,
 
-        showDeleteModal,
-        openDeleteModal,
-        closeDeleteModal,
-        selectedCollectionsForDeletion,
+    showDeleteModal,
+    openDeleteModal,
+    closeDeleteModal,
+    selectedCollectionsForDeletion,
+  } = useCollections();
 
-    } = useCollections();
+  if (!mounted) {
+    return null;
+  }
 
-    if (!mounted) {
-        return null;
-    }
+  if (!user) {
+    return null;
+  }
 
-    if (!user) {
-        return null;
-    }
+  return (
+    <div className="min-h-screen flex flex-col bg-primary-500">
+      <Header onMenuClick={openSidebar} />
+      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
 
-    return (
-        <div className="min-h-screen flex flex-col bg-primary-500">
-            <Header onMenuClick={openSidebar} />
-            <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
-
-            <div className="flex-1 flex flex-col">
-                <div className="w-full sm:max-w-md mx-auto px-5 sm:px-5 md:px-3 py-3 sm:py-4 bg-primary-500 mt-8">
-                    <div className='flex flex-col text-white w-full '>
-                        <h1 className="text-2xl sm:text-2xl md:text-3xl mb-2 font-[var(--font-lato),sans-serif] font-bold leading-[131%] tracking-[0%]">
-                            Tus colecciones
-                        </h1>
-                        <p className="text-base sm:text-sm md:text-md mb-4 sm:mb-6 font-[var(--font-lato),sans-serif]">
-                            Organiza tus prendas por colecciones, temporadas, años...
-                        </p>
-                    </div>
-                    <SearchBar
-                        placeholder="Buscar material..."
-                        value={searchQuery}
-                        onChange={handleSearch}
-                        className="w-full"
-                    />
-                </div>
-
-                <main className="flex-1 rounded-t-3xl p-5 sm:p-6 bg-white">
-                    <div className="w-full sm:max-w-md mx-auto">
-
-                        {isLoading && (
-                            <div className="text-center py-12">
-                                <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary-500 border-t-transparent"></div>
-                                <p className="text-gray-600 mt-4">Cargando colecciones...</p>
-                            </div>
-                        )}
-
-                        {error && (
-                            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                                <p className="text-red-600 text-sm">
-                                    Error al cargar colecciones: {error.message}
-                                </p>
-                                <button
-                                    onClick={() => window.location.reload()}
-                                    className="text-red-600 underline text-sm mt-2 hover:text-red-700"
-                                >
-                                    Reintentar
-                                </button>
-                            </div>
-                        )}
+      <div className="flex-1 flex flex-col">
+        <div className="w-full sm:max-w-md mx-auto px-5 sm:px-5 md:px-3 py-3 sm:py-4 bg-primary-500 mt-8">
+          <div className="flex flex-col text-white w-full ">
+            <h1 className="text-2xl sm:text-2xl md:text-3xl mb-2 font-[var(--font-lato),sans-serif] font-bold leading-[131%] tracking-[0%]">
+              Tus colecciones
+            </h1>
+            <p className="text-base sm:text-sm md:text-md mb-4 sm:mb-6 font-[var(--font-lato),sans-serif]">
+              Organiza tus prendas por colecciones, temporadas, años...
+            </p>
+          </div>
+          <SearchBar
+            placeholder="Buscar material..."
+            value={searchQuery}
+            onChange={handleSearch}
+            className="w-full"
+          />
+        </div>
 
         <main className="flex-1 rounded-t-3xl p-4 sm:p-6 bg-white">
           <div className="w-full max-w-xs sm:max-w-sm mx-auto">
