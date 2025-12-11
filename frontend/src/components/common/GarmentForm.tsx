@@ -17,7 +17,7 @@ export default function GarmentForm({ collectionId }: GarmentFormProps) {
 
     const toast = useToast();
 
-    const { activeTab, tabs, setActiveTab, form, setValue, errors, submit, isSubmitting, submitError } = useAddGarmentForm(collectionId);
+    const { activeTab, tabs, isFormComplete, setActiveTab, form, setValue, errors, submit, isSubmitting, submitError } = useAddGarmentForm(collectionId);
 
     const {
         imagePreview,
@@ -32,7 +32,7 @@ export default function GarmentForm({ collectionId }: GarmentFormProps) {
             setValue('image', url, { shouldValidate: true })
         },
         onUploadError: (error) => {
-            console.error('Error en upload:', error)
+            toast.showError(`Error al subir la imagen: ${error}`);
         }
     })
 
@@ -55,7 +55,9 @@ export default function GarmentForm({ collectionId }: GarmentFormProps) {
         }
     };
 
-    const { id, season, price } = form.watch();
+    const formValues = form.watch();
+
+    const { id, season, price } = formValues;
 
     const onSave = async () => {
         const isValid = await form.trigger(); 
@@ -94,7 +96,7 @@ export default function GarmentForm({ collectionId }: GarmentFormProps) {
 
             <div className="space-y-6">
                 <GarmentInfoCard
-                    id={id || 'Cargando...'}
+                    id={id || 0}
                     season={season || 'Cargando...'}
                     price={price || 0}
                 />
@@ -102,7 +104,7 @@ export default function GarmentForm({ collectionId }: GarmentFormProps) {
 
 
 
-            <div className='border-2 border-primary-300 rounded-lg'>
+            <div className='border border-primary-300 rounded-lg mb-0.5'>
                 <TabNavigation
                     tabs={tabs}
                     activeTab={activeTab}
@@ -119,8 +121,8 @@ export default function GarmentForm({ collectionId }: GarmentFormProps) {
                 <button
                     type="button"
                     onClick={onSave}
-                    disabled={isSubmitting}
-                    className={`w-full bg-[#B65CF2] text-white py-2 px-4 rounded-md hover:bg-[#9a4bc4] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#B65CF2] transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    disabled={isSubmitting || isUploading || !isFormComplete}
+                    className={`w-full  py-2 px-4 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#B65CF2] transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${isSubmitting || !isFormComplete ? 'bg-[#F4E7FD] text-[#9133cf] border border-[#B65CF2] cursor-not-allowed' : 'bg-[#B65CF2] text-white hover:bg-[#9a4bc4]'}`}
                 >
                     {isSubmitting ? (
                         <div className="flex items-center justify-center gap-2">

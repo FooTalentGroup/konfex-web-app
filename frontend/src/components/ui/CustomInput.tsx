@@ -12,9 +12,10 @@ interface CustomInputProps {
   unit?: string;
   placeholder?: string
   className?: string
+  style?: React.CSSProperties;
 }
 
-const CustomInput: React.FC<CustomInputProps> = ({ id, label, register, error, type = 'text', unit = '', placeholder = '', className }) => {
+const CustomInput: React.FC<CustomInputProps> = ({ id, label, register, error, type = 'text', unit = '', placeholder = '', className, style }) => {
   return (
     <div className="flex flex-col space-y-1">
       <label htmlFor={id} className="text-sm font-medium text-black">{label}</label>
@@ -27,6 +28,7 @@ const CustomInput: React.FC<CustomInputProps> = ({ id, label, register, error, t
             } focus:border-purple-300 focus:ring-1 focus-visible:ring-purple-300 outline-none`}
 
           placeholder={placeholder}
+          style={style}
         />
         {unit && (
           <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-black font-bold">{unit}</span>

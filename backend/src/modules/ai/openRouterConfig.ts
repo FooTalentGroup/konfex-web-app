@@ -2,7 +2,7 @@ import axios from "axios";
 
 export async function callOpenRouter(messages: any[]): Promise<string> {
   const apiKey = process.env.OPENROUTER_API_KEY
-  if (!apiKey) throw new Error("No tiene ccceso");
+  if (!apiKey) {throw new Error("No tiene ccceso");}
 
   const response = await axios.post(
     "https://openrouter.ai/api/v1/chat/completions",

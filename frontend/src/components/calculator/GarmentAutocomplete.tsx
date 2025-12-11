@@ -126,10 +126,10 @@ export default function GarmentAutocomplete({
         onFocus={handleInputFocus}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        className="w-full bg-[#F3F0F5] rounded-xl p-3.5 pr-10 text-sm outline-none text-gray-800 placeholder:text-gray-400 border border-black transition-colors"
+        className="w-full h-10 bg-[#F9F6FF] rounded-lg px-3 pr-10 text-[13px] outline-none text-[#1A151E] placeholder:text-[#B5A4C1] border border-[#DCCBEB] transition-colors"
       />
       <ChevronDown
-        className={`absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none transition-transform ${
+        className={`absolute right-3 top-1/2 -translate-y-1/2 text-[#B5A4C1] pointer-events-none transition-transform ${
           isOpen ? "rotate-180" : ""
         }`}
         size={18}

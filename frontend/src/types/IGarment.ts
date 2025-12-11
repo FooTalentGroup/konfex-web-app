@@ -8,7 +8,7 @@ export const GarmentSchema = z.object({
         .string({ error: 'La imagen es requerida' })
         .min(1, 'La imagen es requerida'),
 
-    id: z.string().optional(),
+    id: z.number().optional(),
     season: z.string().optional(),
     price: z.number().min(0, 'El precio debe ser mayor o igual a 0'),
 
@@ -24,10 +24,10 @@ export const GarmentSchema = z.object({
     colors: z.string().min(1, 'Los colores son requeridos'),
 
     rawMaterials: z.array(z.object({
-        id: z.string(),
-        type: z.enum(['fabric', 'supply']),
-        name: z.string(),
-        consumption: z.number().positive('El consumo debe ser mayor a 0'),
+        id: z.string().optional(),
+        type: z.enum(['fabric', 'supply']).optional(),
+        name: z.string().optional(),
+        consumption: z.number().positive('El consumo debe ser mayor a 0').optional(),
         unit: z.string(),
         price: z.number().min(0, 'El precio debe ser mayor o igual a 0').optional(),
     })).default([])
@@ -60,13 +60,14 @@ export const GarmentSchema = z.object({
 export type GarmentFormData = z.infer<typeof GarmentSchema>;
 
 export interface CreateGarmentPayload {
-    codigo: string;
+    codigo: number;
     nombre: string;
     descripcion?: string;
     activo: boolean;
     imagen: string;
     tallas: string[];
     colores: string[];
+    precio: number;
 
     coleccionId: number;
 
@@ -75,10 +76,8 @@ export interface CreateGarmentPayload {
         cantidad: number;
     }>;
 
-    manoDeObra?: Array<{
-        accionId: number;
-        horas: number;
-    }>;
+    tarifaCosto?: number;
+    tarifaHoras?: number;
 
     mermaCantidad?: number;
     mermaUnidad?: string;

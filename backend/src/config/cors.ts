@@ -11,6 +11,8 @@ const defaultOrigins = [
   "https://eos-konfex.onrender.com",
   "https://konfex-web-app-2.onrender.com",
   "https://konfex-web-app-omega.vercel.app",
+  "https://surprising-wholeness-production.up.railway.app",
+  "https://konfex-web-app-production.up.railway.app",
 ];
 
 const originIsAllowed = (origin: string): boolean => {

@@ -8,7 +8,6 @@ import { loadPresupuestoToForm } from "@/utils/presupuestoLoader";
 import { useToast } from "@/contexts/ToastContext";
 import { useGastosNegocio } from "@/hooks/useGastosNegocio";
 
-// Componentes internos
 import CalculatorTabs from "./CalculatorTabs";
 import BudgetDetails from "./steps/BudgetDetails";
 import BudgetMaterials from "./steps/BudgetMaterials";
@@ -63,14 +62,12 @@ export default function CalculatorTemplate({
     "details" | "materials" | "extras"
   >("details");
 
-  // Obtener presupuestoId de props, searchParams o undefined
   const presupuestoIdFromUrl = searchParams?.get("id")
     ? parseInt(searchParams.get("id")!, 10)
     : undefined;
   const presupuestoId = propPresupuestoId || presupuestoIdFromUrl;
   const isEditMode = !!presupuestoId;
 
-  // Detectar origen desde URL params (para presupuestos nuevos desde Telegram)
   const origenFromUrl = searchParams?.get("origen") as
     | "telegram"
     | "manual"
@@ -100,13 +97,10 @@ export default function CalculatorTemplate({
 
   const { gastosNegocio } = useGastosNegocio();
 
-  // Establecer automáticamente el primer gasto de negocio cuando se cargan los gastos
   useEffect(() => {
     if (gastosNegocio.length > 0 && !isEditMode) {
       const currentGastosNegocioId = methods.getValues("gastosNegocioId");
-      // Solo establecer si no hay uno ya seleccionado
       if (!currentGastosNegocioId) {
-        // Usar el primer gasto de negocio disponible
         const firstGastosNegocio = gastosNegocio[0];
         if (firstGastosNegocio) {
           methods.setValue("gastosNegocioId", firstGastosNegocio.id, {
@@ -117,7 +111,6 @@ export default function CalculatorTemplate({
     }
   }, [gastosNegocio, isEditMode, methods]);
 
-  // Cargar datos del presupuesto si estamos en modo edición
   useEffect(() => {
     if (isEditMode && presupuestoId && gastosNegocio.length > 0) {
       const loadPresupuesto = async () => {
@@ -127,10 +120,8 @@ export default function CalculatorTemplate({
           const presupuesto = await presupuestoService.getById(presupuestoId);
           const formData = loadPresupuestoToForm(presupuesto, gastosNegocio);
 
-          // Establecer el origen del presupuesto
           setBudgetSource(presupuesto.origen || "manual");
 
-          // Resetear el formulario con los datos cargados
           methods.reset(formData);
         } catch (error) {
           console.error("Error al cargar presupuesto:", error);
@@ -161,17 +152,17 @@ export default function CalculatorTemplate({
 
   return (
     <FormProvider {...methods}>
-      <div className="w-full max-w-md mx-auto font-lato pb-10">
+      <div className="w-full max-w-full sm:max-w-[480px] mx-auto font-lato pb-12 px-0 sm:px-0 overflow-x-hidden">
         <BudgetSummaryHeader
           presupuestoId={presupuestoId}
           isEditMode={isEditMode}
           origen={budgetSource}
         />
 
-        <div className="-mt-6 relative z-10 shadow-xl rounded-t-[30px] bg-white overflow-hidden">
+        <div className="-mt-5 relative z-10 shadow-lg rounded-t-[20px] bg-white/95 backdrop-blur-sm overflow-hidden">
           <CalculatorTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-          <div className="bg-[#F3F0F5] min-h-[500px]">
+          <div className="bg-[#F4E7FD] min-h-[640px] sm:min-h-[520px]">
             {activeTab === "details" && <BudgetDetails source={budgetSource} />}
             {activeTab === "materials" && <BudgetMaterials />}
             {activeTab === "extras" && (

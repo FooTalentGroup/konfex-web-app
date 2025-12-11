@@ -34,7 +34,14 @@ export default function BudgetExtras({
   isEditMode = false,
   origen = "manual",
 }: BudgetExtrasProps) {
-  const { control, watch, register, setValue, getValues } = useFormContext();
+  const {
+    control,
+    watch,
+    register,
+    setValue,
+    getValues,
+    formState: { errors },
+  } = useFormContext();
   const router = useRouter();
   const { gastosNegocio } = useGastosNegocio();
   const { showSuccess, showError, showInfo } = useToast();
@@ -261,21 +268,25 @@ export default function BudgetExtras({
   return (
     <div className="p-5 pb-10 font-lato">
       {/* Encabezado */}
-      <div className="mb-4 px-1">
-        <div className="flex justify-between items-center mb-2">
-          <span className="font-bold text-gray-900 text-base">
+      <div className="mb-4 px-[14px] -mt-4">
+        <div className="flex justify-between items-center">
+          <span className="font-bold text-[16px] leading-[1.31] text-[#000000]">
             Costos adicionales:
           </span>
-          <BudgetTotalBadge amount={total} />
+          <BudgetTotalBadge
+            amount={total}
+            className="text-[16px]! font-bold text-[#C071F4]!"
+          />
         </div>
-        <p className="text-sm text-gray-600 ml-1">
+        <div className="h-px bg-[#CEC2D6] mt-0 ml-1 mr-[8px] translate-y-[-2px]"></div>
+        <p className="text-[13px] leading-[1.31] text-[#4F3E5B] ml-1 mt-3">
           Suma los extras que necesitas.
         </p>
       </div>
 
       {/* Tarifa de envío */}
-      <div className="mb-6">
-        <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">
+      <div className="mb-6 bg-[#F3F0F5] border-[0.5px] border-[#CEC2D6] rounded-[10px] px-2 pt-2 pb-5 max-w-[390px] sm:max-w-[430px] mx-auto space-y-2">
+        <label className="block text-[13px] leading-[1.31] font-bold text-[#1A151E] ml-1">
           Tarifa de envío
         </label>
         <div className="relative group">
@@ -308,47 +319,57 @@ export default function BudgetExtras({
                 setShippingFee("0");
               }
             }}
-            placeholder="000.000"
-            className="w-full bg-white border border-gray-200 rounded-xl p-3.5 pr-8 text-sm outline-none font-bold text-gray-800 text-right shadow-sm focus:border-[#8B709D] focus:ring-2 focus:ring-[#8B709D]/10 transition-all placeholder:font-normal"
+            placeholder="Ingresa la tarifa de envío"
+            className="w-full h-[40px] bg-[#FEFCFF] border border-[#CEC2D6] rounded-[10px] px-3 pr-9 text-sm outline-none font-normal text-[#B5A4C1] text-left focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all placeholder:text-[#B5A4C1]"
             min="0"
             step="0.01"
           />
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold group-focus-within:text-[#8B709D] transition-colors">
-            $
+          <span className="absolute right-2.5 top-1/2 -translate-y-1/2">
+            <img
+              src="/presupuestoPrecio.png"
+              alt="$"
+              className="w-5 h-5"
+            />
           </span>
         </div>
       </div>
 
       {/* Formulario de Costo adicional */}
-      <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-6">
-        <div className="mb-5">
-          <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">
+      <div className="bg-[#F3F0F5] border border-[#CEC2D6] rounded-[10px] px-2 pt-2 pb-[30px] max-w-[390px] sm:max-w-[480px] mx-auto space-y-3">
+        <div className="space-y-2">
+          <label className="block text-[13px] leading-[1.31] font-bold text-[#1A151E] ml-1">
             Costo adicional
           </label>
           <input
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              // Limitar a 100 caracteres
+              if (e.target.value.length <= 100) {
+                setName(e.target.value);
+              }
+            }}
             placeholder="Ej.: Estampado, botones adicionales"
-            className="w-full bg-[#F3F0F5] rounded-xl p-3.5 text-sm outline-none text-gray-800 placeholder:text-gray-400 border border-transparent focus:border-gray-200 transition-colors"
+            maxLength={100}
+            className="w-full h-[40px] bg-[#FEFCFF] border border-[#CEC2D6] rounded-[10px] px-3 text-sm outline-none font-normal text-[#B5A4C1] placeholder:text-[#B5A4C1] focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all"
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold text-gray-700 mb-1.5 ml-1">
+            <label className="block text-[13px] leading-[1.31] font-bold text-[#1A151E] mb-1.5 ml-1">
               Cantidad
             </label>
-            <div className="flex items-center bg-[#F3F0F5] rounded-xl p-1 justify-between">
+              <div className="flex items-center bg-[#FEFCFF] rounded-[6px] h-[40px] px-3 justify-between border border-[#CEC2D6] w-full sm:w-[144px]">
               <button
                 type="button"
                 onClick={() => setQty(Math.max(1, qty - 1))}
                 disabled={qty <= 1}
-                className={`p-2 rounded-lg transition-all ${
-                  qty <= 1
-                    ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-500 hover:text-gray-800 hover:bg-white"
-                }`}
+                  className={`p-2 rounded-lg transition-all ${
+                    qty <= 1
+                      ? "text-[#0F172A] opacity-85 cursor-not-allowed"
+                      : "text-[#0F172A] hover:text-[#0F172A] hover:bg-white"
+                  }`}
               >
                 <Minus size={16} />
               </button>
@@ -359,6 +380,8 @@ export default function BudgetExtras({
                   const val = parseInt(e.target.value);
                   if (isNaN(val) || val < 1) {
                     setQty(1);
+                  } else if (val > 9999) {
+                    setQty(9999);
                   } else {
                     setQty(val);
                   }
@@ -367,17 +390,21 @@ export default function BudgetExtras({
                   const val = parseInt(e.target.value);
                   if (isNaN(val) || val < 1) {
                     setQty(1);
+                  } else if (val > 9999) {
+                    setQty(9999);
                   }
                 }}
+                onWheel={(e) => e.currentTarget.blur()}
                 placeholder="00"
-                className="w-12 bg-transparent text-center text-sm outline-none font-bold text-gray-800 placeholder:text-gray-400"
+                  className="w-12 bg-[#FEFCFF] text-center text-sm outline-none font-normal text-[#B5A4C1] placeholder:text-[#B5A4C1]"
                 min="1"
+                max="9999"
                 step="1"
               />
               <button
                 type="button"
                 onClick={() => setQty(qty + 1)}
-                className="p-2 text-gray-500 hover:text-gray-800 hover:bg-white rounded-lg transition-all"
+                className="p-2 text-[#0F172A] hover:text-[#0F172A] hover:bg-white rounded-lg transition-all"
               >
                 <Plus size={16} />
               </button>
@@ -385,7 +412,7 @@ export default function BudgetExtras({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-700 mb-1.5 ml-1">
+            <label className="block text-[13px] leading-[1.31] font-bold text-[#1A151E] mb-1.5 ml-1">
               Monto
             </label>
             <div className="relative group">
@@ -416,28 +443,40 @@ export default function BudgetExtras({
                     setAmount("");
                   }
                 }}
-                placeholder="000.000"
-                className="w-full bg-white border border-gray-200 rounded-xl p-3.5 pr-8 text-sm outline-none font-bold text-gray-800 text-right shadow-sm focus:border-[#8B709D] focus:ring-2 focus:ring-[#8B709D]/10 transition-all placeholder:font-normal"
+                onWheel={(e) => e.currentTarget.blur()}
+                placeholder="Ingresa el monto"
+                className="w-full sm:w-[206px] h-[40px] bg-[#FEFCFF] border border-[#CEC2D6] rounded-[6px] px-3 pr-9 text-sm outline-none font-normal text-[#B5A4C1] text-left focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all placeholder:text-[#B5A4C1]"
                 min="0"
                 step="0.01"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold group-focus-within:text-[#8B709D] transition-colors">
-                $
+              <span className="absolute right-2.5 top-1/2 -translate-y-1/2">
+                <img
+                  src="/presupuestoPrecio.png"
+                  alt="$"
+                  className="w-5 h-5"
+                />
               </span>
             </div>
           </div>
         </div>
 
+      </div>
+
+      <div className="flex justify-center -mt-4 mb-6">
         <CircularAddButton
           onClick={handleAddExtra}
           variant="centered"
           label="Agregar extra"
+          hideLines
+          iconSize={36}
+          className="scale-95"
+          labelClassName="text-[#6A5379] text-[13px] leading-[1.31] font-normal mt-1 text-center"
         />
       </div>
 
       {/* Lista de prendas agregadas */}
       <div className="mb-6">
-        <label className="block text-sm font-bold text-gray-700 mb-3 ml-1">
+        <label className="block text-[14px] font-bold leading-[1.31] text-[#4F3E5B] mb-3 ml-1">
           Lista de prendas agregadas:
         </label>
         <div className="space-y-3">
@@ -446,13 +485,13 @@ export default function BudgetExtras({
             return (
               <div
                 key={field.id}
-                className="bg-[#F3F0F5] p-4 rounded-xl flex justify-between items-center text-sm border border-transparent hover:border-gray-200 transition-colors"
+                className="bg-[#EDE9F1] h-[44px] w-full max-w-full sm:max-w-[430px] mx-auto rounded-[10px] flex items-center justify-between text-sm border border-[#CEC2D6] px-[10px] gap-[27px]"
               >
-                <span className="font-bold text-gray-800 text-base">
+                <span className="font-normal text-base text-[#000000] leading-[1.31]">
                   {extra.name}
                 </span>
                 <div className="flex items-center gap-4">
-                  <span className="text-gray-600 font-medium text-sm">
+                  <span className="text-[#000000] font-normal text-[13px] leading-[1.31]">
                     {extra.quantity} uds.
                   </span>
                   <button
@@ -475,15 +514,26 @@ export default function BudgetExtras({
 
       {/* Observaciones */}
       <div className="mb-8">
-        <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">
+        <label className="block text-[14px] font-bold leading-[1.31] text-[#1A151E] mb-2 ml-1">
           Observaciones
         </label>
         <textarea
-          {...register("observations")}
+          {...register("observations", {
+            maxLength: {
+              value: 500,
+              message: "Las observaciones no pueden exceder 500 caracteres",
+            },
+          })}
           rows={4}
           placeholder="Ej.: Estampado, bordado, botones extra"
-          className="w-full bg-[#F3F0F5] border-none rounded-xl p-4 text-sm text-gray-800 outline-none shadow-sm resize-none placeholder:text-gray-400 border border-transparent focus:border-gray-200 transition-colors"
+          maxLength={500}
+          className="w-full bg-[#FEFCFF] border border-[#CEC2D6] rounded-[6px] px-3 py-2 text-sm text-[#B5A4C1] outline-none resize-none placeholder:text-[#B5A4C1] focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all"
         ></textarea>
+        {errors.observations && (
+          <p className="text-xs text-red-500 mt-1">
+            {errors.observations.message as string}
+          </p>
+        )}
       </div>
 
       {/* Botón Revisar */}
@@ -491,7 +541,7 @@ export default function BudgetExtras({
         type="button"
         onClick={handleRevisar}
         disabled={isSaving}
-        className={`w-full bg-[#8B709D] text-white font-bold py-4 rounded-xl hover:bg-[#7A5F8C] transition-colors shadow-lg ${
+        className={`w-full max-w-[390px] sm:max-w-[480px] mx-auto h-[45px] bg-[#B65CF2] text-[#FEFCFF] text-[13px] leading-[1.31] font-normal rounded-[9999px] transition-colors ${
           isSaving ? "opacity-50 cursor-not-allowed" : ""
         }`}
       >

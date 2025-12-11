@@ -28,7 +28,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
                 >
                     {tab}
                     {activeTab === index && (
-                        <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B65CF2]" />
+                        <span className="absolute bottom-0 left-0 right-0 h-1 bg-[#B65CF2]" />
                     )}
                 </button>
             ))}
