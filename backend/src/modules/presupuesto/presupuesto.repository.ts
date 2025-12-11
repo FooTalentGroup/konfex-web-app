@@ -1,5 +1,4 @@
-import type { Prisma } from "@prisma/client";
-
+import type { Prisma } from "../../../generated/prisma/client";
 import prisma from "../../config/prisma";
 import type { EstadoPresupuesto } from "./presupuesto.schema";
 
