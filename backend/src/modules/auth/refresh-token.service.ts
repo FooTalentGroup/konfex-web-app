@@ -1,6 +1,6 @@
 import crypto from "crypto";
 
-import { prisma } from "@/config/prisma";
+import prisma from "@/config/prisma";
 
 export const RefreshTokenService = {
   createRefreshToken: async (userId: number, token: string, expiresInDays: number = 7) => {
