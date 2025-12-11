@@ -33,6 +33,7 @@ export const initSocket = (server: HttpServer) => {
       origin: [
         "http://localhost:3000", // frontend local
         "https://konfex-web-app.vercel.app", // frontend producción
+        "https://surprising-wholeness-production.up.railway.app"
       ],
       methods: ["GET", "POST"],
     },
