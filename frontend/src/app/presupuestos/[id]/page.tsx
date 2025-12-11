@@ -15,6 +15,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useSidebar } from "@/hooks/useSidebar";
 import Image from "next/image";
 import BtnActionsCollection from "@/components/ui/BtnActionsCollection";
+import BudgetPDF from "@/components/calculator/BudgetPDF";
+import { pdf } from "@react-pdf/renderer";
 
 const mockBudgetData: BudgetDetailData = {
   id: "000025",
@@ -83,8 +85,71 @@ export default function BudgetDetailPage() {
     console.log("Telegram button clicked");
   };
 
-  const handleDownload = () => {
-    console.log("Descargar presupuesto");
+  const handleDownload = async () => {
+    try {
+      const materials = mockItems
+        .filter((item) => item.talla !== "-")
+        .map((item) => ({
+          name: item.nombre,
+          unitPrice: item.precioUnitario,
+          variants: [
+            {
+              size: item.talla,
+              quantity: item.unidades,
+            },
+          ],
+        }));
+
+      const extras = mockItems
+        .filter((item) => item.talla === "-")
+        .map((item) => ({
+          name: item.nombre,
+          quantity: item.unidades,
+          amount: item.precioUnitario,
+        }));
+
+      const totalMaterialsCost = mockItems
+        .filter((item) => item.talla !== "-")
+        .reduce((sum, item) => sum + item.total, 0);
+
+      const grandTotal = mockItems.reduce((sum, item) => sum + item.total, 0);
+
+      const formData = {
+        id: parseInt(mockBudgetData.id),
+        title: mockBudgetData.titulo,
+        clientName: mockBudgetData.clienteNombre,
+        clientEmail: mockBudgetData.email,
+        clientPhone: mockBudgetData.telefono,
+        deliveryDate: mockBudgetData.fechaFinalizacion,
+        observations: "",
+      };
+
+      const blob = await pdf(
+        <BudgetPDF
+          formData={formData}
+          materials={materials}
+          extras={extras}
+          totalMaterialsCost={totalMaterialsCost}
+          grandTotal={grandTotal}
+        />
+      ).toBlob();
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Presupuesto_${mockBudgetData.titulo.replace(
+        /\s+/g,
+        "_"
+      )}_${mockBudgetData.id}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      console.log("PDF descargado exitosamente");
+    } catch (error) {
+      console.error("Error al generar el PDF:", error);
+    }
   };
 
   const toggleEditMode = () => {
