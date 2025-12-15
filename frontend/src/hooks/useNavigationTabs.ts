@@ -1,5 +1,5 @@
 import { usePathname } from 'next/navigation';
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 
 export interface Tab {
   label: string;

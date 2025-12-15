@@ -127,12 +127,12 @@ export default function CategoriaPage() {
                                         {materials.map((material: MaterialItem) => (
                                             <MaterialCard
                                                 key={material.id}
-                                                id={material.id}
+                                                id={String(material.id)}
                                                 name={material.nombre}
                                                 colors={material.colores}
                                                 measure={material.ancho ? `${material.ancho}cm` : undefined}
                                                 price={`$${material.precio.toFixed(2)}`}
-                                                imageUrl={material.url_imagen}
+                                                imageUrl={material.url_imagen || undefined}
                                                 onClick={() => router.push(`/materia-prima/${categoria}/${material.id}`)}
                                             />
                                         ))}

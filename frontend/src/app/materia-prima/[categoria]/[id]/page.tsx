@@ -8,15 +8,18 @@ import Header from "@/components/common/Header";
 import Sidebar from "@/components/common/Sidebar";
 import Footer from "@/components/common/Footer";
 
-type MaterialFormValues = {
-    nombre: string;
-    url_imagen: string | null;
-    ancho: number;
-    unidadMedida: "cm" | "m" | "yds";
-    peso: number;
-    colores: string[];
-    proveedor: string;
-    precio: number;
+type MaterialData = {
+    id?: number;
+    nombre?: string;
+    url_imagen?: string | null;
+    ancho?: number;
+    unidadMedida?: "cm" | "m" | "yds";
+    peso?: number;
+    colores?: string[];
+    proveedor?: string;
+    precio?: number;
+    createdAt?: string;
+    updatedAt?: string;
 };
 import BackNavigationBar from "@/components/common/BackNavigationBar";
 import AddMaterialForm from "@/components/common/AddMaterialForm";
@@ -52,7 +55,7 @@ export default function EditarMaterialPage() {
     if (!categoria) return <div className="p-6">Cargando categoría…</div>;
     if (loading) return <div className="p-6">Cargando material…</div>;
 
-    const handleSubmit = async (values: MaterialFormValues) => {
+    const handleSubmit = async (values: MaterialData) => {
         const res = await fetch(`/api/v1/materiales/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },

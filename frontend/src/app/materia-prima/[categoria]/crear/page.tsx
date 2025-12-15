@@ -10,15 +10,15 @@ import BackNavigationBar from "@/components/common/BackNavigationBar";
 import AddMaterialForm from "@/components/common/AddMaterialForm";
 import { useCategories } from "@/hooks/useCategories";
 
-type MaterialFormValues = {
-    nombre: string;
-    url_imagen: string | null;
-    ancho: number;
-    unidadMedida: "cm" | "m" | "yds";
-    peso: number;
-    colores: string[];
-    proveedor: string;
-    precio: number;
+type MaterialData = {
+    nombre?: string;
+    url_imagen?: string | null;
+    ancho?: number;
+    unidadMedida?: "cm" | "m" | "yds";
+    peso?: number;
+    colores?: string[];
+    proveedor?: string;
+    precio?: number;
 };
 
 export default function CrearMaterialPage() {
@@ -34,7 +34,7 @@ export default function CrearMaterialPage() {
     if (!mounted || !user) return null;
     if (!categoria) return <div className="p-6">Cargando categoría…</div>;
 
-    const handleSubmit = async (values: MaterialFormValues) => {
+    const handleSubmit = async (values: MaterialData) => {
         const res = await fetch(`/api/v1/materiales`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
