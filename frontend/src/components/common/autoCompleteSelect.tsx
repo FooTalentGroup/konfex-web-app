@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import CustomInput from "@/components/ui/CustomInput"; // ajusta la ruta
-import { UseFormRegisterReturn } from "react-hook-form";
+import { UseFormRegisterReturn, ChangeHandler } from "react-hook-form";
 
 interface Option {
   label: string;
@@ -39,6 +39,32 @@ export default function AutocompleteSelect({
     o.label.toLowerCase().includes(query.toLowerCase())
   );
 
+  const handleChange: ChangeHandler = async (event) => {
+    const value =
+      (event as any)?.target?.value !== undefined
+        ? (event as any).target.value
+        : "";
+    setQuery(value);
+    onChange(value);
+    setOpen(true);
+    if (register) {
+      await register.onChange(event);
+    }
+    return true;
+  };
+
+  const registerProps: UseFormRegisterReturn = register
+    ? {
+        ...register,
+        onChange: handleChange,
+      }
+    : {
+        name: label,
+        onChange: handleChange,
+        onBlur: async () => true,
+        ref: () => {},
+      };
+
   return (
     <div className="w-full relative">
       <CustomInput
@@ -47,19 +73,7 @@ export default function AutocompleteSelect({
         placeholder={placeholder}
         className="bg-white pr-8 text-gray-900"
         type="text"
-        register={
-          register
-            ? {
-          ...register,
-          value: query,
-          onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-            setQuery(e.target.value);
-            onChange(e.target.value);
-            setOpen(true);
-                },
-              }
-            : undefined
-          }
+        register={registerProps}
         error={error}
       />
 
