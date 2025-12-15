@@ -426,7 +426,24 @@ Este proyecto está bajo la Licencia ISC.
 ## Equipo
 
 Desarrollado por **equipo1-sp7** para practicas de **FooTalent Group**.
-Agradecimiento especial a **EOS Indumentaria** por prestarse como modelo de practicas para el desarrollo de las soluciones.
+
+### Miembros del Equipo:
+- Daniela Peraza Garcia **Project Manager**.
+- Kevin Agustin Ruiz **Fullstack**.
+- Miguel Aponte **Backend**.
+- Luana Trevisan **Frontend**.
+- Eliana Suancha Guzman **Frontend**.
+- Edwin Carmona **Frontend**.
+- Alejandro Fernandez **Frontend**.
+- Nicolás Minicucci **QA**.
+- Sofia Maison **QA**.
+- Pablo Morales **QA**.
+- Liliana Suarez **QA**.
+- Fernanda Flores **UX/UI**.
+- Olga Popova **UX/UI + Analista Funcional**.
+- Gladys Diaz **UX/UI + Analista Funcional**.
+
+Agradecimiento especial a **EOS Indumentaria** por prestarse como modelo de problemas para el desarrollo de las soluciones.
 
 ## Soporte
 
