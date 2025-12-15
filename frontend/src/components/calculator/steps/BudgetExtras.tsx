@@ -150,7 +150,6 @@ export default function BudgetExtras({
           );
           clienteId = cliente.id;
         } catch (error) {
-          console.error("Error al obtener/crear cliente:", error);
           const errorMessage =
             error instanceof Error
               ? error.message
@@ -189,11 +188,6 @@ export default function BudgetExtras({
           payload
         );
 
-        console.log(
-          "✅ Presupuesto actualizado exitosamente:",
-          updatedPresupuesto
-        );
-
         showSuccess(
           `Presupuesto #${updatedPresupuesto.numeroPresupuesto} actualizado exitosamente`,
           4000
@@ -206,8 +200,6 @@ export default function BudgetExtras({
         showInfo("Creando presupuesto...");
         const createdPresupuesto = await presupuestoService.create(payload);
 
-        console.log("✅ Presupuesto creado exitosamente:", createdPresupuesto);
-
         showSuccess(
           `Presupuesto #${createdPresupuesto.numeroPresupuesto} creado exitosamente`,
           4000
@@ -218,8 +210,6 @@ export default function BudgetExtras({
         }, 1500);
       }
     } catch (error) {
-      console.error("Error al crear presupuesto:", error);
-
       let errorMessage = "Error desconocido al crear presupuesto";
 
       if (error instanceof Error) {

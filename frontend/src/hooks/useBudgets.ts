@@ -42,7 +42,6 @@ export const useBudgets = () => {
         const errorMessage =
           err instanceof Error ? err.message : "Error al cargar presupuestos";
         setError(errorMessage);
-        console.error("Error al cargar presupuestos:", err);
       } finally {
         setIsLoading(false);
       }

@@ -57,7 +57,6 @@ export const useCollections = (options?: UseCollectionsOptions) => {
     } catch (err) {
       const error = err instanceof Error ? err : new Error('Error desconocido');
       setError(error);
-      console.error('Error al cargar colecciones:', error);
     } finally {
       setIsLoading(false);
     }
@@ -74,7 +73,6 @@ export const useCollections = (options?: UseCollectionsOptions) => {
     } catch (err) {
       const error = err instanceof Error ? err : new Error('Error al cargar colección');
       setCollectionError(error);
-      console.error('Error al cargar colección:', error);
     } finally {
       setIsLoadingCollection(false);
     }

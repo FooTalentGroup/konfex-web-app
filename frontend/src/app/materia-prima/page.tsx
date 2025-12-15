@@ -64,11 +64,8 @@ export default function MateriaPrimaPage() {
     setCategoryToDelete(null);
 
     try {
-      const success = await deleteCategory(categoryId);
-
-
-    } catch (err: any) {
-
+      await deleteCategory(categoryId);
+    } catch (_err: unknown) {
     }
   };
 

@@ -82,38 +82,22 @@ export const useMaterials = (categoriaId?: number) => {
         // Usar el nuevo endpoint con el ID de categoría
         const url = `${process.env.NEXT_PUBLIC_API_URL}/categorias/${categoriaId}/materiales`;
 
-        console.log('========== DEBUG START ==========');
-        console.log('1. URL completa:', url);
-        console.log('2. Categoria ID:', categoriaId);
-
         const response = await fetch(url);
-        console.log('3. Response status:', response.status);
 
         if (!response.ok) {
           throw new Error('Error al cargar los materiales');
         }
 
         const result: BackendResponse = await response.json();
-        console.log('4. Result completo:', result);
 
         if (result.data && Array.isArray(result.data)) {
-          console.log('5. Cantidad de items:', result.data.length);
-
-          if (result.data.length > 0) {
-            console.log('6. Primer item:', result.data[0]);
-          }
-
           const mappedMaterials = result.data.map(mapBackendToFrontend);
-          console.log('7. Mapped materials:', mappedMaterials);
           setFabricMaterials(mappedMaterials);
         } else {
-          console.error('Estructura de datos inválida:', result);
           throw new Error('Formato de respuesta inválido');
         }
-        console.log('========== DEBUG END ==========');
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Error desconocido');
-        console.error('Error fetching fabric materials:', err);
         setFabricMaterials([]);
       } finally {
         setIsLoading(false);
@@ -153,9 +137,7 @@ export const useMaterials = (categoriaId?: number) => {
     setSelectedCategory(selectedCategory === category ? null : category);
   };
 
-  const handleAddMaterial = () => {
-    console.log('Agregar material');
-  };
+  const handleAddMaterial = () => {};
 
   const [fabricSearchQuery, setFabricSearchQuery] = useState('');
 
@@ -181,9 +163,7 @@ export const useMaterials = (categoriaId?: number) => {
     setFabricSearchQuery(value);
   };
 
-  const handleMaterialClick = (materialId: string) => {
-    console.log('Material clicked:', materialId);
-  };
+  const handleMaterialClick = (materialId: string) => {};
 
   return {
     materials: filteredMaterials,

@@ -85,7 +85,6 @@ export function useChatList() {
 
         setChats(chatsList);
       } catch (error) {
-        console.error("Error al obtener los chats:", error);
         setChats([]);
       } finally {
         setIsLoading(false);

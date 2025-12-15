@@ -19,14 +19,12 @@ export const useTokenRefresh = () => {
       const result = await authService.refreshToken();
 
       if (result) {
-        console.log("Token renovado exitosamente");
         window.dispatchEvent(new Event("tokenRefreshed"));
       } else {
         console.warn("No se pudo renovar el token, redirigiendo al login");
         router.push("/");
       }
     } catch (error) {
-      console.error("Error al renovar token:", error);
       router.push("/");
     }
   }, [router]);

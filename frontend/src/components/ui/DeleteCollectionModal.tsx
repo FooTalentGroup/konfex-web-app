@@ -50,7 +50,7 @@ const DeleteCollectionModal: React.FC<DeleteCollectionModalProps> = ({
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
             <p className="text-sm text-gray-700 text-center">
               Vas a eliminar {isSingle ? 'una colección de' : 'las colecciones de'}{' '}
-              <span className="font-bold text-red-600">"{collectionNames}"</span>.
+              <span className="font-bold text-red-600">{`"${collectionNames}"`}</span>.
               <br />
               <br />
               Esta acción no se puede deshacer y podrías afectar los presupuestos que la utilizan.

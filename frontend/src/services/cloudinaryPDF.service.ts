@@ -86,7 +86,6 @@ export async function uploadPDFToCloudinary(
             xhr.send(formData);
         });
     } catch (error) {
-        console.error('Cloudinary PDF Upload Error:', error);
         throw error;
     }
 }

@@ -49,7 +49,6 @@ export function useProductos() {
 
             resolve(response.data || []);
           } catch (err) {
-            console.error("Error searching productos", err);
             setError("Error al buscar productos");
             resolve([]);
           } finally {

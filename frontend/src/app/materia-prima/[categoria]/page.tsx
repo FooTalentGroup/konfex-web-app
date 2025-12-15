@@ -12,7 +12,7 @@ import AddFloatingButton from '@/components/common/AddFloatingButton';
 import { useAuth } from '@/hooks/useAuth';
 import { useSidebar } from '@/hooks/useSidebar';
 import { useCategories } from '@/hooks/useCategories';
-import { useMaterialsByCategory } from '@/hooks/useMaterialsByCategory';
+import { useMaterialsByCategory, MaterialItem } from '@/hooks/useMaterialsByCategory';
 
 export default function CategoriaPage() {
     const router = useRouter();
@@ -38,16 +38,11 @@ export default function CategoriaPage() {
         isLoading,
         error,
         handleSearch,
-        handleMaterialClick,
     } = useMaterialsByCategory(currentCategory?.id);
 
     // Redirigir si la categoría no existe
     useEffect(() => {
         if (!isLoadingCategories && categories.length > 0 && categoria && !currentCategory) {
-            console.log('❌ Categoría no encontrada, redirigiendo...', {
-                categoria,
-                categoriasDisponibles: categories.map(c => c.slug)
-            });
             router.push('/materia-prima');
         }
     }, [isLoadingCategories, categories, currentCategory, categoria, router]);
@@ -73,7 +68,9 @@ export default function CategoriaPage() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[#E6E1EA]">
                 <div className="text-center">
-                    <p className="text-gray-600">Categoría "{categoria}" no encontrada, redirigiendo...</p>
+                    <p className="text-gray-600">
+                        Categoría {`"${categoria}"`} no encontrada, redirigiendo...
+                    </p>
                     <p className="text-sm text-gray-500 mt-2">
                         Categorías disponibles: {categories.map(c => c.slug).join(', ')}
                     </p>
@@ -127,7 +124,7 @@ export default function CategoriaPage() {
                                     </div>
                                 ) : (
                                     <div className="space-y-3 pb-6">
-                                        {materials.map((material: any) => (
+                                        {materials.map((material: MaterialItem) => (
                                             <MaterialCard
                                                 key={material.id}
                                                 id={material.id}

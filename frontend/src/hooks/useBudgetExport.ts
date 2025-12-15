@@ -1,4 +1,4 @@
-import { UseFormGetValues } from "react-hook-form";
+import { UseFormGetValues, FieldErrors } from "react-hook-form";
 import { BudgetFormData } from "@/types/IBudget";
 
 interface BudgetExportData {
@@ -51,7 +51,7 @@ export function useBudgetExport(
         grandTotal: number;
     },
     metadata: { id: string; date: string },
-    formState: { isValid: boolean; errors: any }
+    formState: { isValid: boolean; errors: FieldErrors<BudgetFormData> }
 ) {
     const exportBudgetData = (): BudgetExportData => {
         const formData = getValues();
@@ -98,16 +98,11 @@ export function useBudgetExport(
     const handleSendBudget = () => {
 
         if (!formState.isValid) {
-            console.log("❌ FORMULARIO INCOMPLETO - Por favor completa todos los campos requeridos");
-            console.log("Errores:", formState.errors);
-
             alert("Por favor completa todos los campos requeridos antes de enviar");
             return null;
         }
 
         const data = exportBudgetData();
-        console.log("=== DATOS COMPLETOS DEL PRESUPUESTO ===");
-        console.log(JSON.stringify(data, null, 2));
 
         return data;
     };
@@ -115,16 +110,11 @@ export function useBudgetExport(
     const handleSavePDF = () => {
 
         if (!formState.isValid) {
-            console.log("❌ FORMULARIO INCOMPLETO - Por favor completa todos los campos requeridos");
-            console.log("Errores:", formState.errors);
-
             alert("Por favor completa todos los campos requeridos antes de guardar el PDF");
             return null;
         }
 
         const data = exportBudgetData();
-        console.log("=== GENERANDO PDF ===");
-        console.log(JSON.stringify(data, null, 2));
 
         return data;
     };

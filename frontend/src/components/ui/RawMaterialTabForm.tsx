@@ -10,6 +10,29 @@ import { useMaterials } from '@/hooks/useMaterialsForService';
 import { useToast } from '@/contexts/ToastContext';
 import { useRouter } from 'next/navigation';
 
+const EmptyMaterialsAlert = ({ type, onNavigate }: { type: 'fabric' | 'supply'; onNavigate: () => void }) => (
+    <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
+        <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+        <div className="flex-1">
+            <h4 className="text-sm font-semibold text-amber-800 mb-1">
+                No hay {type === 'fabric' ? 'telas' : 'insumos'} registrados
+            </h4>
+            <p className="text-sm text-amber-700 mb-2">
+                Debes crear {type === 'fabric' ? 'telas' : 'insumos'} en el sistema antes de poder agregarlos a una
+                prenda.
+            </p>
+            <button
+                type="button"
+                onClick={onNavigate}
+                className="inline-flex items-center gap-1 text-sm font-medium text-amber-700 hover:text-amber-900 underline"
+            >
+                Ir a crear materiales
+                <ExternalLink className="w-4 h-4" />
+            </button>
+        </div>
+    </div>
+);
+
 interface RawMaterialTabFormProps {
     form: UseFormReturn<GarmentFormData>;
 }
@@ -127,28 +150,6 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
         setValue('rawMaterials', rawMaterials.filter(m => m.id !== id));
     };
 
-    const EmptyMaterialsAlert = ({ type }: { type: 'fabric' | 'supply' }) => (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-            <div className="flex-1">
-                <h4 className="text-sm font-semibold text-amber-800 mb-1">
-                    No hay {type === 'fabric' ? 'telas' : 'insumos'} registrados
-                </h4>
-                <p className="text-sm text-amber-700 mb-2">
-                    Debes crear {type === 'fabric' ? 'telas' : 'insumos'} en el sistema antes de poder agregarlos a una prenda.
-                </p>
-                <button
-                    type="button"
-                    onClick={() => router.push('/materia-prima')}
-                    className="inline-flex items-center gap-1 text-sm font-medium text-amber-700 hover:text-amber-900 underline"
-                >
-                    Ir a crear materiales
-                    <ExternalLink className="w-4 h-4" />
-                </button>
-            </div>
-        </div>
-    );
-
     return (
         <section className="space-y-6">
 
@@ -176,7 +177,9 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                     className="bg-white"
                     style={{ borderColor: '#6A5379' }}
                 />
-                {fabricOptions.length === 0 && <EmptyMaterialsAlert type="fabric" />}
+                {fabricOptions.length === 0 && (
+                    <EmptyMaterialsAlert type="fabric" onNavigate={() => router.push('/materia-prima')} />
+                )}
 
                 <CustomInputWithSelect
                     id="tempFabricConsumption"
@@ -258,7 +261,9 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                     className="bg-white"
                     style={{ borderColor: '#6A5379' }}
                 />
-                {supplyOptions.length === 0 && <EmptyMaterialsAlert type="supply" />}
+                {supplyOptions.length === 0 && (
+                    <EmptyMaterialsAlert type="supply" onNavigate={() => router.push('/materia-prima')} />
+                )}
 
                 <CustomInputWithSelect
                     id="tempSupplyConsumption"

@@ -69,7 +69,6 @@ export default function OrderCard({
       setCurrentOperativoStatus(newStatus);
       setIsOperativoDropdownOpen(false);
     } catch (error) {
-      console.error("Error al actualizar estado operativo:", error);
       alert("Error al actualizar el estado. Por favor, intenta nuevamente.");
     } finally {
       setIsUpdating(false);
@@ -86,7 +85,6 @@ export default function OrderCard({
       setCurrentPaymentStatus(newStatus);
       setIsPaymentDropdownOpen(false);
     } catch (error) {
-      console.error("Error al actualizar estado de pago:", error);
       alert(
         "Error al actualizar el estado de pago. Por favor, intenta nuevamente."
       );

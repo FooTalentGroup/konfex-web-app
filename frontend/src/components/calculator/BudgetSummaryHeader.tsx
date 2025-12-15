@@ -137,7 +137,6 @@ export default function BudgetSummaryHeader({
 
       showInfo("PDF descargado exitosamente");
     } catch (error) {
-      console.error("Error al generar PDF:", error);
       showError("Error al generar el PDF. Por favor intenta nuevamente.");
     }
   };

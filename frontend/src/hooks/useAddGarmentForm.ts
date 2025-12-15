@@ -51,8 +51,7 @@ export const useAddGarmentForm = (collectionId?: number) => {
                 .then((collection) => {
                     form.setValue('season', collection.nombre, { shouldValidate: true });
                 })
-                .catch((error) => {
-                    console.error('Error fetching collection:', error);
+                .catch(() => {
                 });
         }
     }, [collectionId, form]);
