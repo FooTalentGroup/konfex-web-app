@@ -18,26 +18,11 @@ async function createPedidoFromPresupuesto(
     fechaVencimiento: Date | null;
   }
 ) {
-  const startTime = Date.now();
-
-  console.log(
-    `[PEDIDO_AUTO] Iniciando creación automática de pedido para presupuesto #${presupuestoId}`,
-    {
-      timestamp: new Date().toISOString(),
-      presupuestoId,
-      clienteId: presupuesto.clienteId,
-    }
-  );
-
   if (!presupuesto.clienteId) {
     const error = new AppError(
       "No se puede crear un pedido sin cliente asociado al presupuesto",
       400
     );
-    console.error(`[PEDIDO_AUTO] Error de validación para presupuesto #${presupuestoId}:`, {
-      error: error.message,
-      presupuestoId,
-    });
     throw error;
   }
 
@@ -47,11 +32,6 @@ async function createPedidoFromPresupuesto(
   });
 
   if (existingPedido) {
-    console.log(`[PEDIDO_AUTO] Pedido ya existe para presupuesto #${presupuestoId}`, {
-      pedidoId: existingPedido.id,
-      presupuestoId,
-      estado: existingPedido.estado,
-    });
     return existingPedido;
   }
 
@@ -66,7 +46,6 @@ async function createPedidoFromPresupuesto(
 
   if (!presupuestoCompleto) {
     const error = new AppError("Presupuesto no encontrado", 404);
-    console.error(`[PEDIDO_AUTO] Error: Presupuesto #${presupuestoId} no encontrado`);
     throw error;
   }
 
@@ -74,7 +53,6 @@ async function createPedidoFromPresupuesto(
 
   if (detallesPresupuesto.length === 0) {
     const error = new AppError("No se puede crear un pedido sin detalles en el presupuesto", 400);
-    console.error(`[PEDIDO_AUTO] Error: Presupuesto #${presupuestoId} sin detalles`);
     throw error;
   }
 
@@ -87,13 +65,6 @@ async function createPedidoFromPresupuesto(
     totalCostoDetalles > 0 && presupuestoCompleto.totalFinal > 0
       ? presupuestoCompleto.totalFinal / totalCostoDetalles
       : 1;
-
-  console.log(`[PEDIDO_AUTO] Cálculo de precios para presupuesto #${presupuestoId}`, {
-    totalCostoDetalles,
-    totalFinalPresupuesto: presupuestoCompleto.totalFinal,
-    factorPrecio: factorPrecio.toFixed(4),
-    cantidadDetalles: detallesPresupuesto.length,
-  });
 
   const pedido = await prisma.pedido.create({
     data: {
@@ -131,42 +102,6 @@ async function createPedidoFromPresupuesto(
       },
     },
   });
-
-  const duration = Date.now() - startTime;
-  const totalPedido = pedido.detalles.reduce((sum, d) => sum + d.subtotal, 0);
-
-  console.log(`[PEDIDO_AUTO] ✅ Pedido creado exitosamente`, {
-    pedidoId: pedido.id,
-    presupuestoId: pedido.presupuestoId,
-    numeroPresupuesto: pedido.presupuesto?.numeroPresupuesto,
-    clienteId: pedido.clienteId,
-    clienteNombre: pedido.cliente?.nombre || "N/A",
-    estado: pedido.estado,
-    cantidadDetalles: pedido.detalles.length,
-    totalPedido: totalPedido.toFixed(2),
-    totalPresupuesto: presupuestoCompleto.totalFinal.toFixed(2),
-    fechaEntregaEstimada: pedido.fechaEntregaEstimada?.toISOString() || null,
-    duracionMs: duration,
-    timestamp: new Date().toISOString(),
-  });
-
-  const notificacion = {
-    tipo: "PEDIDO_CREADO_AUTOMATICAMENTE",
-    nivel: "INFO",
-    mensaje: `Pedido #${pedido.id} creado automáticamente desde presupuesto #${pedido.presupuesto?.numeroPresupuesto}`,
-    datos: {
-      pedidoId: pedido.id,
-      presupuestoId: pedido.presupuestoId,
-      numeroPresupuesto: pedido.presupuesto?.numeroPresupuesto,
-      clienteId: pedido.clienteId,
-      clienteNombre: pedido.cliente?.nombre,
-      total: totalPedido,
-      fechaCreacion: pedido.createdAt.toISOString(),
-    },
-    timestamp: new Date().toISOString(),
-  };
-
-  console.log(`[NOTIFICACION] ${notificacion.tipo}`, notificacion);
 
   return pedido;
 }
@@ -246,9 +181,6 @@ export const PresupuestoService = {
 
       if (clienteConTelegram?.telegramMessages && clienteConTelegram.telegramMessages.length > 0) {
         origen = "telegram";
-        console.log(
-          `[PRESUPUESTO] Origen detectado automáticamente como "telegram" para cliente #${clienteId}`
-        );
       }
     }
 
@@ -283,15 +215,7 @@ export const PresupuestoService = {
       );
       iva = ivaCalculado;
       totalFinal = totalFinalCalculado;
-    } catch (error) {
-      console.warn("[PRESUPUESTO] No se pudo calcular IVA, usando valores sin impuesto", {
-        error: error instanceof Error ? error.message : String(error),
-        presupuestoId: "nuevo",
-        totalCosto,
-        costosIndirectos,
-        ganancias,
-      });
-    }
+    } catch {}
     const numeroPresupuesto = await PresupuestoService.getNextNumero();
 
     const created = await PresupuestoRepository.create({
@@ -317,31 +241,11 @@ export const PresupuestoService = {
 
     if (estado === "ACEPTADO" && created.clienteId) {
       try {
-        console.log(
-          `[PRESUPUESTO] Presupuesto #${created.numeroPresupuesto} creado como ACEPTADO, creando pedido automáticamente`,
-          {
-            presupuestoId: created.id,
-            numeroPresupuesto: created.numeroPresupuesto,
-            clienteId: created.clienteId,
-            totalFinal: created.totalFinal,
-          }
-        );
         await createPedidoFromPresupuesto(created.id, {
           clienteId: created.clienteId,
           fechaVencimiento: created.fechaVencimiento,
         });
-      } catch (error) {
-        console.error(
-          `[PRESUPUESTO] Error al crear pedido automáticamente desde presupuesto #${created.numeroPresupuesto}:`,
-          {
-            presupuestoId: created.id,
-            numeroPresupuesto: created.numeroPresupuesto,
-            error: error instanceof Error ? error.message : String(error),
-            stack: error instanceof Error ? error.stack : undefined,
-            timestamp: new Date().toISOString(),
-          }
-        );
-      }
+      } catch (error) {}
     }
 
     return created;
@@ -412,15 +316,7 @@ export const PresupuestoService = {
       );
       iva = ivaCalculado;
       totalFinal = totalFinalCalculado;
-    } catch (error) {
-      console.warn("[PRESUPUESTO] No se pudo calcular IVA, usando valores sin impuesto", {
-        error: error instanceof Error ? error.message : String(error),
-        presupuestoId: id,
-        totalCosto,
-        costosIndirectos,
-        ganancias,
-      });
-    }
+    } catch (error) {}
 
     const updated = await PresupuestoRepository.update(id, {
       data: {
@@ -447,33 +343,11 @@ export const PresupuestoService = {
 
     if (estadoCambioAceptado && updated.clienteId) {
       try {
-        console.log(
-          `[PRESUPUESTO] Estado cambiado a ACEPTADO para presupuesto #${updated.numeroPresupuesto}, creando pedido automáticamente`,
-          {
-            presupuestoId: updated.id,
-            numeroPresupuesto: updated.numeroPresupuesto,
-            estadoAnterior: existing.estado,
-            estadoNuevo: estado,
-            clienteId: updated.clienteId,
-            totalFinal: updated.totalFinal,
-          }
-        );
         await createPedidoFromPresupuesto(updated.id, {
           clienteId: updated.clienteId,
           fechaVencimiento: updated.fechaVencimiento,
         });
-      } catch (error) {
-        console.error(
-          `[PRESUPUESTO] Error al crear pedido automáticamente desde presupuesto #${updated.numeroPresupuesto}:`,
-          {
-            presupuestoId: updated.id,
-            numeroPresupuesto: updated.numeroPresupuesto,
-            error: error instanceof Error ? error.message : String(error),
-            stack: error instanceof Error ? error.stack : undefined,
-            timestamp: new Date().toISOString(),
-          }
-        );
-      }
+      } catch (error) {}
     }
 
     return updated;
@@ -544,15 +418,7 @@ export const PresupuestoService = {
       );
       iva = ivaCalculado;
       totalFinal = totalFinalCalculado;
-    } catch (error) {
-      console.warn("[PRESUPUESTO] No se pudo calcular IVA, usando valores sin impuesto", {
-        error: error instanceof Error ? error.message : String(error),
-        presupuestoId: id,
-        totalCosto,
-        costosIndirectos,
-        ganancias,
-      });
-    }
+    } catch (error) {}
 
     const updateData: Partial<UpdatePresupuestoRequestDto> & {
       gastosNegocioId: number;
@@ -598,17 +464,7 @@ export const PresupuestoService = {
           clienteId: updated.clienteId,
           fechaVencimiento: updated.fechaVencimiento,
         });
-      } catch (error) {
-        console.error(
-          `[PRESUPUESTO] Error al crear pedido automáticamente desde presupuesto #${updated.numeroPresupuesto} (PATCH):`,
-          {
-            presupuestoId: updated.id,
-            numeroPresupuesto: updated.numeroPresupuesto,
-            error: error instanceof Error ? error.message : String(error),
-            timestamp: new Date().toISOString(),
-          }
-        );
-      }
+      } catch (error) {}
     }
 
     return updated;

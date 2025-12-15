@@ -10,7 +10,6 @@ export const telegramMessageRepository = {
     firstName?: string;
     lastName?: string;
     username?: string;
-    // Campos para archivos multimedia
     type?: string;
     fileId?: string;
     fileUniqueId?: string;
@@ -29,7 +28,6 @@ export const telegramMessageRepository = {
         firstName: data.firstName ?? "Nuevo",
         lastName: data.lastName ?? "Cliente",
         username: data.username ?? null,
-        // Campos para archivos
         type: data.type ?? "text",
         fileId: data.fileId ?? null,
         fileUniqueId: data.fileUniqueId ?? null,
@@ -42,7 +40,7 @@ export const telegramMessageRepository = {
   },
 
   findByChatId: async (chatId: string | number) => {
-    return prisma.telegramMessage.findMany({ 
+    return prisma.telegramMessage.findMany({
       where: { chatId: String(chatId) },
       orderBy: { timestamp: "asc" },
     });
@@ -79,7 +77,7 @@ export const telegramMessageRepository = {
       _count: { id: true },
       where: { leido: false },
     });
-  
+
     const map = new Map<string, number>();
     for (const r of result) {
       map.set(r.chatId, r._count.id);

@@ -44,13 +44,11 @@ export const handleIncomingUpdate = async (update: any) => {
       payload.fileUniqueId = largestPhoto.file_unique_id;
       payload.fileSize = largestPhoto.file_size;
 
-      // Obtener URL temporal de Telegram
       const fileInfo = (await fetch(
         `https://api.telegram.org/bot${botToken}/getFile?file_id=${payload.fileId}`
       ).then((res) => res.json())) as TelegramGetFileResponse;
       const telegramFileUrl = `https://api.telegram.org/file/bot${botToken}/${fileInfo.result.file_path}`;
 
-      // Subir a Cloudinary usando tu util
       const cloudinaryRes = await uploadFile({
         url: telegramFileUrl,
         folder: "telegram_photos",
@@ -65,12 +63,10 @@ export const handleIncomingUpdate = async (update: any) => {
       payload.mimeType = message.document.mime_type;
       payload.fileSize = message.document.file_size;
 
-      // Si hay caption (texto junto con el documento), agregarlo
       if (message.caption) {
         payload.text = message.caption;
       }
 
-      // Obtener file_path desde Telegram
       const fileInfo = (await fetch(
         `https://api.telegram.org/bot${botToken}/getFile?file_id=${payload.fileId}`
       ).then((res) => res.json())) as TelegramGetFileResponse;
@@ -81,12 +77,10 @@ export const handleIncomingUpdate = async (update: any) => {
 
       const telegramFileUrl = `https://api.telegram.org/file/bot${botToken}/${fileInfo.result.file_path}`;
 
-      // Descargar a Buffer usando arrayBuffer()
       const response = await fetch(telegramFileUrl);
       const arrayBuffer = await response.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
 
-      // Determinar la extensión del archivo desde el mimeType o usar .pdf por defecto
       let extension = ".pdf";
       if (payload.mimeType) {
         const mimeToExt: Record<string, string> = {
@@ -99,7 +93,6 @@ export const handleIncomingUpdate = async (update: any) => {
         extension = mimeToExt[payload.mimeType] || ".pdf";
       }
 
-      // Subir a Cloudinary usando tu util
       const cloudinaryRes = await uploadFile({
         buffer,
         folder: "telegram_documents",
@@ -107,7 +100,6 @@ export const handleIncomingUpdate = async (update: any) => {
         resource_type: "raw",
       });
 
-      // La URL de Cloudinary para archivos raw es directamente accesible
       payload.fileUrl = cloudinaryRes.secure_url;
       payload.filePath = `telegram_documents/${payload.fileUniqueId}${extension}`;
     }
@@ -116,8 +108,7 @@ export const handleIncomingUpdate = async (update: any) => {
     io.emit("telegram_message", payload);
 
     return;
-  } catch (err) {
-    console.error("Error procesando mensaje de Telegram:", err);
+  } catch {
     return;
   }
 };
@@ -180,7 +171,6 @@ export const getChatMessages = async (chatId: string | number) => {
     username: message.username || null,
     timestamp: message.timestamp,
     leido: message.leido,
-    // Campos para archivos multimedia
     type: message.type || "text",
     fileId: message.fileId || null,
     fileUniqueId: message.fileUniqueId || null,
@@ -192,7 +182,6 @@ export const getChatMessages = async (chatId: string | number) => {
 };
 
 export const getClienteDataFromChat = async (chatId: string | number) => {
-  // Buscar el primer mensaje de Telegram del chat para obtener datos básicos
   const telegramMessage = await telegramMessageRepository.findByChatId(chatId);
   const firstTelegramMsg = telegramMessage.find((msg) => msg.source === "telegram");
 
@@ -200,7 +189,6 @@ export const getClienteDataFromChat = async (chatId: string | number) => {
     return null;
   }
 
-  // Si el mensaje tiene clienteId asociado, obtener datos completos del cliente
   if (firstTelegramMsg.clienteId) {
     const cliente = await prisma.cliente.findUnique({
       where: { id: firstTelegramMsg.clienteId },
@@ -222,7 +210,6 @@ export const getClienteDataFromChat = async (chatId: string | number) => {
     }
   }
 
-  // Si no hay cliente asociado, retornar datos básicos del mensaje de Telegram
   const nombre =
     firstTelegramMsg.firstName && firstTelegramMsg.lastName
       ? `${firstTelegramMsg.firstName} ${firstTelegramMsg.lastName}`.trim()
@@ -231,8 +218,8 @@ export const getClienteDataFromChat = async (chatId: string | number) => {
   return {
     clienteId: null,
     nombre: nombre,
-    email: null, // Telegram no proporciona email directamente
-    telefono: null, // Telegram no proporciona teléfono directamente
+    email: null,
+    telefono: null,
   };
 };
 
@@ -290,7 +277,6 @@ export const getChatsList = async (userId?: number) => {
     (a, b) => b.lastTimestamp.getTime() - a.lastTimestamp.getTime()
   );
 
-  // --- NUEVO: obtener no leídos ---
   let unreadCounts = new Map<string, number>();
   if (userId) {
     unreadCounts = await telegramMessageRepository.getUnreadCounts();
@@ -298,7 +284,6 @@ export const getChatsList = async (userId?: number) => {
 
   return await Promise.all(
     chats.map(async (chat) => {
-      // Último mensaje enviado por "telegram" para leer nombres reales
       const telegramMessage = allMessages.find(
         (msg) => msg.chatId === chat.chatId && msg.source === "telegram"
       );
@@ -318,7 +303,7 @@ export const getChatsList = async (userId?: number) => {
         lastMessageSource: chat.lastMessageSource,
         timestamp: chat.lastTimestamp,
         hasBudget: false,
-        unreadCount: unreadCounts.get(chat.chatId) || 0, // ← funcionando
+        unreadCount: unreadCounts.get(chat.chatId) || 0,
       };
     })
   );
