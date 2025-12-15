@@ -24,10 +24,7 @@ function BudgetForm({ form, metadata }: BudgetFormProps) {
   const { clients } = useClients();
 
 
-  const onSubmit: SubmitHandler<BudgetFormData> = (data: BudgetFormData) => {
-    console.log("=== DATOS DEL FORMULARIO F1 ===");
-    console.log(data);
-  };
+  const onSubmit: SubmitHandler<BudgetFormData> = (_data: BudgetFormData) => {};
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-bg-gray-500 rounded-t-lg">

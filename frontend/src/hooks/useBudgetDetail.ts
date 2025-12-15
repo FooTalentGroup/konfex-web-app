@@ -19,7 +19,6 @@ export const useBudgetDetail = (id: number) => {
         const errorMessage =
           err instanceof Error ? err.message : "Error al cargar presupuesto";
         setError(errorMessage);
-        console.error("Error al cargar presupuesto:", err);
       } finally {
         setIsLoading(false);
       }
@@ -41,7 +40,6 @@ export const useBudgetDetail = (id: number) => {
       const errorMessage =
         err instanceof Error ? err.message : "Error al cargar presupuesto";
       setError(errorMessage);
-      console.error("Error al cargar presupuesto:", err);
     } finally {
       setIsLoading(false);
     }

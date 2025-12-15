@@ -52,7 +52,6 @@ export const clienteService = {
       const clientes = await clienteService.getAll();
       return clientes.find(c => c.nombre.toLowerCase() === nombre.toLowerCase()) || null;
     } catch (error) {
-      console.error('Error al buscar cliente por nombre:', error);
       return null;
     }
   },

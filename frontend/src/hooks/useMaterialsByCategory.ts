@@ -2,8 +2,25 @@
 
 import { useEffect, useState, useMemo } from 'react';
 
+export type MaterialItem = {
+    id: number;
+    nombre: string;
+    colores?: string[];
+    precio: number;
+    ancho?: number | null;
+    url_imagen?: string | null;
+};
+
+type ApiResponse = {
+    success: boolean;
+    message?: string;
+    data: {
+        data?: MaterialItem[];
+    };
+};
+
 export function useMaterialsByCategory(categoryId?: number) {
-    const [materials, setMaterials] = useState<any[]>([]);
+    const [materials, setMaterials] = useState<MaterialItem[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
@@ -23,7 +40,7 @@ export function useMaterialsByCategory(categoryId?: number) {
                     `${process.env.NEXT_PUBLIC_API_URL}/categorias/${categoryId}/materiales`
                 );
 
-                const json = await res.json();
+                const json: ApiResponse = await res.json();
 
                 if (!json.success) {
                     throw new Error(json.message || 'Error obteniendo materiales');
@@ -31,8 +48,9 @@ export function useMaterialsByCategory(categoryId?: number) {
 
 
                 setMaterials(json.data.data || []);
-            } catch (err: any) {
-                setError(err.message ?? 'Error desconocido');
+            } catch (err: unknown) {
+                const message = err instanceof Error ? err.message : 'Error desconocido';
+                setError(message);
             } finally {
                 setIsLoading(false);
             }
@@ -52,7 +70,7 @@ export function useMaterialsByCategory(categoryId?: number) {
 
         const query = searchQuery.toLowerCase();
 
-        return materials.filter((m: any) => {
+        return materials.filter((m) => {
             const name = m.nombre?.toLowerCase() || '';
             const colors = (m.colores || []).join(' ').toLowerCase();
             const price = m.precio?.toString() || '';

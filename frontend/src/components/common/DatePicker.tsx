@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -48,13 +48,16 @@ export default function DatePicker({
     top: number;
     left: number;
   } | null>(null);
-  const [mounted, setMounted] = useState(false);
+  const [mounted] = useState<boolean>(() => typeof window !== "undefined");
 
   // Calcular posición del calendario cuando se abre
   useEffect(() => {
-    if (isOpen && containerRef.current && mounted) {
-      const rect = containerRef.current.getBoundingClientRect();
-      
+    if (!isOpen || !containerRef.current || !mounted) return;
+
+    const frame = requestAnimationFrame(() => {
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (!rect) return;
+
       const calendarHeight = 350; // Altura aproximada del calendario
       const calendarWidth = 300;
       const spacing = 8; // Espacio entre el input y el calendario
@@ -81,29 +84,24 @@ export default function DatePicker({
       // Si no hay espacio abajo, intentar mostrar arriba
       if (spaceBelow < calendarHeight + spacing) {
         if (spaceAbove > calendarHeight + spacing) {
-          // Hay espacio arriba, mostrar arriba
           top = rect.top - calendarHeight - spacing;
         } else {
-          // No hay espacio ni arriba ni abajo, centrar verticalmente
-          top = Math.max(
-            padding,
-            (windowHeight - calendarHeight) / 2
-          );
+          top = Math.max(padding, (windowHeight - calendarHeight) / 2);
         }
       }
       
-      // Asegurar que no se salga por arriba
       if (top < padding) {
         top = padding;
       }
       
-      // Asegurar que no se salga por abajo
       if (top + calendarHeight > windowHeight - padding) {
         top = windowHeight - calendarHeight - padding;
       }
       
       setCalendarPosition({ top, left });
-    }
+    });
+
+    return () => cancelAnimationFrame(frame);
   }, [isOpen, mounted]);
 
   // Cerrar el calendario al hacer clic fuera o al hacer scroll
@@ -138,24 +136,8 @@ export default function DatePicker({
     }
   }, [isOpen]);
 
-  // Verificar que el componente esté montado (para el portal)
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Sincronizar el mes/año actual con la fecha seleccionada
-  useEffect(() => {
-    if (value) {
-      const parsedDate = parseDate(value);
-      if (parsedDate) {
-        setCurrentMonth(parsedDate.getMonth());
-        setCurrentYear(parsedDate.getFullYear());
-      }
-    }
-  }, [value]);
-
   // Convertir DD/MM/YYYY a Date
-  const parseDate = (dateString: string): Date | null => {
+  const parseDate = useCallback((dateString: string): Date | null => {
     if (!dateString) return null;
     const parts = dateString.split("/");
     if (parts.length !== 3) return null;
@@ -171,7 +153,22 @@ export default function DatePicker({
       return date;
     }
     return null;
-  };
+  }, []);
+
+  // Sincronizar el mes/año actual con la fecha seleccionada
+  useEffect(() => {
+    if (!value) return;
+
+    const frame = requestAnimationFrame(() => {
+      const parsedDate = parseDate(value);
+      if (parsedDate) {
+        setCurrentMonth(parsedDate.getMonth());
+        setCurrentYear(parsedDate.getFullYear());
+      }
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [value, parseDate]);
 
   // Convertir Date a DD/MM/YYYY
   const formatDate = (date: Date): string => {

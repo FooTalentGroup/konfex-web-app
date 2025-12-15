@@ -26,7 +26,6 @@ export function useClients() {
       const errorMsg =
         err instanceof Error ? err.message : "Error al cargar clientes";
       setError(errorMsg);
-      console.error("Error loading clients", err);
     } finally {
       setLoading(false);
     }
@@ -46,7 +45,6 @@ export function useClients() {
       try {
         return await clienteService.getById(id);
       } catch (err) {
-        console.error("Error getting client:", err);
         return null;
       }
     },
@@ -69,7 +67,6 @@ export function useClients() {
       const errorMsg =
         err instanceof Error ? err.message : "Error al crear cliente";
       setError(errorMsg);
-      console.error("Error creating client:", err);
       return null;
     }
   };
@@ -93,7 +90,6 @@ export function useClients() {
       const errorMsg =
         err instanceof Error ? err.message : "Error al actualizar cliente";
       setError(errorMsg);
-      console.error("Error updating client:", err);
       return null;
     }
   };
@@ -109,7 +105,6 @@ export function useClients() {
       const errorMsg =
         err instanceof Error ? err.message : "Error al eliminar cliente";
       setError(errorMsg);
-      console.error("Error deleting client:", err);
       return false;
     }
   };

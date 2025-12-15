@@ -2,11 +2,9 @@ import { useState, useEffect } from 'react';
 import { isSocketConnected } from '@/services/socket.service';
 
 export const useSocketStatus = (checkInterval: number = 1000) => {
-  const [isConnected, setIsConnected] = useState(false);
+  const [isConnected, setIsConnected] = useState<boolean>(() => isSocketConnected());
 
   useEffect(() => {
-    setIsConnected(isSocketConnected());
-
     const interval = setInterval(() => {
       setIsConnected(isSocketConnected());
     }, checkInterval);

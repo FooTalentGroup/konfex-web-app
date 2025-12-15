@@ -45,7 +45,6 @@ export const useOrderCard = ({ telegramChatId }: UseOrderCardProps) => {
       setMessage('');
       setShowMessageInput(false);
     } catch (error) {
-      console.error('Error enviando mensaje:', error);
       showError(error instanceof Error ? error.message : 'Error al enviar mensaje');
     } finally {
       setIsSending(false);

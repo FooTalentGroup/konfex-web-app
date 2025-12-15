@@ -9,6 +9,11 @@ interface Category {
     iconPath?: string;
 }
 
+interface ApiCategory {
+    id: number;
+    nombre: string;
+}
+
 // Generar slug desde el nombre
 const generateSlug = (nombre: string): string => {
     return nombre
@@ -31,22 +36,23 @@ export function useCategories() {
             setError('');
 
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categorias`);
-            const json = await res.json();
+            const json: { success: boolean; message?: string; data?: ApiCategory[] } = await res.json();
 
             if (!json.success) {
                 throw new Error(json.message || 'Error fetching categories');
             }
 
             // Mapear y agregar slug a cada categoría
-            const mappedCategories = (json.data || []).map((cat: any) => ({
+            const mappedCategories = (json.data || []).map((cat: ApiCategory) => ({
                 id: cat.id,
                 nombre: cat.nombre,
                 slug: generateSlug(cat.nombre),
             }));
 
             setCategories(mappedCategories);
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Error obteniendo categorías';
+            setError(message);
         } finally {
             setIsLoading(false);
         }
@@ -85,10 +91,11 @@ export function useCategories() {
             await fetchCategories();
             return { success: true };
 
-        } catch (err: any) {
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Error desconocido';
             return {
                 success: false,
-                error: err.message ?? 'Error desconocido'
+                error: message
             };
         }
     }, [fetchCategories]);
@@ -111,16 +118,12 @@ export function useCategories() {
             }
             return false;
 
-        } catch (err) {
+        } catch (_err: unknown) {
             return false;
         }
     }, [fetchCategories]);
 
 
-
-    useEffect(() => {
-        fetchCategories();
-    }, [fetchCategories]);
 
     return {
         categories,

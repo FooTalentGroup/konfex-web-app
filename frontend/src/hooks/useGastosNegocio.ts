@@ -68,7 +68,6 @@ export function useGastosNegocio() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Error al cargar datos";
       setError(errorMessage);
-      console.error("Error loading data", err);
     } finally {
       setLoading(false);
     }
@@ -119,7 +118,6 @@ export function useGastosNegocio() {
       removeGastoLocal(id);
       return true;
     } catch (err) {
-      console.error("Error deleting gasto:", err);
       setError("Error al eliminar el gasto");
       return false;
     }
@@ -170,7 +168,6 @@ export function useGastosNegocio() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Error al guardar";
       setError(errorMessage);
-      console.error("Error saving changes:", err);
       return false;
     } finally {
       setSaving(false);

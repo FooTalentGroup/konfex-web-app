@@ -105,10 +105,8 @@ export default function BudgetDetailPage() {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
-
-      console.log("PDF descargado exitosamente");
     } catch (error) {
-      console.error("Error al generar el PDF:", error);
+      showError("Error al generar el PDF");
     }
   };
 
@@ -168,7 +166,6 @@ export default function BudgetDetailPage() {
         showError("Error al crear el pedido. Por favor intenta nuevamente.");
       }
     } catch (error) {
-      console.error("Error al convertir presupuesto en pedido:", error);
       showError("Error al convertir el presupuesto en pedido");
     }
   };

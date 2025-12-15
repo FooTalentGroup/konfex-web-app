@@ -17,7 +17,6 @@ function isTokenValid(token: string | undefined): boolean {
 
     return expirationTime > currentTime;
   } catch (error) {
-    console.error("Error al verificar el token:", error);
     return false;
   }
 }

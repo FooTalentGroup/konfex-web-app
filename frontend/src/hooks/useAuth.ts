@@ -23,7 +23,6 @@ export const useAuth = () => {
           const userData = JSON.parse(userStr);
           setUser(userData);
         } catch (error) {
-          console.error("Error parsing user data:", error);
           setUser(null);
           clearTokens();
         }
@@ -67,7 +66,6 @@ export const useAuth = () => {
     try {
       await authService.signOut();
     } catch (error) {
-      console.error("Error durante logout:", error);
     } finally {
       if (typeof window !== "undefined") {
         window.dispatchEvent(new Event("userUpdated"));

@@ -22,7 +22,6 @@ export function useBudgetMetadata() {
                 setMetadata({ id: formattedId, date });
                 
             } catch (error) {
-                console.error(error)
             }
         }
         presupuesto()
