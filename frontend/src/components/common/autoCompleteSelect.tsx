@@ -50,16 +50,16 @@ export default function AutocompleteSelect({
         register={
           register
             ? {
-                ...register,
-                value: query,
-                onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                  setQuery(e.target.value);
-                  onChange(e.target.value);
-                  setOpen(true);
+          ...register,
+          value: query,
+          onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+            setQuery(e.target.value);
+            onChange(e.target.value);
+            setOpen(true);
                 },
               }
             : undefined
-        }
+          }
         error={error}
       />
 
