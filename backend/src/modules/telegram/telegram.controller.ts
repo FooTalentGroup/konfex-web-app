@@ -13,13 +13,11 @@ import {
 
 export const telegramWebhookController = async (req: Request, res: Response) => {
   try {
-
     const update = req.body;
     await handleIncomingUpdate(update);
 
     return res.sendStatus(200);
-  } catch (err) {
-    console.error("Webhook handler error:", err);
+  } catch {
     return res.status(500).json({ ok: false });
   }
 };
@@ -87,13 +85,7 @@ export const sendMessageToTelegram = controllerHandler(
     const defaultLastName = lastName || "Usuario";
     const defaultUsername = username || null;
 
-    return await sendTextMessage(
-      chatId,
-      text,
-      defaultFirstName,
-      defaultLastName,
-      defaultUsername
-    );
+    return await sendTextMessage(chatId, text, defaultFirstName, defaultLastName, defaultUsername);
   },
   "Mensaje enviado correctamente",
   200
