@@ -65,16 +65,16 @@ export function useNavigationTabs(customTabs?: Tab[]) {
 
   const getTabStyles = useCallback(
     (tab: Tab, index: number) => {
-      const isActive = pathname === tab.href || pathname.startsWith(`${tab.href}/`);
-      const isFirst = index === 0;
-      const isLast = index === tabs.length - 1;
-      const borderRadius = getBorderRadius(isActive, isFirst, isLast);
+    const isActive = pathname === tab.href || pathname.startsWith(`${tab.href}/`);
+    const isFirst = index === 0;
+    const isLast = index === tabs.length - 1;
+    const borderRadius = getBorderRadius(isActive, isFirst, isLast);
 
-      return {
-        ...BASE_TAB_STYLES,
-        borderRadius,
-        ...(isActive ? ACTIVE_TAB_STYLES : INACTIVE_TAB_STYLES),
-      };
+    return {
+      ...BASE_TAB_STYLES,
+      borderRadius,
+      ...(isActive ? ACTIVE_TAB_STYLES : INACTIVE_TAB_STYLES),
+    };
     },
     [pathname, tabs.length]
   );
