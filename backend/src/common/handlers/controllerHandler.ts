@@ -18,8 +18,6 @@ export function controllerHandler<T>(
         data,
       });
     } catch (error: any) {
-      console.error("Controller error:", error);
-
       if (isAppError(error)) {
         return sendError(res, {
           statusCode: error.statusCode,
