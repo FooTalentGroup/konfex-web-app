@@ -46,7 +46,6 @@ export async function uploadImageToCloudinary(
             format: data.format,
         }
     } catch (error) {
-        console.error('Cloudinary Upload Error:', error)
         throw error
     }
 }

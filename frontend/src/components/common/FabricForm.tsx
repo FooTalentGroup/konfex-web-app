@@ -37,8 +37,7 @@ export default function FabricForm() {
         onUploadSuccess: (url) => {
             setValue('image', url, { shouldValidate: true })
         },
-        onUploadError: (error) => {
-            console.error('Error en upload:', error)
+        onUploadError: () => {
         }
     })
 
@@ -50,15 +49,13 @@ export default function FabricForm() {
 
     const { createMaterial, error: submitError } = useMaterialSubmit({
         onSuccess: (data, operation) => {
-            console.log(`✅ ${operation} exitoso:`, data)
             if (operation === 'create') {
                 alert('¡Tela creada exitosamente!')
                 reset()
                 handleRemoveImage()
             }
         },
-        onError: (error, operation) => {
-            console.error(`❌ Error en ${operation}:`, error)
+        onError: (error) => {
             alert(`Error al guardar la tela: ${error.message}`)
         }
     })

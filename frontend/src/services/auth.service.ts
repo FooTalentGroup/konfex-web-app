@@ -193,7 +193,6 @@ export const authService = {
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         const text = await response.text();
-        console.error("Respuesta no JSON del servidor:", text);
         return null;
       }
 
@@ -213,7 +212,6 @@ export const authService = {
 
       return data.data;
     } catch (error) {
-      console.error("Error al renovar token:", error);
       return null;
     }
   },

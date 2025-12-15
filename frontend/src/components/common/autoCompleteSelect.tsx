@@ -47,15 +47,19 @@ export default function AutocompleteSelect({
         placeholder={placeholder}
         className="bg-white pr-8 text-gray-900"
         type="text"
-        register={{
-          ...register,
-          value: query,
-          onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-            setQuery(e.target.value);
-            onChange(e.target.value);
-            setOpen(true);
-          }
-        } as any}
+        register={
+          register
+            ? {
+                ...register,
+                value: query,
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                  setQuery(e.target.value);
+                  onChange(e.target.value);
+                  setOpen(true);
+                },
+              }
+            : undefined
+        }
         error={error}
       />
 

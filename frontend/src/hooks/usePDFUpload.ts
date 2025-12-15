@@ -107,7 +107,7 @@ export function usePDFUpload() {
         if (event.target) {
             event.target.value = '';
         }
-    }, [simulateUpload]);
+    }, [simulateUpload, toast]);
 
     const handleUploadPDF = useCallback(() => {
         if (fileInputRef.current) {

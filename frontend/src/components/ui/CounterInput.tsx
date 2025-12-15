@@ -40,8 +40,6 @@ function CounterInput({
         if (newValue >= min) setValue(value - step);
     };
 
-    console.log("CounterInput testId:", testId);
-
     return (
         <div className={`flex flex-col space-y-1 ${className}`}>
 

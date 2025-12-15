@@ -18,6 +18,15 @@ import { useClients } from "@/hooks/useClients";
 import { presupuestoService } from "@/services/presupuesto.service";
 import { PresupuestoResponseDto } from "@/types/presupuesto.types";
 import { useToast } from "@/contexts/ToastContext";
+import { Cliente } from "@/services/cliente.service";
+
+type ClientForm = {
+  nombre: string;
+  email: string;
+  telefono: string;
+  direccion: string;
+  numeroIdentificacion: string;
+};
 
 export default function ClientDetailPage() {
   const router = useRouter();
@@ -34,12 +43,12 @@ export default function ClientDetailPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
-  const [pendingData, setPendingData] = useState<any>(null);
+  const [pendingData, setPendingData] = useState<ClientForm | null>(null);
   const [history, setHistory] = useState<PresupuestoResponseDto[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
 
   const { getClientById, updateClient, deleteClient } = useClients();
-  const [client, setClient] = useState<any>(null);
+  const [client, setClient] = useState<Cliente | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,7 +57,7 @@ export default function ClientDetailPage() {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({
+  } = useForm<ClientForm>({
     defaultValues: {
       nombre: "",
       email: "",
@@ -103,7 +112,7 @@ export default function ClientDetailPage() {
     }
   };
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: ClientForm) => {
     setPendingData(data);
     setIsUpdateDialogOpen(true);
   };

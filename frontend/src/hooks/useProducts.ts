@@ -39,7 +39,6 @@ export const useProducts = (options?: UseProductsOptions) => {
     } catch (err) {
       const error = err instanceof Error ? err : new Error("Error desconocido");
       setError(error);
-      console.error("Error al cargar productos:", error);
     } finally {
       setIsLoading(false);
     }

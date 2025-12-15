@@ -133,7 +133,6 @@ export const useChat = (chatId: string) => {
 
         setMessages(formattedMessages);
       } catch (error) {
-        console.error('Error al obtener mensajes del chat:', error);
         // En caso de error, usar valores por defecto
         const basicContact: ChatContact = {
           id: parseInt(chatId) || 0,
@@ -299,7 +298,6 @@ export const useChat = (chatId: string) => {
       });
 
       socket.once('telegram:send_error', (error) => {
-        console.error('❌ Error al enviar mensaje:', error);
       });
     } else {
       console.warn('⚠️ Socket.IO no está conectado. El mensaje se mostrará localmente pero no se enviará al backend.');

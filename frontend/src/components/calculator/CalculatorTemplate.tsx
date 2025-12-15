@@ -157,7 +157,6 @@ export default function CalculatorTemplate({
 
           methods.reset(formData);
         } catch (error) {
-          console.error("Error al cargar presupuesto:", error);
           const errorMessage =
             error instanceof Error
               ? error.message

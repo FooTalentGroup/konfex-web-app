@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ImageUploadField from "../ui/ImageUploadField";
 import { useImageUpload } from "@/hooks";
 import { useToast } from "@/contexts/ToastContext";
@@ -63,9 +63,26 @@ export default function AddMaterialForm({ data, onSubmit, onReset }: AddMaterial
         })
     }
 
+    const resetForm = useCallback(() => {
+        setForm({
+            nombre: "",
+            url_imagen: "",
+            ancho: "",
+            unidadMedida: "cm",
+            peso: "",
+            colores: "",
+            proveedor: "",
+            precio: "",
+        });
+        resetUpload();
+        if (onReset) {
+            onReset();
+        }
+    }, [onReset, resetUpload]);
+
     useEffect(() => {
         if (data) {
-            setForm({
+            const normalizedForm = {
                 nombre: data.nombre ?? "",
                 url_imagen: data.url_imagen ?? "",
                 ancho: data.ancho?.toString() ?? "",
@@ -82,29 +99,17 @@ export default function AddMaterialForm({ data, onSubmit, onReset }: AddMaterial
                 colores: data.colores?.join(", ") ?? "",
                 proveedor: data.proveedor ?? "",
                 precio: data.precio?.toString() ?? "",
-            });
-        } else {
-            resetForm();
+            };
+
+            const frame = requestAnimationFrame(() => setForm(normalizedForm));
+            return () => cancelAnimationFrame(frame);
         }
-    }, [data]);
+        const frame = requestAnimationFrame(() => resetForm());
+        return () => cancelAnimationFrame(frame);
+    }, [data, resetForm]);
 
     const handleChange = (field: string, value: string) => {
         setForm((prev) => ({ ...prev, [field]: value }));
-    };
-
-    const resetForm = () => {
-        setForm({
-            nombre: "",
-            url_imagen: "",
-            ancho: "",
-            unidadMedida: "cm",
-            peso: "",
-            colores: "",
-            proveedor: "",
-            precio: "",
-        });
-        resetUpload();
-        onReset && onReset();
     };
 
     const isFormValid = () => {

@@ -28,8 +28,8 @@ export default function ApiTest() {
         } else {
           setData(`⚠️ El backend está respondiendo pero con estado: ${response.status}\n\nEsto puede indicar un problema con el servidor.`);
         }
-      } catch (err: any) {
-        const errorMessage = err.message || 'Error desconocido';
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
         
         if (errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')) {
           setData(`⚠️ No se pudo conectar al backend\n\nPosibles causas:\n- El backend no está corriendo en el puerto configurado\n- Verifica que el servidor esté activo\n- Revisa la configuración de NEXT_PUBLIC_API_URL\n\nError: ${errorMessage}`);

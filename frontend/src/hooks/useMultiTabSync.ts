@@ -11,16 +11,12 @@ export const useMultiTabSync = () => {
     if (typeof window === "undefined") return;
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "token" && !e.newValue) {
-        console.log("Sesión cerrada en otra pestaña, cerrando sesión local");
         clearTokens();
         window.dispatchEvent(new Event("userUpdated"));
         router.push("/");
       }
 
       if (e.key === "token" && e.newValue) {
-        console.log(
-          "Sesión iniciada en otra pestaña, actualizando estado local"
-        );
         window.dispatchEvent(new Event("userUpdated"));
         if (window.location.pathname === "/") {
           router.push("/inbox");
@@ -28,13 +24,11 @@ export const useMultiTabSync = () => {
       }
 
       if (e.key === "user" && e.newValue) {
-        console.log("Usuario actualizado en otra pestaña");
         window.dispatchEvent(new Event("userUpdated"));
       }
     };
 
     const handleLogoutEvent = () => {
-      console.log("Evento de logout detectado");
       if (!isAuthenticated()) {
         router.push("/");
       }
@@ -44,7 +38,6 @@ export const useMultiTabSync = () => {
       const currentPath = window.location.pathname;
 
       if (currentPath !== "/" && !isAuthenticated()) {
-        console.log("Sesión inválida detectada, redirigiendo al login");
         clearTokens();
         window.dispatchEvent(new Event("userUpdated"));
         router.push("/");

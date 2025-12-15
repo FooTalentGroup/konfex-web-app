@@ -41,10 +41,7 @@ export function useImageUpload({ onUploadSuccess, onUploadError }: UseImageUploa
             const result = await uploadImageToCloudinary(file)
 
             onUploadSuccess?.(result.secure_url)
-
-            console.log('Imagen subida exitosamente:', result)
         } catch (error) {
-            console.error('Error al subir imagen:', error)
             const errorMsg = 'Error al subir la imagen. Intenta de nuevo.'
             setUploadError(errorMsg)
             setImagePreview(null)

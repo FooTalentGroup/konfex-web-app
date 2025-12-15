@@ -78,7 +78,6 @@ export default function PedidosPage() {
         const mappedOrders = pedidos.map(mapPedidoToOrder);
         setOrders(mappedOrders);
       } catch (err) {
-        console.error("Error al cargar pedidos:", err);
         setError("Error al cargar los pedidos. Por favor, intenta nuevamente.");
         setOrders([]);
       } finally {

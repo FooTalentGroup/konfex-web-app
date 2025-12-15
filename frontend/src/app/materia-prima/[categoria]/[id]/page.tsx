@@ -7,6 +7,17 @@ import { useAuth } from "@/hooks/useAuth";
 import Header from "@/components/common/Header";
 import Sidebar from "@/components/common/Sidebar";
 import Footer from "@/components/common/Footer";
+
+type MaterialFormValues = {
+    nombre: string;
+    url_imagen: string | null;
+    ancho: number;
+    unidadMedida: "cm" | "m" | "yds";
+    peso: number;
+    colores: string[];
+    proveedor: string;
+    precio: number;
+};
 import BackNavigationBar from "@/components/common/BackNavigationBar";
 import AddMaterialForm from "@/components/common/AddMaterialForm";
 import { useCategories } from "@/hooks/useCategories";
@@ -30,8 +41,6 @@ export default function EditarMaterialPage() {
         fetch(`/api/v1/materiales/${id}`)
             .then((res) => res.json())
             .then((json) => {
-                console.log("Material recibido:", json);
-
                 // CORRECCIÓN IMPORTANTE:
                 // json.data ES el material, no json.data.data[0]
                 setMaterial(json.data ?? null);
@@ -43,7 +52,7 @@ export default function EditarMaterialPage() {
     if (!categoria) return <div className="p-6">Cargando categoría…</div>;
     if (loading) return <div className="p-6">Cargando material…</div>;
 
-    const handleSubmit = async (values: any) => {
+    const handleSubmit = async (values: MaterialFormValues) => {
         const res = await fetch(`/api/v1/materiales/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
