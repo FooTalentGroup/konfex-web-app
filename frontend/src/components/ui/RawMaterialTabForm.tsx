@@ -178,7 +178,7 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                     style={{ borderColor: '#6A5379' }}
                 />
                 {fabricOptions.length === 0 && (
-                    <EmptyMaterialsAlert type="fabric" onNavigate={() => router.push('/materia-prima')} />
+                    <EmptyMaterialsAlert type="fabric" onNavigate={() => router.push('/raw-materials')} />
                 )}
 
                 <CustomInputWithSelect
@@ -262,7 +262,7 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                     style={{ borderColor: '#6A5379' }}
                 />
                 {supplyOptions.length === 0 && (
-                    <EmptyMaterialsAlert type="supply" onNavigate={() => router.push('/materia-prima')} />
+                    <EmptyMaterialsAlert type="supply" onNavigate={() => router.push('/raw-materials')} />
                 )}
 
                 <CustomInputWithSelect

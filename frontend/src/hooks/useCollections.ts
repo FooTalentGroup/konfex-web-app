@@ -96,7 +96,7 @@ export const useCollections = (options?: UseCollectionsOptions) => {
         .replace(/[\u0300-\u036f]/g, '')
         .replace(/\s+/g, '-');
 
-      router.push(`/colecciones/${slug}?id=${collectionId}`);
+      router.push(`/collections/${slug}?id=${collectionId}`);
     }
   };
 
@@ -115,7 +115,7 @@ export const useCollections = (options?: UseCollectionsOptions) => {
   };
 
   const handleAddCollection = () => {
-    router.push('/colecciones/crear');
+    router.push('/collections/create');
   };
 
   const toggleDeleteMode = () => {

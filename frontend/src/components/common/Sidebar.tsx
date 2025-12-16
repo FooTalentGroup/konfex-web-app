@@ -34,7 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       id: "clientes",
       label: "Clientes",
       iconPath: "/clientes.png",
-      path: "/clientes",
+      path: "/clients",
     },
     {
       id: "calculadora",
@@ -46,31 +46,31 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       id: "presupuestos",
       label: "Presupuestos",
       iconPath: "/presupuesto.png",
-      path: "/presupuestos",
+      path: "/budgets",
     },
     {
       id: "colecciones",
       label: "Colecciones",
       iconPath: "/colecciones.png",
-      path: "/colecciones",
+      path: "/collections",
     },
     {
       id: "materia-prima",
       label: "Materia Prima",
       iconPath: "/materiaPrima.png",
-      path: "/materia-prima",
+      path: "/raw-materials",
     },
     {
       id: "pedidos",
       label: "Pedidos",
-      iconPath: "/pedidos.png",
-      path: "/pedidos",
+      iconPath: "/checkPedidos.png",
+      path: "/orders",
     },
     {
       id: "gastos-negocio",
       label: "Gastos del negocio",
       iconPath: "/negocio.png",
-      path: "/gastos-negocio",
+      path: "/business-expenses",
     },
   ];
 

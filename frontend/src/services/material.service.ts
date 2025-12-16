@@ -27,7 +27,7 @@ export const materialService = {
     },
 
     create: async (data: MaterialAPIRequest): Promise<MaterialAPIResponse> => {
-        const url = API_CONFIG.getApiUrl('/materiales');
+        const url = API_CONFIG.getApiUrl('/materials');
 
         try {
             const response = await fetch(url, {

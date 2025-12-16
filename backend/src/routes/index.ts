@@ -52,15 +52,15 @@ router.get(
 );
 
 router.use("/auth", authRoutes);
-router.use("/presupuestos", presupuestoRoutes);
-router.use("/clientes", clienteRoutes);
-router.use("/categorias", categoriaRoutes);
-router.use("/materiales", materialRoutes);
-router.use("/productos", productoRoutes);
-router.use("/colecciones", coleccionRoutes);
-router.use("/gastos-negocio", gastosNegocioRoutes);
-router.use("/impuesto-general", impuestoGeneralRoutes);
-router.use("/pedidos", pedidoRoutes);
+router.use("/budgets", presupuestoRoutes);
+router.use("/clients", clienteRoutes);
+router.use("/categories", categoriaRoutes);
+router.use("/materials", materialRoutes);
+router.use("/products", productoRoutes);
+router.use("/collections", coleccionRoutes);
+router.use("/business-expenses", gastosNegocioRoutes);
+router.use("/general-taxes", impuestoGeneralRoutes);
+router.use("/orders", pedidoRoutes);
 router.use("/telegram", telegramRoutes);
 
 export default router;

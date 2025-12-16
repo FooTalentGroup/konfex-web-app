@@ -4,7 +4,7 @@ import { ChatItemProps } from "@/components/inbox/ChatItem";
 import { apiClient } from "@/config/apiClient";
 import { getSocket } from "@/services/socket.service";
 
-export type FilterType = "todos" | "no-leidos" | "leidos";
+export type FilterType = "all" | "unread" | "read";
 
 interface TelegramChatResponse {
   chatId: string;
@@ -37,7 +37,7 @@ export function useChatList() {
   const [chats, setChats] = useState<ChatItemProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState<FilterType>("todos");
+  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const socketRef = useRef<Socket | null>(null);
   const chatsMapRef = useRef<Map<string, ChatItemProps>>(new Map());
 
@@ -246,9 +246,9 @@ export function useChatList() {
       );
     }
 
-    if (activeFilter === "no-leidos") {
+    if (activeFilter === "unread") {
       filtered = filtered.filter((chat) => !chat.isRead);
-    } else if (activeFilter === "leidos") {
+    } else if (activeFilter === "read") {
       filtered = filtered.filter((chat) => chat.isRead);
     }
 

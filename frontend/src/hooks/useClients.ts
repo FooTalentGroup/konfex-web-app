@@ -1,13 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
 import {
-  clienteService,
-  Cliente,
-  CreateClienteDto,
-} from "@/services/cliente.service";
+  clientService,
+  Client,
+  CreateClientDto,
+} from "@/services/client.service";
 
 export function useClients() {
-  const [clients, setClients] = useState<Cliente[]>([]);
-  const [filtered, setFiltered] = useState<Cliente[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
+  const [filtered, setFiltered] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -15,7 +15,7 @@ export function useClients() {
     try {
       setLoading(true);
       setError(null);
-      const data = await clienteService.getAll();
+      const data = await clientService.getAll();
       const sortedData = [...data].sort(
         (a, b) =>
           new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
@@ -41,9 +41,9 @@ export function useClients() {
   };
 
   const getClientById = useCallback(
-    async (id: number): Promise<Cliente | null> => {
+    async (id: number): Promise<Client | null> => {
       try {
-        return await clienteService.getById(id);
+        return await clientService.getById(id);
       } catch (err) {
         return null;
       }
@@ -52,10 +52,10 @@ export function useClients() {
   );
 
   const createClient = async (
-    data: CreateClienteDto
-  ): Promise<Cliente | null> => {
+    data: CreateClientDto
+  ): Promise<Client | null> => {
     try {
-      const newClient = await clienteService.create(data);
+      const newClient = await clientService.create(data);
       const updatedClients = [...clients, newClient].sort(
         (a, b) =>
           new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
@@ -65,7 +65,7 @@ export function useClients() {
       return newClient;
     } catch (err) {
       const errorMsg =
-        err instanceof Error ? err.message : "Error al crear cliente";
+        err instanceof Error ? err.message : "Error al crear Client";
       setError(errorMsg);
       return null;
     }
@@ -73,10 +73,10 @@ export function useClients() {
 
   const updateClient = async (
     id: number,
-    data: Partial<CreateClienteDto>
-  ): Promise<Cliente | null> => {
+    data: Partial<CreateClientDto>
+  ): Promise<Client | null> => {
     try {
-      const response = await clienteService.update(id, data);
+      const response = await clientService.update(id, data);
       const updatedClients = clients
         .map((c) => (c.id === id ? response : c))
         .sort(
@@ -88,7 +88,7 @@ export function useClients() {
       return response;
     } catch (err) {
       const errorMsg =
-        err instanceof Error ? err.message : "Error al actualizar cliente";
+        err instanceof Error ? err.message : "Error al actualizar Client";
       setError(errorMsg);
       return null;
     }
@@ -96,14 +96,14 @@ export function useClients() {
 
   const deleteClient = async (id: number): Promise<boolean> => {
     try {
-      await clienteService.delete(id);
+      await clientService.delete(id);
       const updatedClients = clients.filter((c) => c.id !== id);
       setClients(updatedClients);
       setFiltered(updatedClients);
       return true;
     } catch (err) {
       const errorMsg =
-        err instanceof Error ? err.message : "Error al eliminar cliente";
+        err instanceof Error ? err.message : "Error al eliminar Client";
       setError(errorMsg);
       return false;
     }

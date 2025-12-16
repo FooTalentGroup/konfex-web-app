@@ -37,7 +37,7 @@ export function useMaterialsByCategory(categoryId?: number) {
 
             try {
                 const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_URL}/categorias/${categoryId}/materiales`
+                    `${process.env.NEXT_PUBLIC_API_URL}/categories/${categoryId}/materials`
                 );
 
                 const json: ApiResponse = await res.json();

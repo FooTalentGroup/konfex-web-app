@@ -36,7 +36,7 @@ export const productService = {
   },
 
   getByCollection: async (collectionId: number): Promise<ProductAPI[]> => {
-    const url = API_CONFIG.getApiUrl(`/productos?coleccionId=${collectionId}`);
+    const url = API_CONFIG.getApiUrl(`/products?coleccionId=${collectionId}`);
 
     try {
       const response = await fetch(url, {

@@ -94,7 +94,7 @@ export interface UpdateProductRequest {
 
 }
 
-export interface Coleccion {
+export interface Collection {
     id:        number;
     codigo:    number;
     nombre:    string;
@@ -104,7 +104,7 @@ export interface Coleccion {
     updatedAt: Date;
 }
 
-export interface Materiales {
+export interface MaterialProduct {
     id:         number;
     productoId: number;
     materialId: number;
@@ -128,7 +128,7 @@ export interface Material {
 }
 
 
-export interface Pedido {
+export interface OrderItem {
     id:             number;
     pedidoId:       number;
     productoId:     number;
@@ -140,7 +140,7 @@ export interface Pedido {
     subtotal:       number;
 }
 
-export interface PresupuestoDetalle {
+export interface BudgetDetail {
     id:            number;
     presupuestoId: number;
     productoId:    number;
