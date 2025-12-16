@@ -23,10 +23,10 @@ export interface ChatMessage {
 export interface ChatContact {
   id: number;
   chatId: string;
-  nombre: string;
+  name: string;
   avatar?: string;
-  plataforma: 'telegram';
-  tienePresupuesto?: boolean;
+  platform: 'telegram';
+  hasBudget?: boolean;
   clientId?: string;
 }
 
@@ -92,10 +92,10 @@ export const useChat = (chatId: string) => {
         const basicContact: ChatContact = {
           id: parseInt(chatId) || 0,
           chatId: chatId,
-          nombre: contactName,
+          name: contactName,
           avatar: '/perfil.png',
-          plataforma: 'telegram',
-          tienePresupuesto: true,
+          platform: 'telegram',
+          hasBudget: true,
           clientId: undefined, // Se obtendría del backend si el cliente existe
         };
         
@@ -137,10 +137,10 @@ export const useChat = (chatId: string) => {
         const basicContact: ChatContact = {
           id: parseInt(chatId) || 0,
           chatId: chatId,
-          nombre: `Chat ${chatId}`,
+          name: `Chat ${chatId}`,
           avatar: '/perfil.png',
-          plataforma: 'telegram',
-          tienePresupuesto: true,
+          platform: 'telegram',
+          hasBudget: true,
           clientId: undefined,
         };
         setContact(basicContact);

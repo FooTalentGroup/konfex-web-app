@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-type FilterType = 'todos' | 'no-leidos' | 'leidos';
+type FilterType = 'all' | 'unread' | 'read';
 
 interface FilterButtonsProps {
   activeFilter: FilterType;
@@ -14,9 +14,9 @@ const FilterButtons: React.FC<FilterButtonsProps> = ({
   onFilterChange 
 }) => {
   const filters = [
-    { id: 'no-leidos' as FilterType, label: 'No leidos' },
-    { id: 'leidos' as FilterType, label: 'Leidos' },
-    { id: 'todos' as FilterType, label: 'Todos mensajes' },
+    { id: 'unread' as FilterType, label: 'No leídos' },
+    { id: 'read' as FilterType, label: 'Leídos' },
+    { id: 'all' as FilterType, label: 'Todos los mensajes' },
   ];
 
   return (

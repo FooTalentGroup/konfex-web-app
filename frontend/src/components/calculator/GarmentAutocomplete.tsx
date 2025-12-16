@@ -2,12 +2,12 @@
 
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown, Loader2 } from "lucide-react";
-import { useProductos, type Producto } from "@/hooks/useProductos";
+import { useProductSearch, type Product } from "@/hooks/useProductSearch";
 
 interface GarmentAutocompleteProps {
   value: string;
   onChange: (value: string) => void;
-  onSelect?: (producto: Producto) => void;
+  onSelect?: (product: Product) => void;
   placeholder?: string;
   className?: string;
 }
@@ -21,17 +21,17 @@ export default function GarmentAutocomplete({
 }: GarmentAutocompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
-  const [resultados, setResultados] = useState<Producto[]>([]);
+  const [resultados, setResultados] = useState<Product[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const { searchProductos, loading } = useProductos();
+  const { searchProducts, loading } = useProductSearch();
 
   // Efecto para buscar cuando cambia el valor
   useEffect(() => {
     const performSearch = async () => {
       if (value.trim().length >= 2) {
-        const results = await searchProductos(value);
+        const results = await searchProducts(value);
         setResultados(results);
         if (results.length > 0) {
           setIsOpen(true);
@@ -43,7 +43,7 @@ export default function GarmentAutocomplete({
     };
 
     performSearch();
-  }, [value, searchProductos]);
+  }, [value, searchProducts]);
 
   // Cerrar dropdown al hacer click fuera
   useEffect(() => {
@@ -70,8 +70,8 @@ export default function GarmentAutocomplete({
     setHighlightedIndex(-1);
   };
 
-  const handleSelect = (producto: Producto) => {
-    onChange(producto.nombre);
+  const handleSelect = (producto: Product) => {
+    onChange(producto.name);
     setIsOpen(false);
     setHighlightedIndex(-1);
 
@@ -163,23 +163,23 @@ export default function GarmentAutocomplete({
               onMouseEnter={() => setHighlightedIndex(index)}
             >
               <div className="font-medium text-gray-800 text-sm">
-                {producto.nombre}
+                {producto.name}
               </div>
-              {producto.descripcion && (
+              {producto.description && (
                 <div className="text-xs text-gray-500 mt-1">
-                  {producto.descripcion}
+                  {producto.description}
                 </div>
               )}
-              {(producto.tallas.length > 0 || producto.colores.length > 0) && (
+              {(producto.sizes.length > 0 || producto.colors.length > 0) && (
                 <div className="flex gap-2 mt-1 flex-wrap">
-                  {producto.tallas.length > 0 && (
+                  {producto.sizes.length > 0 && (
                     <span className="text-xs text-gray-600">
-                      Tallas: {producto.tallas.join(", ")}
+                      Tallas: {producto.sizes.join(", ")}
                     </span>
                   )}
-                  {producto.colores.length > 0 && (
+                  {producto.colors.length > 0 && (
                     <span className="text-xs text-gray-600">
-                      Colores: {producto.colores.join(", ")}
+                      Colores: {producto.colors.join(", ")}
                     </span>
                   )}
                 </div>

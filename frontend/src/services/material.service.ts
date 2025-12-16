@@ -3,7 +3,7 @@ import { MaterialAPIRequest, MaterialAPIResponse, Material } from "@/types/IFabr
 
 export const materialService = { 
     getAll: async (): Promise<Material[]> => {
-        const url = API_CONFIG.getApiUrl('/materiales')
+        const url = API_CONFIG.getApiUrl('/materials')
 
         try {
             const response = await fetch(url, {
@@ -27,7 +27,7 @@ export const materialService = {
     },
 
     create: async (data: MaterialAPIRequest): Promise<MaterialAPIResponse> => {
-        const url = API_CONFIG.getApiUrl('/materiales');
+        const url = API_CONFIG.getApiUrl('/materials');
 
         try {
             const response = await fetch(url, {

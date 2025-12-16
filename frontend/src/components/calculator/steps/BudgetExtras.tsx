@@ -5,10 +5,10 @@ import Image from "next/image";
 import { Trash2, Plus, Minus } from "lucide-react";
 import CircularAddButton from "@/components/common/CircularAddButton";
 import BudgetTotalBadge from "../BudgetTotalBadge";
-import { presupuestoService } from "@/services/presupuesto.service";
-import { clienteService } from "@/services/cliente.service";
-import { useGastosNegocio } from "@/hooks/useGastosNegocio";
-import { mapFormDataToBackend } from "@/utils/presupuestoMapper";
+import { budgetService } from "@/services/budget.service";
+import { clientService } from "@/services/client.service";
+import { useBusinessExpenses } from "@/hooks/useBusinessExpenses";
+import { mapFormDataToBackend } from "@/utils/budgetMapper";
 import { useToast } from "@/contexts/ToastContext";
 
 interface Extra {
@@ -44,7 +44,7 @@ export default function BudgetExtras({
     formState: { errors },
   } = useFormContext();
   const router = useRouter();
-  const { gastosNegocio } = useGastosNegocio();
+  const { gastosNegocio } = useBusinessExpenses();
   const { showSuccess, showError, showInfo } = useToast();
   const [isSaving, setIsSaving] = useState(false);
 
@@ -141,7 +141,7 @@ export default function BudgetExtras({
       if (!clienteId) {
         try {
           showInfo("Buscando cliente...");
-          const cliente = await clienteService.findOrCreate(
+          const cliente = await clientService.findOrCreate(
             currentBudgetData.clientName,
             {
               email: currentBudgetData.clientEmail,
@@ -183,7 +183,7 @@ export default function BudgetExtras({
 
       if (isEditMode && presupuestoId) {
         showInfo("Actualizando presupuesto...");
-        const updatedPresupuesto = await presupuestoService.update(
+        const updatedPresupuesto = await budgetService.update(
           presupuestoId,
           payload
         );
@@ -198,7 +198,7 @@ export default function BudgetExtras({
         }, 1500);
       } else {
         showInfo("Creando presupuesto...");
-        const createdPresupuesto = await presupuestoService.create(payload);
+        const createdPresupuesto = await budgetService.create(payload);
 
         showSuccess(
           `Presupuesto #${createdPresupuesto.numeroPresupuesto} creado exitosamente`,

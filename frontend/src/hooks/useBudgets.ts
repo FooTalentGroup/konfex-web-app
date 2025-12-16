@@ -1,20 +1,15 @@
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Budget, PresupuestoResponseDto } from "@/types/presupuesto.types";
-import { presupuestoService } from "@/services/presupuesto.service";
-
-const formatNumeroPresupuesto = (numero: number): string => {
-  const year = new Date().getFullYear();
-  const numeroFormateado = numero.toString().padStart(4, "0");
-  return `P-${year}-${numeroFormateado}`;
-};
+import { Budget, BudgetResponseDto } from "@/types/budget.types";
+import { budgetService } from "@/services/budget.service";
+import { formatBudgetNumber } from "@/utils/budgetDetailMapper";
 
 const mapPresupuestoToBudget = (
-  presupuesto: PresupuestoResponseDto
+  presupuesto: BudgetResponseDto
 ): Budget => {
   return {
     id: presupuesto.id,
-    numeroPresupuesto: formatNumeroPresupuesto(presupuesto.numeroPresupuesto),
+    numeroPresupuesto: formatBudgetNumber(presupuesto.numeroPresupuesto),
     clienteNombre: presupuesto.cliente?.nombre || "Sin cliente",
     totalFinal: presupuesto.totalFinal,
     fechaVencimiento: presupuesto.fechaVencimiento,
@@ -35,7 +30,7 @@ export const useBudgets = () => {
       setError(null);
 
       try {
-        const presupuestos = await presupuestoService.getAll();
+        const presupuestos = await budgetService.getAll();
         const budgetsMapeados = presupuestos.map(mapPresupuestoToBudget);
         setBudgets(budgetsMapeados);
       } catch (err) {

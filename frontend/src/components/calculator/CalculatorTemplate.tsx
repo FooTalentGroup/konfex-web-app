@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { useSearchParams } from "next/navigation";
-import { presupuestoService } from "@/services/presupuesto.service";
-import { loadPresupuestoToForm } from "@/utils/presupuestoLoader";
+import { budgetService } from "@/services/budget.service";
+import { loadBudgetToForm } from "@/utils/budgetLoader";
 import { useToast } from "@/contexts/ToastContext";
-import { useGastosNegocio } from "@/hooks/useGastosNegocio";
+import { useBusinessExpenses } from "@/hooks/useBusinessExpenses";
 import { useUnsavedChanges } from "@/hooks/useUnsavedChanges";
 import { useUnsavedChangesContext } from "@/contexts/UnsavedChangesContext";
 
@@ -98,7 +98,7 @@ export default function CalculatorTemplate({
     mode: "onChange",
   });
 
-  const { gastosNegocio } = useGastosNegocio();
+  const { gastosNegocio } = useBusinessExpenses();
 
   const {
     showModal,
@@ -143,12 +143,12 @@ export default function CalculatorTemplate({
         try {
           setIsLoading(true);
           showInfo("Cargando presupuesto...");
-          const presupuesto = await presupuestoService.getById(presupuestoId);
+          const presupuesto = await budgetService.getById(presupuestoId);
           const gastosNegocioMapped = gastosNegocio.map((g) => ({
             id: Number(g.id),
             porcentaje: g.porcentaje,
           }));
-          const formData = loadPresupuestoToForm(
+          const formData = loadBudgetToForm(
             presupuesto,
             gastosNegocioMapped
           );

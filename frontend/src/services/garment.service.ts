@@ -4,7 +4,7 @@ import { CreateGarmentPayload } from "@/types/IGarment";
 export const garmentService = {
     create: async (data: CreateGarmentPayload): Promise<void> => {
         try {
-            const response = await fetch(`${API_CONFIG.getApiUrl('/productos')}`, {
+            const response = await fetch(`${API_CONFIG.getApiUrl('/products')}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

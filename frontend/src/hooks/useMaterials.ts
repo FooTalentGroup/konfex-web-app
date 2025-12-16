@@ -80,7 +80,7 @@ export const useMaterials = (categoriaId?: number) => {
         setError(null);
 
         // Usar el nuevo endpoint con el ID de categoría
-        const url = `${process.env.NEXT_PUBLIC_API_URL}/categorias/${categoriaId}/materiales`;
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/categories/${categoriaId}/materials`;
 
         const response = await fetch(url);
 

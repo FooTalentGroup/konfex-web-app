@@ -115,11 +115,11 @@ const ChatItem: FC<ChatItemProps> = ({
           {hasBudget && (
             <span className="flex items-center bg-[#F7D8A1] rounded-xl py-0.5 px-1.5 gap-1 sm:gap-1.5 font-lato text-xs sm:text-sm font-normal leading-[131%] tracking-normal text-black whitespace-nowrap">
               <Image
-                src="/presupuestos.png"
+                src="/budgets.png"
                 alt="Presupuesto"
                 width={12}
                 height={12}
-                className="w-3 h-3 sm:w-3 sm:h-3 object-contain"
+                className="w-3 h-3 sm:w-3 sm:h-3 object/contain"
               />
               Presupuesto
             </span>
