@@ -46,7 +46,7 @@ export default function MateriaPrimaPage() {
 
   const handleCategoryClick = (slug: string) => {
     if (!isDeleteMode) {
-      router.push(`/materia-prima/${slug}`);
+      router.push(`/raw-materials/${slug}`);
     }
   };
 

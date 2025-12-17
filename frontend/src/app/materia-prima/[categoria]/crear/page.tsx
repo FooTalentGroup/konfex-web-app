@@ -45,7 +45,7 @@ export default function CrearMaterialPage() {
         });
 
         if (res.ok) {
-            router.push(`/materia-prima/${categoriaSlug}`);
+            router.push(`/raw-materials/${categoriaSlug}`);
         } else {
             alert("Error al crear material");
         }
@@ -59,8 +59,8 @@ export default function CrearMaterialPage() {
             <BackNavigationBar
                 title="Agregar"
                 breadcrumbs={[
-                    { label: "Tus materiales", href: "/materia-prima" },
-                    { label: categoria.nombre, href: `/materia-prima/${categoriaSlug}` }
+                    { label: "Tus materiales", href: "/raw-materials" },
+                    { label: categoria.nombre, href: `/raw-materials/${categoriaSlug}` }
                 ]}
             />
 

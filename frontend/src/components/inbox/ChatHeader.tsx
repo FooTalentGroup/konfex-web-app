@@ -43,9 +43,9 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ contact }) => {
     // Si el cliente tiene un clientId, ir a detalles del cliente existente
     // Si no, ir a crear nuevo cliente
     if (contact.clientId) {
-      router.push(`/clientes/${contact.clientId}`);
+      router.push(`/clients/${contact.clientId}`);
     } else {
-      router.push(`/inbox/chat/${contact.id}/ficha-cliente`);
+      router.push(`/inbox/chat/${contact.id}/client-profile`);
     }
   };
 
