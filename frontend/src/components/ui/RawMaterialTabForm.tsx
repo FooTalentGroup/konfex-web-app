@@ -18,8 +18,7 @@ const EmptyMaterialsAlert = ({ type, onNavigate }: { type: 'fabric' | 'supply'; 
                 No hay {type === 'fabric' ? 'telas' : 'insumos'} registrados
             </h4>
             <p className="text-sm text-amber-700 mb-2">
-                Debes crear {type === 'fabric' ? 'telas' : 'insumos'} en el sistema antes de poder agregarlos a una
-                prenda.
+                Debes crear {type === 'fabric' ? 'telas' : 'insumos'} en el sistema antes de poder agregarlos a una prenda.
             </p>
             <button
                 type="button"
@@ -168,7 +167,10 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                     placeholder="Ej. Algodón"
                     type="fabric"
                 />
-                {fabricOptions.length === 0 && <EmptyMaterialsAlert type="fabric" />}
+
+                {!isLoading && !error && materials.filter(m => m.categoria?.nombre?.toLowerCase() === 'tela').length === 0 && (
+                    <EmptyMaterialsAlert type="fabric" onNavigate={() => router.push('/raw-materials')} />
+                )}
 
                 <CustomInputWithSelect
                     id="tempFabricConsumption"
@@ -255,7 +257,10 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                     placeholder="Ej. Botones L24 + cortesía"
                     type="supply"
                 />
-                {supplyOptions.length === 0 && <EmptyMaterialsAlert type="supply" />}
+
+                {!isLoading && !error && materials.filter(m => m.categoria?.nombre?.toLowerCase() !== 'tela').length === 0 && (
+                    <EmptyMaterialsAlert type="supply" onNavigate={() => router.push('/raw-materials')} />
+                )}
 
                 <CustomInputWithSelect
                     id="tempSupplyConsumption"

@@ -52,7 +52,7 @@ export default function SummerPage() {
             </div>
 
             <div className="pt-4 sm:pt-5 md:pt-6 pb-6 sm:pb-8 md:pb-10">
-              <AddFloatingButton onClick={() => { router.push('/colecciones/verano/crear-coleccion') }} isStatic={true} />
+              <AddFloatingButton onClick={() => { router.push('/collections/summer/create') }} isStatic={true} />
             </div>
           </div>
         </div>

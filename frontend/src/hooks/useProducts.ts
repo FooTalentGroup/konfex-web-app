@@ -65,15 +65,13 @@ export const useProducts = (options?: UseProductsOptions) => {
     );
   }, [products, searchQuery]);
 
-  const handleProductClick = (productId: number) => {
-    router.push(`/productos/${productId}`);
-  };
+
 
   const handleAddProduct = (collectionId?: number) => {
     if (collectionId) {
-      router.push(`/colecciones/crear?coleccionId=${collectionId}`);
+      router.push(`/collections/create?collectionId=${collectionId}`);
     } else {
-      router.push("/colecciones/crear");
+      router.push("/collections/create");
     }
   };
 
@@ -85,7 +83,6 @@ export const useProducts = (options?: UseProductsOptions) => {
     searchQuery,
 
     handleSearch,
-    handleProductClick,
     handleAddProduct,
     fetchProducts,
   };
