@@ -43,7 +43,7 @@ export default function NewClientPage() {
       });
 
       if (newClient) {
-        router.push("/clientes");
+        router.push("/clients");
       }
     } catch (error) {
       setIsSubmitting(false);

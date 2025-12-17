@@ -72,7 +72,7 @@ export default function CollectionDetailPage() {
               {collectionError?.message || 'Colección no encontrada'}
             </p>
             <button
-              onClick={() => router.push('/colecciones')}
+              onClick={() => router.push('/collections')}
               className="bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-600 transition-colors"
             >
               Volver a Colecciones
@@ -94,7 +94,7 @@ export default function CollectionDetailPage() {
         <BackNavigationBar
           title={currentCollection.nombre}
           breadcrumbs={[
-            { label: 'Tus colecciones', href: '/colecciones' }
+            { label: 'Tus colecciones', href: '/collections' }
           ]}
         />
 

@@ -138,7 +138,7 @@ export default function ClientDetailPage() {
       showSuccess("¡Cambios guardados exitosamente!", 2000);
 
       setTimeout(() => {
-        router.push("/clientes");
+        router.push("/clients");
       }, 1500);
     } catch (err) {
     } finally {
@@ -155,7 +155,7 @@ export default function ClientDetailPage() {
     try {
       await deleteClient(clientId);
       setIsDeleteDialogOpen(false);
-      router.push("/clientes");
+      router.push("/clients");
     } catch (error) {
       setIsDeleting(false);
     }

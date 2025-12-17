@@ -63,7 +63,7 @@ export default function EditarMaterialPage() {
         });
 
         if (res.ok) {
-            router.push(`/materia-prima/${categoriaSlug}`);
+            router.push(`/raw-materials/${categoriaSlug}`);
         } else {
             alert("Error al actualizar material");
         }
@@ -77,8 +77,8 @@ export default function EditarMaterialPage() {
             <BackNavigationBar
                 title="Editar"
                 breadcrumbs={[
-                    { label: "Tus materiales", href: "/materia-prima" },
-                    { label: categoria.nombre, href: `/materia-prima/${categoriaSlug}` }
+                    { label: "Tus materiales", href: "/raw-materials" },
+                    { label: categoria.nombre, href: `/raw-materials/${categoriaSlug}` }
                 ]}
             />
 

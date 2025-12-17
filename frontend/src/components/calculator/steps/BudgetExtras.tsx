@@ -194,7 +194,7 @@ export default function BudgetExtras({
         );
 
         setTimeout(() => {
-          router.push(`/presupuestos/${updatedPresupuesto.id}`);
+          router.push(`/budgets/${updatedPresupuesto.id}`);
         }, 1500);
       } else {
         showInfo("Creando presupuesto...");
@@ -206,7 +206,7 @@ export default function BudgetExtras({
         );
 
         setTimeout(() => {
-          router.push(`/presupuestos/${createdPresupuesto.id}`);
+          router.push(`/budgets/${createdPresupuesto.id}`);
         }, 1500);
       }
     } catch (error) {

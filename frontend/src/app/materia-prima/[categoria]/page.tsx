@@ -43,7 +43,7 @@ export default function CategoriaPage() {
     // Redirigir si la categoría no existe
     useEffect(() => {
         if (!isLoadingCategories && categories.length > 0 && categoria && !currentCategory) {
-            router.push('/materia-prima');
+            router.push('/raw-materials');
         }
     }, [isLoadingCategories, categories, currentCategory, categoria, router]);
 
@@ -133,7 +133,7 @@ export default function CategoriaPage() {
                                                 measure={material.ancho ? `${material.ancho}cm` : undefined}
                                                 price={`$${material.precio.toFixed(2)}`}
                                                 imageUrl={material.url_imagen || undefined}
-                                                onClick={() => router.push(`/materia-prima/${categoria}/${material.id}`)}
+                                                onClick={() => router.push(`/raw-materials/${categoria}/${material.id}`)}
                                             />
                                         ))}
                                     </div>
@@ -143,7 +143,7 @@ export default function CategoriaPage() {
 
                         <div className="pt-4 pb-10">
                             <AddFloatingButton
-                                onClick={() => router.push(`/materia-prima/${categoria}/crear`)}
+                                onClick={() => router.push(`/raw-materials/${categoria}/create`)}
                                 isStatic={true}
                             />
                         </div>

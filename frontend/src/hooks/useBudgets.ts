@@ -69,7 +69,7 @@ export const useBudgets = () => {
 
   const handleBudgetClick = (budgetId: number) => {
     // Navegar a la página de detalle del presupuesto
-    router.push(`/presupuestos/${budgetId}`);
+    router.push(`/budgets/${budgetId}`);
   };
 
   return {

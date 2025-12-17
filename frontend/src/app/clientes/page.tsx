@@ -35,7 +35,7 @@ export default function ClientsPage() {
         setSelectedIds([...selectedIds, id]);
       }
     } else {
-      router.push(`/clientes/${id}`);
+      router.push(`/clients/${id}`);
     }
   };
 
@@ -136,7 +136,7 @@ export default function ClientsPage() {
                   isSelected={selectedIds.includes(client.id)}
                   onClick={() => handleCardInteraction(client.id)}
                   onBudgetClick={() =>
-                    router.push(`/presupuestos?cliente=${client.id}`)
+                    router.push(`/buggets?client=${client.id}`)
                   }
                   onTelegramClick={() => {}}
                 />
@@ -175,7 +175,7 @@ export default function ClientsPage() {
         ) : (
           <>
             <button
-              onClick={() => router.push("/clientes/nuevo")}
+              onClick={() => router.push("/clients/new")}
               className="w-12 h-12 bg-[#8B709D] rounded-full text-white flex items-center justify-center hover:bg-[#7A5F89] transition-colors"
             >
               <Plus size={24} />
