@@ -7,7 +7,7 @@ interface ImageUploadFieldProps {
   isUploading: boolean;
   uploadError: string | null;
   validationError?: string;
-  fileInputRef: React.RefObject<HTMLInputElement>;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
   onImageClick: () => void;
   onImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRemoveImage: () => void;
