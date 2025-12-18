@@ -7,9 +7,16 @@ import { ArrowLeft, ChevronRight } from "lucide-react";
 import Header from "@/components/common/Header";
 import Sidebar from "@/components/common/Sidebar";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
-import { useClients } from "@/hooks/useClients";
+import {
+  normalizeTrim,
+  validateClientName,
+  validateEmailOptional,
+  validatePhoneOptional,
+  validateClientContact,
+} from "@/utils/client.validators";
+import { useClients } from "@/hooks";
 
-type FormData = {
+type NewClientForm = {
   name: string;
   identification: string;
   email: string;
@@ -27,10 +34,24 @@ export default function NewClientPage() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
+    watch,
+  } = useForm<NewClientForm>({
+    mode: "onChange",
+    defaultValues: {
+      name: "",
+      identification: "",
+      email: "",
+      address: "",
+      phone: "",
+    },
+  });
+
   const { createClient } = useClients();
 
-  const onSubmit = async (data: FormData) => {
+  const emailValue = watch("email");
+  const phoneValue = watch("phone");
+
+  const onSubmit = async (data: NewClientForm) => {
     setIsSubmitting(true);
     try {
       const newClient = await createClient({
@@ -105,13 +126,16 @@ export default function NewClientPage() {
                     Nombre del cliente
                   </label>
                   <input
-                    {...register("name", { required: true })}
+                    {...register("name", {
+                      setValueAs: normalizeTrim,
+                      validate: validateClientName,
+                    })}
                     placeholder="Ingresa el nombre"
                     className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
                   />
                   {errors.name && (
                     <span className="text-red-400 text-xs">
-                      Este campo es requerido
+                      {errors.name.message}
                     </span>
                   )}
                 </div>
@@ -121,7 +145,9 @@ export default function NewClientPage() {
                     Nº de Identificación
                   </label>
                   <input
-                    {...register("identification")}
+                    {...register("identification", {
+                      setValueAs: normalizeTrim,
+                    })}
                     placeholder="DNI"
                     className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
                   />
@@ -132,11 +158,21 @@ export default function NewClientPage() {
                     E-mail
                   </label>
                   <input
-                    {...register("email")}
+                    {...register("email", {
+                      setValueAs: normalizeTrim,
+                      validate: (value) =>
+                        validateEmailOptional(value) &&
+                        validateClientContact(value, phoneValue),
+                    })}
                     type="email"
                     placeholder="usuario@gmail.com"
                     className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
                   />
+                  {errors.email && (
+                    <span className="text-red-400 text-xs">
+                      {errors.email.message}
+                    </span>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -144,7 +180,9 @@ export default function NewClientPage() {
                     Dirección
                   </label>
                   <input
-                    {...register("address")}
+                    {...register("address", {
+                      setValueAs: normalizeTrim,
+                    })}
                     placeholder="Dirección del cliente"
                     className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
                   />
@@ -155,10 +193,20 @@ export default function NewClientPage() {
                     Teléfono
                   </label>
                   <input
-                    {...register("phone")}
+                    {...register("phone", {
+                      setValueAs: normalizeTrim,
+                      validate: (value) =>
+                        validatePhoneOptional(value) &&
+                        validateClientContact(emailValue, value),
+                    })}
                     placeholder="Ej. +35 261 458 6918"
                     className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
                   />
+                  {errors.phone && (
+                    <span className="text-red-400 text-xs">
+                      {errors.phone.message}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -193,3 +241,5 @@ export default function NewClientPage() {
     </div>
   );
 }
+
+

@@ -4,6 +4,16 @@ import Image from "next/image";
 import DatePicker from "@/components/common/DatePicker";
 import { useBudgetMetadata } from "@/hooks/useBudgetMetadata";
 import { getCurrentDateFormatted } from "@/utils/dateUtils";
+import {
+  normalizeTrim,
+  validateBudgetTitle,
+  validateClientName,
+  validateEmailOptional,
+  validatePhoneOptional,
+  validateClientContact,
+  validateDesiredProfit,
+} from "@/utils/budget.validators";
+
 
 interface BudgetDetailsProps {
   source?: "telegram" | "manual";
@@ -25,6 +35,9 @@ export default function BudgetDetails({
     (useWatch({ control, name: "deliveryDate" }) as string) ||
     getCurrentDateFormatted();
   const { id: budgetId } = useBudgetMetadata();
+
+  const emailValue = useWatch({ control, name: "clientEmail" });
+  const phoneValue = useWatch({ control, name: "clientPhone" });
 
   return (
     <div className="space-y-5 p-5 sm:p-6 bg-[#F4E7FD] rounded-b-[22px] min-h-[480px] text-[#51405F]">
@@ -68,19 +81,15 @@ export default function BudgetDetails({
         </label>
         <input
           {...register("title", {
-            maxLength: {
-              value: 200,
-              message: "El título no puede exceder 200 caracteres",
-            },
+            setValueAs: normalizeTrim,
+            validate: validateBudgetTitle,
           })}
           type="text"
           placeholder="Presupuesto para blusa verano"
-          maxLength={200}
-          className={`w-full bg-white border border-[#DCCBEB] rounded-lg h-10 px-3 text-sm text-[#1A151E] outline-none focus:border-[#9C7AB8] focus:ring-1 focus:ring-[#9C7AB8] placeholder:text-[#B7A6C6] ${
-            errors.title
-              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-              : "border-[#D5A1F7] focus:border-[#B65CF2] focus:ring-[#B65CF2]"
-          }`}
+          className={`w-full bg-white border border-[#DCCBEB] rounded-lg h-10 px-3 text-sm text-[#1A151E] outline-none focus:border-[#9C7AB8] focus:ring-1 focus:ring-[#9C7AB8] placeholder:text-[#B7A6C6] ${errors.title
+            ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+            : "border-[#D5A1F7] focus:border-[#B65CF2] focus:ring-[#B65CF2]"
+            }`}
         />
         {errors.title && (
           <p className="text-xs text-red-500 mt-1">
@@ -95,23 +104,15 @@ export default function BudgetDetails({
         </label>
         <input
           {...register("clientName", {
-            maxLength: {
-              value: 100,
-              message: "El nombre no puede exceder 100 caracteres",
-            },
-            pattern: {
-              value: /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/,
-              message: "El nombre solo puede contener letras y espacios",
-            },
+            setValueAs: normalizeTrim,
+            validate: validateClientName,
           })}
           type="text"
           placeholder="Ingresa el nombre del cliente"
-          maxLength={100}
-          className={`w-full bg-white border border-[#DCCBEB] rounded-lg h-10 px-3 text-sm text-[#1A151E] outline-none focus:border-[#9C7AB8] focus:ring-1 focus:ring-[#9C7AB8] placeholder:text-[#B7A6C6] ${
-            errors.clientName
-              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-              : "border-[#D5A1F7] focus:border-[#B65CF2] focus:ring-[#B65CF2]"
-          }`}
+          className={`w-full bg-white border border-[#DCCBEB] rounded-lg h-10 px-3 text-sm text-[#1A151E] outline-none focus:border-[#9C7AB8] focus:ring-1 focus:ring-[#9C7AB8] placeholder:text-[#B7A6C6] ${errors.clientName
+            ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+            : "border-[#D5A1F7] focus:border-[#B65CF2] focus:ring-[#B65CF2]"
+            }`}
         />
         {errors.clientName && (
           <p className="text-xs text-red-500 mt-1">
@@ -126,23 +127,17 @@ export default function BudgetDetails({
         </label>
         <input
           {...register("clientEmail", {
-            maxLength: {
-              value: 100,
-              message: "El email no puede exceder 100 caracteres",
-            },
-            pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: "Ingresa un email válido",
-            },
+            setValueAs: normalizeTrim,
+            validate: (value) =>
+              validateEmailOptional(value) &&
+              validateClientContact(value, phoneValue),
           })}
           type="email"
           placeholder="Ingresa el e-mail del cliente"
-          maxLength={100}
-          className={`w-full bg-white border border-[#DCCBEB] rounded-lg h-10 px-3 text-sm text-[#1A151E] outline-none focus:border-[#9C7AB8] focus:ring-1 focus:ring-[#9C7AB8] placeholder:text-[#B7A6C6] ${
-            errors.clientEmail
-              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-              : "border-[#D5A1F7] focus:border-[#B65CF2] focus:ring-[#B65CF2]"
-          }`}
+          className={`w-full bg-white border border-[#DCCBEB] rounded-lg h-10 px-3 text-sm text-[#1A151E] outline-none focus:border-[#9C7AB8] focus:ring-1 focus:ring-[#9C7AB8] placeholder:text-[#B7A6C6] ${errors.clientEmail
+            ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+            : "border-[#D5A1F7] focus:border-[#B65CF2] focus:ring-[#B65CF2]"
+            }`}
         />
         {errors.clientEmail && (
           <p className="text-xs text-red-500 mt-1">
@@ -158,24 +153,17 @@ export default function BudgetDetails({
           </label>
           <input
             {...register("clientPhone", {
-              maxLength: {
-                value: 16,
-                message: "El teléfono no puede exceder 16 caracteres",
-              },
-              pattern: {
-                value: /^[0-9\-\s\+\(\)]+$/,
-                message:
-                  "El teléfono solo puede contener números, guiones, espacios y paréntesis",
-              },
+              setValueAs: normalizeTrim,
+              validate: (value) =>
+                validatePhoneOptional(value) &&
+                validateClientContact(emailValue, value),
             })}
             type="tel"
             placeholder="+54 0 11 XXXXX XXXX"
-            maxLength={16}
-            className={`w-full bg-white border border-[#DCCBEB] rounded-lg h-10 px-3 text-sm text-[#1A151E] outline-none focus:border-[#9C7AB8] focus:ring-1 focus:ring-[#9C7AB8] placeholder:text-[#B7A6C6] ${
-              errors.clientPhone
-                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                : "border-[#D5A1F7] focus:border-[#B65CF2] focus:ring-[#B65CF2]"
-            }`}
+            className={`w-full bg-white border border-[#DCCBEB] rounded-lg h-10 px-3 text-sm text-[#1A151E] outline-none focus:border-[#9C7AB8] focus:ring-1 focus:ring-[#9C7AB8] placeholder:text-[#B7A6C6] ${errors.clientPhone
+              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+              : "border-[#D5A1F7] focus:border-[#B65CF2] focus:ring-[#B65CF2]"
+              }`}
           />
           {errors.clientPhone && (
             <p className="text-xs text-red-500 mt-1">
@@ -225,14 +213,7 @@ export default function BudgetDetails({
           <input
             {...register("desiredProfit", {
               valueAsNumber: true,
-              min: {
-                value: 0,
-                message: "La ganancia no puede ser negativa",
-              },
-              max: {
-                value: 100,
-                message: "La ganancia no puede ser mayor a 100%",
-              },
+              validate: validateDesiredProfit,
             })}
             type="number"
             min="0"
@@ -240,11 +221,10 @@ export default function BudgetDetails({
             step="0.01"
             placeholder="0-100"
             onWheel={(e) => e.currentTarget.blur()}
-            className={`w-full bg-white border rounded-lg h-10 px-3 pr-10 text-sm text-[#1A151E] outline-none focus:ring-1 placeholder:text-[#B7A6C6] ${
-              errors.desiredProfit
-                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                : "border-[#DCCBEB] focus:border-[#9C7AB8] focus:ring-[#9C7AB8]"
-            }`}
+            className={`w-full bg-white border rounded-lg h-10 px-3 pr-10 text-sm text-[#1A151E] outline-none focus:ring-1 placeholder:text-[#B7A6C6] ${errors.desiredProfit
+              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+              : "border-[#DCCBEB] focus:border-[#9C7AB8] focus:ring-[#9C7AB8]"
+              }`}
           />
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#7A6B8A] text-sm font-semibold pointer-events-none">
             %
