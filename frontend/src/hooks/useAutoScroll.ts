@@ -2,7 +2,7 @@ import { useEffect, useRef, RefObject } from "react";
 
 export const useAutoScroll = <T>(
   dependencies: T[]
-): RefObject<HTMLDivElement> => {
+): RefObject<HTMLDivElement | null> => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
