@@ -26,13 +26,30 @@ export default function CreateMaterialPage() {
     const router = useRouter();
     const { user, mounted } = useAuth();
     const { isOpen, open, close } = useSidebar();
-    const { categories } = useCategories();
+    const { categories, isLoading: isLoadingCategories } = useCategories();
 
-    const categorySlug = params.categoria as string;
+    const categorySlug = Array.isArray(params.category)
+        ? params.category[0]
+        : (params.category as string) || '';
     const category = categories.find((c) => c.slug === categorySlug);
 
     if (!mounted || !user) return null;
-    if (!category) return <div className="p-6">Cargando categoría…</div>;
+    
+    if (isLoadingCategories) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-[#E6E1EA]">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Cargando categoría...</p>
+                </div>
+            </div>
+        );
+    }
+    
+    if (!category) {
+        router.push('/raw-materials');
+        return null;
+    }
 
     const handleSubmit = async (values: MaterialData) => {
         const res = await fetch(`/api/v1/materials`, {

@@ -136,7 +136,7 @@ export default function ClientsPage() {
                   isSelected={selectedIds.includes(client.id)}
                   onClick={() => handleCardInteraction(client.id)}
                   onBudgetClick={() =>
-                    router.push(`/buggets?client=${client.id}`)
+                    router.push(`/budgets?clienteId=${client.id}`)
                   }
                   onTelegramClick={() => {}}
                 />

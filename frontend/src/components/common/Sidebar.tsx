@@ -98,7 +98,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         />
       )}
       <aside
-        className={`fixed top-0 left-0 h-full z-50 transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 left-0 h-full rounded-tr-[20px] rounded-br-[20px] z-50 transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         style={{

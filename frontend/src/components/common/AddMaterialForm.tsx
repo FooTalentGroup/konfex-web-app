@@ -82,11 +82,10 @@ export default function AddMaterialForm({ data, onSubmit, onReset }: AddMaterial
 
     useEffect(() => {
         if (data) {
-            const normalizedForm = {
+            setForm({
                 nombre: data.nombre ?? "",
                 url_imagen: data.url_imagen ?? "",
                 ancho: data.ancho?.toString() ?? "",
-                // 🔥 Fix principal: normalizar unidadMedida
                 unidadMedida: (() => {
                     const raw = data.unidadMedida?.toLowerCase();
                     if (!raw) return "cm";
@@ -99,14 +98,12 @@ export default function AddMaterialForm({ data, onSubmit, onReset }: AddMaterial
                 colores: data.colores?.join(", ") ?? "",
                 proveedor: data.proveedor ?? "",
                 precio: data.precio?.toString() ?? "",
-            };
-
-            const frame = requestAnimationFrame(() => setForm(normalizedForm));
-            return () => cancelAnimationFrame(frame);
+            });
+        } else {
+            resetForm();
         }
-        const frame = requestAnimationFrame(() => resetForm());
-        return () => cancelAnimationFrame(frame);
-    }, [data, resetForm]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data?.id]); 
 
     const handleChange = (field: string, value: string) => {
         setForm((prev) => ({ ...prev, [field]: value }));
