@@ -1,16 +1,19 @@
 'use client';
 
 import React, { useState } from 'react';
+import { UseFormRegisterReturn } from 'react-hook-form';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
+  register?: UseFormRegisterReturn;
   showPasswordToggle?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
   label,
   error,
+  register,
   showPasswordToggle = false,
   type = 'text',
   className = '',
@@ -43,6 +46,7 @@ const Input: React.FC<InputProps> = ({
       <div className="relative w-full">
         <input
           {...props}
+          {...register}
           type={inputType}
           className={`focus:outline-none  ${hasError ? 'border-[#D9537A]' : 'border-[#6A5379]'}
   ${hasError ? 'focus:border-[#D9537A]' : 'focus:border-[#B65CF2]'} w-full ${className}`}
