@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
-import { pedidoService } from "@/services/pedido.service";
+import { orderService } from "@/services/order.service";
 
 interface OrderCardProps {
   id: string;
@@ -65,7 +65,7 @@ export default function OrderCard({
     try {
       setIsUpdating(true);
       const backendEstado = mapOperativoStatusToBackend(newStatus);
-      await pedidoService.update(pedidoId, { estado: backendEstado });
+      await orderService.update(pedidoId, { estado: backendEstado });
       setCurrentOperativoStatus(newStatus);
       setIsOperativoDropdownOpen(false);
     } catch (error) {
@@ -81,7 +81,7 @@ export default function OrderCard({
     try {
       setIsUpdating(true);
       const pagado = newStatus === "pagado";
-      await pedidoService.update(pedidoId, { pagado });
+      await orderService.update(pedidoId, { pagado });
       setCurrentPaymentStatus(newStatus);
       setIsPaymentDropdownOpen(false);
     } catch (error) {

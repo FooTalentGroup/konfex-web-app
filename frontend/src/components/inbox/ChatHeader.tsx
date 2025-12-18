@@ -40,8 +40,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ contact }) => {
   }
 
   const handleClientSheetClick = () => {
-    // Si el cliente tiene un clientId, ir a detalles del cliente existente
-    // Si no, ir a crear nuevo cliente
+    
     if (contact.clientId) {
       router.push(`/clients/${contact.clientId}`);
     } else {
@@ -58,7 +57,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ contact }) => {
         >
           <Image
             src="/flechaTela.png"
-            alt="Volver"
+            alt="Back"
             width={20}
             height={20}
             className="w-4 h-4 sm:w-5 sm:h-5 object-contain"
@@ -85,11 +84,11 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ contact }) => {
 
           <span className="flex items-center whitespace-nowrap bg-[#F7D8A1] text-black font-lato text-xs sm:text-sm font-normal leading-[131%] tracking-normal rounded-xl py-0.5 px-1 sm:px-1.5 gap-1 sm:gap-1.5">
             <Image
-              src="/presupuestos.png"
+              src="/budgets.png"
               alt="Presupuesto"
               width={12}
               height={12}
-              className="object-contain"
+              className="object/contain"
             />
             Presupuesto
           </span>
@@ -98,11 +97,11 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ contact }) => {
 
       <div className="flex items-center justify-end mb-1.5 sm:mb-2">
         <span className="font-lato text-sm sm:text-base font-bold leading-[131%] tracking-normal text-[#35293D] text-right mr-2 sm:mr-4 truncate max-w-[60%] sm:max-w-none">
-          {contact.nombre}
+          {contact.name}
         </span>
         <div className="relative shrink-0">
           {(() => {
-            const parts = contact.nombre?.split(" ") || [];
+            const parts = contact.name?.split(" ") || [];
             const initials = getInitial(parts[0], parts[1], contact.avatar);
             if (initials) {
               return (
@@ -114,7 +113,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ contact }) => {
             return (
               <Image
                 src={contact.avatar || "/perfil.png"}
-                alt={contact.nombre}
+                alt={contact.name}
                 width={32}
                 height={32}
                 className="rounded-full object-cover shrink-0 w-7 h-7 sm:w-8 sm:h-8 border border-[#8B709D]"
@@ -126,7 +125,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ contact }) => {
               isConnected ? "bg-green-500" : "bg-red-500"
             }`}
             title={
-              isConnected ? "Conectado al backend" : "Desconectado del backend"
+              isConnected ? "Connected" : "Disconnected"
             }
           />
         </div>

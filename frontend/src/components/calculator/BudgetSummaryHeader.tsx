@@ -5,7 +5,7 @@ import { useFormContext, useWatch } from "react-hook-form";
 import { MoreVertical, FileDown, Send, X } from "lucide-react";
 import { pdf } from "@react-pdf/renderer";
 import NavigationTabs from "../ui/NavigationTabs";
-import { useGastosNegocio } from "@/hooks/useGastosNegocio";
+import { useBusinessExpenses } from "@/hooks/useBusinessExpenses";
 import { useToast } from "@/contexts/ToastContext";
 import BudgetPDF from "./BudgetPDF";
 
@@ -39,7 +39,7 @@ export default function BudgetSummaryHeader({
   origen: _origen,
 }: BudgetSummaryHeaderProps = {}) {
   const { control, getValues, watch } = useFormContext();
-  const { gastosNegocio } = useGastosNegocio();
+  const { gastosNegocio } = useBusinessExpenses();
   const { showError, showInfo } = useToast();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);

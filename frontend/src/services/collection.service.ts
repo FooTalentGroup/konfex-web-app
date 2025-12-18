@@ -5,7 +5,7 @@ import { CollectionsAPIResponse, Collection, CreateCollectionRequest, UpdateColl
 export const collectionService = {
 
     getAll: async (): Promise<Collection[]> => {
-        const url = API_CONFIG.getApiUrl('/colecciones');
+        const url = API_CONFIG.getApiUrl('/collections');
 
         try {
             const response = await fetch(url, {
@@ -33,7 +33,7 @@ export const collectionService = {
     },
 
     getById: async (id: string): Promise<Collection> => {
-        const url = API_CONFIG.getApiUrl(`/colecciones/${id}`)
+        const url = API_CONFIG.getApiUrl(`/collections/${id}`)
         try {
             const response = await fetch(url, {
                 method: 'GET',
@@ -56,7 +56,7 @@ export const collectionService = {
     },
 
     create: async (data: CreateCollectionRequest): Promise<Collection> => {
-        const url = API_CONFIG.getApiUrl('/colecciones');
+        const url = API_CONFIG.getApiUrl('/collections');
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -83,7 +83,7 @@ export const collectionService = {
     },
 
     update: async (id: number, data: UpdateCollectionRequest): Promise<Collection> => {
-        const url = API_CONFIG.getApiUrl(`/colecciones/${id}`)
+        const url = API_CONFIG.getApiUrl(`/collections/${id}`)
 
         try {
             const response = await fetch(url, {
@@ -108,7 +108,7 @@ export const collectionService = {
     },
 
     delete: async (id: number): Promise<void> => {
-        const url = API_CONFIG.getApiUrl(`/colecciones/${id}`)
+        const url = API_CONFIG.getApiUrl(`/collections/${id}`)
 
         try {
             const response = await fetch(url, {

@@ -35,7 +35,7 @@ export function useCategories() {
             setIsLoading(true);
             setError('');
 
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categorias`);
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
             const json: { success: boolean; message?: string; data?: ApiCategory[] } = await res.json();
 
             if (!json.success) {
@@ -76,7 +76,7 @@ export function useCategories() {
 
     const addCategory = useCallback(async (nombre: string) => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categorias`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ nombre })
@@ -103,7 +103,7 @@ export function useCategories() {
 
     const deleteCategory = useCallback(async (id: string | number) => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categorias/${id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${id}`, {
                 method: 'DELETE'
             });
 
