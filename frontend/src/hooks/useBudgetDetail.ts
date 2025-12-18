@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { PresupuestoResponseDto } from "@/types/presupuesto.types";
-import { presupuestoService } from "@/services/presupuesto.service";
+import { BudgetResponseDto } from "@/types/budget.types";
+import { budgetService } from "@/services/budget.service";
 
 export const useBudgetDetail = (id: number) => {
-  const [budget, setBudget] = useState<PresupuestoResponseDto | null>(null);
+  const [budget, setBudget] = useState<BudgetResponseDto | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -13,7 +13,7 @@ export const useBudgetDetail = (id: number) => {
       setError(null);
 
       try {
-        const presupuesto = await presupuestoService.getById(id);
+        const presupuesto = await budgetService.getById(id);
         setBudget(presupuesto);
       } catch (err) {
         const errorMessage =
@@ -34,7 +34,7 @@ export const useBudgetDetail = (id: number) => {
     setError(null);
 
     try {
-      const presupuesto = await presupuestoService.getById(id);
+      const presupuesto = await budgetService.getById(id);
       setBudget(presupuesto);
     } catch (err) {
       const errorMessage =

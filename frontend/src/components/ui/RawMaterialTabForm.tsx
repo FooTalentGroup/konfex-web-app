@@ -3,8 +3,8 @@
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { GarmentFormData } from '@/types/IGarment';
-import CustomSelect from './CustomSelect';
 import CustomInputWithSelect from './CustomInputWithSelect';
+import MaterialSearchSelect from './MaterialSearchSelect';
 import { AlertCircle, ExternalLink, Plus, Trash2 } from 'lucide-react';
 import { useMaterials } from '@/hooks/useMaterialsForService';
 import { useToast } from '@/contexts/ToastContext';
@@ -18,8 +18,7 @@ const EmptyMaterialsAlert = ({ type, onNavigate }: { type: 'fabric' | 'supply'; 
                 No hay {type === 'fabric' ? 'telas' : 'insumos'} registrados
             </h4>
             <p className="text-sm text-amber-700 mb-2">
-                Debes crear {type === 'fabric' ? 'telas' : 'insumos'} en el sistema antes de poder agregarlos a una
-                prenda.
+                Debes crear {type === 'fabric' ? 'telas' : 'insumos'} en el sistema antes de poder agregarlos a una prenda.
             </p>
             <button
                 type="button"
@@ -39,30 +38,17 @@ interface RawMaterialTabFormProps {
 
 const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
     const { register, watch, setValue, formState: { errors } } = form;
-    const { materials } = useMaterials();
+    const { materials, isLoading, error } = useMaterials();
     const toast = useToast();
     const router = useRouter();
 
     const rawMaterials = watch('rawMaterials') || [];
-
-    const fabricMaterialsFromDB = materials.filter(m => m.categoria?.nombre?.toLowerCase() === 'tela');
-    const supplyMaterialsFromDB = materials.filter(m => m.categoria?.nombre?.toLowerCase() !== 'tela');
 
     const fabricMaterials = rawMaterials.filter(m => m.type === 'fabric');
     const supplyMaterials = rawMaterials.filter(m => m.type === 'supply');
 
     const totalPriceMaterials = rawMaterials.reduce((sum, material) => sum + (material.price ?? 0), 0);
 
-
-    const fabricOptions = fabricMaterialsFromDB.map(m => ({
-        value: m.id.toString(),
-        label: m.nombre
-    }));
-
-    const supplyOptions = supplyMaterialsFromDB.map(m => ({
-        value: m.id.toString(),
-        label: m.nombre
-    }));
 
     const addFabric = () => {
         const materialIdStr = watch('tempFabricName');
@@ -167,18 +153,23 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
 
             <div className="space-y-4">
 
-                <CustomSelect
+                <MaterialSearchSelect
                     id="tempFabricName"
                     label="Tela"
-                    options={fabricOptions}
-                    register={register('tempFabricName')}
-                    error={errors.tempFabricName?.message}
+                    materials={materials}
+                    isLoading={isLoading}
+                    error={error || undefined}
+                    value={watch('tempFabricName')}
+                    onChange={(materialId, material) => {
+                        setValue('tempFabricName', materialId);
+                        setValue('tempFabricUnit', material.unidadMedida || 'm');
+                    }}
                     placeholder="Ej. Algodón"
-                    className="bg-white"
-                    style={{ borderColor: '#6A5379' }}
+                    type="fabric"
                 />
-                {fabricOptions.length === 0 && (
-                    <EmptyMaterialsAlert type="fabric" onNavigate={() => router.push('/materia-prima')} />
+
+                {!isLoading && !error && materials.filter(m => m.categoria?.nombre?.toLowerCase() === 'tela').length === 0 && (
+                    <EmptyMaterialsAlert type="fabric" onNavigate={() => router.push('/raw-materials')} />
                 )}
 
                 <CustomInputWithSelect
@@ -216,53 +207,59 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                     </div>
                     <div className="flex-1 border-t border-gray-400"></div>
                 </div>
+
+                {fabricMaterials.length > 0 && (
+                    <div className="space-y-3 mt-4">
+                        <h5 className="text-sm font-semibold text-gray-700">Lista de telas agregadas:</h5>
+                        {fabricMaterials.map((material) => (
+                            <div
+                                key={material.id}
+                                className="flex items-center justify-between bg-primary-75 p-4 rounded-lg border border-primary-500"
+                            >
+                                <div className="flex-1">
+                                    <p className="font-medium text-gray-800">{material.name}</p>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <span className="text-sm text-gray-600">
+                                        {material.consumption} {material.unit}
+                                    </span>
+                                    <span className="text-sm font-semibold text-gray-800">
+                                        $ {material.price ?? 0}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeMaterial((material.id) as string)}
+                                        className="bg-primary-200 p-1 text-gray-500 hover:text-gray-700 border border-primary-500 rounded-md transition-colors"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
-            {fabricMaterials.length > 0 && (
-                <div className="space-y-3 mt-4">
-                    <h5 className="text-sm font-semibold text-gray-700">Lista de telas agregadas:</h5>
-                    {fabricMaterials.map((material) => (
-                        <div
-                            key={material.id}
-                            className="flex items-center justify-between bg-primary-75 p-4 rounded-lg border border-primary-500"
-                        >
-                            <div className="flex-1">
-                                <p className="font-medium text-gray-800">{material.name}</p>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <span className="text-sm text-gray-600">
-                                    {material.consumption} {material.unit}
-                                </span>
-                                <span className="text-sm font-semibold text-gray-800">
-                                    $ {material.price ?? 0}
-                                </span>
-                                <button
-                                    type="button"
-                                    onClick={() => removeMaterial((material.id) as string)}
-                                    className="bg-primary-200 p-1 text-gray-500 hover:text-gray-700 border border-primary-500 rounded-md transition-colors"
-                                >
-                                    <Trash2 className="w-4 h-4" />
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
 
             <div className="space-y-4">
 
-                <CustomSelect
+                <MaterialSearchSelect
                     id="tempSupplyName"
                     label="Insumos"
-                    options={supplyOptions}
-                    register={register('tempSupplyName')}
-                    error={errors.tempSupplyName?.message}
+                    materials={materials}
+                    isLoading={isLoading}
+                    error={error || undefined}
+                    value={watch('tempSupplyName')}
+                    onChange={(materialId, material) => {
+                        setValue('tempSupplyName', materialId);
+                        setValue('tempSupplyUnit', material.unidadMedida || 'm');
+                    }}
                     placeholder="Ej. Botones L24 + cortesía"
-                    className="bg-white"
-                    style={{ borderColor: '#6A5379' }}
+                    type="supply"
                 />
-                {supplyOptions.length === 0 && (
-                    <EmptyMaterialsAlert type="supply" onNavigate={() => router.push('/materia-prima')} />
+
+                {!isLoading && !error && materials.filter(m => m.categoria?.nombre?.toLowerCase() !== 'tela').length === 0 && (
+                    <EmptyMaterialsAlert type="supply" onNavigate={() => router.push('/raw-materials')} />
                 )}
 
                 <CustomInputWithSelect
@@ -282,6 +279,7 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                     className="bg-white"
                     style={{ borderColor: '#6A5379' }}
                 />
+
                 <div className="grid grid-cols-2 gap-4">
                 </div>
 
@@ -331,6 +329,7 @@ const RawMaterialTabForm: React.FC<RawMaterialTabFormProps> = ({ form }) => {
                     </div>
                 )}
             </div>
+
         </section>
     );
 };

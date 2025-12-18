@@ -8,7 +8,7 @@ import {
 
 export const productService = {
   getAll: async (): Promise<ProductAPI[]> => {
-    const url = API_CONFIG.getApiUrl("/productos");
+    const url = API_CONFIG.getApiUrl("/products");
 
     try {
       const response = await fetch(url, {
@@ -36,7 +36,7 @@ export const productService = {
   },
 
   getByCollection: async (collectionId: number): Promise<ProductAPI[]> => {
-    const url = API_CONFIG.getApiUrl(`/productos?coleccionId=${collectionId}`);
+    const url = API_CONFIG.getApiUrl(`/products?coleccionId=${collectionId}`);
 
     try {
       const response = await fetch(url, {
@@ -65,7 +65,7 @@ export const productService = {
   },
 
   create: async (data: CreateProductRequest): Promise<Product> => {
-    const url = API_CONFIG.getApiUrl("/productos");
+    const url = API_CONFIG.getApiUrl("/products");
 
     try {
       const response = await fetch(url, {

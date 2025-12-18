@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 import CircularAddButton from "@/components/common/CircularAddButton";
 import GarmentAutocomplete from "../GarmentAutocomplete";
 import BudgetTotalBadge from "../BudgetTotalBadge";
-import type { Producto } from "@/hooks/useProductos";
+import type { Product } from "@/hooks/useProductSearch";
 import { normalizePriceInput } from "@/utils/budgetMaterials.validators";
 
 interface MaterialVariant {
@@ -158,17 +158,17 @@ export default function BudgetMaterials() {
                 }
               }
             }}
-            onSelect={(producto: Producto) => {
-              const nombre = producto.nombre.substring(0, 100);
+            onSelect={(producto: Product) => {
+              const nombre = producto.name.substring(0, 100);
               setTempName(nombre);
               setTempProductoId(producto.id);
 
-              if (producto.precio !== undefined && producto.precio !== null) {
-                setTempPrice(producto.precio.toString());
+              if (producto.price !== undefined && producto.price !== null) {
+                setTempPrice(producto.price.toString());
               }
 
-              if (producto.tallas && producto.tallas.length > 0) {
-                setCurrentSize(producto.tallas[0]);
+              if (producto.sizes && producto.sizes.length > 0) {
+                setCurrentSize(producto.sizes[0]);
               }
             }}
             placeholder="Ej.: Blusa manga larga - azul"

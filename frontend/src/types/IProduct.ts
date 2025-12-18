@@ -1,3 +1,4 @@
+import { OrderDetail } from '@/services/order.service'
 import { z } from 'zod'
 
 export const productAPISchema = z.object({
@@ -47,10 +48,10 @@ export interface Product {
     coleccionId:         number;
     createdAt:           Date;
     updatedAt:           Date;
-    coleccion:           Coleccion;
-    materiales:          Materiales[];
-    pedidos:             Pedido[];
-    presupuestoDetalles: PresupuestoDetalle[];
+    coleccion:           Collection;
+    materiales:          MaterialsProduct[];
+    pedidos:             OrderDetail[];
+    presupuestoDetalles: BudgetDetail[];
 }
 
 export interface CreateProductRequest {
@@ -94,7 +95,7 @@ export interface UpdateProductRequest {
 
 }
 
-export interface Coleccion {
+export interface Collection {
     id:        number;
     codigo:    number;
     nombre:    string;
@@ -104,7 +105,7 @@ export interface Coleccion {
     updatedAt: Date;
 }
 
-export interface Materiales {
+export interface MaterialsProduct {
     id:         number;
     productoId: number;
     materialId: number;
@@ -128,7 +129,7 @@ export interface Material {
 }
 
 
-export interface Pedido {
+export interface OrderItem {
     id:             number;
     pedidoId:       number;
     productoId:     number;
@@ -140,7 +141,7 @@ export interface Pedido {
     subtotal:       number;
 }
 
-export interface PresupuestoDetalle {
+export interface BudgetDetail {
     id:            number;
     presupuestoId: number;
     productoId:    number;
