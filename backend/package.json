@@ -1,7 +1,7 @@
 {
   "name": "konfex-backend",
   "version": "1.0.0",
-  "description": "API del Sistema de Gestión de EOS Indumentaria.",
+  "description": "API del Sistema de Gesti\u00f3n de EOS Indumentaria.",
   "main": "index.js",
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
@@ -14,8 +14,8 @@
     "seed": "prisma db seed",
     "deploy:seed": "npm run prisma:generate && npm run prisma:deploy && npm run seed",
     "server:dev": "npm run prisma:generate && npm run prisma:migrate && npm run seed && npm run server",
-    "build": "tsc && tsc-alias",
-    "start": "node dist/src/index.js",
+    "build": "node api.js && tsc && tsc-alias",
+    "start": "node api.js && node dist/src/index.js",
     "start:prod": "npm run build && node dist/src/index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
