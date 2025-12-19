@@ -1,15 +1,15 @@
 import React from 'react';
 import CustomInput from './CustomInput';
-import CustomSelect from './CustomSelect';
+import CustomMultiSelect from './CustomMultiSelect';
 import { GarmentFormData } from '@/types/IGarment';
-import { UseFormReturn } from 'react-hook-form';
+import { Controller, UseFormReturn } from 'react-hook-form';
 
 interface GarmentDetailTabProps {
     form: UseFormReturn<GarmentFormData>;
 }
 
 const GarmentDetailTabForm: React.FC<GarmentDetailTabProps> = ({ form }) => {
-    const { register, formState: { errors }, watch } = form;
+    const { register, control, formState: { errors }, watch } = form;
 
     const sizes = [
         { value: 'XS', label: 'XS' },
@@ -55,33 +55,46 @@ const GarmentDetailTabForm: React.FC<GarmentDetailTabProps> = ({ form }) => {
             </div>
 
             <div className='space-y-4'>
-                <CustomSelect
-                    id="sizes"
-                    label="Tallas disponibles"
-                    options={sizes}
-                    register={register('sizes')}
-                    error={errors.sizes?.message}
-                    placeholder="S, M, L"
-                    className="bg-white"
-                    style={{ borderColor: '#6A5379' }}
+                <Controller
+                    name="sizes"
+                    control={control}
+                    render={({ field: { onChange, value, onBlur, ref } }) => (
+                        <CustomMultiSelect
+                            id="sizes"
+                            label="Tallas disponibles"
+                            options={sizes}
+                            value={value || []}
+                            onChange={onChange}
+                            onBlur={onBlur}
+                            error={errors.sizes?.message}
+                            placeholder="Selecciona tallas..."
+                            style={{ borderColor: '#6A5379' }}
+                            className='bg-white'
+                        />
+                    )}
                 />
-
             </div>
 
             <div className='space-y-4'>
-                <CustomSelect
-                    id="colors"
-                    label="Colores"
-                    options={colors}
-                    register={register('colors')}
-                    error={errors.colors?.message}
-                    placeholder="Ej: Rojo, Azul, Negro"
-                    className="bg-white"
-                    style={{ borderColor: '#6A5379' }}
+                <Controller
+                    name="colors"
+                    control={control}
+                    render={({ field: { onChange, value, onBlur, ref } }) => (
+                        <CustomMultiSelect
+                            id="colors"
+                            label="Colores"
+                            options={colors}
+                            value={value || []}
+                            onChange={onChange}
+                            onBlur={onBlur}
+                            error={errors.colors?.message}
+                            placeholder="Ej: Rojo, Azul, Negro"
+                            style={{ borderColor: '#6A5379' }}
+                            className='bg-white'
+                        />
+                    )}
                 />
-
             </div>
-
         </section>
     );
 };

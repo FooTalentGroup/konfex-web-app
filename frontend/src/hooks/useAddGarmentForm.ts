@@ -128,8 +128,8 @@ export const useAddGarmentForm = (collectionId?: number) => {
                 descripcion: data.description,
                 activo: true,
                 imagen: data.image,
-                tallas: data.sizes.split(',').map((size) => size.trim()),
-                colores: data.colors.split(',').map((color) => color.trim()),
+                tallas: data.sizes,
+                colores: data.colors,
                 precio: data.price,
 
                 coleccionId: collectionId || 0,
