@@ -15,6 +15,25 @@ interface CounterInputProps {
     testId?: string;
 }
 
+const getNextValue = (
+    current: number,
+    step: number,
+    min: number,
+    max: number,
+    direction: "increase" | "decrease"
+) => {
+    const next =
+        direction === "increase"
+            ? current + step
+            : current - step;
+
+    if (next > max) return max;
+    if (next < min) return min;
+
+    return next;
+};
+
+
 function CounterInput({
     id,
     label = "",
@@ -29,7 +48,13 @@ function CounterInput({
     testId
 }: CounterInputProps) {
 
+    const handleIncrease = () => {
+        setValue(getNextValue(value, step, min, max, "increase"));
+    };
 
+    const handleDecrease = () => {
+        setValue(getNextValue(value, step, min, max, "decrease"));
+    };
     const increase = () => {
         const newValue = Number(value) + step
         if (newValue <= max) setValue(value + step);
@@ -54,7 +79,7 @@ function CounterInput({
 
                 <button
                     type="button"
-                    onClick={decrease}
+                    onClick={handleDecrease}
                     className="w-10 h-10 bg-white text-black rounded-xl flex items-center justify-center text-xl font-bold shadow hover:bg-gray-100"
                 >
                     –
@@ -64,7 +89,7 @@ function CounterInput({
 
                 <button
                     type="button"
-                    onClick={increase}
+                    onClick={handleIncrease}
                     data-testid={testId}
                     className="w-10 h-10 bg-white text-black rounded-xl flex items-center justify-center text-xl font-bold shadow hover:bg-gray-100"
                 >

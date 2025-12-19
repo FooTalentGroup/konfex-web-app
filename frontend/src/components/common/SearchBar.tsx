@@ -17,8 +17,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
   onClear,
   className = '',
 }) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value);
+  const handleValueChange = (value: string) => {
+    onChange(value);
   };
 
   const handleClear = () => {
@@ -48,7 +48,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         <input
           type="text"
           value={value}
-          onChange={handleChange}
+          onChange={(e) => handleValueChange(e.target.value)}
           placeholder={placeholder}
           className="flex-1 bg-transparent outline-none text-xs sm:text-sm md:text-base font-normal text-[14px] leading-[131%] tracking-[0%] text-[#CEC2D6] placeholder:text-[var(--background-light)] placeholder:opacity-100 font-[var(--font-lato),sans-serif]"
         />

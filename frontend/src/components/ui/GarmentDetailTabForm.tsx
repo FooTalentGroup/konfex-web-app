@@ -33,13 +33,14 @@ const GarmentDetailTabForm: React.FC<GarmentDetailTabProps> = ({ form }) => {
                 <CustomInput
                     id="commercialName"
                     label="Nombre comercial"
-                    type='text'
-                    register={register('commercialName', { required: 'El nombre comercial es requerido' })}
+                    type="text"
+                    register={register('commercialName')}
                     error={errors.commercialName?.message}
                     placeholder='Ej: Camiseta "Lirios"'
-                    className='bg-white'
+                    className="bg-white"
                     style={{ borderColor: '#6A5379' }}
                 />
+
             </div>
 
             <div>
@@ -55,28 +56,30 @@ const GarmentDetailTabForm: React.FC<GarmentDetailTabProps> = ({ form }) => {
 
             <div className='space-y-4'>
                 <CustomSelect
-                    id='sizes'
-                    label='Tallas disponibles'
+                    id="sizes"
+                    label="Tallas disponibles"
                     options={sizes}
-                    register={register('sizes', { required: 'Las tallas son requeridas' })}
+                    register={register('sizes')}
                     error={errors.sizes?.message}
-                    placeholder='S, M, L'
-                    className='bg-white'
+                    placeholder="S, M, L"
+                    className="bg-white"
                     style={{ borderColor: '#6A5379' }}
                 />
+
             </div>
 
             <div className='space-y-4'>
                 <CustomSelect
-                    id='colors'
-                    label='Colores'
+                    id="colors"
+                    label="Colores"
                     options={colors}
-                    register={register('colors', { required: 'Los colores son requeridos' })}
+                    register={register('colors')}
                     error={errors.colors?.message}
-                    placeholder='Ej: Rojo, Azul, Negro'
-                    className='bg-white'
+                    placeholder="Ej: Rojo, Azul, Negro"
+                    className="bg-white"
                     style={{ borderColor: '#6A5379' }}
                 />
+
             </div>
 
         </section>

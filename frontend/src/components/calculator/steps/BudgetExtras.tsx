@@ -10,6 +10,12 @@ import { clientService } from "@/services/client.service";
 import { useBusinessExpenses } from "@/hooks/useBusinessExpenses";
 import { mapFormDataToBackend } from "@/utils/budgetMapper";
 import { useToast } from "@/contexts/ToastContext";
+import {
+  normalizeTrim,
+  validatePositiveNumber,
+  validateObservations,
+} from "@/utils/budget.validators";
+
 
 interface Extra {
   name: string;
@@ -58,10 +64,6 @@ export default function BudgetExtras({
   const [amount, setAmount] = useState("");
 
   const shippingFee = useWatch({ control, name: "shippingFee" }) || "";
-  const setShippingFee = (value: string) => {
-    const numValue = parseFloat(value) || 0;
-    setValue("shippingFee", numValue, { shouldValidate: true });
-  };
 
   const handleAddExtra = () => {
     if (!name.trim()) return;
@@ -272,32 +274,13 @@ export default function BudgetExtras({
         <div className="relative group">
           <input
             type="number"
-            value={
-              typeof shippingFee === "number" ? shippingFee : shippingFee || ""
-            }
-            onChange={(e) => {
-              const inputValue = e.target.value;
-              if (inputValue === "" || inputValue === "-") {
-                if (inputValue === "-") {
-                  return;
-                }
-                setShippingFee("0");
-              } else {
-                const val = parseFloat(inputValue);
-                if (!isNaN(val) && val >= 0) {
-                  setShippingFee(inputValue);
-                }
-              }
-            }}
-            onBlur={(e) => {
-              const val = parseFloat(e.target.value);
-              if (isNaN(val) || val < 0) {
-                setShippingFee("0");
-              }
-            }}
+            {...register("shippingFee", {
+              valueAsNumber: true,
+              validate: validatePositiveNumber,
+            })}
             placeholder="Ingresa la tarifa de envío"
             className="w-full h-[40px] bg-white border border-[#CEC2D6] rounded-[10px] px-3 pr-9 text-sm outline-none font-normal text-[#1A151E] text-left focus:border-[#C071F4] focus:ring-2 focus:ring-[#C071F4]/10 transition-all placeholder:text-[#B5A4C1]"
-            min="0"
+            min={0}
             step="0.01"
           />
           <span className="absolute right-2.5 top-1/2 -translate-y-1/2">
@@ -341,11 +324,10 @@ export default function BudgetExtras({
                 type="button"
                 onClick={() => setQty(Math.max(1, qty - 1))}
                 disabled={qty <= 1}
-                className={`p-2 rounded-lg transition-all ${
-                  qty <= 1
-                    ? "text-[#0F172A] opacity-85 cursor-not-allowed"
-                    : "text-[#0F172A] hover:text-[#0F172A] hover:bg-white"
-                }`}
+                className={`p-2 rounded-lg transition-all ${qty <= 1
+                  ? "text-[#0F172A] opacity-85 cursor-not-allowed"
+                  : "text-[#0F172A] hover:text-[#0F172A] hover:bg-white"
+                  }`}
               >
                 <Minus size={16} />
               </button>
@@ -490,10 +472,8 @@ export default function BudgetExtras({
         </label>
         <textarea
           {...register("observations", {
-            maxLength: {
-              value: 500,
-              message: "Las observaciones no pueden exceder 500 caracteres",
-            },
+            setValueAs: normalizeTrim,
+            validate: validateObservations,
           })}
           rows={4}
           placeholder="Ej.: Estampado, bordado, botones extra"
@@ -511,9 +491,8 @@ export default function BudgetExtras({
         type="button"
         onClick={handleRevisar}
         disabled={isSaving}
-        className={`w-full max-w-[390px] sm:max-w-[480px] mx-auto h-[45px] bg-[#B65CF2] text-[#FEFCFF] text-[13px] leading-[1.31] font-normal rounded-[9999px] transition-colors ${
-          isSaving ? "opacity-50 cursor-not-allowed" : ""
-        }`}
+        className={`w-full max-w-[390px] sm:max-w-[480px] mx-auto h-[45px] bg-[#B65CF2] text-[#FEFCFF] text-[13px] leading-[1.31] font-normal rounded-[9999px] transition-colors ${isSaving ? "opacity-50 cursor-not-allowed" : ""
+          }`}
       >
         {isSaving ? "Guardando..." : "Revisar"}
       </button>

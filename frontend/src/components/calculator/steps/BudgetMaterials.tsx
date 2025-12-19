@@ -6,6 +6,7 @@ import CircularAddButton from "@/components/common/CircularAddButton";
 import GarmentAutocomplete from "../GarmentAutocomplete";
 import BudgetTotalBadge from "../BudgetTotalBadge";
 import type { Product } from "@/hooks/useProductSearch";
+import { normalizePriceInput } from "@/utils/budgetMaterials.validators";
 
 interface MaterialVariant {
   size: string;
@@ -64,29 +65,37 @@ export default function BudgetMaterials() {
     setTempVariants(tempVariants.filter((_, i) => i !== index));
   };
 
-  const handleAddMaterial = () => {
+  const canAddMaterial = () => {
+    if (!tempPrice) return false;
+
+    if (tempVariants.length === 0 && currentQty < 1) return false;
+
+    return true;
+  };
+
+  const buildMaterialPayload = () => {
     const finalName = tempName.trim() || "Prenda nueva";
-    const finalVariants = [...tempVariants];
 
-    if (finalVariants.length === 0 && currentQty >= 1) {
-      finalVariants.push({ size: currentSize, quantity: currentQty });
-    }
-
-    if (!tempPrice || finalVariants.length === 0) return;
+    const finalVariants =
+      tempVariants.length > 0
+        ? [...tempVariants]
+        : [{ size: currentSize, quantity: currentQty }];
 
     if (!tempProductoId && tempName.trim()) {
       console.warn(
-        "⚠️ Material agregado sin productoId. Se recomienda seleccionar desde el autocomplete."
+        "Material agregado sin productoId. Se recomienda seleccionar desde el autocomplete."
       );
     }
 
-    append({
+    return {
       productoId: tempProductoId,
       name: finalName,
       unitPrice: parseFloat(tempPrice) || 0,
       variants: finalVariants,
-    });
+    };
+  };
 
+  const resetTempMaterial = () => {
     setTempName("");
     setTempProductoId(undefined);
     setTempPrice("0");
@@ -94,6 +103,14 @@ export default function BudgetMaterials() {
     setCurrentQty(1);
     setCurrentSize("M");
   };
+
+  const handleAddMaterial = () => {
+    if (!canAddMaterial()) return;
+
+    append(buildMaterialPayload());
+    resetTempMaterial();
+  };
+
 
   const materials = (watch("materials") as Material[]) || [];
   const totalMaterials = materials.reduce((sum: number, item: Material) => {
@@ -104,6 +121,11 @@ export default function BudgetMaterials() {
       ) || 0;
     return sum + totalQty * item.unitPrice;
   }, 0);
+
+
+  const handleTempPriceChange = (value: string) => {
+    setTempPrice(normalizePriceInput(value));
+  };
 
   return (
     <div className="p-5 pb-12 font-lato bg-[#F4E7FD] rounded-b-[22px] space-y-5 overflow-x-hidden">
@@ -180,16 +202,8 @@ export default function BudgetMaterials() {
           <input
             type="number"
             value={tempPrice}
-            onChange={(e) => {
-              const val = parseFloat(e.target.value);
-              if (!isNaN(val) && val >= 0 && val <= 999999999) {
-                setTempPrice(e.target.value);
-              } else if (e.target.value === "") {
-                setTempPrice("0");
-              }
-            }}
+            onChange={(e) => handleTempPriceChange(e.target.value)}
             min="0"
-            max="999999999"
             className="hidden"
           />
         </div>
@@ -208,9 +222,8 @@ export default function BudgetMaterials() {
                 >
                   <span>{currentSize}</span>
                   <ChevronDown
-                    className={`text-[#B5A4C1] transition-transform ${
-                      sizeOpen ? "rotate-180" : ""
-                    }`}
+                    className={`text-[#B5A4C1] transition-transform ${sizeOpen ? "rotate-180" : ""
+                      }`}
                     size={16}
                   />
                 </button>
@@ -224,11 +237,10 @@ export default function BudgetMaterials() {
                           setCurrentSize(size);
                           setSizeOpen(false);
                         }}
-                        className={`w-full text-left px-3 py-2 text-sm ${
-                          size === currentSize
-                            ? "bg-[#F4E7FD] text-[#1A151E] font-semibold"
-                            : "hover:bg-[#F9F6FF] text-[#1A151E]"
-                        }`}
+                        className={`w-full text-left px-3 py-2 text-sm ${size === currentSize
+                          ? "bg-[#F4E7FD] text-[#1A151E] font-semibold"
+                          : "hover:bg-[#F9F6FF] text-[#1A151E]"
+                          }`}
                       >
                         {size}
                       </button>
@@ -246,9 +258,8 @@ export default function BudgetMaterials() {
                   type="button"
                   onClick={() => setCurrentQty(Math.max(1, currentQty - 1))}
                   disabled={currentQty <= 1}
-                  className={`px-2.5 rounded-md bg-transparent transition-colors text-2xl font-normal leading-none text-[#1A151E] hover:text-[#6A5379] ${
-                    currentQty <= 1 ? "cursor-not-allowed" : ""
-                  }`}
+                  className={`px-2.5 rounded-md bg-transparent transition-colors text-2xl font-normal leading-none text-[#1A151E] hover:text-[#6A5379] ${currentQty <= 1 ? "cursor-not-allowed" : ""
+                    }`}
                 >
                   <span className="inline-block scale-x-125">-</span>
                 </button>
@@ -402,3 +413,11 @@ export default function BudgetMaterials() {
     </div>
   );
 }
+function buildMaterialPayload(): unknown {
+  throw new Error("Function not implemented.");
+}
+
+function resetTempMaterial() {
+  throw new Error("Function not implemented.");
+}
+

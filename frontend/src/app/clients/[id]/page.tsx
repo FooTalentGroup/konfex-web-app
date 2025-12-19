@@ -6,9 +6,7 @@ import { useForm } from "react-hook-form";
 import {
   ArrowLeft,
   ChevronRight,
-  ChevronDown,
   ChevronUp,
-  Calendar,
   Loader2,
 } from "lucide-react";
 import Header from "@/components/common/Header";
@@ -19,6 +17,13 @@ import { budgetService } from "@/services/budget.service";
 import { BudgetResponseDto } from "@/types/budget.types";
 import { useToast } from "@/contexts/ToastContext";
 import { Client } from "@/services/client.service";
+import {
+  normalizeTrim,
+  validateClientName,
+  validateEmailOptional,
+  validatePhoneOptional,
+  validateClientContact,
+} from "@/utils/client.validators"
 
 type ClientForm = {
   nombre: string;
@@ -52,12 +57,15 @@ export default function ClientDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm<ClientForm>({
+    mode: "onChange",
     defaultValues: {
       nombre: "",
       email: "",
@@ -66,6 +74,9 @@ export default function ClientDetailPage() {
       numeroIdentificacion: "",
     },
   });
+
+  const emailValue = watch("email");
+  const phoneValue = watch("telefono");
 
   useEffect(() => {
     const loadClientData = async () => {
@@ -238,9 +249,8 @@ export default function ClientDetailPage() {
               <div className="flex">
                 <button
                   onClick={() => setActiveTab("detail")}
-                  className={`flex-1 py-4 text-center text-sm font-bold transition-colors relative ${
-                    activeTab === "detail" ? "text-[#C071F4]" : "text-gray-400"
-                  }`}
+                  className={`flex-1 py-4 text-center text-sm font-bold transition-colors relative ${activeTab === "detail" ? "text-[#C071F4]" : "text-gray-400"
+                    }`}
                 >
                   Detalle
                   {activeTab === "detail" && (
@@ -250,9 +260,8 @@ export default function ClientDetailPage() {
                 <div className="w-px bg-[#E8E5ED] h-8 my-auto"></div>
                 <button
                   onClick={() => setActiveTab("history")}
-                  className={`flex-1 py-4 text-center text-sm font-bold transition-colors relative ${
-                    activeTab === "history" ? "text-[#C071F4]" : "text-gray-400"
-                  }`}
+                  className={`flex-1 py-4 text-center text-sm font-bold transition-colors relative ${activeTab === "history" ? "text-[#C071F4]" : "text-gray-400"
+                    }`}
                 >
                   Historial
                   {activeTab === "history" && (
@@ -284,9 +293,17 @@ export default function ClientDetailPage() {
                             Nombre del cliente
                           </label>
                           <input
-                            {...register("nombre")}
+                            {...register("nombre", {
+                              setValueAs: normalizeTrim,
+                              validate: validateClientName,
+                            })}
                             className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
                           />
+                          {errors.nombre && (
+                            <span className="text-red-400 text-xs">
+                              {errors.nombre.message}
+                            </span>
+                          )}
                         </div>
 
                         <div className="space-y-2">
@@ -294,7 +311,9 @@ export default function ClientDetailPage() {
                             Nº de Identificación
                           </label>
                           <input
-                            {...register("numeroIdentificacion")}
+                            {...register("numeroIdentificacion", {
+                              setValueAs: normalizeTrim,
+                            })}
                             className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
                           />
                         </div>
@@ -304,9 +323,19 @@ export default function ClientDetailPage() {
                             E-mail
                           </label>
                           <input
-                            {...register("email")}
+                            {...register("email", {
+                              setValueAs: normalizeTrim,
+                              validate: (value) =>
+                                validateEmailOptional(value) &&
+                                validateClientContact(value, phoneValue),
+                            })}
                             className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
                           />
+                          {errors.email && (
+                            <span className="text-red-400 text-xs">
+                              {errors.email.message}
+                            </span>
+                          )}
                         </div>
 
                         <div className="space-y-2">
@@ -314,7 +343,9 @@ export default function ClientDetailPage() {
                             Dirección
                           </label>
                           <input
-                            {...register("direccion")}
+                            {...register("direccion", {
+                              setValueAs: normalizeTrim,
+                            })}
                             className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
                           />
                         </div>
@@ -324,9 +355,19 @@ export default function ClientDetailPage() {
                             Teléfono
                           </label>
                           <input
-                            {...register("telefono")}
+                            {...register("telefono", {
+                              setValueAs: normalizeTrim,
+                              validate: (value) =>
+                                validatePhoneOptional(value) &&
+                                validateClientContact(emailValue, value),
+                            })}
                             className="w-full bg-white border border-[#D9B7E8] rounded-lg px-4 py-3 text-gray-900 text-sm outline-none focus:border-[#C071F4] focus:ring-0 transition-all"
                           />
+                          {errors.telefono && (
+                            <span className="text-red-400 text-xs">
+                              {errors.telefono.message}
+                            </span>
+                          )}
                         </div>
                       </div>
 
@@ -409,9 +450,9 @@ function HistoryAccordion({
   const formatCurrency = (v?: number) =>
     v
       ? new Intl.NumberFormat("es-AR", {
-          style: "currency",
-          currency: "ARS",
-        }).format(v)
+        style: "currency",
+        currency: "ARS",
+      }).format(v)
       : "$0";
 
   return (
@@ -425,18 +466,16 @@ function HistoryAccordion({
             ID: {presupuesto.id}
           </span>
           <span
-            className={`${
-              statusColorMap[presupuesto.estado] || "bg-gray-400"
-            } text-white text-[10px] px-2 py-0.5 rounded-full font-bold`}
+            className={`${statusColorMap[presupuesto.estado] || "bg-gray-400"
+              } text-white text-[10px] px-2 py-0.5 rounded-full font-bold`}
           >
             {presupuesto.estado}
           </span>
         </div>
         <ChevronUp
           size={20}
-          className={`text-gray-400 transition-transform ${
-            isOpen ? "" : "rotate-180"
-          }`}
+          className={`text-gray-400 transition-transform ${isOpen ? "" : "rotate-180"
+            }`}
         />
       </div>
       {isOpen && (

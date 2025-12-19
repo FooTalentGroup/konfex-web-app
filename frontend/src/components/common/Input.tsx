@@ -55,7 +55,6 @@ const Input: React.FC<InputProps> = ({
             borderRadius: '6px',
             borderWidth: hasError ? '2px' : '2px',
             borderStyle: 'solid',
-            // borderColor: hasError ? '#D9537A' : '#6A5379',
             padding: '12px',
             paddingRight: isPassword && showPasswordToggle ? '48px' : '12px',
             backgroundColor: '#FEFCFF',

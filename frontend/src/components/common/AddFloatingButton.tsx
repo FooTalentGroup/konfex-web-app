@@ -15,8 +15,8 @@ const AddFloatingButton: React.FC<AddFloatingButtonProps> = ({
   className = '',
   isStatic = false,
 }) => {
-  const baseButtonClasses = `bg-[#B65CF2] text-white rounded-xl py-3 px-4 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-shadow font-[var(--font-lato),sans-serif] font-medium text-sm sm:text-base ${className}`;
-  
+  const baseButtonClasses = `bg-[#B65CF2] text-white rounded-full py-3 px-4 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-shadow font-[var(--font-lato),sans-serif] font-medium text-sm sm:text-base ${className}`;
+
   const staticClasses = `w-full ${baseButtonClasses}`;
   const floatingClasses = `fixed bottom-16 sm:bottom-20 md:bottom-28 lg:bottom-32 xl:bottom-36 left-1/2 transform -translate-x-1/2 w-[calc(100%-2rem)] sm:w-[calc(100%-4rem)] max-w-xs sm:max-w-sm z-10 ${baseButtonClasses}`;
 
