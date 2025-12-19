@@ -13,12 +13,36 @@ export interface Product {
   updatedAt: string;
 }
 
+interface ProductAPI {
+  id: number;
+  nombre: string;
+  descripcion?: string | null;
+  activo: boolean;
+  tallas: string[];
+  colores: string[];
+  precio?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface ApiResponse {
   success: boolean;
   statusCode: number;
   message: string;
-  data: Product[];
+  data: ProductAPI[];
 }
+
+const mapProductoToProduct = (product: ProductAPI): Product => ({
+  id: product.id,
+  name: product.nombre,
+  description: product.descripcion,
+  active: product.activo,
+  sizes: product.tallas || [],
+  colors: product.colores || [],
+  price: product.precio,
+  createdAt: product.createdAt,
+  updatedAt: product.updatedAt,
+})
 
 export function useProductSearch() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -47,7 +71,9 @@ export function useProductSearch() {
               `/products/search?search=${searchQuery}&limit=10`
             );
 
-            resolve(response.data || []);
+            const mappedProducts = (response.data || []).map(mapProductoToProduct);
+            setProducts(mappedProducts);
+            resolve(mappedProducts);
           } catch (err) {
             setError("Error searching products");
             resolve([]);
